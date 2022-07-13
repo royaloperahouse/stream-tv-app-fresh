@@ -130,8 +130,11 @@ def reactNativeArchitectures() {
 }
 
 android {
-    ndkVersion rootProject.ext.ndkVersion
-
+    ndkVersion '21.4.7075529'
+    compileOptions {
+            sourceCompatibility JavaVersion.VERSION_11
+            targetCompatibility JavaVersion.VERSION_11
+        }
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -222,6 +225,10 @@ android {
         }
     }
     signingConfigs {
+        release {
+            enableV3Signing = true
+            enableV4Signing = true
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -229,6 +236,7 @@ android {
             keyPassword 'android'
         }
     }
+    buildToolsVersion buildToolsVersion
     buildTypes {
         debug {
             signingConfig signingConfigs.debug

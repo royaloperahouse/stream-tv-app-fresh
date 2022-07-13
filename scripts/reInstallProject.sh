@@ -16,9 +16,12 @@ echo "Clearing node_modules is finishing"
 echo "Clearing android gradle is starting..."
 cd android
 rm -rf .gradle
+rm -rf build
+rm -rf .idea
 rm -rf app/build
-rm -rf ~/.gradle/caches
-./gradlew clean build
+rm -rf ~/.gradle # old cmd rm -rf ~/.gradle/caches
+./gradlew clean
+./gradlew build
 ./gradlew tasks --all
 cd ..
 echo "Clearing android gradle is finishing"
