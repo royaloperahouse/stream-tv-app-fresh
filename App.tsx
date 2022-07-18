@@ -17,10 +17,11 @@ import {
   Text,
   TouchableHighlight,
 } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RNBootSplash from 'react-native-bootsplash';
 import 'react-native/tvos-types.d';
+import RohText from 'components/RohText';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,9 +34,9 @@ const App: React.FC<{}> = () => (
   </NavigationContainer>
 );
 
-function DetailsScreen({navigation}) {
+function DetailsScreen({ navigation }) {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <TouchableHighlight
         underlayColor="#ffff"
         hasTVPreferredFocus={true}
@@ -43,16 +44,24 @@ function DetailsScreen({navigation}) {
           navigation.navigate('Home');
         }}>
         <View>
-          <Text>Details Screen</Text>
+          <View>
+            <RohText
+              style={{ fontFamily: 'GothamSSm-Bold', fontSize: 20 }}>
+              Details Screen
+            </RohText>
+          </View>
+          <View>
+            <Text style={{ fontFamily: 'GothamSSm-Bold', fontSize: 20 }}>Details Screen</Text>
+          </View>
         </View>
       </TouchableHighlight>
     </View>
   );
 }
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <TouchableHighlight
         underlayColor="#ffff"
         hasTVPreferredFocus={true}
@@ -60,7 +69,9 @@ function HomeScreen({navigation}) {
           navigation.navigate('Details');
         }}>
         <View>
-          <Text>Home Screen</Text>
+          <Text style={{ fontFamily: 'GothamSSm-MediumItalic' }}>
+            Home Screen
+          </Text>
         </View>
       </TouchableHighlight>
     </View>
