@@ -19,13 +19,13 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
+import RNBootSplash from 'react-native-bootsplash';
 import 'react-native/tvos-types.d';
 
 const Stack = createNativeStackNavigator();
 
 const App: React.FC<{}> = () => (
-  <NavigationContainer>
+  <NavigationContainer onReady={() => RNBootSplash.hide()}>
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Details" component={DetailsScreen} />

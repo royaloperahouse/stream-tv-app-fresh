@@ -261,6 +261,8 @@ PODS:
     - React-jsi (= 0.68.2-2)
     - React-logger (= 0.68.2-2)
     - React-perflogger (= 0.68.2-2)
+  - RNBootSplash (4.2.3):
+    - React-Core
   - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
@@ -299,6 +301,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -363,6 +366,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNBootSplash:
+    :path: "../node_modules/react-native-bootsplash"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   Yoga:
@@ -399,6 +404,7 @@ SPEC CHECKSUMS:
   React-RCTText: 410ac956e9d085925a1295481dc57ddd29c10bd6
   React-runtimeexecutor: 4854d334244fa5cf8c7809df483a9f9326b8b494
   ReactCommon: 4ffd76ffdffb036c8fa5f4c2efa55d8385871a02
+  RNBootSplash: e8a36a88f8c868769ec998c5afe3082032e82fc2
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   Yoga: 010a6728d11eeccc7fb11ceb4642865a3e8a604a
 
