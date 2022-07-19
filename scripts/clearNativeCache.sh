@@ -8,5 +8,6 @@ echo "Clearing watchman is finishing"
 rm -rf $TMPDIR/react-native-packager-cache-*
 rm -rf $TMPDIR/metro-bundler-cache-*
 yarn cache clean --all
+npm cache verify
 echo "Metro is starting..."
 yarn start --reset-cache

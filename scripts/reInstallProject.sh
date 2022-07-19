@@ -11,6 +11,7 @@ rm -rf $TMPDIR/react-native-packager-cache-*
 rm -rf $TMPDIR/metro-bundler-cache-*
 rm yarn.lock
 yarn cache clean --all
+npm cache verify
 yarn install
 echo "Clearing node_modules is finishing"
 echo "Clearing android gradle is starting..."
@@ -29,6 +30,9 @@ echo "Clearing iOS pods is starting..."
 cd ios
 rm Podfile.lock
 rm -rf Pods
+rm -rf ./build
+pod cache clean --all
+rm -rf ~/.cocoapods
 npx pod-install
 echo "Clearing iOS pods is finishing"
 echo "Done!"

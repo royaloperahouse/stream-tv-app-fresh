@@ -5,3 +5,4 @@ declare module '*.jpg';
 
 // fonts
 declare module '*.ttf';
+declare module '*.otf';

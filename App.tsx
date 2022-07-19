@@ -22,6 +22,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RNBootSplash from 'react-native-bootsplash';
 import 'react-native/tvos-types.d';
 import RohText from 'components/RohText';
+import StreamLogo from '@assets/svg/StreamLogo.svg';
+import { Colors } from 'themes/Styleguide';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,14 +46,14 @@ function DetailsScreen({ navigation }) {
           navigation.navigate('Home');
         }}>
         <View>
-          <View>
-            <RohText
-              style={{ fontFamily: 'GothamSSm-Bold', fontSize: 20 }}>
-              Details Screen
-            </RohText>
+          <View style={{ backgroundColor: Colors.backgroundColor }}>
+            <StreamLogo width={300} height={300} />
           </View>
           <View>
-            <Text style={{ fontFamily: 'GothamSSm-Bold', fontSize: 20 }}>Details Screen</Text>
+            <RohText>Details Screen</RohText>
+          </View>
+          <View>
+            <Text>Details Screen</Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -69,9 +71,7 @@ function HomeScreen({ navigation }) {
           navigation.navigate('Details');
         }}>
         <View>
-          <Text style={{ fontFamily: 'GothamSSm-MediumItalic' }}>
-            Home Screen
-          </Text>
+          <Text>Home Screen</Text>
         </View>
       </TouchableHighlight>
     </View>
