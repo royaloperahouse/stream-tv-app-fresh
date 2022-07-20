@@ -9,14 +9,7 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TouchableHighlight,
-} from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RNBootSplash from 'react-native-bootsplash';
@@ -24,6 +17,11 @@ import 'react-native/tvos-types.d';
 import RohText from 'components/RohText';
 import StreamLogo from '@assets/svg/StreamLogo.svg';
 import { Colors } from 'themes/Styleguide';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
 
 const Stack = createNativeStackNavigator();
 
@@ -62,8 +60,33 @@ function DetailsScreen({ navigation }) {
 }
 
 function HomeScreen({ navigation }) {
+  const offset = useSharedValue(0);
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: offset.value * 255 }],
+    };
+  });
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Animated.View
+        style={[
+          {
+            width: 100,
+            height: 80,
+            margin: 30,
+            backgroundColor: Colors.backgroundColor,
+          },
+          animatedStyles,
+        ]}
+      />
+      <TouchableHighlight
+        underlayColor={Colors.midGrey}
+        onPress={() => (offset.value = withSpring(Math.random()))}>
+        <View>
+          <Text>Animated</Text>
+        </View>
+      </TouchableHighlight>
       <TouchableHighlight
         underlayColor="#ffff"
         hasTVPreferredFocus={true}
