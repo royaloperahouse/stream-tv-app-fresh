@@ -18,7 +18,7 @@ echo "Clearing android gradle is starting..."
 cd android
 rm -rf .gradle
 rm -rf build
-rm -rf .idea
+#rm -rf .idea
 rm -rf app/build
 rm -rf ~/.gradle # old cmd rm -rf ~/.gradle/caches
 ./gradlew clean
@@ -38,4 +38,5 @@ echo "Clearing iOS pods is finishing"
 echo "Done!"
 echo "Metro is starting..."
 cd ../scripts
+adb reverse tcp:9090 tcp:9090
 yarn start --reset-cache

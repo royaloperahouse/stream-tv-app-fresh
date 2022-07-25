@@ -16,8 +16,8 @@ export const Colors = Object.freeze({
 });
 
 export const Images = Object.freeze({
-/*   introBackground: require('@assets/intro_background.png'),
-  defaultBackground: require('@assets/default_background.png'),
+  introBackground: require('@assets/images/intro_background.png'),
+ /* defaultBackground: require('@assets/default_background.png'),
   ROHLogo: require('@assets/ROH_Logo.png'),
   streamLogo: require('@assets/Stream_Logo.png'),
   loadingScreen: require('@assets/TV_01_loading.jpg'), */

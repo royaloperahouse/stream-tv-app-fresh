@@ -3,7 +3,7 @@ echo "Clearing android gradle is starting..."
 cd ../android
 rm -rf .gradle
 rm -rf build
-rm -rf .idea
+# rm -rf .idea need useing some flag
 rm -rf app/build
 rm -rf ~/.gradle
 ./gradlew clean

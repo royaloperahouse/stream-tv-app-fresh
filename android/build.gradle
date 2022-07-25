@@ -8,6 +8,11 @@ buildscript {
         minSdkVersion = 23 // <- AndroidX splashscreen has basic support for 21 (only the background color), so 23 is best
         compileSdkVersion = 31
         targetSdkVersion = 31
+        googlePlayServicesIidVersion = "17.0.0"
+        firebaseIidVersion = "19.0.1"
+        supportLibVersion = "1.0.2"
+        mediaCompatVersion = "1.0.1"
+        supportV4Version = "1.0.0"
 
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64
