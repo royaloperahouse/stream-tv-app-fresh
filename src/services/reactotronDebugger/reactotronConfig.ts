@@ -1,4 +1,5 @@
 import Reactotron from 'reactotron-react-native';
+//import ReactotronFlipper from 'reactotron-react-native/dist/flipper';
 import { reactotronRedux } from 'reactotron-redux';
 import sagaPlugin from 'reactotron-redux-saga';
 import { getUniqueId } from 'react-native-device-info';
@@ -40,8 +41,10 @@ const requestBlackList = /symbolicate/;
 export default Reactotron.configure({
   name: 'ROH App',
   getClientId: getUniqueId, //need for singl reactotron connection after refresh or reload;
+  //createSocket: path => new ReactotronFlipper(path), // need to check
 })
   .useReactNative({
+    asyncStorage: false,
     networking: {
       ignoreUrls: requestBlackList,
     },

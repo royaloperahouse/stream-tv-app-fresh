@@ -1,6 +1,14 @@
-import { combineReducers } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import { configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
+import {
+  configureStore,
+  combineReducers,
+  compose,
+  applyMiddleware,
+  EnhancedStore,
+  AnyAction,
+  Middleware,
+  MiddlewareArray,
+} from '@reduxjs/toolkit';
 
 // reducers
 import {
@@ -33,26 +41,72 @@ global.roh_rlog = () => {};
 /* const Reactotron = __DEV__
   ? require('@services/reactotronDebugger/reactotronConfig').default
   : {}; */
+
 const rootReducer = combineReducers({
   [authReducerName]: authReducer,
   [eventsReducerName]: eventsReducer,
   [settingsReducerName]: settingsReducer,
 });
 
-const sagaMiddleware = createSagaMiddleware();
-const anyMiddlewares = [sagaMiddleware];
+type RootState = ReturnType<typeof rootReducer>;
 
-const enhancers: any[] = [];
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
-      anyMiddlewares,
-    ),
-  devTools: __DEV__,
-  enhancers: enhancers,
-});
+let store: EnhancedStore<RootState, AnyAction, MiddlewareArray<Middleware[]>>;
+let sagaMiddleware: SagaMiddleware<object>;
+
+if (__DEV__) {
+  const Reactotron =
+    require('@services/reactotronDebugger/reactotronConfig').default;
+  //Reactotron.clear();
+  const createFlipperMiddleware = require('redux-flipper').default;
+  const sagaMonitor = Reactotron.createSagaMonitor();
+  console.log('sagaMonitor created');
+  sagaMiddleware = createSagaMiddleware({ sagaMonitor });
+  console.log('sagaMiddleware with sagaMonitor created');
+  store = configureStore({
+    reducer: rootReducer,
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
+        createFlipperMiddleware(),
+      ),
+    devTools: __DEV__,
+    enhancers: [Reactotron.createEnhancer(), applyMiddleware(sagaMiddleware)],
+  });
+} else {
+  sagaMiddleware = createSagaMiddleware();
+  store = configureStore({
+    reducer: rootReducer,
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
+        sagaMiddleware,
+      ),
+    devTools: __DEV__,
+    enhancers: [],
+  });
+}
+
 export type TRootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 sagaMiddleware.run(rootSaga);
+export { store };
+
+/**
+  const Reactotron =
+    require('@services/reactotronDebugger/reactotronConfig').default;
+  Reactotron.clear();
+  const createFlipperMiddleware = require('redux-flipper').default;
+  const sagaMonitor = Reactotron.createSagaMonitor();
+  console.log('sagaMonitor created');
+  sagaMiddleware = createSagaMiddleware({ sagaMonitor });
+  console.log('sagaMiddleware with sagaMonitor created');
+  store = configureStore({
+    reducer: rootReducer,
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
+        createFlipperMiddleware(),
+        sagaMiddleware,
+      ),
+    devTools: __DEV__,
+    enhancers: [Reactotron.createEnhancer()],
+  });
+ */

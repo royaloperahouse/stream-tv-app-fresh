@@ -6,7 +6,14 @@ import { store } from '@services/store';
 import AppLayout from '@layouts/appLayout';
 import { FlagsProvider } from 'flagged';
 if (__DEV__) {
-  require('./src/services/reactotronDebugger/reactotronConfig').default;
+  //require('./src/services/reactotronDebugger/reactotronConfig').default;
+  fetch('https://jsonplaceholder.typicode.com/todos/1')
+    .then(response => response.json())
+    .then(() => console.log('fetch works'))
+    .catch(err => {
+      console.log('something went wron with fetch ' + err?.message);
+    })
+    .finally(() => console.log('fetching test finished'));
 }
 
 //as Example
