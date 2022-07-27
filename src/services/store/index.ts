@@ -1,4 +1,5 @@
 import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
+
 import {
   configureStore,
   combineReducers,
@@ -25,6 +26,7 @@ import {
 } from '@services/store/settings/Slices';
 
 import { rootSaga } from '@services/store/rootSaga';
+import { isTVOS } from 'configs/globalConfig';
 
 declare global {
   var roh_rlog: (obj: {
@@ -53,11 +55,24 @@ type RootState = ReturnType<typeof rootReducer>;
 let store: EnhancedStore<RootState, AnyAction, MiddlewareArray<Middleware[]>>;
 let sagaMiddleware: SagaMiddleware<object>;
 
+/*
+  logger middleware example
+
+  const logger = store => next => action => {
+  console.log('dispatching', action);
+  console.log('prev state', store.getState());
+  let result = next(action);
+  console.log('next state', store.getState());
+  return result;
+}; */
+
 if (__DEV__) {
   const Reactotron =
     require('@services/reactotronDebugger/reactotronConfig').default;
-  //Reactotron.clear();
-  const createFlipperMiddleware = require('redux-flipper').default;
+  Reactotron.clear();
+  const createFlipperMiddleware = isTVOS
+    ? undefined
+    : require('redux-flipper').default;
   const sagaMonitor = Reactotron.createSagaMonitor();
   console.log('sagaMonitor created');
   sagaMiddleware = createSagaMiddleware({ sagaMonitor });
@@ -66,10 +81,10 @@ if (__DEV__) {
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
-        createFlipperMiddleware(),
+        createFlipperMiddleware ? [createFlipperMiddleware()] : [],
       ),
     devTools: __DEV__,
-    enhancers: [Reactotron.createEnhancer(), applyMiddleware(sagaMiddleware)],
+    enhancers: [applyMiddleware(sagaMiddleware), Reactotron.createEnhancer()],
   });
 } else {
   sagaMiddleware = createSagaMiddleware();
