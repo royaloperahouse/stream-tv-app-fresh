@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableHighlight,
+  Text,
+  Dimensions,
+  Platform,
+} from 'react-native';
 import WithLogo from '@components/WithLogo';
 import WithBackground from '@components/WithBackground';
 import RNBootSplash from 'react-native-bootsplash';
@@ -36,8 +43,8 @@ const MainLayout: React.FC<TMainLayoutProps> = () => {
       <WithLogo>
         <View style={styles.root}>
           <View style={styles.maninContentContainer}>
-            {/* <NavMenu navMenuConfig={navMenuConfig} /> */}
-            <NavigationContainer onReady={() => RNBootSplash.hide()}>
+            <NavigationContainer
+              onReady={React.useCallback(() => RNBootSplash.hide(), [])}>
               <ContentLayout />
             </NavigationContainer>
           </View>
@@ -64,8 +71,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   maninContentContainer: {
-    flex: 1,
-    flexDirection: 'row', //'row-reverse',
+    //flex: 1,
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height,
+    //justifyContent: 'flex-end',
+    //flexDirection: 'row', //'row-reverse',
   },
   buildInfo: {
     position: 'absolute',

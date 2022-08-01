@@ -13,6 +13,7 @@ export type TRoute = {
   position: number;
   isDefault: boolean;
   ScreenComponent: React.FC<any>;
+  initialParams: { [key: string]: any } | undefined;
 };
 
 export type TEventContainer = {

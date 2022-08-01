@@ -280,6 +280,8 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNGestureHandler (2.5.0):
+    - React-Core
   - RNReanimated (2.8.0):
     - DoubleConversion
     - FBLazyVector
@@ -356,6 +358,7 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -436,6 +439,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -481,6 +486,7 @@ SPEC CHECKSUMS:
   RNBootSplash: e8a36a88f8c868769ec998c5afe3082032e82fc2
   RNDeviceInfo: 0a7c1d2532aa7691f9b9925a27e43af006db4dae
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
+  RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNReanimated: 9bbb5e2a4dcf3b631e43b34432d1bffbe9a39141
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSVG: 3dd44d99d1c18e1342aee4bfa53ab3f6a8c4865f

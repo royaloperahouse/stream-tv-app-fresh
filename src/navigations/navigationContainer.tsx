@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   NavigationContainer,
   CommonActions,
@@ -26,22 +26,18 @@ const ROHNavigationContainer: React.FC<TROHNavigationContainerProps> = ({
   onReady = () => {},
 }) => {
   return (
-    <View style={styles.mainScreens}>
-      <NavigationContainer onReady={onReady} theme={customTheme}>
-        {children}
-      </NavigationContainer>
-    </View>
+    <NavigationContainer
+      onReady={onReady}
+      theme={customTheme}
+      ref={navigationRef}>
+      {children}
+    </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  mainScreens: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
 export function navigate(name: string, params: { [key: string]: any } = {}) {
   if (navigationRef.isReady()) {
+    console.log(name, params);
     navigationRef.navigate(name, params);
   }
 }
@@ -80,4 +76,4 @@ export function getCurrentRoute():
   }
 }
 
-export default ROHNavigationContainer;
+export default memo(ROHNavigationContainer);
