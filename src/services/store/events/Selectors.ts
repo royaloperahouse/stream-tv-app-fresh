@@ -150,6 +150,10 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
   }>((acc, id) => {
     const event = store.events.allDigitalEventsDetail[id];
     const subtags: Array<{ tag: string }> = get(event.data, 'vs_subtags', []);
+    if (!subtags.length) {
+      eventsWithoutSubtags.data.push(store.events.allDigitalEventsDetail[id]);
+      return acc;
+    }
     for (let i = 0; i < subtags.length; i++) {
       const subtag = subtags[i].tag || 'without subtag';
       if (subtag in acc) {

@@ -8,7 +8,10 @@
     "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint .",
-    "clean": "react-native-clean-project"
+    "clean": "react-native-clean-project",
+    "build-production:android": "cd android && ./gradlew assembleRelease && cd ..",
+    "build-production:android-analog": "react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "run-production:android": "yarn android --variant=release"
   },
   "dependencies": {
     "@prismicio/client": "^6.6.2",
