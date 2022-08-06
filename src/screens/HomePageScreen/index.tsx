@@ -127,19 +127,17 @@ const HomePageScreen: React.FC<
     index: number,
     sectionIndex: number,
   ) => {
-    return route.params === undefined
+    return route?.params?.eventId
       ? isFirstRail && index === 0
-      : route.params.fromEventDetails &&
-          sectionIndex === route.params.sectionIndex &&
-          index === 0;
+      : sectionIndex === route.params.sectionIndex && index === 0;
   };
 
   return (
     <View style={styles.root}>
-      {/*       <NavMenuScreenRedirect
+      <NavMenuScreenRedirect
         screenName={route.name}
         ref={navMenuScreenRedirectRef}
-      /> */}
+      />
       <View>
         <Preview ref={previewRef} />
         <View>

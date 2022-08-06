@@ -297,7 +297,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
         setActiveMenuid(id);
         navigate('Content', {
           screen: id,
-          params: { fromEventDetails: false },
+          params: { eventId: null },
         });
         activeItemRef.current = ref.current;
         selectedItemIndexRef.current = index;
@@ -404,6 +404,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
       }
     };
   }, []);
+
   return (
     <View>
       <Animated.View
@@ -456,7 +457,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
           )}
         />
       </Animated.View>
-      {canExit && isMenuFocused && (
+      {false && canExit && isMenuFocused && (
         <Animated.View
           style={[
             styles.exitOfAppContainer,

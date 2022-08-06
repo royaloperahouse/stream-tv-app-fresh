@@ -97,8 +97,8 @@ const ContentScreen: React.MemoExoticComponent<
     }));
   return (
     <View style={styles.mainContentRoot}>
-      <NavMenu navMenuConfig={routesForRenering} />
       <Drawer.Navigator
+        drawerContent={() => <NavMenu navMenuConfig={routesForRenering} />}
         screenListeners={{
           drawerItemPress: (...rest) => {
             global.roh_rlog({
@@ -132,15 +132,22 @@ const ContentScreen: React.MemoExoticComponent<
           },
         }}
         initialRouteName={initialRoute?.navMenuScreenName}
-        defaultStatus="closed"
+        defaultStatus="open"
         backBehavior="none"
         detachInactiveScreens={true}
         screenOptions={{
           headerShown: false,
-          drawerType: 'slide', //,'permanent',
-          overlayColor: 'transparent',
+          drawerType: 'permanent', //'slide',
           drawerHideStatusBarOnOpen: true,
           swipeEnabled: false,
+          drawerStyle: {
+            backgroundColor: 'transperent',
+            borderWidth: 0,
+            borderRightColor: 'transperent',
+            width: 'auto',
+            maxWidth: 'auto',
+            borderRightWidth: 0,
+          },
         }}>
         {allRoutes.map(screen => (
           <Drawer.Screen
