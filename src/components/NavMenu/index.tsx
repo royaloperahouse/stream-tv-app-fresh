@@ -281,6 +281,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
     [isMenuFocused],
   );
   const setMenuBlur = useCallback(() => {
+    global.roh_rlog({ name: 'nav menu blur' });
     onBlurRef.current = true;
   }, []);
 
@@ -290,6 +291,8 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
       index: number,
       ref: React.RefObject<TouchableHighlight>,
     ) => {
+      global.roh_rlog({ name: 'nav menu focused', value: id });
+      return;
       if (onBlurRef.current || exitOfAppButtonGotFocus.current) {
         setActiveMenuid(id);
         navigate('Content', {
