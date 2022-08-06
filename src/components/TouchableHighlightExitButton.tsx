@@ -14,9 +14,8 @@ import {
   TouchableHighlightProps,
   Platform,
 } from 'react-native';
-import { navMenuManager } from '@components/NavMenu';
 
-type TTouchableHighlightWrapperProps = TouchableHighlightProps & {
+type TTouchableHighlightExitButtonProps = TouchableHighlightProps & {
   canMoveUp?: boolean;
   canMoveLeft?: boolean;
   canMoveRight?: boolean;
@@ -29,17 +28,17 @@ type TTouchableHighlightWrapperProps = TouchableHighlightProps & {
   nextFocusRight?: number;
   nextFocusDown?: number;
   canCollapseNavMenu?: boolean;
-  style?: Array<{ [key: string]: any }> | { [key: string]: any };
+  style?: { [key: string]: any } | Array<{ [key: string]: any }>;
 };
 
-export type TTouchableHighlightWrapperRef = {
+export type TTouchableHighlightExitButtonRef = {
   getNode?: () => number;
   getRef?: () => RefObject<TouchableHighlight>;
 };
 
-const TouchableHighlightWrapper = forwardRef<
+const TouchableHighlightExitButton = forwardRef<
   any,
-  TTouchableHighlightWrapperProps
+  TTouchableHighlightExitButtonProps
 >((props, ref) => {
   const {
     children,
@@ -103,7 +102,6 @@ const TouchableHighlightWrapper = forwardRef<
         if (typeof onFocus === 'function') {
           onFocus(ev);
         }
-        navMenuManager.setNavMenuAccessible();
       };
       if (Platform.OS === 'ios' && Platform.isTV) {
         setTimeout(() => {
@@ -128,7 +126,7 @@ const TouchableHighlightWrapper = forwardRef<
 
   const underlayColorFromStyle = style
     ? Array.isArray(style)
-      ? style.reduce<undefined | string>((acc: any, styleObj: any) => {
+      ? style.reduce<undefined | string>((acc, styleObj) => {
           if (styleObj.backgroundColor) {
             acc = styleObj.backgroundColor;
           }
@@ -168,4 +166,4 @@ const TouchableHighlightWrapper = forwardRef<
   );
 });
 
-export default TouchableHighlightWrapper;
+export default TouchableHighlightExitButton;

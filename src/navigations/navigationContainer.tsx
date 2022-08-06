@@ -7,9 +7,12 @@ import {
   Route,
   createNavigationContainerRef,
 } from '@react-navigation/native';
-import { View, StyleSheet, Dimensions } from 'react-native';
-
-const navigationRef = createNavigationContainerRef<any>();
+import type {
+  TRootStackScreensParamList,
+  TContentScreenReverseNames,
+} from '@configs/screensConfig';
+const navigationRef =
+  createNavigationContainerRef<TRootStackScreensParamList>();
 const customTheme: typeof DefaultTheme = {
   ...DefaultTheme,
   colors: {
@@ -35,14 +38,19 @@ const ROHNavigationContainer: React.FC<TROHNavigationContainerProps> = ({
   );
 };
 
-export function navigate(name: string, params: { [key: string]: any } = {}) {
+export function navigate(
+  name: keyof TRootStackScreensParamList,
+  params: { [key: string]: any; screen?: TContentScreenReverseNames },
+) {
   if (navigationRef.isReady()) {
-    console.log(name, params);
-    navigationRef.navigate(name, params);
+    navigationRef.dispatch(CommonActions.navigate({ name, params }));
   }
 }
 
-export function push(name: string, params: { [key: string]: any } = {}) {
+export function push(
+  name: keyof TRootStackScreensParamList,
+  params: { [key: string]: any; screen?: TContentScreenReverseNames },
+) {
   if (navigationRef.isReady()) {
     navigationRef.dispatch(StackActions.push(name, params));
   }
@@ -55,7 +63,10 @@ export function goBack() {
 }
 
 export function resetStackCacheAndNavigate(
-  routesProps: Array<{ name: string; params?: { [key: string]: any } }>,
+  routesProps: Array<{
+    name: keyof TRootStackScreensParamList;
+    params?: { [key: string]: any; screen?: TContentScreenReverseNames };
+  }>,
   stateIndex: number = 0,
 ) {
   if (navigationRef.isReady()) {

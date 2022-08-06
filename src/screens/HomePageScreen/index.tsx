@@ -35,12 +35,14 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
 
-type THomePageScreenProps = {};
-const HomePageScreen: React.FC<THomePageScreenProps> = ({
-  navigation,
-  route,
-}) => {
+const HomePageScreen: React.FC<
+  TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
+> = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const appState = useRef(AppState.currentState);
   const { data: myList, ejected: myListEjected } = useMyList();

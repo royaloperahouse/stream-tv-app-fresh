@@ -39,9 +39,9 @@ import {
   marginRightInvisble,
 } from '@configs/navMenuConfig';
 import RohText from '@components/RohText';
-import TouchableHighlightWrapper, {
-  TTouchableHighlightWrapperRef,
-} from '@components/TouchableHighlightWrapper';
+import TouchableHighlightExitButton, {
+  TTouchableHighlightExitButtonRef,
+} from '@components/TouchableHighlightExitButton';
 import { Colors } from '@themes/Styleguide';
 //import { globalModalManager } from '@components/GlobalModal';
 //import { WarningOfExitModal } from '@components/GlobalModal/variants';
@@ -201,7 +201,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
   const exitOfAppButtonGotFocus = useRef<boolean>(false);
   const activeItemRef = useRef<TouchableHighlight | null>(null);
   const [isMenuAccessible, setMenuAccessible] = useState<boolean>(!isTVOS);
-  const exitOfAppButtonRef = useRef<TTouchableHighlightWrapperRef>(null);
+  const exitOfAppButtonRef = useRef<TTouchableHighlightExitButtonRef>(null);
   const dispatch = useDispatch();
   const exitOfApp = useCallback(() => {}, []);
   /*   const exitOfApp = useCallback(
@@ -285,7 +285,11 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
   }, []);
 
   const setMenuFocus = useCallback(
-    (id: string, index: number, ref: React.RefObject<TouchableHighlight>) => {
+    (
+      id: TRoute['navMenuScreenName'],
+      index: number,
+      ref: React.RefObject<TouchableHighlight>,
+    ) => {
       if (onBlurRef.current || exitOfAppButtonGotFocus.current) {
         setActiveMenuid(id);
         navigate('Content', {
@@ -460,7 +464,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
               marginRight: marginRightInterpolation,
             },
           ]}>
-          <TouchableHighlightWrapper
+          <TouchableHighlightExitButton
             accessible={isMenuFocused}
             onPress={exitOfAppPressHandler}
             ref={exitOfAppButtonRef}
@@ -472,12 +476,11 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
               navigate('exit');
             }}
             styleFocused={styles.exitOfAppButtonActive}
-            canCollapseNavMenu={false}
             canMoveDown={false}
             canMoveRight={false}
             canMoveLeft={false}>
             <RohText style={styles.exitOfAppText}>Exit ROH Stream</RohText>
-          </TouchableHighlightWrapper>
+          </TouchableHighlightExitButton>
         </Animated.View>
       )}
     </View>

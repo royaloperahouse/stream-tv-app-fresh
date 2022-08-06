@@ -1,3 +1,4 @@
+import type { TContentScreenReverseNames } from '@configs/screensConfig';
 interface Cast {
   role: string;
   name: string;
@@ -6,15 +7,17 @@ interface Cast {
 export type TRoutes = Array<TRoute>;
 
 export type TRoute = {
-  navMenuScreenName: string;
-  SvgIconActiveComponent: any;
-  SvgIconInActiveComponent: any;
-  navMenuTitle: string;
+  navMenuScreenName: TContentScreenReverseNames;
+  SvgIconActiveComponent: any | undefined;
+  SvgIconInActiveComponent: any | undefined;
+  navMenuTitle: string | undefined;
   position: number;
   isDefault: boolean;
   ScreenComponent: React.FC<any>;
   initialParams: { [key: string]: any } | undefined;
 };
+
+export type TNavMenuItem = Omit<TRoute, 'ScreenComponent' | 'initialParams'>;
 
 export type TEventContainer = {
   id: string;

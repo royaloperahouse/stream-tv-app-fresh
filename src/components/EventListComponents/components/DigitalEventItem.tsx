@@ -19,12 +19,15 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import { additionalRoutesWithoutNavMenuNavigation } from '@navigations/routes';
+import { contentScreenNames } from '@configs/screensConfig';
 import { navMenuManager } from '@components/NavMenu';
 import { Colors } from '@themes/Styleguide';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import { useFocusEffect } from '@react-navigation/native';
-
+import {
+  TContentScreenReverseNamesOfNavToDetails,
+  TContentScreensProps,
+} from '@configs/screensConfig';
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -50,6 +53,7 @@ type DigitalEventItemProps = {
   ) => void;
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
+  screenName: TContentScreenReverseNamesOfNavToDetails;
 };
 
 const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
@@ -72,12 +76,14 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setFirstItemFocusable,
       removeFirstItemFocusable,
       index,
+      screenName,
     },
     ref: any,
   ) => {
-    const navigation = useNavigation();
+    const navigation =
+      useNavigation<TContentScreensProps<typeof screenName>['navigation']>();
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
-    const route = useRoute();
+    const route = useRoute<TContentScreensProps<typeof screenName>['route']>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
     const snapshotImageUrl: string = get(
@@ -98,17 +104,14 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const onPressHandler = () => {
       navMenuManager.hideNavMenu();
       //navigation.closeDrawer();
-      navigation.navigate(
-        additionalRoutesWithoutNavMenuNavigation.eventDetails.navMenuScreenName,
-        {
-          fromEventDetails: false,
-          event,
-          continueWatching,
-          screenNameFrom,
-          sectionIndex,
-          selectedItemIndex,
-        },
-      );
+      navigation.navigate(contentScreenNames.eventDetails, {
+        fromEventDetails: false,
+        event,
+        continueWatching,
+        screenNameFrom,
+        sectionIndex,
+        selectedItemIndex,
+      });
       /*       navigation.dispatch(
         CommonActions.reset({
           routes: [
