@@ -127,7 +127,7 @@ const HomePageScreen: React.FC<
     index: number,
     sectionIndex: number,
   ) => {
-    return route?.params?.eventId
+    return !route?.params?.eventId
       ? isFirstRail && index === 0
       : sectionIndex === route.params.sectionIndex && index === 0;
   };
