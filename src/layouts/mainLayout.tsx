@@ -2,10 +2,7 @@ import React from 'react';
 import {
   View,
   StyleSheet,
-  TouchableHighlight,
-  Text,
   Dimensions,
-  Platform,
 } from 'react-native';
 import WithLogo from '@components/WithLogo';
 import WithBackground from '@components/WithBackground';
@@ -17,6 +14,7 @@ import ContentLayout from '@layouts/contentLayout';
 import RohText from '@components/RohText';
 import { buildInfo } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
+import LoadingSpinner from 'components/LoadingSpinner';
 //import GlobalModal from '@components/GlobalModal';
 //import { useFeature } from 'flagged';
 type TMainLayoutProps = {};
@@ -43,12 +41,14 @@ const MainLayout: React.FC<TMainLayoutProps> = () => {
       <WithLogo>
         <View style={styles.root}>
           <View style={styles.maninContentContainer}>
+
             <NavigationContainer
               onReady={React.useCallback(() => RNBootSplash.hide(), [])}>
               <ContentLayout />
             </NavigationContainer>
           </View>
           {/*           <GlobalModal /> */}
+          <LoadingSpinner showSpinner={true} />
           {__DEV__ && (
             <View style={styles.buildInfo}>
               <RohText
