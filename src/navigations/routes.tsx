@@ -39,8 +39,8 @@ export const routes: TRoutes = [
     ScreenComponent: HomePageScreen,
     initialParams: { eventId: null },
   },
-  /*   {
-    navMenuScreenName: contentScreenNames.,
+  {
+    navMenuScreenName: contentScreenNames.search,
     SvgIconActiveComponent: SearchActiveIcon,
     SvgIconInActiveComponent: SearchInActiveIcon,
     navMenuTitle: 'Search',
@@ -49,7 +49,7 @@ export const routes: TRoutes = [
     ScreenComponent: SearchScreen,
     initialParams: { eventId: null },
   },
-  {
+    /*{
     navMenuScreenName: contentScreenNames.,
     SvgIconActiveComponent: OperaMusicActiveIcon,
     SvgIconInActiveComponent: OperaMusicInActiveIcon,

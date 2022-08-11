@@ -65,7 +65,6 @@ const GoBack: React.FC<TGoBackProps> = () => {
   const isMounted = useRef<boolean>(false);
   const route = useRoute<RouteProp<any, string>>();
   const onFocusHandler = () => {
-    console.log('close')
     if (route.params?.screenNameFrom) {
       navigation.navigate(route.params.screenNameFrom, {
         fromEventDetails: true,

@@ -34,11 +34,7 @@ const MyListScreen: React.FC<TMyListScreenProps> = ({ route }) => {
       : data.length - 1;
   useLayoutEffect(() => {
     if (isFocused && route?.params?.fromEventDetails && ejected) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      } else {
+      if (data.length) {
         listRef.current.scrollToIndex({
           animated: false,
           index: Math.floor(selectedIndex / countOfItemsPeerRail),

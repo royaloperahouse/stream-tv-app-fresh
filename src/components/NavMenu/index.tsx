@@ -5,27 +5,24 @@ import React, {
   createRef,
   useImperativeHandle,
   useLayoutEffect,
+  useContext,
 } from 'react';
 import {
   StyleSheet,
-  FlatList,
   Dimensions,
   TouchableHighlight,
-  Animated,
+  findNodeHandle,
   View,
   BackHandler,
+  ScrollView,
 } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import NavMenuItem from '@components/NavMenu/components/NavMenuItem';
-import { navigate, getCurrentRoute } from '@navigations/navigationContainer';
-import { TRoute } from '@services/types/models';
+import type { TRoute } from '@services/types/models';
 import {
   widthInvisble,
   widthWithFocus,
   widthWithOutFocus,
-  breakPointInvisble,
-  breakPointWithFocus,
-  breakPointWithOutFocus,
   marginRightWithFocus,
   marginRightWithOutFocus,
   opacityOfItemTextStart,
@@ -39,13 +36,11 @@ import {
   marginRightInvisble,
 } from '@configs/navMenuConfig';
 import RohText from '@components/RohText';
-import TouchableHighlightExitButton, {
-  TTouchableHighlightExitButtonRef,
-} from '@components/TouchableHighlightExitButton';
 import { Colors } from '@themes/Styleguide';
 //import { globalModalManager } from '@components/GlobalModal';
 //import { WarningOfExitModal } from '@components/GlobalModal/variants';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@hooks/redux';
+import type { DrawerContentComponentProps } from '@react-navigation/drawer';
 import {
   clearEventState,
   getEventListLoopStop,
@@ -55,7 +50,21 @@ import {
   endFullSubscriptionLoop,
 } from '@services/store/auth/Slices';
 import { useFeature } from 'flagged';
-import { isTVOS } from '@configs/globalConfig';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+  withSpring,
+  useAnimatedReaction,
+  useAnimatedProps,
+  useDerivedValue,
+} from 'react-native-reanimated';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+import { TVEventManager } from '@services/tvRCEventListener';
+import type { HWEvent } from 'react-native';
+import { useForseUpdate } from '@hooks/useForseUpdate';
 
 type TNavMenuProps = {
   navMenuConfig: Array<{
@@ -66,20 +75,18 @@ type TNavMenuProps = {
     position: TRoute['position'];
     isDefault: TRoute['isDefault'];
   }>;
-};
+  exitButtonRouteName: TRoute['navMenuScreenName'];
+} & DrawerContentComponentProps;
 
 const navMenuRef = createRef<
   Partial<{
     showNavMenu: () => void;
     hideNavMenu: () => void;
-    setNavMenuBlur: () => void;
-    setNavMenuFocus: () => void;
-    setNavMenuAccessible: () => void;
-    setNavMenuNotAccessible: () => void;
     setNextFocusRightValue: (nodeValue: number, screenName: string) => void;
-    isNavMenuOpen: () => boolean;
   }>
 >();
+
+const ExitButton = Animated.createAnimatedComponent(TouchableHighlight);
 
 export const navMenuManager = Object.freeze({
   showNavMenu: () => {
@@ -92,118 +99,122 @@ export const navMenuManager = Object.freeze({
       navMenuRef.current.hideNavMenu();
     }
   },
-  setNavMenuBlur: () => {
-    if (typeof navMenuRef.current?.setNavMenuBlur === 'function') {
-      navMenuRef.current.setNavMenuBlur();
-    }
-  },
-  setNavMenuFocus: () => {
-    if (typeof navMenuRef.current?.setNavMenuFocus === 'function') {
-      navMenuRef.current.setNavMenuFocus();
-    }
-  },
-  setNavMenuAccessible: () => {
-    if (typeof navMenuRef.current?.setNavMenuAccessible === 'function') {
-      navMenuRef.current.setNavMenuAccessible();
-    }
-  },
-  setNavMenuNotAccessible: () => {
-    if (typeof navMenuRef.current?.setNavMenuNotAccessible === 'function') {
-      navMenuRef.current.setNavMenuNotAccessible();
-    }
-  },
   setNextFocusRightValue: (nodeValue: number, screenName: string) => {
     if (typeof navMenuRef.current?.setNextFocusRightValue === 'function') {
       navMenuRef.current.setNextFocusRightValue(nodeValue, screenName);
     }
   },
-  /*   isNavMenuOpen: (): boolean | undefined => {
-    if (typeof navMenuRef.current?.isNavMenuOpen === 'function') {
-      return navMenuRef.current.isNavMenuOpen();
-    }
-  }, */
 });
 
-const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
+const NavMenu: React.FC<TNavMenuProps> = ({
+  navMenuConfig,
+  exitButtonRouteName,
+  ...restProps
+}) => {
+  const { state, navigation } = restProps;
+  const forseUpdate = useForseUpdate();
+  const { setNavMenuNodesRefs, setExitOfAppButtonRef, navMenuNodesRefs } =
+    useContext<TNavMenuNodesRefsContextValue>(NavMenuNodesRefsContext);
+  const exitButtonActive = useSharedValue<boolean>(false);
+  const lastItemInScrollView = useRef<number | undefined>();
   const canExit = useFeature('canExit');
+  const focusTag = useRef<number | undefined>();
   const navMenuMountedRef = useRef<boolean>(false);
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
-  const [isMenuFocused, setIsMenuFocused] = useState<boolean>(false);
-  const [activeMenuId, setActiveMenuid] = useState<string>(
-    navMenuConfig.find(route => route.isDefault)?.navMenuScreenName ||
-      navMenuConfig[0].navMenuScreenName,
+  const buttonsRefs = useRef<{
+    [key: string]: React.RefObject<TouchableHighlight>;
+  }>({});
+  const setButtonRef = useCallback(
+    (
+      id: TRoute['navMenuScreenName'],
+      ref: React.RefObject<TouchableHighlight>,
+      isLast?: boolean,
+    ) => {
+      if (isLast && findNodeHandle(ref.current) !== null) {
+        lastItemInScrollView.current = findNodeHandle(ref.current) as number;
+      }
+      buttonsRefs.current[id] = ref;
+      if (Object.keys(buttonsRefs.current).length === navMenuConfig.length) {
+        setNavMenuNodesRefs(buttonsRefs.current);
+      }
+    },
+    [navMenuConfig.length, setNavMenuNodesRefs],
   );
+  const navMenuWidth = useSharedValue(widthWithOutFocus);
+  const navMenuExitButton = useSharedValue(0);
+
+  const navMenuAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: withTiming(navMenuWidth.value, {
+        duration:
+          navMenuWidth.value >= widthWithOutFocus
+            ? focusAnimationDuration
+            : visibleAnimationDuration,
+        easing: Easing.ease,
+      }),
+      marginLeft: withSpring(
+        navMenuWidth.value > widthInvisble ? marginLeftStop : marginLeftStart,
+      ),
+      marginRight: withSpring(
+        navMenuWidth.value === widthInvisble
+          ? marginRightInvisble
+          : navMenuWidth.value === widthWithOutFocus
+          ? marginRightWithOutFocus
+          : marginRightWithFocus,
+      ),
+    };
+  });
+  const navMenuExitButtonAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(navMenuExitButton.value, {
+      duration: focusAnimationDuration,
+      easing: Easing.ease,
+    }),
+  }));
+  const exitButtonFocusedStyle = useAnimatedStyle(
+    () => ({
+      opacity: exitButtonActive.value ? 1 : 0.5,
+    }),
+    [exitButtonActive],
+  );
+  useAnimatedReaction(
+    () => {
+      return navMenuWidth.value > widthWithOutFocus ? 1 : 0;
+    },
+    data => {
+      navMenuExitButton.value = data;
+    },
+  );
+
   const [nextFocusRightMapping, setNextFocusRightMapping] = useState(() =>
     navMenuConfig.reduce<{ [key: string]: number | null }>((acc, route) => {
       acc[route.navMenuScreenName] = null;
       return acc;
     }, {}),
   );
-  const menuAnimation = useRef<Animated.Value>(
-    new Animated.Value(breakPointWithOutFocus),
-  ).current;
-  const menuFocusAnimationInProcess = useRef<boolean>(false);
-  const menuVisibleAnimationInProcess = useRef<boolean>(false);
-  const menuFocusInterpolate: Animated.AnimatedInterpolation =
-    menuAnimation.interpolate({
-      inputRange: [
-        breakPointInvisble,
-        breakPointWithOutFocus,
-        breakPointWithFocus,
-      ],
-      outputRange: [widthInvisble, widthWithOutFocus, widthWithFocus],
-    });
-  const menuItemInterpolation: Animated.AnimatedInterpolation =
-    menuFocusInterpolate.interpolate({
-      inputRange: [widthWithOutFocus, widthWithFocus],
-      outputRange: [opacityOfItemTextStart, opacityOfItemTextStop],
-      extrapolate: 'clamp',
-    });
-  const menuItemIconInterpolation: Animated.AnimatedInterpolation =
-    menuAnimation.interpolate({
-      inputRange: [breakPointInvisble, breakPointWithOutFocus],
-      outputRange: [opacityOfItemIconStart, opacityOfItemIconStop],
-      extrapolate: 'clamp',
-    });
-  const marginLeftInterpolation: Animated.AnimatedInterpolation =
-    menuAnimation.interpolate({
-      inputRange: [breakPointInvisble, breakPointWithOutFocus],
-      outputRange: [marginLeftStart, marginLeftStop],
-      extrapolateRight: 'clamp',
-    });
-  const marginRightInterpolation: Animated.AnimatedInterpolation =
-    menuAnimation.interpolate({
-      inputRange: [
-        breakPointInvisble,
-        breakPointWithOutFocus,
-        breakPointWithFocus,
-      ],
-      outputRange: [
-        marginRightInvisble,
-        marginRightWithOutFocus,
-        marginRightWithFocus,
-      ],
-    });
-  const exitOfAppInterpolation: Animated.AnimatedInterpolation =
-    menuAnimation.interpolate({
-      inputRange: [breakPointWithOutFocus, breakPointWithFocus],
-      outputRange: [breakPointInvisble, breakPointWithFocus],
-      extrapolateLeft: 'clamp',
-    });
-  const flatListRef = useRef<FlatList | null>(null);
-  const selectedItemIndexRef = useRef<number>(
-    navMenuConfig.findIndex(route => route.isDefault) === -1
-      ? 0
-      : navMenuConfig.findIndex(route => route.isDefault),
+  const exitButtonAnimatedProps = useAnimatedProps(
+    () => ({
+      accessible: navMenuWidth.value > widthWithOutFocus,
+    }),
+    [navMenuWidth.value],
   );
 
-  const onBlurRef = useRef<boolean>(false);
-  const exitOfAppButtonGotFocus = useRef<boolean>(false);
-  const activeItemRef = useRef<TouchableHighlight | null>(null);
-  const [isMenuAccessible, setMenuAccessible] = useState<boolean>(!isTVOS);
-  const exitOfAppButtonRef = useRef<TTouchableHighlightExitButtonRef>(null);
-  const dispatch = useDispatch();
-  const exitOfApp = useCallback(() => {}, []);
+  const labelOpacityWorklet = useDerivedValue(
+    () =>
+      navMenuWidth.value === widthWithFocus
+        ? opacityOfItemTextStop
+        : opacityOfItemTextStart,
+    [navMenuWidth.value],
+  );
+
+  const iconOpacityWorklet = useDerivedValue(
+    () =>
+      navMenuWidth.value === widthInvisble
+        ? opacityOfItemIconStart
+        : opacityOfItemIconStop,
+    [navMenuWidth.value],
+  );
+  const exitOfAppButtonRef = useRef<TouchableHighlight>(null);
+  const dispatch = useAppDispatch();
+  const exitOfApp = useCallback((_?: boolean) => {}, []);
   /*   const exitOfApp = useCallback(
     (isGlobalHandler?: boolean) => {
       globalModalManager.openModal({
@@ -249,23 +260,10 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
     navMenuRef,
     () => ({
       showNavMenu: () => {
-        setIsMenuVisible(true);
+        navMenuWidth.value = widthWithOutFocus;
       },
       hideNavMenu: () => {
-        setMenuAccessible(false);
-        setIsMenuVisible(false);
-      },
-      setNavMenuBlur: () => {
-        if (onBlurRef.current) {
-          setIsMenuFocused(false);
-          onBlurRef.current = false;
-        }
-      },
-      setNavMenuAccessible: () => {
-        setMenuAccessible(true);
-      },
-      setNavMenuNotAccessible: () => {
-        setMenuAccessible(false);
+        navMenuWidth.value = widthInvisble;
       },
       setNextFocusRightValue: (nodeValue: number, screenName: string) => {
         setNextFocusRightMapping(prevState => ({
@@ -273,78 +271,30 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
           [screenName]: nodeValue,
         }));
       },
-      setNavMenuFocus: () => {
-        setIsMenuFocused(true);
-      },
-      isNavMenuOpen: () => isMenuFocused,
     }),
-    [isMenuFocused],
+    [navMenuWidth],
   );
-  const setMenuBlur = useCallback(() => {
-    global.roh_rlog({ name: 'nav menu blur' });
-    onBlurRef.current = true;
-  }, []);
 
   const setMenuFocus = useCallback(
-    (
-      id: TRoute['navMenuScreenName'],
-      index: number,
-      ref: React.RefObject<TouchableHighlight>,
-    ) => {
-      global.roh_rlog({ name: 'nav menu focused', value: id });
-      return;
-      if (onBlurRef.current || exitOfAppButtonGotFocus.current) {
-        setActiveMenuid(id);
-        navigate('Content', {
-          screen: id,
-          params: { eventId: null },
-        });
-        activeItemRef.current = ref.current;
-        selectedItemIndexRef.current = index;
-        exitOfAppButtonGotFocus.current = false;
-        return;
-      }
-      setIsMenuFocused(true);
-      flatListRef.current?.scrollToIndex({
-        animated: false,
-        index: selectedItemIndexRef.current,
-        viewPosition: 0,
-      });
-      if (activeItemRef.current?.setNativeProps) {
-        activeItemRef.current.setNativeProps({ hasTVPreferredFocus: true });
+    (id: TRoute['navMenuScreenName']) => {
+      if (state.routeNames[state.index] !== id) {
+        navigation.navigate(id);
+        navMenuWidth.value = widthWithFocus;
       }
     },
-    [],
-  );
-  // Player
-  const setActiveMunuItemRef = useCallback(
-    (ref: React.RefObject<TouchableHighlight>) => {
-      activeItemRef.current = ref.current;
-    },
-    [],
+    [state.routeNames, state.index, navigation, navMenuWidth],
   );
 
   useLayoutEffect(() => {
     const backButtonCallback = () => {
-      const routeState = getCurrentRoute();
-      if (!isMenuFocused) {
-        setIsMenuFocused(true);
-        setMenuAccessible(true);
-        flatListRef.current?.scrollToIndex({
-          animated: false,
-          index: selectedItemIndexRef.current,
-          viewPosition: 0,
-        });
-        if (activeItemRef.current?.setNativeProps) {
-          activeItemRef.current.setNativeProps({ hasTVPreferredFocus: true });
-        }
+      if (navMenuWidth.value === widthInvisble) {
         return true;
       }
-      if (
-        canExit &&
-        routeState &&
-        navMenuConfig.some(route => route.navMenuScreenName === routeState.name)
-      ) {
+      if (navMenuWidth.value === widthWithOutFocus) {
+        navMenuWidth.value = widthWithFocus;
+        return true;
+      }
+      if (canExit) {
         exitOfApp(true);
       }
       return true;
@@ -353,48 +303,11 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', backButtonCallback);
     };
-  }, [navMenuConfig, exitOfApp, canExit, isMenuFocused]);
-  useLayoutEffect(() => {
-    if (
-      !navMenuMountedRef.current ||
-      menuVisibleAnimationInProcess.current ||
-      menuFocusAnimationInProcess.current
-    ) {
-      return;
-    }
-    menuVisibleAnimationInProcess.current = true;
-    Animated.timing(menuAnimation, {
-      toValue: isMenuVisible ? breakPointWithOutFocus : breakPointInvisble,
-      duration: visibleAnimationDuration,
-      useNativeDriver: false,
-    }).start(({ finished }) => {
-      if (!finished) {
-        menuAnimation.setValue(
-          isMenuVisible ? breakPointInvisble : breakPointWithOutFocus,
-        );
-      }
-      menuVisibleAnimationInProcess.current = false;
-    });
-  }, [isMenuVisible, menuAnimation]);
+  }, [navMenuConfig, exitOfApp, canExit, navMenuWidth]);
 
   useLayoutEffect(() => {
-    if (!navMenuMountedRef.current || menuFocusAnimationInProcess.current) {
-      return;
-    }
-    menuFocusAnimationInProcess.current = true;
-    Animated.timing(menuAnimation, {
-      toValue: isMenuFocused ? breakPointWithFocus : breakPointWithOutFocus,
-      duration: focusAnimationDuration,
-      useNativeDriver: false,
-    }).start(({ finished }) => {
-      if (!finished && !menuVisibleAnimationInProcess.current) {
-        menuAnimation.setValue(
-          isMenuFocused ? breakPointWithOutFocus : breakPointWithFocus,
-        );
-      }
-      menuFocusAnimationInProcess.current = false;
-    });
-  }, [isMenuFocused, menuAnimation]);
+    setExitOfAppButtonRef(exitOfAppButtonRef);
+  }, [setExitOfAppButtonRef]);
 
   useLayoutEffect(() => {
     navMenuMountedRef.current = true;
@@ -405,86 +318,122 @@ const NavMenu: React.FC<TNavMenuProps> = ({ navMenuConfig }) => {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    TVEventManager.init();
+    const toggleNavMenuCB = (event: HWEvent) => {
+      const { eventType, tag } = event;
+      switch (eventType) {
+        case 'blur': {
+          break;
+        }
+        case 'focus': {
+          const doesMenuIncludeNewTag =
+            Object.values(navMenuNodesRefs).some(
+              ref => findNodeHandle(ref.current) === tag,
+            ) || findNodeHandle(exitOfAppButtonRef.current) === tag;
+          const doesMenuIncludePrevTag =
+            focusTag.current === undefined
+              ? doesMenuIncludeNewTag
+              : Object.values(navMenuNodesRefs).some(
+                  ref => findNodeHandle(ref.current) === focusTag.current,
+                ) ||
+                findNodeHandle(exitOfAppButtonRef.current) === focusTag.current;
+
+          if (navMenuWidth.value === widthInvisble) {
+            focusTag.current = tag;
+            return;
+          }
+
+          if (
+            (doesMenuIncludePrevTag && !doesMenuIncludeNewTag) ||
+            (!doesMenuIncludePrevTag && !doesMenuIncludeNewTag)
+          ) {
+            navMenuWidth.value = widthWithOutFocus; //close
+          }
+          if (
+            (!doesMenuIncludePrevTag && doesMenuIncludeNewTag) ||
+            (doesMenuIncludePrevTag && doesMenuIncludeNewTag)
+          ) {
+            navMenuWidth.value = widthWithFocus; //open
+          }
+          focusTag.current = tag;
+          break;
+        }
+        default:
+          break;
+      }
+    };
+    TVEventManager.addEventListener(toggleNavMenuCB);
+    return () => {
+      TVEventManager.removeEventListener(toggleNavMenuCB);
+    };
+  }, [navMenuWidth, navMenuNodesRefs]);
+  useLayoutEffect(() => {
+    if (canExit) {
+      forseUpdate();
+    }
+  }, [canExit, navMenuConfig.length, forseUpdate]);
   return (
     <View>
-      <Animated.View
-        style={[
-          styles.root,
-          {
-            marginLeft: marginLeftInterpolation,
-            marginRight: marginRightInterpolation,
-            width: menuFocusInterpolate,
-          },
-        ]}>
-        <FlatList
-          ref={flatListRef}
-          data={navMenuConfig}
-          keyExtractor={item => item.navMenuScreenName}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          onScrollToIndexFailed={info => {
-            const wait = new Promise(resolve => setTimeout(resolve, 500));
-            wait.then(() => {
-              if (!navMenuMountedRef || !navMenuMountedRef.current) {
-                return;
-              }
-              flatListRef.current?.scrollToIndex({
-                index: info.index !== -1 ? info.index : 0,
-                animated: false,
-              });
-            });
-          }}
-          renderItem={({ item, index }) => (
+      <Animated.View style={[styles.root, navMenuAnimatedStyle]}>
+        <ScrollView>
+          {navMenuConfig.map((item, index) => (
             <NavMenuItem
-              index={index}
+              key={item.navMenuScreenName}
               id={item.navMenuScreenName}
-              isActive={item.navMenuScreenName === activeMenuId}
+              isActive={
+                item.navMenuScreenName === state.routeNames[state.index]
+              }
               SvgIconActiveComponent={item.SvgIconActiveComponent}
               SvgIconInActiveComponent={item.SvgIconInActiveComponent}
               navMenuTitle={item.navMenuTitle}
               onFocus={setMenuFocus}
-              onBlur={setMenuBlur}
-              isDefault={item.isDefault}
               isLastItem={index === navMenuConfig.length - 1}
-              setActiveMunuItemRef={setActiveMunuItemRef}
-              labelOpacityValue={menuItemInterpolation}
-              iconOpacityValue={menuItemIconInterpolation}
-              isVisible={isMenuVisible && isMenuAccessible}
+              setMunuItemRef={setButtonRef}
+              labelOpacityWorklet={labelOpacityWorklet}
+              iconOpacityWorklet={iconOpacityWorklet}
+              accessibleWorklet={navMenuWidth}
               nextFocusRight={
                 nextFocusRightMapping[item.navMenuScreenName] ?? undefined
               }
+              nextFocusDown={findNodeHandle(exitOfAppButtonRef.current)}
             />
-          )}
-        />
+          ))}
+        </ScrollView>
       </Animated.View>
-      {false && canExit && isMenuFocused && (
+      {canExit && (
         <Animated.View
           style={[
             styles.exitOfAppContainer,
-            {
-              opacity: exitOfAppInterpolation,
-              width: menuFocusInterpolate,
-              marginLeft: marginLeftInterpolation,
-              marginRight: marginRightInterpolation,
-            },
+            navMenuAnimatedStyle,
+            navMenuExitButtonAnimatedStyle,
           ]}>
-          <TouchableHighlightExitButton
-            accessible={isMenuFocused}
-            onPress={exitOfAppPressHandler}
-            ref={exitOfAppButtonRef}
-            style={styles.exitOfAppButton}
-            onFocus={() => {
-              onBlurRef.current = false;
-              exitOfAppButtonGotFocus.current = true;
-              setActiveMenuid('');
-              navigate('exit');
-            }}
-            styleFocused={styles.exitOfAppButtonActive}
-            canMoveDown={false}
-            canMoveRight={false}
-            canMoveLeft={false}>
-            <RohText style={styles.exitOfAppText}>Exit ROH Stream</RohText>
-          </TouchableHighlightExitButton>
+          <Animated.View style={[exitButtonFocusedStyle]}>
+            <ExitButton
+              animatedProps={exitButtonAnimatedProps}
+              onPress={exitOfAppPressHandler}
+              ref={exitOfAppButtonRef}
+              underlayColor="transparent"
+              onBlur={() => {
+                exitButtonActive.value = false;
+              }}
+              onFocus={() => {
+                exitButtonActive.value = true;
+                navigation.navigate(exitButtonRouteName);
+              }}
+              nextFocusUp={lastItemInScrollView.current}
+              nextFocusDown={
+                findNodeHandle(exitOfAppButtonRef.current) || undefined
+              }
+              nextFocusLeft={
+                findNodeHandle(exitOfAppButtonRef.current) || undefined
+              }
+              nextFocusRight={
+                findNodeHandle(exitOfAppButtonRef.current) || undefined
+              }>
+              <RohText style={styles.exitOfAppText}>Exit ROH Stream</RohText>
+            </ExitButton>
+          </Animated.View>
         </Animated.View>
       )}
     </View>
@@ -500,6 +449,8 @@ const styles = StyleSheet.create({
   },
   exitOfAppContainer: {
     marginBottom: scaleSize(58),
+    overflow: 'hidden',
+    height: scaleSize(30),
   },
   exitOfAppText: {
     fontSize: scaleSize(22),
@@ -507,12 +458,6 @@ const styles = StyleSheet.create({
     letterSpacing: scaleSize(1),
     color: Colors.defaultTextColor,
     textTransform: 'uppercase',
-  },
-  exitOfAppButton: {
-    opacity: 0.5,
-  },
-  exitOfAppButtonActive: {
-    opacity: 1,
   },
 });
 

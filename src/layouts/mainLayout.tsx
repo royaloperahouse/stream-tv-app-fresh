@@ -8,6 +8,7 @@ import ContentLayout from '@layouts/contentLayout';
 import RohText from '@components/RohText';
 import { buildInfo } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
+import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
 //import GlobalModal from '@components/GlobalModal';
 
 type TMainLayoutProps = {};
@@ -16,26 +17,28 @@ const MainLayout: React.FC<TMainLayoutProps> = () => {
   return (
     <WithBackground>
       <WithLogo>
-        <View style={styles.root}>
-          <View style={styles.maninContentContainer}>
-            <NavigationContainer
-              onReady={React.useCallback(() => RNBootSplash.hide(), [])}>
-              <ContentLayout />
-            </NavigationContainer>
-          </View>
-          {/*           <GlobalModal /> */}
-          {__DEV__ && (
-            <View style={styles.buildInfo}>
-              <RohText
-                bold
-                style={styles.buildInfoText}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {buildInfo}
-              </RohText>
+        <NavMenuNodesRefsProvider>
+          <View style={styles.root}>
+            <View style={styles.maninContentContainer}>
+              <NavigationContainer
+                onReady={React.useCallback(() => RNBootSplash.hide(), [])}>
+                <ContentLayout />
+              </NavigationContainer>
             </View>
-          )}
-        </View>
+            {/*           <GlobalModal /> */}
+            {__DEV__ && (
+              <View style={styles.buildInfo}>
+                <RohText
+                  bold
+                  style={styles.buildInfoText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {buildInfo}
+                </RohText>
+              </View>
+            )}
+          </View>
+        </NavMenuNodesRefsProvider>
       </WithLogo>
     </WithBackground>
   );

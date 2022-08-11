@@ -1,14 +1,19 @@
-import React, { useRef, useLayoutEffect, useCallback, useEffect } from 'react';
+import React, {
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import {
   View,
   StyleSheet,
   Dimensions,
   AppState,
   AppStateStatus,
-  Text,
-  TouchableHighlight,
+  findNodeHandle,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '@hooks/redux';
 import {
   startFullSubscriptionLoop,
   endFullSubscriptionLoop,
@@ -39,43 +44,27 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
 > = ({ navigation, route }) => {
-  const dispatch = useDispatch();
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
+  const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
   const { data: myList, ejected: myListEjected } = useMyList();
   const { data: continueWatchingList, ejected: continueWatchingListEjected } =
     useContinueWatchingList();
-  const { data, eventsLoaded } = useSelector(
+  const { data, eventsLoaded } = useAppSelector(
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
   const previewRef = useRef(null);
   const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  useLayoutEffect(() => {
-    if (
-      isFocused &&
-      myListEjected &&
-      continueWatchingListEjected &&
-      eventsLoaded
-    ) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      }
-    }
-  }, [
-    isFocused,
-    route,
-    data.length,
-    navigation,
-    continueWatchingListEjected,
-    myListEjected,
-    eventsLoaded,
-  ]);
+
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (
@@ -115,29 +104,26 @@ const HomePageScreen: React.FC<
       return () => {
         dispatch(endFullSubscriptionLoop());
       };
-    }, []),
+    }, [dispatch]),
   );
-
   if (!data.length || !continueWatchingListEjected || !myListEjected) {
     return null;
   }
-
   const hasTVPreferredFocus = (
     isFirstRail: boolean,
     index: number,
     sectionIndex: number,
   ) => {
-    return !route?.params?.eventId
+    return route?.params?.eventId
       ? isFirstRail && index === 0
       : sectionIndex === route.params.sectionIndex && index === 0;
   };
-
   return (
     <View style={styles.root}>
-      <NavMenuScreenRedirect
+      {/*       <NavMenuScreenRedirect
         screenName={route.name}
         ref={navMenuScreenRedirectRef}
-      />
+      /> */}
       <View>
         <Preview ref={previewRef} />
         <View>
@@ -174,6 +160,11 @@ const HomePageScreen: React.FC<
                   index,
                   sectionIndex,
                 )}
+                nextFocusLeftOnFirstItem={
+                  index === 0 && navMenuNodesRefs?.[route.name]
+                    ? navMenuNodesRefs[route.name]
+                    : undefined
+                }
                 canMoveRight={index !== section.data.length - 1}
                 onFocus={scrollToRail}
                 continueWatching={section.title === continueWatchingRailTitle}

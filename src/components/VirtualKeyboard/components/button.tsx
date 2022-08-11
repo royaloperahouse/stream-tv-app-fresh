@@ -53,9 +53,6 @@ const Button = forwardRef<any, TButtonProps>(
         styleFocused={styleFocused}
         {...restProps}
         hasTVPreferredFocus={hasTVPreferredFocus}
-        onFocus={() => {
-          navMenuManager.setNavMenuAccessible();
-        }}
         onPress={onClick}>
         <View style={styles.viewContainer}>
           {text !== undefined && text !== '' && (

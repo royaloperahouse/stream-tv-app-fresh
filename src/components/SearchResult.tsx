@@ -70,7 +70,6 @@ const SearchResult: React.FC<TSearchResultProps> = ({
       />
     );
   }
-  console.log(route?.params?.sectionIndex, 'index');
   return (
     <FlatList
       ref={resultListRef}
@@ -104,7 +103,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           canMoveDown={index !== digitalEventDetails.length - 1}
           screenNameFrom={route.name}
           sectionIndex={index}
-          hasTVPreferredFocus={(route?.params?.sectionIndex || 0) === index}
+          //hasTVPreferredFocus={(route?.params?.sectionIndex || 0) === index}
           onMountToSearchResultTransition={
             index === 0 ? onMountToSearchResultTransition : undefined
           }
@@ -216,7 +215,6 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
         fromEventDetails: false,
       });
     }
-    navMenuManager.setNavMenuAccessible();
   };
   useFocusEffect(
     useCallback(() => {
@@ -382,7 +380,6 @@ const PreviousSearchListItemComponent: React.FC<
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const navigation = useNavigation();
   const onPressHandler = () => {
-    navMenuManager.setNavMenuNotAccessible();
     //navigation.setParams({ sectionIndex: 0 }); worked previously (probebly will work on new wersios of navigation)
     dispatch(setFullSearchQuery({ searchQuery: text }));
   };

@@ -31,15 +31,6 @@ const BalletDanceScreen: React.FC<TBalletDanceScreenProps> = ({ route }) => {
   const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   useLayoutEffect(() => {
-    if (isFocused && eventsLoaded) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      }
-    }
-  }, [isFocused, route, data.length, eventsLoaded]);
-  useLayoutEffect(() => {
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
       data.length &&

@@ -24,10 +24,6 @@ type TTouchableHighlightWrapperProps = TouchableHighlightProps & {
   styleFocused?: { [key: string]: any };
   styleBlured?: TouchableHighlightProps['style'];
   children: React.ReactNode;
-  nextFocusLeft?: number;
-  nextFocusUp?: number;
-  nextFocusRight?: number;
-  nextFocusDown?: number;
   canCollapseNavMenu?: boolean;
   style?: Array<{ [key: string]: any }> | { [key: string]: any };
 };
@@ -98,19 +94,9 @@ const TouchableHighlightWrapper = forwardRef<
   }
   const onFocusHandler = useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>): void => {
-      const focusEventCB = (ev: NativeSyntheticEvent<TargetedEvent>) => {
-        setFocused(true);
-        if (typeof onFocus === 'function') {
-          onFocus(ev);
-        }
-        navMenuManager.setNavMenuAccessible();
-      };
-      if (Platform.OS === 'ios' && Platform.isTV) {
-        setTimeout(() => {
-          focusEventCB(event);
-        }, 0);
-      } else {
-        focusEventCB(event);
+      setFocused(true);
+      if (typeof onFocus === 'function') {
+        onFocus(event);
       }
     },
     [onFocus],

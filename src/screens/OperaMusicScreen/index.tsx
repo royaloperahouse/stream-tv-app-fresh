@@ -16,7 +16,6 @@ import {
 } from '@configs/navMenuConfig';
 import { TPreviewRef } from '@components/EventListComponents/components/Preview';
 import { useIsFocused } from '@react-navigation/native';
-import { navMenuManager } from '@components/NavMenu';
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
@@ -34,15 +33,7 @@ const OperaMusicScreen: React.FC<TOperaMusicScreenProps> = ({
   const runningOnceRef = useRef<boolean>(false);
   const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  useLayoutEffect(() => {
-    if (isFocused && eventsLoaded) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      }
-    }
-  }, [isFocused, route, data.length, navigation, eventsLoaded]);
+
   useLayoutEffect(() => {
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&

@@ -1,47 +1,56 @@
 import React, { useCallback, useRef, useLayoutEffect } from 'react';
-import { View, StyleSheet, TouchableHighlight, Animated } from 'react-native';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
 import { TRoute } from '@services/types/models';
+import {
+  widthInvisble,
+  focusAnimationDuration,
+  visibleAnimationDuration,
+} from '@configs/navMenuConfig';
 import { setNavMenuItemsRefs } from '@components/NavmenuScreenRedirect';
-import { isTVOS } from '@configs/globalConfig';
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+  useAnimatedProps,
+  Easing,
+} from 'react-native-reanimated';
 type TNavMenuItemProps = {
-  id: string;
+  id: TRoute['navMenuScreenName'];
   isActive: boolean;
   SvgIconActiveComponent: TRoute['SvgIconActiveComponent'];
   SvgIconInActiveComponent: TRoute['SvgIconInActiveComponent'];
   navMenuTitle: TRoute['navMenuTitle'];
-  onFocus: (
-    id: string,
-    index: number,
-    ref: React.RefObject<TouchableHighlight>,
-  ) => void;
-  isDefault: TRoute['isDefault'];
-  index: number;
+  onFocus: (id: TRoute['navMenuScreenName']) => void;
   isLastItem: boolean;
-  onBlur: () => void;
-  labelOpacityValue: Animated.AnimatedInterpolation;
-  setActiveMunuItemRef: (ref: React.RefObject<TouchableHighlight>) => void;
-  isVisible: boolean;
-  iconOpacityValue: Animated.AnimatedInterpolation;
+  labelOpacityWorklet: Readonly<Animated.SharedValue<1 | 0>>;
+  setMunuItemRef: (
+    id: TRoute['navMenuScreenName'],
+    ref: React.RefObject<TouchableHighlight>,
+    isLast?: boolean,
+  ) => void;
+  accessibleWorklet: Readonly<Animated.SharedValue<number>>;
+  iconOpacityWorklet: Readonly<Animated.SharedValue<1 | 0>>;
   nextFocusRight?: number;
+  nextFocusDown: number | null;
 };
+const NavMenuButtonAnimated =
+  Animated.createAnimatedComponent(TouchableHighlight);
 const NavMenuItem: React.FC<TNavMenuItemProps> = ({
-  index,
   id,
   isActive,
   SvgIconActiveComponent,
   SvgIconInActiveComponent,
-  navMenuTitle,
+  navMenuTitle = 'unknow',
   onFocus,
-  onBlur,
   isLastItem,
-  labelOpacityValue,
-  setActiveMunuItemRef,
-  isVisible,
-  iconOpacityValue,
+  labelOpacityWorklet,
+  setMunuItemRef,
+  accessibleWorklet,
+  iconOpacityWorklet,
   nextFocusRight,
+  nextFocusDown,
 }) => {
   const mountedComponentRef = useRef(false);
   const dynemicStyles = StyleSheet.create({
@@ -55,39 +64,55 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
     titleText: { opacity: isActive ? 1 : 0.5 },
   });
   const touchRef = useRef<TouchableHighlight | null>(null);
-  const onFocusHandler = useCallback(() => {
-    if (isTVOS) {
-      setTimeout(() => {
-        onFocus(id, index, touchRef);
-      }, 0);
-    } else {
-      onFocus(id, index, touchRef);
-    }
-  }, [onFocus, id, index]);
 
+  const onFocusHandler = useCallback(() => {
+    onFocus(id);
+  }, [onFocus, id]);
+  const iconStyle = useAnimatedStyle(
+    () => ({
+      opacity: withTiming(iconOpacityWorklet.value, {
+        duration: visibleAnimationDuration,
+        easing: Easing.ease,
+      }),
+    }),
+    [iconOpacityWorklet.value],
+  );
+  const textStyle = useAnimatedStyle(
+    () => ({
+      opacity: withTiming(labelOpacityWorklet.value, {
+        duration: focusAnimationDuration,
+        easing: Easing.ease,
+      }),
+    }),
+    [labelOpacityWorklet.value],
+  );
+  const accessibleAnimatedProps = useAnimatedProps(
+    () => ({
+      accessible: accessibleWorklet.value !== widthInvisble,
+    }),
+    [accessibleWorklet.value],
+  );
   useLayoutEffect(() => {
-    if (!mountedComponentRef.current && isActive) {
-      setActiveMunuItemRef(touchRef);
-    }
+    setMunuItemRef(id, touchRef, isLastItem);
+    //setNavMenuItemsRefs(id, touchRef);
     mountedComponentRef.current = true;
-  }, [setActiveMunuItemRef, isActive]);
-  useLayoutEffect(() => {
-    setNavMenuItemsRefs(id, touchRef);
-  }, []);
+  }, [setMunuItemRef, id, isLastItem]);
   return (
-    <TouchableHighlight
+    <NavMenuButtonAnimated
+      animatedProps={accessibleAnimatedProps}
       ref={touchRef}
       onFocus={onFocusHandler}
-      onBlur={onBlur}
-      accessible={isVisible}
       nextFocusRight={nextFocusRight}
+      nextFocusDown={
+        isLastItem && nextFocusDown !== null ? nextFocusDown : undefined
+      }
       style={dynemicStyles.touchableWrapperStyle}>
       <View style={styles.root}>
         <Animated.View
           style={[
             styles.iconContainer,
             dynemicStyles.iconContainer,
-            { opacity: iconOpacityValue },
+            iconStyle,
           ]}>
           {isActive ? (
             <SvgIconActiveComponent
@@ -101,14 +126,13 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
             />
           )}
         </Animated.View>
-        <Animated.View
-          style={[styles.titleContainer, { opacity: labelOpacityValue }]}>
+        <Animated.View style={[styles.titleContainer, textStyle]}>
           <RohText style={[styles.titleText, dynemicStyles.titleText]}>
             {navMenuTitle.toUpperCase()}
           </RohText>
         </Animated.View>
       </View>
-    </TouchableHighlight>
+    </NavMenuButtonAnimated>
   );
 };
 
@@ -117,7 +141,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: scaleSize(50),
     alignItems: 'center',
-    width: '100%',
     overflow: 'hidden',
   },
   iconContainer: {

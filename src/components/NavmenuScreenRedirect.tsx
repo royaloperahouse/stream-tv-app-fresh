@@ -4,6 +4,7 @@ import React, {
   useState,
   useRef,
   useLayoutEffect,
+  useContext,
 } from 'react';
 import {
   Dimensions,
@@ -13,6 +14,9 @@ import {
   View,
 } from 'react-native';
 import { isTVOS } from '@configs/globalConfig';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+
 export type TNavMenuScreenRedirectRef = {
   setDefaultRedirectFromNavMenu: (
     key: string,
@@ -44,16 +48,19 @@ export function setNavMenuItemsRefs(
   screenName: string,
   ref: React.RefObject<TouchableHighlight>,
 ) {
-  if (!isTVOS) {
+  /*   if (!isTVOS) {
     return;
   }
-  navMenuItemsRefs[screenName] = ref;
+  navMenuItemsRefs[screenName] = ref; */
 }
 
 export const NavMenuScreenRedirect = forwardRef<
   TNavMenuScreenRedirectRef,
   TNavMenuScreenRedirectProps
->((props, ref) => {
+>(({ screenName = '' }, ref) => {
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
   const isMounted = useRef(false);
   const [difaultRedirectFromNavMenu, setDefRedirectFromNavMenu] = useState<{
     [key: string]:
@@ -152,21 +159,20 @@ export const NavMenuScreenRedirect = forwardRef<
           })
           .map(([_, value]) => value);
 
-  const redirectFromContent =
-    props.screenName && props.screenName in navMenuItemsRefs
-      ? [navMenuItemsRefs[props.screenName].current]
-      : Object.values(difaultRedirectToNavMenu).length === 0
-      ? undefined
-      : Object.entries(difaultRedirectToNavMenu)
-          .sort(([firstKey], [nextKey]) => {
-            const firstKeyNumber = Number(firstKey);
-            const nextKeyNumber = Number(nextKey);
-            if (Number.isNaN(firstKeyNumber) || Number.isNaN(nextKeyNumber)) {
-              return 0;
-            }
-            return firstKeyNumber - nextKeyNumber;
-          })
-          .map(([_, value]) => value);
+  const redirectFromContent = navMenuNodesRefs?.[screenName]?.current
+    ? [navMenuNodesRefs[screenName].current]
+    : Object.values(difaultRedirectToNavMenu).length === 0
+    ? undefined
+    : Object.entries(difaultRedirectToNavMenu)
+        .sort(([firstKey], [nextKey]) => {
+          const firstKeyNumber = Number(firstKey);
+          const nextKeyNumber = Number(nextKey);
+          if (Number.isNaN(firstKeyNumber) || Number.isNaN(nextKeyNumber)) {
+            return 0;
+          }
+          return firstKeyNumber - nextKeyNumber;
+        })
+        .map(([_, value]) => value);
 
   useLayoutEffect(() => {
     isMounted.current = true;

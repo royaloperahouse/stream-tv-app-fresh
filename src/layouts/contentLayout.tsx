@@ -3,9 +3,14 @@ import { View, Platform, Dimensions, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   createDrawerNavigator,
+  DrawerContentComponentProps,
   //DrawerNavigationOptions,
 } from '@react-navigation/drawer';
-import { allRoutes, routes } from '@navigations/routes';
+import {
+  allRoutes,
+  routes,
+  additionalRoutesWithoutNavMenuNavigation,
+} from '@navigations/routes';
 import {
   rootStackScreensNames,
   contentScreenNames,
@@ -98,7 +103,15 @@ const ContentScreen: React.MemoExoticComponent<
   return (
     <View style={styles.mainContentRoot}>
       <Drawer.Navigator
-        drawerContent={() => <NavMenu navMenuConfig={routesForRenering} />}
+        drawerContent={(props: DrawerContentComponentProps) => (
+          <NavMenu
+            {...props}
+            navMenuConfig={routesForRenering}
+            exitButtonRouteName={
+              additionalRoutesWithoutNavMenuNavigation.exit.navMenuScreenName
+            }
+          />
+        )}
         screenListeners={{
           drawerItemPress: (...rest) => {
             global.roh_rlog({

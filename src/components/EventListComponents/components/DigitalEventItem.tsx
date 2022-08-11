@@ -5,7 +5,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { View, StyleSheet } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableHighlight,
+  findNodeHandle,
+} from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
@@ -54,6 +59,7 @@ type DigitalEventItemProps = {
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
   screenName: TContentScreenReverseNamesOfNavToDetails;
+  nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
 };
 
 const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
@@ -77,6 +83,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       removeFirstItemFocusable,
       index,
       screenName,
+      nextFocusLeftOnFirstItem,
     },
     ref: any,
   ) => {
@@ -103,7 +110,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
 
     const onPressHandler = () => {
       navMenuManager.hideNavMenu();
-      //navigation.closeDrawer();
       navigation.navigate(contentScreenNames.eventDetails, {
         fromEventDetails: false,
         event,
@@ -138,15 +144,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         setFocused(true);
       }
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
-      navMenuManager.setNavMenuAccessible();
       if (typeof onFocus === 'function') {
         onFocus(touchableRef.current?.getRef?.().current);
-      }
-      if (route.params?.fromEventDetails) {
-        navigation.setParams({
-          ...route.params,
-          fromEventDetails: false,
-        });
       }
     };
 
@@ -182,6 +181,12 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       <TouchableHighlightWrapper
         ref={touchableRef}
         hasTVPreferredFocus={hasTVPreferredFocus}
+        nextFocusLeft={
+          nextFocusLeftOnFirstItem &&
+          findNodeHandle(nextFocusLeftOnFirstItem.current) !== null
+            ? (findNodeHandle(nextFocusLeftOnFirstItem.current) as number)
+            : undefined
+        }
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}
