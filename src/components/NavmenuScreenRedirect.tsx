@@ -7,7 +7,6 @@ import React, {
   useContext,
 } from 'react';
 import {
-  Dimensions,
   StyleSheet,
   TouchableHighlight,
   TVFocusGuideView,
@@ -42,18 +41,6 @@ export type TNavMenuScreenRedirectRef = {
 
 type TNavMenuScreenRedirectProps = { screenName?: string };
 
-const navMenuItemsRefs: { [key: string]: React.RefObject<TouchableHighlight> } =
-  {};
-export function setNavMenuItemsRefs(
-  screenName: string,
-  ref: React.RefObject<TouchableHighlight>,
-) {
-  /*   if (!isTVOS) {
-    return;
-  }
-  navMenuItemsRefs[screenName] = ref; */
-}
-
 export const NavMenuScreenRedirect = forwardRef<
   TNavMenuScreenRedirectRef,
   TNavMenuScreenRedirectProps
@@ -82,7 +69,7 @@ export const NavMenuScreenRedirect = forwardRef<
     ref,
     () => ({
       setDefaultRedirectFromNavMenu: (key, cp) => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
 
@@ -93,7 +80,7 @@ export const NavMenuScreenRedirect = forwardRef<
         });
       },
       setDefaultRedirectToNavMenu: (key, cp) => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
 
@@ -105,7 +92,7 @@ export const NavMenuScreenRedirect = forwardRef<
       },
 
       removeDefaultRedirectFromNavMenu: key => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
         setDefRedirectFromNavMenu(prevState => {
@@ -118,13 +105,13 @@ export const NavMenuScreenRedirect = forwardRef<
         });
       },
       removeAllDefaultRedirectFromNavMenu: () => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
         setDefRedirectFromNavMenu({});
       },
       removeDefaultRedirectToNavMenu: key => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
         setDefRedirectToNavMenu(prevState => {
@@ -137,7 +124,7 @@ export const NavMenuScreenRedirect = forwardRef<
         });
       },
       removeAllDefaultRedirectToNavMenu: () => {
-        if (!isMounted.current || !isTVOS) {
+        if (!isMounted.current) {
           return;
         }
         setDefRedirectToNavMenu({});
@@ -158,7 +145,10 @@ export const NavMenuScreenRedirect = forwardRef<
             return firstKeyNumber - nextKeyNumber;
           })
           .map(([_, value]) => value);
+  /*
+  !can be used not only to navigate between nav menu and content screen
 
+ */
   const redirectFromContent = navMenuNodesRefs?.[screenName]?.current
     ? [navMenuNodesRefs[screenName].current]
     : Object.values(difaultRedirectToNavMenu).length === 0
@@ -180,8 +170,58 @@ export const NavMenuScreenRedirect = forwardRef<
       isMounted.current = false;
     };
   }, []);
+
   if (!isTVOS) {
-    return null;
+    return (
+      <View style={styles.root}>
+        <TouchableHighlight
+          style={[styles.redirectBlock]}
+          accessible={
+            Array.isArray(redirectToContent) &&
+            redirectToContent?.length > 0 &&
+            Array.isArray(redirectFromContent) &&
+            redirectFromContent?.length > 0 &&
+            typeof (redirectToContent?.[0] as any)?.setNativeProps ===
+              'function'
+          }
+          underlayColor="transparent"
+          onFocus={() => {
+            if (
+              redirectToContent?.[0] &&
+              typeof redirectToContent?.[0] !== 'number'
+            ) {
+              (redirectToContent?.[0] as any)?.setNativeProps({
+                hasTVPreferredFocus: true,
+              });
+            }
+          }}>
+          <View style={[styles.redirectBlock]} />
+        </TouchableHighlight>
+        <TouchableHighlight
+          underlayColor="transparent"
+          style={[styles.redirectBlock]}
+          accessible={
+            Array.isArray(redirectToContent) &&
+            redirectToContent?.length > 0 &&
+            Array.isArray(redirectFromContent) &&
+            redirectFromContent?.length > 0 &&
+            typeof (redirectFromContent?.[0] as any)?.setNativeProps ===
+              'function'
+          }
+          onFocus={() => {
+            if (
+              redirectFromContent?.[0] &&
+              typeof redirectFromContent?.[0] !== 'number'
+            ) {
+              (redirectFromContent?.[0] as any)?.setNativeProps({
+                hasTVPreferredFocus: true,
+              });
+            }
+          }}>
+          <View style={[styles.redirectBlock]} />
+        </TouchableHighlight>
+      </View>
+    );
   }
   return (
     <View style={styles.root}>
@@ -199,8 +239,8 @@ export const NavMenuScreenRedirect = forwardRef<
 
 const styles = StyleSheet.create({
   root: {
-    height: Dimensions.get('window').height,
     width: 2,
+    height: '100%',
     flexDirection: 'row',
   },
   redirectBlock: {

@@ -120,79 +120,75 @@ const HomePageScreen: React.FC<
   };
   return (
     <View style={styles.root}>
-      {/*       <NavMenuScreenRedirect
+      <NavMenuScreenRedirect
         screenName={route.name}
         ref={navMenuScreenRedirectRef}
-      /> */}
-      <View>
-        <Preview ref={previewRef} />
+      />
+      {
         <View>
-          <RailSections
-            containerStyle={styles.railContainerStyle}
-            headerContainerStyle={styles.railHeaderContainerStyle}
-            sectionIndex={route?.params?.sectionIndex || 0}
-            railStyle={styles.railStyle}
-            sections={data}
-            sectionKeyExtractor={item => item.sectionIndex?.toString()}
-            renderHeader={section => (
-              <DigitalEventSectionHeader>
-                {section.title}
-              </DigitalEventSectionHeader>
-            )}
-            renderItem={({
-              item,
-              section,
-              index,
-              scrollToRail,
-              isFirstRail,
-              isLastRail,
-              sectionIndex,
-              setRailItemRefCb,
-              removeRailItemRefCb,
-              hasEndlessScroll,
-            }) => (
-              <DigitalEventItem
-                event={item}
-                ref={previewRef}
-                screenNameFrom={route.name}
-                hasTVPreferredFocus={hasTVPreferredFocus(
-                  isFirstRail,
-                  index,
-                  sectionIndex,
-                )}
-                nextFocusLeftOnFirstItem={
-                  index === 0 && navMenuNodesRefs?.[route.name]
-                    ? navMenuNodesRefs[route.name]
-                    : undefined
-                }
-                canMoveRight={index !== section.data.length - 1}
-                onFocus={scrollToRail}
-                continueWatching={section.title === continueWatchingRailTitle}
-                eventGroupTitle={section.title}
-                sectionIndex={sectionIndex}
-                lastItem={index === section.data.length - 1}
-                setRailItemRefCb={setRailItemRefCb}
-                removeRailItemRefCb={removeRailItemRefCb}
-                canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
-                canMoveUp={!isFirstRail}
-                setFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                removeFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.removeDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                index={index}
-              />
-            )}
-          />
+          <Preview ref={previewRef} />
+          <View>
+            <RailSections
+              containerStyle={styles.railContainerStyle}
+              headerContainerStyle={styles.railHeaderContainerStyle}
+              sectionIndex={route?.params?.sectionIndex || 0}
+              railStyle={styles.railStyle}
+              sections={data}
+              sectionKeyExtractor={item => item.sectionIndex?.toString()}
+              renderHeader={section => (
+                <DigitalEventSectionHeader>
+                  {section.title}
+                </DigitalEventSectionHeader>
+              )}
+              renderItem={({
+                item,
+                section,
+                index,
+                scrollToRail,
+                isFirstRail,
+                isLastRail,
+                sectionIndex,
+                setRailItemRefCb,
+                removeRailItemRefCb,
+                hasEndlessScroll,
+              }) => (
+                <DigitalEventItem
+                  event={item}
+                  ref={previewRef}
+                  screenNameFrom={route.name}
+                  hasTVPreferredFocus={hasTVPreferredFocus(
+                    isFirstRail,
+                    index,
+                    sectionIndex,
+                  )}
+                  canMoveRight={index !== section.data.length - 1}
+                  onFocus={scrollToRail}
+                  continueWatching={section.title === continueWatchingRailTitle}
+                  eventGroupTitle={section.title}
+                  sectionIndex={sectionIndex}
+                  lastItem={index === section.data.length - 1}
+                  setRailItemRefCb={setRailItemRefCb}
+                  removeRailItemRefCb={removeRailItemRefCb}
+                  canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
+                  canMoveUp={!isFirstRail}
+                  setFirstItemFocusable={
+                    index === 0
+                      ? navMenuScreenRedirectRef.current
+                          ?.setDefaultRedirectFromNavMenu
+                      : undefined
+                  }
+                  removeFirstItemFocusable={
+                    index === 0
+                      ? navMenuScreenRedirectRef.current
+                          ?.removeDefaultRedirectFromNavMenu
+                      : undefined
+                  }
+                />
+              )}
+            />
+          </View>
         </View>
-      </View>
+      }
     </View>
   );
 };

@@ -42,7 +42,7 @@ type DigitalEventItemProps = {
   canMoveRight?: boolean;
   continueWatching?: boolean;
   onFocus?: (...[]: any[]) => void;
-  screenNameFrom?: string;
+  screenNameFrom: TContentScreenReverseNamesOfNavToDetails;
   eventGroupTitle?: string;
   selectedItemIndex?: number;
   lastItem?: boolean;
@@ -58,7 +58,6 @@ type DigitalEventItemProps = {
   ) => void;
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
-  screenName: TContentScreenReverseNamesOfNavToDetails;
   nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
 };
 
@@ -71,7 +70,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       canMoveRight = true,
       onFocus,
       continueWatching,
-      screenNameFrom = '',
+      screenNameFrom,
       eventGroupTitle,
       sectionIndex,
       canMoveDown = true,
@@ -81,16 +80,15 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       removeRailItemRefCb = () => {},
       setFirstItemFocusable,
       removeFirstItemFocusable,
-      index,
-      screenName,
-      nextFocusLeftOnFirstItem,
     },
     ref: any,
   ) => {
     const navigation =
-      useNavigation<TContentScreensProps<typeof screenName>['navigation']>();
+      useNavigation<
+        TContentScreensProps<typeof screenNameFrom>['navigation']
+      >();
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
-    const route = useRoute<TContentScreensProps<typeof screenName>['route']>();
+    const route = useRoute<TContentScreensProps<typeof screenNameFrom>['route']>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
     const snapshotImageUrl: string = get(
@@ -108,6 +106,13 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         '',
       );
 
+    useLayoutEffect(() => {
+      isMounted.current = true;
+      return () => {
+        isMounted.current = false;
+      };
+    }, []);
+
     const onPressHandler = () => {
       navMenuManager.hideNavMenu();
       navigation.navigate(contentScreenNames.eventDetails, {
@@ -118,25 +123,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         sectionIndex,
         selectedItemIndex,
       });
-      /*       navigation.dispatch(
-        CommonActions.reset({
-          routes: [
-            {
-              name: additionalRoutesWithoutNavMenuNavigation.eventDetails
-                .navMenuScreenName,
-              params: {
-                fromEventDetails: false,
-                event,
-                continueWatching,
-                screenNameFrom,
-                sectionIndex,
-                selectedItemIndex,
-              },
-            },
-          ],
-          index: 0,
-        }),
-      ); */
     };
 
     const onFocusHandler = () => {
@@ -150,43 +136,34 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     };
 
     useLayoutEffect(() => {
-      isMounted.current = true;
+      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+        setFirstItemFocusable(
+          sectionIndex.toString(),
+          touchableRef.current?.getRef?.().current,
+        );
+      }
       return () => {
-        isMounted.current = false;
-      };
-    }, []);
-
-    useFocusEffect(
-      useCallback(() => {
-        if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
-          setFirstItemFocusable(
-            sectionIndex.toString(),
-            touchableRef.current?.getRef?.().current,
-          );
+        if (removeFirstItemFocusable) {
+          removeFirstItemFocusable(sectionIndex.toString());
         }
-        return () => {
-          if (removeFirstItemFocusable) {
-            removeFirstItemFocusable(sectionIndex.toString());
-          }
-        };
-      }, [removeFirstItemFocusable, setFirstItemFocusable, sectionIndex]),
-    );
+      };
+    }, [removeFirstItemFocusable, setFirstItemFocusable, sectionIndex]);
     useLayoutEffect(() => {
       setRailItemRefCb(event.id, touchableRef, sectionIndex);
       return () => {
         removeRailItemRefCb(event.id, touchableRef, sectionIndex);
       };
-    }, []);
+    }, [
+      event.id,
+      touchableRef,
+      sectionIndex,
+      setRailItemRefCb,
+      removeRailItemRefCb,
+    ]);
     return (
       <TouchableHighlightWrapper
         ref={touchableRef}
         hasTVPreferredFocus={hasTVPreferredFocus}
-        nextFocusLeft={
-          nextFocusLeftOnFirstItem &&
-          findNodeHandle(nextFocusLeftOnFirstItem.current) !== null
-            ? (findNodeHandle(nextFocusLeftOnFirstItem.current) as number)
-            : undefined
-        }
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}

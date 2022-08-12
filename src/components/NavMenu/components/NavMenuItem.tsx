@@ -9,7 +9,6 @@ import {
   focusAnimationDuration,
   visibleAnimationDuration,
 } from '@configs/navMenuConfig';
-import { setNavMenuItemsRefs } from '@components/NavmenuScreenRedirect';
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -53,6 +52,12 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
   nextFocusDown,
 }) => {
   const mountedComponentRef = useRef(false);
+  useLayoutEffect(() => {
+    mountedComponentRef.current = true;
+    return () => {
+      mountedComponentRef.current = false;
+    };
+  }, []);
   const dynemicStyles = StyleSheet.create({
     touchableWrapperStyle: {
       marginBottom: isLastItem ? 0 : scaleSize(60),
@@ -94,8 +99,6 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
   );
   useLayoutEffect(() => {
     setMunuItemRef(id, touchRef, isLastItem);
-    //setNavMenuItemsRefs(id, touchRef);
-    mountedComponentRef.current = true;
   }, [setMunuItemRef, id, isLastItem]);
   return (
     <NavMenuButtonAnimated
