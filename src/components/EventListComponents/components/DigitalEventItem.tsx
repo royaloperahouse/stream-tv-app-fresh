@@ -18,17 +18,12 @@ import TouchableHighlightWrapper, {
   TTouchableHighlightWrapperRef,
 } from '@components/TouchableHighlightWrapper';
 import get from 'lodash.get';
-import {
-  useNavigation,
-  CommonActions,
-  useRoute,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import { contentScreenNames } from '@configs/screensConfig';
 import { navMenuManager } from '@components/NavMenu';
 import { Colors } from '@themes/Styleguide';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
-import { useFocusEffect } from '@react-navigation/native';
 import {
   TContentScreenReverseNamesOfNavToDetails,
   TContentScreensProps,
@@ -88,7 +83,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         TContentScreensProps<typeof screenNameFrom>['navigation']
       >();
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
-    const route = useRoute<TContentScreensProps<typeof screenNameFrom>['route']>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
     const snapshotImageUrl: string = get(
@@ -129,6 +123,9 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       if (isMounted.current) {
         setFocused(true);
       }
+      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+        setFirstItemFocusable('0', touchableRef.current?.getRef?.().current);
+      }
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
       if (typeof onFocus === 'function') {
         onFocus(touchableRef.current?.getRef?.().current);
@@ -136,18 +133,17 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     };
 
     useLayoutEffect(() => {
-      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+      if (
+        sectionIndex === 0 &&
+        setFirstItemFocusable &&
+        touchableRef.current?.getRef?.().current
+      ) {
         setFirstItemFocusable(
           sectionIndex.toString(),
           touchableRef.current?.getRef?.().current,
         );
       }
-      return () => {
-        if (removeFirstItemFocusable) {
-          removeFirstItemFocusable(sectionIndex.toString());
-        }
-      };
-    }, [removeFirstItemFocusable, setFirstItemFocusable, sectionIndex]);
+    }, [setFirstItemFocusable, sectionIndex]);
     useLayoutEffect(() => {
       setRailItemRefCb(event.id, touchableRef, sectionIndex);
       return () => {

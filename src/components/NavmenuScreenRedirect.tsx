@@ -164,6 +164,14 @@ export const NavMenuScreenRedirect = forwardRef<
         })
         .map(([_, value]) => value);
 
+  console.log(
+    screenName,
+    Array.isArray(redirectToContent) &&
+      redirectToContent?.length > 0 &&
+      Array.isArray(redirectFromContent) &&
+      redirectFromContent?.length > 0 &&
+      typeof (redirectFromContent?.[0] as any)?.setNativeProps === 'function',
+  );
   useLayoutEffect(() => {
     isMounted.current = true;
     return () => {
@@ -186,10 +194,12 @@ export const NavMenuScreenRedirect = forwardRef<
           }
           underlayColor="transparent"
           onFocus={() => {
+            console.log('qqqq');
             if (
               redirectToContent?.[0] &&
               typeof redirectToContent?.[0] !== 'number'
             ) {
+              console.log('qqqq1');
               (redirectToContent?.[0] as any)?.setNativeProps({
                 hasTVPreferredFocus: true,
               });
@@ -199,7 +209,6 @@ export const NavMenuScreenRedirect = forwardRef<
         </TouchableHighlight>
         <TouchableHighlight
           underlayColor="transparent"
-          style={[styles.redirectBlock]}
           accessible={
             Array.isArray(redirectToContent) &&
             redirectToContent?.length > 0 &&
@@ -208,11 +217,14 @@ export const NavMenuScreenRedirect = forwardRef<
             typeof (redirectFromContent?.[0] as any)?.setNativeProps ===
               'function'
           }
+          style={[styles.redirectBlock]}
           onFocus={() => {
+            console.log('focus');
             if (
               redirectFromContent?.[0] &&
               typeof redirectFromContent?.[0] !== 'number'
             ) {
+              console.log('focus1');
               (redirectFromContent?.[0] as any)?.setNativeProps({
                 hasTVPreferredFocus: true,
               });
@@ -239,7 +251,7 @@ export const NavMenuScreenRedirect = forwardRef<
 
 const styles = StyleSheet.create({
   root: {
-    width: 2,
+    width: 4,
     height: '100%',
     flexDirection: 'row',
   },

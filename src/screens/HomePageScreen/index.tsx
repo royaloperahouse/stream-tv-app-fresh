@@ -44,15 +44,10 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
-import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
-import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
 > = ({ navigation, route }) => {
-  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
-    NavMenuNodesRefsContext,
-  );
   const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
   const { data: myList, ejected: myListEjected } = useMyList();
@@ -62,7 +57,6 @@ const HomePageScreen: React.FC<
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
   const previewRef = useRef(null);
-  const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
 
   useEffect(() => {
@@ -98,14 +92,12 @@ const HomePageScreen: React.FC<
     }
   }, [data]);
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(startFullSubscriptionLoop());
-      return () => {
-        dispatch(endFullSubscriptionLoop());
-      };
-    }, [dispatch]),
-  );
+  useLayoutEffect(() => {
+    dispatch(startFullSubscriptionLoop());
+    return () => {
+      dispatch(endFullSubscriptionLoop());
+    };
+  }, [dispatch]);
   if (!data.length || !continueWatchingListEjected || !myListEjected) {
     return null;
   }
@@ -175,12 +167,6 @@ const HomePageScreen: React.FC<
                     index === 0
                       ? navMenuScreenRedirectRef.current
                           ?.setDefaultRedirectFromNavMenu
-                      : undefined
-                  }
-                  removeFirstItemFocusable={
-                    index === 0
-                      ? navMenuScreenRedirectRef.current
-                          ?.removeDefaultRedirectFromNavMenu
                       : undefined
                   }
                 />

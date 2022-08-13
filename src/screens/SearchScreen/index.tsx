@@ -11,9 +11,14 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
 
-type TSearchScreenProps = {};
-const SearchScreen: React.FC<TSearchScreenProps> = ({ route }) => {
+const SearchScreen: React.FC<
+  TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['search']>
+> = ({ route }) => {
   const vkRef = useRef();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const keyboardToResultTransitionRef = useRef<TNavMenuScreenRedirectRef>(null);
@@ -24,10 +29,7 @@ const SearchScreen: React.FC<TSearchScreenProps> = ({ route }) => {
         ref={navMenuScreenRedirectRef}
       />
       <View style={styles.virtualKeyboardContainer}>
-        <NavMenuScreenRedirect
-          ref={keyboardToResultTransitionRef}
-          screenName="serchress"
-        />
+        <NavMenuScreenRedirect ref={keyboardToResultTransitionRef} />
         <View style={styles.virtualKeyboardMainContent}>
           <View style={styles.screenTitleContainer}>
             <RohText style={styles.screenTitleText}>SEARCH</RohText>
@@ -43,7 +45,7 @@ const SearchScreen: React.FC<TSearchScreenProps> = ({ route }) => {
                 touchableRef,
               );
             }}
-            onMountToSearchKeybordTransition={(key, touchableRef) => {;
+            onMountToSearchKeybordTransition={(key, touchableRef) => {
               keyboardToResultTransitionRef.current?.setDefaultRedirectToNavMenu?.(
                 key,
                 touchableRef,
@@ -60,11 +62,10 @@ const SearchScreen: React.FC<TSearchScreenProps> = ({ route }) => {
               touchableRef,
             );
           }}
-          onUnMountToSearchResultTransition={key => {
-            keyboardToResultTransitionRef.current?.removeDefaultRedirectFromNavMenu?.(
-              key,
-            );
-          }}
+          onUnMountAllToSearchResultTransition={
+            keyboardToResultTransitionRef.current
+              ?.removeAllDefaultRedirectFromNavMenu
+          }
         />
       </View>
     </View>
