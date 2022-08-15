@@ -18,9 +18,16 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
 
-type TSettingsScreenProps = {};
-const SettingsScreen: React.FC<TSettingsScreenProps> = ({ route }) => {
+const searchItemKey = 'searchItemKey';
+
+const SettingsScreen: React.FC<
+  TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['settings']>
+> = ({ route }) => {
   const [activeContentKey, setActiveContentKey] = useState<string>('');
   const activeItemRef = useRef<TTouchableHighlightWrapperRef>();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
@@ -61,12 +68,18 @@ const SettingsScreen: React.FC<TSettingsScreenProps> = ({ route }) => {
                 }
                 canMoveUp={index !== 0}
                 onFocus={touchableRef => {
+                  if (touchableRef.current?.getRef?.().current) {
+                    navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
+                      searchItemKey,
+                      touchableRef.current.getRef().current,
+                    );
+                  }
                   activeItemRef.current = touchableRef.current;
                   setActiveContentKey(item.key);
                 }}
-                onMount={(key, touchableRef) => {
+                onMount={touchableRef => {
                   navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
-                    key,
+                    searchItemKey,
                     touchableRef,
                   );
                 }}
@@ -75,10 +88,7 @@ const SettingsScreen: React.FC<TSettingsScreenProps> = ({ route }) => {
           />
         </View>
         <View style={styles.contentContainer}>
-          <Content
-            listItemGetNode={activeItemRef.current?.getNode}
-            listItemGetRef={activeItemRef.current?.getRef}
-          />
+          <Content listItemGetRef={activeItemRef.current?.getRef} />
         </View>
       </View>
     </View>
@@ -86,18 +96,16 @@ const SettingsScreen: React.FC<TSettingsScreenProps> = ({ route }) => {
 };
 const styles = StyleSheet.create({
   root: {
-    width:
-      Dimensions.get('window').width -
-      (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
     height: Dimensions.get('window').height,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    flex: 1,
   },
   mainContainer: {
+    paddingTop: scaleSize(160),
     flexDirection: 'row',
-    height: Dimensions.get('window').height - scaleSize(189),
+    flex: 1,
+    height: '100%',
     paddingRight: scaleSize(80),
-    width: '100%',
   },
   navMenuContainer: {
     width: scaleSize(486),

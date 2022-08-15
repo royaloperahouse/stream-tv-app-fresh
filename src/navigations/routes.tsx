@@ -49,8 +49,8 @@ export const routes: TRoutes = [
     ScreenComponent: SearchScreen,
     initialParams: { eventId: null },
   },
-    /*{
-    navMenuScreenName: contentScreenNames.,
+  {
+    navMenuScreenName: contentScreenNames.operaMusic,
     SvgIconActiveComponent: OperaMusicActiveIcon,
     SvgIconInActiveComponent: OperaMusicInActiveIcon,
     navMenuTitle: 'Opera & Music',
@@ -60,7 +60,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: contentScreenNames.,
+    navMenuScreenName: contentScreenNames.balletDance,
     SvgIconActiveComponent: BalletDanceActiveIcon,
     SvgIconInActiveComponent: BalletDanceInActiveIcon,
     navMenuTitle: 'Ballet & Dance',
@@ -70,7 +70,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: contentScreenNames.,
+    navMenuScreenName: contentScreenNames.liveStream,
     SvgIconActiveComponent: LiveStreamActiveIcon,
     SvgIconInActiveComponent: LiveStreamInActiveIcon,
     navMenuTitle: 'Live Stream',
@@ -78,9 +78,9 @@ export const routes: TRoutes = [
     isDefault: false,
     ScreenComponent: LiveStreamScreen,
     initialParams: undefined,
-  }, */
-  /*   {
-    navMenuScreenName: contentScreenNames.,
+  },
+  {
+    navMenuScreenName: contentScreenNames.myList,
     SvgIconActiveComponent: MyListActiveIcon,
     SvgIconInActiveComponent: MyListInActiveIcon,
     navMenuTitle: 'My List',
@@ -88,7 +88,7 @@ export const routes: TRoutes = [
     isDefault: false,
     ScreenComponent: MyListScreen,
     initialParams: { eventId: null },
-  }, */
+  },
   {
     navMenuScreenName: contentScreenNames.settings,
     SvgIconActiveComponent: SettingsActiveIcon,

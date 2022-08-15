@@ -7,6 +7,7 @@ import React, {
   useContext,
 } from 'react';
 import {
+  Dimensions,
   StyleSheet,
   TouchableHighlight,
   TVFocusGuideView,
@@ -15,6 +16,7 @@ import {
 import { isTVOS } from '@configs/globalConfig';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+import { scaleSize } from 'utils/scaleSize';
 
 export type TNavMenuScreenRedirectRef = {
   setDefaultRedirectFromNavMenu: (
@@ -165,12 +167,21 @@ export const NavMenuScreenRedirect = forwardRef<
         .map(([_, value]) => value);
 
   console.log(
-    screenName,
+    screenName + 'ToNavMenu',
     Array.isArray(redirectToContent) &&
       redirectToContent?.length > 0 &&
       Array.isArray(redirectFromContent) &&
       redirectFromContent?.length > 0 &&
       typeof (redirectFromContent?.[0] as any)?.setNativeProps === 'function',
+  );
+
+  console.log(
+    screenName + 'ToContent',
+    Array.isArray(redirectToContent) &&
+      redirectToContent?.length > 0 &&
+      Array.isArray(redirectFromContent) &&
+      redirectFromContent?.length > 0 &&
+      typeof (redirectToContent?.[0] as any)?.setNativeProps === 'function',
   );
   useLayoutEffect(() => {
     isMounted.current = true;
@@ -205,7 +216,7 @@ export const NavMenuScreenRedirect = forwardRef<
               });
             }
           }}>
-          <View style={[styles.redirectBlock]} />
+          <View />
         </TouchableHighlight>
         <TouchableHighlight
           underlayColor="transparent"
@@ -230,7 +241,7 @@ export const NavMenuScreenRedirect = forwardRef<
               });
             }
           }}>
-          <View style={[styles.redirectBlock]} />
+          <View />
         </TouchableHighlight>
       </View>
     );
@@ -251,11 +262,14 @@ export const NavMenuScreenRedirect = forwardRef<
 
 const styles = StyleSheet.create({
   root: {
-    width: 4,
-    height: '100%',
+    width: scaleSize(25),
+    height: Dimensions.get('window').height,
     flexDirection: 'row',
+    marginHorizontal: scaleSize(10),
+    marginLeft: 20,
   },
   redirectBlock: {
-    flex: 1,
+    width: scaleSize(10),
+    height: '100%',
   },
 });

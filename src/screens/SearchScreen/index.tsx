@@ -74,14 +74,13 @@ const SearchScreen: React.FC<
 
 const styles = StyleSheet.create({
   root: {
-    //flex: 1,
-    width: Dimensions.get('window').width,
+    flex: 1,
     flexDirection: 'row',
     height: Dimensions.get('window').height,
   },
   virtualKeyboardContainer: {
     //width: scaleSize(495),
-    width: scaleSize(495 + 160),
+    width: scaleSize(495 + 220),
     height: '100%',
     //marginLeft: scaleSize(160),
     paddingLeft: scaleSize(160),

@@ -34,8 +34,7 @@ import {
 import { useMyList } from '@hooks/useMyList';
 import { useContinueWatchingList } from '@hooks/useContinueWatchingList';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
-import { navMenuManager } from '@components/NavMenu';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,

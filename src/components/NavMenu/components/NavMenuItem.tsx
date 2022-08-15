@@ -31,7 +31,6 @@ type TNavMenuItemProps = {
   ) => void;
   accessibleWorklet: Readonly<Animated.SharedValue<number>>;
   iconOpacityWorklet: Readonly<Animated.SharedValue<1 | 0>>;
-  nextFocusRight?: number;
   nextFocusDown: number | null;
 };
 const NavMenuButtonAnimated =
@@ -48,7 +47,6 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
   setMunuItemRef,
   accessibleWorklet,
   iconOpacityWorklet,
-  nextFocusRight,
   nextFocusDown,
 }) => {
   const mountedComponentRef = useRef(false);
@@ -105,7 +103,6 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
       animatedProps={accessibleAnimatedProps}
       ref={touchRef}
       onFocus={onFocusHandler}
-      nextFocusRight={nextFocusRight}
       nextFocusDown={
         isLastItem && nextFocusDown !== null ? nextFocusDown : undefined
       }

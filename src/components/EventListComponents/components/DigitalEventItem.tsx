@@ -56,6 +56,8 @@ type DigitalEventItemProps = {
   nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
 };
 
+const firstFocusItenKey = 'firstFocusItenKey';
+
 const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
   (
     {
@@ -123,8 +125,12 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       if (isMounted.current) {
         setFocused(true);
       }
+      console.log('123!!!');
       if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
-        setFirstItemFocusable('0', touchableRef.current?.getRef?.().current);
+        setFirstItemFocusable(
+          firstFocusItenKey,
+          touchableRef.current?.getRef?.().current,
+        );
       }
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
       if (typeof onFocus === 'function') {
@@ -133,13 +139,14 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     };
 
     useLayoutEffect(() => {
+      console.log('123');
       if (
         sectionIndex === 0 &&
         setFirstItemFocusable &&
         touchableRef.current?.getRef?.().current
       ) {
         setFirstItemFocusable(
-          sectionIndex.toString(),
+          firstFocusItenKey,
           touchableRef.current?.getRef?.().current,
         );
       }

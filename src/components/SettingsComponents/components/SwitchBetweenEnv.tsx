@@ -4,9 +4,9 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { switchEnv } from '@services/store/settings/Slices';
 import {
   clearEventState,
@@ -18,26 +18,23 @@ import {
 } from '@services/store/auth/Slices';
 
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
-import { useFocusEffect } from '@react-navigation/native';
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
 
-type TSwitchingBetweenEnvironmentsProps = {
-  listItemGetNode?: () => number;
+export type TSwitchingBetweenEnvironmentsProps = {
   listItemGetRef?: () => React.RefObject<TouchableHighlight>;
 };
 
 const SwitchingBetweenEnvironments: React.FC<
   TSwitchingBetweenEnvironmentsProps
-> = ({ listItemGetNode, listItemGetRef }) => {
-  const dispatch = useDispatch();
+> = ({ listItemGetRef }) => {
+  const dispatch = useAppDispatch();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
-  const isProductionEnvironment: boolean = useSelector(
+  const isProductionEnvironment: boolean = useAppSelector(
     isProductionEvironmentSelector,
-    shallowEqual,
   );
   const switchingBetweenEnvActionHandler = () => {
     dispatch(switchEnv());
@@ -52,27 +49,20 @@ const SwitchingBetweenEnvironments: React.FC<
   const currentEvironmentInfoText = `This is app is currently using ${
     isProductionEnvironment ? 'production' : 'staging'
   } environment`;
-
-  useFocusEffect(
-    useCallback(() => {
-      if (typeof buttonRef.current?.getRef === 'function') {
-        navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
-          'signOutBtn',
-          buttonRef.current.getRef().current,
-        );
-      }
-      if (typeof listItemGetRef === 'function') {
-        navMenuScreenRedirectRef.current?.setDefaultRedirectToNavMenu?.(
-          'signOutBtn',
-          listItemGetRef().current,
-        );
-      }
-      return () => {
-        navMenuScreenRedirectRef.current?.removeAllDefaultRedirectFromNavMenu();
-        navMenuScreenRedirectRef.current?.removeAllDefaultRedirectToNavMenu();
-      };
-    }, [listItemGetRef]),
-  );
+  useLayoutEffect(() => {
+    if (typeof buttonRef.current?.getRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
+        'switchEnvBtn',
+        buttonRef.current.getRef().current,
+      );
+    }
+    if (typeof listItemGetRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectToNavMenu?.(
+        'switchEnvBtn',
+        listItemGetRef().current,
+      );
+    }
+  }, [listItemGetRef]);
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
@@ -92,11 +82,6 @@ const SwitchingBetweenEnvironments: React.FC<
               canMoveRight={false}
               canMoveUp={false}
               canMoveDown={false}
-              nextFocusLeft={
-                typeof listItemGetNode === 'function'
-                  ? listItemGetNode()
-                  : undefined
-              }
               onPress={switchingBetweenEnvActionHandler}
               style={styles.actionButtonDefault}
               styleFocused={styles.actionButtonFocus}>
@@ -118,12 +103,13 @@ export default SwitchingBetweenEnvironments;
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
+    height: '100%',
+    flex: 1,
   },
   contentContainer: {
-    flex: 1,
     paddingTop: scaleSize(42),
     marginLeft: scaleSize(80),
-    marginRight: scaleSize(338),
+    width: scaleSize(700),
   },
   titleContainer: {
     marginBottom: scaleSize(34),

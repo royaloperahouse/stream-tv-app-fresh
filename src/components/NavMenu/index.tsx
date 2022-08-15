@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useRef,
   useCallback,
   createRef,
@@ -82,7 +81,6 @@ const navMenuRef = createRef<
   Partial<{
     showNavMenu: () => void;
     hideNavMenu: () => void;
-    setNextFocusRightValue: (nodeValue: number, screenName: string) => void;
   }>
 >();
 
@@ -97,11 +95,6 @@ export const navMenuManager = Object.freeze({
   hideNavMenu: () => {
     if (typeof navMenuRef.current?.hideNavMenu === 'function') {
       navMenuRef.current.hideNavMenu();
-    }
-  },
-  setNextFocusRightValue: (nodeValue: number, screenName: string) => {
-    if (typeof navMenuRef.current?.setNextFocusRightValue === 'function') {
-      navMenuRef.current.setNextFocusRightValue(nodeValue, screenName);
     }
   },
 });
@@ -184,12 +177,6 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     },
   );
 
-  const [nextFocusRightMapping, setNextFocusRightMapping] = useState(() =>
-    navMenuConfig.reduce<{ [key: string]: number | null }>((acc, route) => {
-      acc[route.navMenuScreenName] = null;
-      return acc;
-    }, {}),
-  );
   const exitButtonAnimatedProps = useAnimatedProps(
     () => ({
       accessible: navMenuWidth.value > widthWithOutFocus,
@@ -264,12 +251,6 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       },
       hideNavMenu: () => {
         navMenuWidth.value = widthInvisble;
-      },
-      setNextFocusRightValue: (nodeValue: number, screenName: string) => {
-        setNextFocusRightMapping(prevState => ({
-          ...prevState,
-          [screenName]: nodeValue,
-        }));
       },
     }),
     [navMenuWidth],
@@ -393,9 +374,6 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               labelOpacityWorklet={labelOpacityWorklet}
               iconOpacityWorklet={iconOpacityWorklet}
               accessibleWorklet={navMenuWidth}
-              nextFocusRight={
-                nextFocusRightMapping[item.navMenuScreenName] ?? undefined
-              }
               nextFocusDown={findNodeHandle(exitOfAppButtonRef.current)}
             />
           ))}

@@ -95,7 +95,10 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
     }, [onMountForNavMenuTransition, onMountToSearchKeybordTransition]);
 
     return (
-      <View style={{ width: cols * cellWidth }}>
+      <View
+        style={{
+          flex: 1,
+        }}>
         <View style={styles.supportButtonsContainer}>
           <Button
             ref={spaceButtonRef}
@@ -129,33 +132,35 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
             textStyle={[dStyle.text, dStyle.textButton]}
           />
         </View>
-        <FlatList
-          style={{
-            height: rows * cellHeight,
-          }}
-          data={keyboardData}
-          keyExtractor={({ text }) => text}
-          numColumns={cols}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <Button
-              ref={
-                keyboardData.length - 1 < cols
-                  ? index === keyboardData.length - 1
+        <View style={{ flex: 1 }}>
+          <FlatList
+            style={{
+              flex: 1,
+            }}
+            data={keyboardData}
+            keyExtractor={({ text }) => text}
+            numColumns={cols}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <Button
+                ref={
+                  keyboardData.length - 1 < cols
+                    ? index === keyboardData.length - 1
+                      ? lastButtonInFirstRowRef
+                      : undefined
+                    : index + 1 === cols
                     ? lastButtonInFirstRowRef
                     : undefined
-                  : index + 1 === cols
-                  ? lastButtonInFirstRowRef
-                  : undefined
-              }
-              text={item.text}
-              canMoveDown={index <= cols * (rows - 1)}
-              onPress={addLetterToSearch}
-              style={{ width: cellWidth, height: cellHeight }}
-            />
-          )}
-        />
+                }
+                text={item.text}
+                canMoveDown={index <= cols * (rows - 1)}
+                onPress={addLetterToSearch}
+                style={{ width: cellWidth, height: cellHeight }}
+              />
+            )}
+          />
+        </View>
       </View>
     );
   },

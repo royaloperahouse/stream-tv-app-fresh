@@ -15,23 +15,26 @@ import {
   marginLeftStop,
 } from '@configs/navMenuConfig';
 import { TPreviewRef } from '@components/EventListComponents/components/Preview';
-import { useIsFocused } from '@react-navigation/native';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
 
-type TOperaMusicScreenProps = {};
-const OperaMusicScreen: React.FC<TOperaMusicScreenProps> = ({
-  navigation,
-  route,
-}) => {
+const OperaMusicScreen: React.FC<
+  TContentScreensProps<
+    NSNavigationScreensNames.ContentStackScreens['operaMusic']
+  >
+> = ({ navigation, route }) => {
   const { data, eventsLoaded } = useSelector(
     digitalEventsForOperaAndMusicSelector,
   );
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
-  const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
 
   useLayoutEffect(() => {
@@ -102,12 +105,6 @@ const OperaMusicScreen: React.FC<TOperaMusicScreenProps> = ({
                   index === 0
                     ? navMenuScreenRedirectRef.current
                         ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                removeFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.removeDefaultRedirectFromNavMenu
                     : undefined
                 }
               />
