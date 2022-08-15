@@ -24,12 +24,13 @@ import OperaMusicInActiveIcon from '@assets/svg/navIcons/Opera_&_Music.svg';
 import OperaMusicActiveIcon from '@assets/svg/navIcons/Opera_&_MusicActive.svg';
 import SettingsInActiveIcon from '@assets/svg/navIcons/Settings.svg';
 import SettingsActiveIcon from '@assets/svg/navIcons/SettingsActive.svg';
-import { TRoutes } from '@services/types/models';
+import { TRoutes, TRoute } from '@services/types/models';
+import { contentScreenNames } from '@configs/screensConfig';
 //import { isTVOS } from '@configs/globalConfig';
 
 export const routes: TRoutes = [
   {
-    navMenuScreenName: 'Home',
+    navMenuScreenName: contentScreenNames.home,
     SvgIconActiveComponent: HomeActiveIcon,
     SvgIconInActiveComponent: HomeInActiveIcon,
     navMenuTitle: 'Home',
@@ -39,7 +40,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: 'Search',
+    navMenuScreenName: contentScreenNames.search,
     SvgIconActiveComponent: SearchActiveIcon,
     SvgIconInActiveComponent: SearchInActiveIcon,
     navMenuTitle: 'Search',
@@ -49,7 +50,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: 'Opera&music',
+    navMenuScreenName: contentScreenNames.operaMusic,
     SvgIconActiveComponent: OperaMusicActiveIcon,
     SvgIconInActiveComponent: OperaMusicInActiveIcon,
     navMenuTitle: 'Opera & Music',
@@ -59,7 +60,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: 'Ballet&dance',
+    navMenuScreenName: contentScreenNames.balletDance,
     SvgIconActiveComponent: BalletDanceActiveIcon,
     SvgIconInActiveComponent: BalletDanceInActiveIcon,
     navMenuTitle: 'Ballet & Dance',
@@ -69,7 +70,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: 'LiveStream',
+    navMenuScreenName: contentScreenNames.liveStream,
     SvgIconActiveComponent: LiveStreamActiveIcon,
     SvgIconInActiveComponent: LiveStreamInActiveIcon,
     navMenuTitle: 'Live Stream',
@@ -79,7 +80,7 @@ export const routes: TRoutes = [
     initialParams: undefined,
   },
   {
-    navMenuScreenName: 'MyList',
+    navMenuScreenName: contentScreenNames.myList,
     SvgIconActiveComponent: MyListActiveIcon,
     SvgIconInActiveComponent: MyListInActiveIcon,
     navMenuTitle: 'My List',
@@ -89,7 +90,7 @@ export const routes: TRoutes = [
     initialParams: { eventId: null },
   },
   {
-    navMenuScreenName: 'Settings',
+    navMenuScreenName: contentScreenNames.settings,
     SvgIconActiveComponent: SettingsActiveIcon,
     SvgIconInActiveComponent: SettingsInActiveIcon,
     navMenuTitle: 'Account & Settings',
@@ -100,53 +101,36 @@ export const routes: TRoutes = [
   },
 ];
 
-export const additionalRoutesWithoutNavMenuNavigation = {
+export const additionalRoutesWithoutNavMenuNavigation: {
+  eventDetails: TRoute;
+  exit: TRoute;
+} = {
   eventDetails: {
-    navMenuScreenName: 'EventDetails',
+    navMenuScreenName: contentScreenNames.eventDetails,
     ScreenComponent: EventDetailsScreen,
+    SvgIconActiveComponent: undefined,
+    SvgIconInActiveComponent: undefined,
+    navMenuTitle: undefined,
     isDefault: false,
     position: 8,
     initialParams: undefined,
   },
   exit: {
-    navMenuScreenName: 'Exit',
+    navMenuScreenName: contentScreenNames.exit,
     ScreenComponent: ExitScreen,
+    SvgIconActiveComponent: undefined,
+    SvgIconInActiveComponent: undefined,
+    navMenuTitle: undefined,
     isDefault: false,
     position: 9,
     initialParams: undefined,
   },
 };
 
-export const allRoutes = [
+export const allRoutes: TRoutes = [
   ...routes,
   ...Object.values(additionalRoutesWithoutNavMenuNavigation),
 ];
-
-export type TContentRoutesParamList = {
-  Home: { eventId: string | null };
-  'Opera&musi': { eventId: string | null };
-  'Ballet&dance': { eventId: string | null };
-  Search: { eventId: string | null };
-  MyList: { eventId: string | null };
-  Settings: undefined;
-  EventDetails: undefined;
-  Exit: undefined;
-  LiveStream: undefined;
-};
-
-export const mainRoutes = {
-  content: {
-    screenName: 'Content',
-  },
-  player: {
-    screenNmae: 'Player',
-  },
-};
-
-export type TMainRoutesParamList = {
-  Content: undefined;
-  Player: undefined;
-};
 
 /* export const allRoutes = !isTVOS
   ? [...routes, ...Object.values(additionalRoutesWithoutNavMenuNavigation)]

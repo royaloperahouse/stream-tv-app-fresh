@@ -8,7 +8,7 @@ import App from './App';
 import { name as appName } from './app.json';
 import { decode, encode } from 'base-64';
 //Need to fix them later;
-LogBox.ignoreLogs(['Require cycle:']);
+//LogBox.ignoreLogs(['Require cycle:']);
 // Pronlem with allSettled in RN; use promise.allsettled as polyfill
 if (typeof Promise.allSettled !== 'function') {
   Promise.allSettled = require('promise.allsettled');

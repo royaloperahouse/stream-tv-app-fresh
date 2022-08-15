@@ -4,9 +4,10 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useCallback, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
+import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import {
   clearEventState,
   getEventListLoopStop,
@@ -20,26 +21,23 @@ import { pinUnlink } from '@services/apiClient';
 import { clearPrevSearchList } from '@services/previousSearch';
 import { clearListOfBitmovinSavedPosition } from '@services/bitMovinPlayer';
 import { clearMyList } from '@services/myList';
-import { useFocusEffect } from '@react-navigation/native';
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
 
-type TSignOutProps = {
+export type TSignOutProps = {
   listItemGetNode?: () => number;
   listItemGetRef?: () => React.RefObject<TouchableHighlight>;
 };
 
-const SignOut: React.FC<TSignOutProps> = ({
-  listItemGetNode,
-  listItemGetRef,
-}) => {
-  const dispatch = useDispatch();
+const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
+  const dispatch = useAppDispatch();
+  const isProduction = useAppSelector(isProductionEvironmentSelector);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
   const signOutActionHandler = () =>
-    pinUnlink()
+    pinUnlink(isProduction)
       .then(response => {
         if (response.status !== 204) {
           throw Error('Something went wrong');
@@ -56,26 +54,20 @@ const SignOut: React.FC<TSignOutProps> = ({
         ]);
       })
       .catch(console.log);
-  useFocusEffect(
-    useCallback(() => {
-      if (typeof buttonRef.current?.getRef === 'function') {
-        navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
-          'signOutBtn',
-          buttonRef.current.getRef().current,
-        );
-      }
-      if (typeof listItemGetRef === 'function') {
-        navMenuScreenRedirectRef.current?.setDefaultRedirectToNavMenu?.(
-          'signOutBtn',
-          listItemGetRef().current,
-        );
-      }
-      return () => {
-        navMenuScreenRedirectRef.current?.removeAllDefaultRedirectFromNavMenu();
-        navMenuScreenRedirectRef.current?.removeAllDefaultRedirectToNavMenu();
-      };
-    }, [listItemGetRef]),
-  );
+  useLayoutEffect(() => {
+    if (typeof buttonRef.current?.getRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
+        'signOutBtn',
+        buttonRef.current.getRef().current,
+      );
+    }
+    if (typeof listItemGetRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectToNavMenu?.(
+        'signOutBtn',
+        listItemGetRef().current,
+      );
+    }
+  }, [listItemGetRef]);
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
@@ -102,11 +94,6 @@ const SignOut: React.FC<TSignOutProps> = ({
               canMoveRight={false}
               canMoveUp={false}
               canMoveDown={false}
-              nextFocusLeft={
-                typeof listItemGetNode === 'function'
-                  ? listItemGetNode()
-                  : undefined
-              }
               onPress={signOutActionHandler}
               style={styles.actionButtonDefault}
               styleFocused={styles.actionButtonFocus}>
@@ -128,12 +115,13 @@ export default SignOut;
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
+    height: '100%',
+    flex: 1,
   },
   contentContainer: {
-    flex: 1,
     paddingTop: scaleSize(42),
     marginLeft: scaleSize(80),
-    marginRight: scaleSize(338),
+    width: scaleSize(700),
   },
   titleContainer: {
     marginBottom: scaleSize(34),

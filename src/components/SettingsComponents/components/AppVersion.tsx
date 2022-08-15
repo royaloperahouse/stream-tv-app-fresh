@@ -5,7 +5,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { getVersion } from 'react-native-device-info';
 
-type TAppVersionProps = {};
+export type TAppVersionProps = {};
 
 const AppVersion: React.FC<TAppVersionProps> = () => {
   return (

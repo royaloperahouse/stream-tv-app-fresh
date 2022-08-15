@@ -4,11 +4,8 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useRef, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { navMenuManager } from '@components/NavMenu';
-import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
+import React, { useRef, useLayoutEffect } from 'react';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 
 type TSettingsNavMenuItemProps = {
   id: string;
@@ -21,7 +18,7 @@ type TSettingsNavMenuItemProps = {
   isActive: boolean;
   hasTVPreferredFocus?: boolean;
   isFirst: boolean;
-  onMount?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
+  onMount?: (cp: TouchableHighlight | null) => void;
 };
 const SettingsNavMenuItem: React.FC<TSettingsNavMenuItemProps> = props => {
   const {
@@ -41,27 +38,15 @@ const SettingsNavMenuItem: React.FC<TSettingsNavMenuItemProps> = props => {
       onFocus(touchableRef);
     }
   };
-  const route = useRoute();
-  useFocusEffect(
-    useCallback(() => {
-      if (isFirst && typeof touchableRef.current?.getNode === 'function') {
-        navMenuManager.setNextFocusRightValue(
-          touchableRef.current?.getNode(),
-          route.name,
-        );
-      }
-    }, [isFirst, route.name]),
-  );
-  useFocusEffect(
-    useCallback(() => {
-      if (
-        touchableRef.current?.getRef?.().current &&
-        typeof onMount === 'function'
-      ) {
-        onMount(id, touchableRef.current?.getRef?.().current);
-      }
-    }, [id, onMount]),
-  );
+  useLayoutEffect(() => {
+    if (
+      isFirst &&
+      touchableRef.current?.getRef?.().current &&
+      typeof onMount === 'function'
+    ) {
+      onMount(touchableRef.current.getRef().current);
+    }
+  }, [onMount, isFirst]);
   return (
     <TouchableHighlightWrapper
       ref={touchableRef}

@@ -1,16 +1,20 @@
 import { TVEventHandler } from 'react-native';
+import type { HWEvent } from 'react-native';
 
 export abstract class TVEventManager {
   private static tvEventHandler: TVEventHandler | null = null;
-  private static subscriptions: Array<(_: any, event: any) => void> = [];
+  private static subscriptions: Array<(event: HWEvent) => void> = [];
   static init(): boolean {
     if (!TVEventManager.isInit()) {
       TVEventManager.tvEventHandler = new TVEventHandler();
-      TVEventManager.tvEventHandler.enable(undefined, (cp: any, event: any) => {
-        for (let i = 0; i < TVEventManager.subscriptions.length; i++) {
-          TVEventManager.subscriptions[i](cp, event);
-        }
-      });
+      TVEventManager.tvEventHandler.enable<any>(
+        undefined,
+        (_, event: HWEvent) => {
+          for (let i = 0; i < TVEventManager.subscriptions.length; i++) {
+            TVEventManager.subscriptions[i](event);
+          }
+        },
+      );
     }
     return TVEventManager.isInit();
   }
@@ -19,19 +23,19 @@ export abstract class TVEventManager {
     return TVEventManager.tvEventHandler !== null;
   }
 
-  static addEventListener(cb: (_: any, event: any) => void) {
+  static addEventListener(cb: (event: HWEvent) => void) {
     TVEventManager.subscriptions.push(cb);
   }
 
-  static getEventListeners(): Array<(_: any, event: any) => void> {
+  static getEventListeners(): Array<(event: HWEvent) => void> {
     return [...TVEventManager.subscriptions];
   }
 
-  static setEventListeners(subscriptions: Array<(_: any, event: any) => void>) {
+  static setEventListeners(subscriptions: Array<(event: HWEvent) => void>) {
     TVEventManager.subscriptions = subscriptions;
   }
 
-  static removeEventListener(cb: (_: any, event: any) => void) {
+  static removeEventListener(cb: (event: HWEvent) => void) {
     const index = TVEventManager.subscriptions.findIndex(
       cbItem => cbItem === cb,
     );

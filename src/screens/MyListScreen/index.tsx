@@ -8,23 +8,26 @@ import { useSelector } from 'react-redux';
 import { myListTitle, countOfItemsPeerRail } from '@configs/myListConfig';
 import { Colors } from '@themes/Styleguide';
 import { DigitalEventItem } from '@components/EventListComponents';
-import { useIsFocused } from '@react-navigation/native';
 import {
   widthWithOutFocus,
   marginRightWithOutFocus,
   marginLeftStop,
 } from '@configs/navMenuConfig';
-import { navMenuManager } from '@components/NavMenu';
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
 
-type TMyListScreenProps = {};
-const MyListScreen: React.FC<TMyListScreenProps> = ({ route }) => {
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
+
+const MyListScreen: React.FC<
+  TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['myList']>
+> = ({ route }) => {
   const { data: myList, ejected } = useMyList();
   const data = useSelector(digitalEventsForMyListScreenSelector(myList));
-  const isFocused = useIsFocused();
   const listRef = useRef(null);
   const itemRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
@@ -33,19 +36,15 @@ const MyListScreen: React.FC<TMyListScreenProps> = ({ route }) => {
       ? route.params.sectionIndex
       : data.length - 1;
   useLayoutEffect(() => {
-    if (isFocused && route?.params?.fromEventDetails && ejected) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      } else {
+    if (route?.params?.fromEventDetails && ejected) {
+      if (data.length) {
         listRef.current.scrollToIndex({
           animated: false,
           index: Math.floor(selectedIndex / countOfItemsPeerRail),
         });
       }
     }
-  }, [isFocused, route, data.length, ejected, selectedIndex]);
+  }, [route, data.length, ejected, selectedIndex]);
 
   return (
     <View style={styles.root}>
@@ -82,12 +81,6 @@ const MyListScreen: React.FC<TMyListScreenProps> = ({ route }) => {
                   index === 0 || index % countOfItemsPeerRail === 0
                     ? navMenuScreenRedirectRef.current
                         ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                removeFirstItemFocusable={
-                  index === 0 || index % countOfItemsPeerRail === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.removeDefaultRedirectFromNavMenu
                     : undefined
                 }
               />

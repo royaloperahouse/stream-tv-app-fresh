@@ -5,12 +5,27 @@ import {
   SwitchingBetweenEnvironments,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
+import type {
+  TAccountProps,
+  TSignOutProps,
+  TAppVersionProps,
+  TSwitchingBetweenEnvironmentsProps,
+  TSwitchSubscriptionMode,
+} from '@components/SettingsComponents';
 export const settingsTitle = 'SETTINGS';
 
 export type TSettingsSection = {
   key: string;
   navMenuItemTitle: string;
-  ContentComponent: React.FC<{ listItemGetNode?: () => number }>;
+  ContentComponent: React.FC<
+    Partial<
+      {} & TAccountProps &
+        TSignOutProps &
+        TAppVersionProps &
+        TSwitchingBetweenEnvironmentsProps &
+        TSwitchSubscriptionMode
+    >
+  >;
 };
 
 export const getSettingsSectionsConfig: () => {

@@ -3,6 +3,7 @@ import React, {
   useImperativeHandle,
   useRef,
   useCallback,
+  useLayoutEffect,
 } from 'react';
 import { View, FlatList, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import keyboardDataEng from './components/translations/eng.json';
@@ -19,7 +20,6 @@ import {
 } from '@services/store/events/Slices';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
-import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 
 const keyboardDataLocale: TKeyboardAdditionalLocales = [keyboardDataEng];
@@ -73,31 +73,32 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
       ...keyboardDataNumbers,
     ];
 
-    useFocusEffect(
-      useCallback(() => {
-        if (
-          typeof onMountForNavMenuTransition === 'function' &&
-          spaceButtonRef.current?.getRef?.().current
-        ) {
-          onMountForNavMenuTransition(
-            'spaceBtn',
-            spaceButtonRef.current.getRef().current,
-          );
-        }
-        if (
-          typeof onMountToSearchKeybordTransition === 'function' &&
-          typeof lastButtonInFirstRowRef.current?.getRef === 'function'
-        ) {
-          onMountToSearchKeybordTransition(
-            'clearBtn',
-            lastButtonInFirstRowRef.current.getRef().current,
-          );
-        }
-      }, [onMountForNavMenuTransition, onMountToSearchKeybordTransition]),
-    );
+    useLayoutEffect(() => {
+      if (
+        typeof onMountForNavMenuTransition === 'function' &&
+        spaceButtonRef.current?.getRef?.().current
+      ) {
+        onMountForNavMenuTransition(
+          'spaceBtn',
+          spaceButtonRef.current.getRef().current,
+        );
+      }
+      if (
+        typeof onMountToSearchKeybordTransition === 'function' &&
+        typeof lastButtonInFirstRowRef.current?.getRef === 'function'
+      ) {
+        onMountToSearchKeybordTransition(
+          'clearBtn',
+          lastButtonInFirstRowRef.current.getRef().current,
+        );
+      }
+    }, [onMountForNavMenuTransition, onMountToSearchKeybordTransition]);
 
     return (
-      <View style={{ width: cols * cellWidth }}>
+      <View
+        style={{
+          flex: 1,
+        }}>
         <View style={styles.supportButtonsContainer}>
           <Button
             ref={spaceButtonRef}
@@ -131,25 +132,35 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
             textStyle={[dStyle.text, dStyle.textButton]}
           />
         </View>
-        <FlatList
-          style={{
-            height: rows * cellHeight,
-          }}
-          data={keyboardData}
-          keyExtractor={({ text }) => text}
-          numColumns={cols}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <Button
-              ref={index < cols ? lastButtonInFirstRowRef : undefined}
-              text={item.text}
-              canMoveDown={index <= cols * (rows - 1)}
-              onPress={addLetterToSearch}
-              style={{ width: cellWidth, height: cellHeight }}
-            />
-          )}
-        />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            style={{
+              flex: 1,
+            }}
+            data={keyboardData}
+            keyExtractor={({ text }) => text}
+            numColumns={cols}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <Button
+                ref={
+                  keyboardData.length - 1 < cols
+                    ? index === keyboardData.length - 1
+                      ? lastButtonInFirstRowRef
+                      : undefined
+                    : index + 1 === cols
+                    ? lastButtonInFirstRowRef
+                    : undefined
+                }
+                text={item.text}
+                canMoveDown={index <= cols * (rows - 1)}
+                onPress={addLetterToSearch}
+                style={{ width: cellWidth, height: cellHeight }}
+              />
+            )}
+          />
+        </View>
       </View>
     );
   },

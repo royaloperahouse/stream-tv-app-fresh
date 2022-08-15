@@ -12,7 +12,6 @@ import {
   TargetedEvent,
   TouchableHighlight,
   TouchableHighlightProps,
-  GestureResponderEvent,
   Platform,
 } from 'react-native';
 import { navMenuManager } from '@components/NavMenu';
@@ -25,12 +24,8 @@ type TTouchableHighlightWrapperProps = TouchableHighlightProps & {
   styleFocused?: { [key: string]: any };
   styleBlured?: TouchableHighlightProps['style'];
   children: React.ReactNode;
-  nextFocusLeft?: number;
-  nextFocusUp?: number;
-  nextFocusRight?: number;
-  nextFocusDown?: number;
   canCollapseNavMenu?: boolean;
-  style?: { [key: string]: any } | Array<{ [key: string]: any }>;
+  style?: Array<{ [key: string]: any }> | { [key: string]: any };
 };
 
 export type TTouchableHighlightWrapperRef = {
@@ -55,12 +50,10 @@ const TouchableHighlightWrapper = forwardRef<
     style = {},
     accessible = true,
     styleBlured = {},
-    canCollapseNavMenu = true,
     underlayColor,
     ...restProps
   } = props;
   const [focused, setFocused] = useState(false);
-  const onPressRef = useRef<number>(0);
   const touchableHighlightRef = useRef<TouchableHighlight>(null);
   useImperativeHandle(
     ref,
@@ -101,25 +94,12 @@ const TouchableHighlightWrapper = forwardRef<
   }
   const onFocusHandler = useCallback(
     (event: NativeSyntheticEvent<TargetedEvent>): void => {
-      const focusEventCB = (ev: NativeSyntheticEvent<TargetedEvent>) => {
-        if (canCollapseNavMenu) {
-          navMenuManager.setNavMenuBlur();
-        }
-        setFocused(true);
-        if (typeof onFocus === 'function') {
-          onFocus(ev);
-        }
-        //navMenuManager.setNavMenuAccessible();
-      };
-      if (Platform.OS === 'ios' && Platform.isTV) {
-        setTimeout(() => {
-          focusEventCB(event);
-        }, 0);
-      } else {
-        focusEventCB(event);
+      setFocused(true);
+      if (typeof onFocus === 'function') {
+        onFocus(event);
       }
     },
-    [onFocus, canCollapseNavMenu],
+    [onFocus],
   );
 
   const onBlurHandler = useCallback(
@@ -131,27 +111,10 @@ const TouchableHighlightWrapper = forwardRef<
     },
     [onBlur],
   );
-/*   const onPressHandler = useCallback(
-    (event: GestureResponderEvent): void => {
-      if (
-        Platform.isTV &&
-        Platform.OS === 'android' &&
-        onPressRef.current < 2
-      ) {
-        onPressRef.current += 1;
-        return;
-      }
-      if (typeof onPress === 'function') {
-        onPress(event);
-      }
-      onPressRef.current = 0;
-    },
-    [onPress],
-  ); */
 
   const underlayColorFromStyle = style
     ? Array.isArray(style)
-      ? style.reduce<undefined | string>((acc, styleObj) => {
+      ? style.reduce<undefined | string>((acc: any, styleObj: any) => {
           if (styleObj.backgroundColor) {
             acc = styleObj.backgroundColor;
           }

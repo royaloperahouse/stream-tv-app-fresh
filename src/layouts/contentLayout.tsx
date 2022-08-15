@@ -1,45 +1,35 @@
-import React, { memo, useEffect, useLayoutEffect } from 'react';
-import {
-  View,
-  TouchableHighlight,
-  Text,
-  Platform,
-  Dimensions,
-} from 'react-native';
-import RohText from '@components/RohText';
-import StreamLogo from '@assets/svg/StreamLogo.svg';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { isTVOS } from 'configs/globalConfig';
+import React, { memo } from 'react';
+import { View, Platform, Dimensions, StyleSheet } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   createDrawerNavigator,
-  DrawerNavigationOptions,
+  DrawerContentComponentProps,
+  //DrawerNavigationOptions,
 } from '@react-navigation/drawer';
-import { allRoutes, mainRoutes, routes } from '@navigations/routes';
-import type {
-  TContentRoutesParamList,
-  TMainRoutesParamList,
+import {
+  allRoutes,
+  routes,
+  additionalRoutesWithoutNavMenuNavigation,
 } from '@navigations/routes';
+import {
+  rootStackScreensNames,
+  contentScreenNames,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
+import type {
+  TRootStackScreensParamList,
+  TContentScreensParamList,
+  TRootStackScreenProps,
+} from '@configs/screensConfig';
 import { useFeature } from 'flagged';
 import NavMenu from 'components/NavMenu';
-const Drawer = createDrawerNavigator();
-const Stack = createNativeStackNavigator();
+import { TNavMenuItem } from 'services/types/models';
+const Drawer = createDrawerNavigator<TContentScreensParamList>();
+const Stack = createNativeStackNavigator<TRootStackScreensParamList>();
 
 type TContentLayoutProps = {};
 
 const ContentLayout: React.FC<TContentLayoutProps> = () => {
-  const showLiveStream = useFeature('showLiveStream');
-  const initialRoute = allRoutes.find(
-    route => route.isDefault,
-  )?.navMenuScreenName;
   return (
     <Stack.Navigator
       screenListeners={{
@@ -74,32 +64,35 @@ const ContentLayout: React.FC<TContentLayoutProps> = () => {
           });
         },
       }}
-      //initialRouteName="Player"
       screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="Content"
+        name={rootStackScreensNames.content}
         component={ContentScreen}
-        initialParams={{ fromHome: false }}
       />
-      <Stack.Screen name="Player" component={DetailsScreen} />
+      <Stack.Screen
+        name={rootStackScreensNames.player}
+        component={PlayerScreen}
+      />
     </Stack.Navigator>
   );
 };
 
 const ContentScreen: React.MemoExoticComponent<
-  React.FC<NativeStackScreenProps<TMainRoutesParamList, 'Content'>>
+  React.FC<
+    TRootStackScreenProps<NSNavigationScreensNames.RootStackScreens['content']>
+  >
 > = memo(() => {
   const showLiveStream = useFeature('showLiveStream');
-  const initialRoute = allRoutes.find(
-    route => route.isDefault,
-  )?.navMenuScreenName;
+  const initialRoute = allRoutes.find(route => route.isDefault);
   const routesForRenering = (
     showLiveStream
       ? routes
-      : routes.filter(screen => screen.navMenuScreenName !== 'LiveStream')
+      : routes.filter(
+          screen => screen.navMenuScreenName !== contentScreenNames.liveStream,
+        )
   )
     .sort((a, b) => a.position - b.position)
-    .map(route => ({
+    .map<TNavMenuItem>(route => ({
       navMenuScreenName: route.navMenuScreenName,
       SvgIconActiveComponent: route.SvgIconActiveComponent,
       SvgIconInActiveComponent: route.SvgIconInActiveComponent,
@@ -108,10 +101,17 @@ const ContentScreen: React.MemoExoticComponent<
       isDefault: route.isDefault,
     }));
   return (
-    <View
-      style={{ flexDirection: 'row', height: Dimensions.get('window').height }}>
-      <NavMenu navMenuConfig={routesForRenering} />
+    <View style={styles.mainContentRoot}>
       <Drawer.Navigator
+        drawerContent={(props: DrawerContentComponentProps) => (
+          <NavMenu
+            {...props}
+            navMenuConfig={routesForRenering}
+            exitButtonRouteName={
+              additionalRoutesWithoutNavMenuNavigation.exit.navMenuScreenName
+            }
+          />
+        )}
         screenListeners={{
           drawerItemPress: (...rest) => {
             global.roh_rlog({
@@ -144,16 +144,23 @@ const ContentScreen: React.MemoExoticComponent<
             });
           },
         }}
-        initialRouteName={initialRoute}
-        defaultStatus="closed"
+        initialRouteName={initialRoute?.navMenuScreenName}
+        defaultStatus="open"
         backBehavior="none"
         detachInactiveScreens={true}
         screenOptions={{
           headerShown: false,
-          drawerType: 'slide', //,'permanent',
-          overlayColor: 'transparent',
+          drawerType: 'permanent', //'slide',
           drawerHideStatusBarOnOpen: true,
           swipeEnabled: false,
+          drawerStyle: {
+            backgroundColor: 'transperent',
+            borderWidth: 0,
+            borderRightColor: 'transperent',
+            width: 'auto',
+            maxWidth: 'auto',
+            borderRightWidth: 0,
+          },
         }}>
         {allRoutes.map(screen => (
           <Drawer.Screen
@@ -164,7 +171,6 @@ const ContentScreen: React.MemoExoticComponent<
             initialParams={screen.initialParams}
             options={{
               unmountOnBlur: true,
-              drawerLabel: screen?.navMenuTitle || '',
             }}
           />
         ))}
@@ -173,215 +179,22 @@ const ContentScreen: React.MemoExoticComponent<
   );
 });
 
-const DetailsScreen: React.FC<
-  NativeStackScreenProps<
-    { Home: undefined; Details: undefined; Settings: undefined },
-    'Details'
-  >
-> = ({ navigation }) => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableHighlight
-        hasTVPreferredFocus={true}
-        underlayColor="red"
-        onPress={() => {
-          navigation.navigate('Home');
-        }}>
-        <View>
-          <View>
-            <StreamLogo width={300} height={300} />
-          </View>
-          <View>
-            <RohText style={{ color: 'white' }}>Details Screen</RohText>
-          </View>
-          <View>
-            <Text style={{ color: 'white' }}>Details Screen</Text>
-          </View>
-        </View>
-      </TouchableHighlight>
-      <TouchableHighlight
-        underlayColor="green"
-        onPress={() => {
-          navigation.navigate('Settings');
-        }}>
-        <View>
-          <RohText style={{ color: 'white' }}>Settings Text</RohText>
-        </View>
-      </TouchableHighlight>
-    </View>
-  );
-};
-
-const SettingsScreen: React.FC<
-  NativeStackScreenProps<
-    { Home: undefined; Details: undefined; Settings: undefined },
-    'Settings'
-  >
-> = ({ navigation }) => {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableHighlight
-        hasTVPreferredFocus={true}
-        underlayColor="red"
-        onPress={() => {
-          navigation.navigate('Details');
-        }}>
-        <View>
-          <View>
-            <StreamLogo width={300} height={300} />
-          </View>
-          <View>
-            <RohText style={{ color: 'white' }}>Details Screen</RohText>
-          </View>
-          <View>
-            <Text style={{ color: 'white' }}>Details Screen</Text>
-          </View>
-        </View>
-      </TouchableHighlight>
-      <TouchableHighlight
-        underlayColor="green"
-        onPress={() => {
-          navigation.navigate('Home', { fromHome: true });
-        }}>
-        <View>
-          <RohText style={{ color: 'white' }}>Home screen</RohText>
-        </View>
-      </TouchableHighlight>
-    </View>
-  );
-};
-
-const HomeScreen: React.FC<
-  NativeStackScreenProps<
-    { Home: undefined; Details: undefined; Settings: undefined },
-    'Home'
-  >
-> = ({ navigation, route }) => {
-  const defRef = React.useRef<TouchableHighlight>(null);
-  useIsFocused();
-  useLayoutEffect(() => {
-    if (isTVOS) {
-      defRef.current?.setNativeProps({ hasTVPreferredFocus: true });
-    }
-  }, []);
-  useFocusEffect(
-    React.useCallback(() => {
-      if (route.params?.fromHome) {
-        defRef.current?.setNativeProps({ hasTVPreferredFocus: true });
-      }
-    }, [route.params?.fromHome]),
-  );
-  const offset = useSharedValue(0);
-
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: offset.value * 255 }],
-    };
-  });
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Animated.View
-        style={[
-          {
-            width: 100,
-            height: 80,
-            margin: 30,
-            backgroundColor: '#ffff',
-          },
-          animatedStyles,
-        ]}
-      />
-      <TouchableHighlight
-        underlayColor="red"
-        onPress={() => (offset.value = withSpring(Math.random()))}>
-        <View>
-          <Text style={{ color: 'white' }}>Animated</Text>
-        </View>
-      </TouchableHighlight>
-      <TouchableHighlight
-        underlayColor="red"
-        hasTVPreferredFocus={true}
-        ref={defRef}
-        onPress={() => {
-          navigation.navigate('Details');
-        }}>
-        <View>
-          <Text style={{ color: 'white' }}>Home Screen</Text>
-        </View>
-      </TouchableHighlight>
-    </View>
-  );
+const PlayerScreen: React.FC<
+  TRootStackScreenProps<NSNavigationScreensNames.RootStackScreens['player']>
+> = () => {
+  return <View style={styles.playerContentContainer} />;
 };
 
 export default ContentLayout;
 
-const Menu = () => {
-  global.roh_rlog({ name: 'mount' });
-  const [load, setLoad] = React.useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      setLoad(true);
-    }, 1000);
-  }, []);
-  if (!load) {
-    return null;
-  }
-  return (
-    <View
-      style={{
-        height: Dimensions.get('screen').height,
-        width: 100,
-        justifyContent: 'center',
-      }}>
-      <TouchableHighlight
-        //accessible={false}
-        underlayColor="red"
-        onFocus={() => console.log('inFocus ' + Platform.OS)}
-        onBlur={() => console.log('inBlur ' + Platform.OS)}>
-        <Text style={{ color: 'white' }}>MenuItem</Text>
-      </TouchableHighlight>
-    </View>
-  );
-};
-
-/*
-  <View style={styles.root}>
-      <Stack.Navigator
-        initialRouteName={initialRoute?.navMenuScreenName}
-        detachInactiveScreens={true}
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: false,
-          animationEnabled: false,
-          detachPreviousScreen: true,
-        }}>
-        {allRoutes
-          .filter(route => {
-            if (showLiveStream) {
-              return true;
-            }
-            return route.navMenuScreenName !== 'liveStream';
-          })
-          .map(route => (
-            <Stack.Screen
-              key={route.navMenuScreenName}
-              name={route.navMenuScreenName}
-              component={route.ScreenComponent}
-            />
-          ))}
-      </Stack.Navigator>
-    </View>
-  );
-};
-
-
-    transitionStart: EventListenerCallback<NativeStackNavigationEventMap, "transitionStart">;
-    transitionEnd: EventListenerCallback<NativeStackNavigationEventMap, "transitionEnd">;
-    focus: EventListenerCallback<...>;
-    blur: EventListenerCallback<...>;
-    state: EventListenerCallback<...>;
-    beforeRemove: EventListenerCallback<...>;
-
-
-
-*/
+const styles = StyleSheet.create({
+  mainContentRoot: {
+    flexDirection: 'row',
+    height: Dimensions.get('window').height,
+  },
+  playerContentContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

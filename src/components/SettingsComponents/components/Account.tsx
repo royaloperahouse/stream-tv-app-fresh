@@ -3,13 +3,13 @@ import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { shallowEqual, useSelector } from 'react-redux';
+import { useAppSelector } from '@hooks/redux';
 import { userEmailSelector } from '@services/store/auth/Selectors';
 
-type TAccountProps = {};
+export type TAccountProps = {};
 
 const Account: React.FC<TAccountProps> = () => {
-  const userEmail: string = useSelector(userEmailSelector, shallowEqual);
+  const userEmail: string = useAppSelector(userEmailSelector);
   return (
     <View style={styles.root}>
       <View style={styles.titleContainer}>

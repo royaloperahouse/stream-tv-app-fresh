@@ -16,29 +16,29 @@ import {
 } from '@configs/navMenuConfig';
 import { TPreviewRef } from '@components/EventListComponents/components/Preview';
 import { useIsFocused } from '@react-navigation/native';
-import { navMenuManager } from '@components/NavMenu';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
-type TBalletDanceScreenProps = {};
-const BalletDanceScreen: React.FC<TBalletDanceScreenProps> = ({ route }) => {
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
+
+const BalletDanceScreen: React.FC<
+  TContentScreensProps<
+    NSNavigationScreensNames.ContentStackScreens['balletDance']
+  >
+> = ({ route }) => {
   const { data, eventsLoaded } = useSelector(
     digitalEventsForBalletAndDanceSelector,
   );
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
-  const isFocused = useIsFocused();
+
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  useLayoutEffect(() => {
-    if (isFocused && eventsLoaded) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      }
-    }
-  }, [isFocused, route, data.length, eventsLoaded]);
+
   useLayoutEffect(() => {
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
@@ -107,12 +107,6 @@ const BalletDanceScreen: React.FC<TBalletDanceScreenProps> = ({ route }) => {
                   index === 0
                     ? navMenuScreenRedirectRef.current
                         ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                removeFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.removeDefaultRedirectFromNavMenu
                     : undefined
                 }
               />

@@ -5,7 +5,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { View, StyleSheet } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableHighlight,
+  findNodeHandle,
+} from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
@@ -13,18 +18,16 @@ import TouchableHighlightWrapper, {
   TTouchableHighlightWrapperRef,
 } from '@components/TouchableHighlightWrapper';
 import get from 'lodash.get';
-import {
-  useNavigation,
-  CommonActions,
-  useRoute,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import { additionalRoutesWithoutNavMenuNavigation } from '@navigations/routes';
+import { contentScreenNames } from '@configs/screensConfig';
 import { navMenuManager } from '@components/NavMenu';
 import { Colors } from '@themes/Styleguide';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
-import { useFocusEffect } from '@react-navigation/native';
-
+import {
+  TContentScreenReverseNamesOfNavToDetails,
+  TContentScreensProps,
+} from '@configs/screensConfig';
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -34,7 +37,7 @@ type DigitalEventItemProps = {
   canMoveRight?: boolean;
   continueWatching?: boolean;
   onFocus?: (...[]: any[]) => void;
-  screenNameFrom?: string;
+  screenNameFrom: TContentScreenReverseNamesOfNavToDetails;
   eventGroupTitle?: string;
   selectedItemIndex?: number;
   lastItem?: boolean;
@@ -50,7 +53,10 @@ type DigitalEventItemProps = {
   ) => void;
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
+  nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
 };
+
+const firstFocusItenKey = 'firstFocusItenKey';
 
 const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
   (
@@ -61,7 +67,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       canMoveRight = true,
       onFocus,
       continueWatching,
-      screenNameFrom = '',
+      screenNameFrom,
       eventGroupTitle,
       sectionIndex,
       canMoveDown = true,
@@ -71,13 +77,14 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       removeRailItemRefCb = () => {},
       setFirstItemFocusable,
       removeFirstItemFocusable,
-      index,
     },
     ref: any,
   ) => {
-    const navigation = useNavigation();
+    const navigation =
+      useNavigation<
+        TContentScreensProps<typeof screenNameFrom>['navigation']
+      >();
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
-    const route = useRoute();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
     const snapshotImageUrl: string = get(
@@ -95,58 +102,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         '',
       );
 
-    const onPressHandler = () => {
-      navMenuManager.hideNavMenu();
-      //navigation.closeDrawer();
-      navigation.navigate(
-        additionalRoutesWithoutNavMenuNavigation.eventDetails.navMenuScreenName,
-        {
-          fromEventDetails: false,
-          event,
-          continueWatching,
-          screenNameFrom,
-          sectionIndex,
-          selectedItemIndex,
-        },
-      );
-      /*       navigation.dispatch(
-        CommonActions.reset({
-          routes: [
-            {
-              name: additionalRoutesWithoutNavMenuNavigation.eventDetails
-                .navMenuScreenName,
-              params: {
-                fromEventDetails: false,
-                event,
-                continueWatching,
-                screenNameFrom,
-                sectionIndex,
-                selectedItemIndex,
-              },
-            },
-          ],
-          index: 0,
-        }),
-      ); */
-    };
-
-    const onFocusHandler = () => {
-      if (isMounted.current) {
-        setFocused(true);
-      }
-      ref?.current?.setDigitalEvent(event, eventGroupTitle);
-      navMenuManager.setNavMenuAccessible();
-      if (typeof onFocus === 'function') {
-        onFocus(touchableRef.current?.getRef?.().current);
-      }
-      if (route.params?.fromEventDetails) {
-        navigation.setParams({
-          ...route.params,
-          fromEventDetails: false,
-        });
-      }
-    };
-
     useLayoutEffect(() => {
       isMounted.current = true;
       return () => {
@@ -154,27 +109,60 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       };
     }, []);
 
-    useFocusEffect(
-      useCallback(() => {
-        if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
-          setFirstItemFocusable(
-            sectionIndex.toString(),
-            touchableRef.current?.getRef?.().current,
-          );
-        }
-        return () => {
-          if (removeFirstItemFocusable) {
-            removeFirstItemFocusable(sectionIndex.toString());
-          }
-        };
-      }, [removeFirstItemFocusable, setFirstItemFocusable, sectionIndex]),
-    );
+    const onPressHandler = () => {
+      navMenuManager.hideNavMenu();
+      navigation.navigate(contentScreenNames.eventDetails, {
+        fromEventDetails: false,
+        event,
+        continueWatching,
+        screenNameFrom,
+        sectionIndex,
+        selectedItemIndex,
+      });
+    };
+
+    const onFocusHandler = () => {
+      if (isMounted.current) {
+        setFocused(true);
+      }
+      console.log('123!!!');
+      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+        setFirstItemFocusable(
+          firstFocusItenKey,
+          touchableRef.current?.getRef?.().current,
+        );
+      }
+      ref?.current?.setDigitalEvent(event, eventGroupTitle);
+      if (typeof onFocus === 'function') {
+        onFocus(touchableRef.current?.getRef?.().current);
+      }
+    };
+
+    useLayoutEffect(() => {
+      console.log('123');
+      if (
+        sectionIndex === 0 &&
+        setFirstItemFocusable &&
+        touchableRef.current?.getRef?.().current
+      ) {
+        setFirstItemFocusable(
+          firstFocusItenKey,
+          touchableRef.current?.getRef?.().current,
+        );
+      }
+    }, [setFirstItemFocusable, sectionIndex]);
     useLayoutEffect(() => {
       setRailItemRefCb(event.id, touchableRef, sectionIndex);
       return () => {
         removeRailItemRefCb(event.id, touchableRef, sectionIndex);
       };
-    }, []);
+    }, [
+      event.id,
+      touchableRef,
+      sectionIndex,
+      setRailItemRefCb,
+      removeRailItemRefCb,
+    ]);
     return (
       <TouchableHighlightWrapper
         ref={touchableRef}

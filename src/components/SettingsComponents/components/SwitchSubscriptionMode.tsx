@@ -1,25 +1,30 @@
 import RohText from '@components/RohText';
-import TouchableHighlightWrapper from '@components/TouchableHighlightWrapper';
+import TouchableHighlightWrapper, {
+  TTouchableHighlightWrapperRef,
+} from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import React, { useRef, useLayoutEffect } from 'react';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { toggleSubscriptionMode } from '@services/store/auth/Slices';
 import { subscribedModeSelector } from '@services/store/auth/Selectors';
+import {
+  NavMenuScreenRedirect,
+  TNavMenuScreenRedirectRef,
+} from '@components/NavmenuScreenRedirect';
 
-type TSwitchSubscriptionMode = {
-  listItemGetNode?: () => number;
+export type TSwitchSubscriptionMode = {
+  listItemGetRef?: () => React.RefObject<TouchableHighlight>;
 };
 
 const SwitchSubscriptionMode: React.FC<TSwitchSubscriptionMode> = ({
-  listItemGetNode,
+  listItemGetRef,
 }) => {
-  const dispatch = useDispatch();
-  const fullSubscription: boolean = useSelector(
-    subscribedModeSelector,
-    shallowEqual,
-  );
+  const dispatch = useAppDispatch();
+  const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
+  const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
+  const fullSubscription: boolean = useAppSelector(subscribedModeSelector);
   const switchSubscriptionModeActionHandler = () =>
     dispatch(toggleSubscriptionMode());
   const actionButtonText = `Switch to ${
@@ -28,34 +33,53 @@ const SwitchSubscriptionMode: React.FC<TSwitchSubscriptionMode> = ({
   const subscriptionInfoText = `You are ${
     fullSubscription ? 'subscribed' : 'non-subscribed'
   }`;
+
+  useLayoutEffect(() => {
+    if (typeof buttonRef.current?.getRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
+        'switchSubscriptionBtn',
+        buttonRef.current.getRef().current,
+      );
+    }
+    if (typeof listItemGetRef === 'function') {
+      navMenuScreenRedirectRef.current?.setDefaultRedirectToNavMenu?.(
+        'switchSubscriptionBtn',
+        listItemGetRef().current,
+      );
+    }
+  }, [listItemGetRef]);
+
   return (
     <View style={styles.root}>
-      <View style={styles.titleContainer}>
-        <RohText style={styles.titleText}>Switch of Subscription Mode</RohText>
-      </View>
-      <View style={styles.descriptionContainer}>
-        <RohText style={styles.descriptionText}>{subscriptionInfoText}</RohText>
-      </View>
-      <View style={styles.actionButtonsContainer}>
-        <View style={styles.actionButtonContainer}>
-          <TouchableHighlightWrapper
-            canMoveRight={false}
-            canMoveUp={false}
-            canMoveDown={false}
-            nextFocusLeft={
-              typeof listItemGetNode === 'function'
-                ? listItemGetNode()
-                : undefined
-            }
-            onPress={switchSubscriptionModeActionHandler}
-            style={styles.actionButtonDefault}
-            styleFocused={styles.actionButtonFocus}>
-            <View style={styles.actionButtonContentContainer}>
-              <RohText style={styles.actionButtonText}>
-                {actionButtonText}
-              </RohText>
-            </View>
-          </TouchableHighlightWrapper>
+      <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
+      <View style={styles.contentContainer}>
+        <View style={styles.titleContainer}>
+          <RohText style={styles.titleText}>
+            Switch of Subscription Mode
+          </RohText>
+        </View>
+        <View style={styles.descriptionContainer}>
+          <RohText style={styles.descriptionText}>
+            {subscriptionInfoText}
+          </RohText>
+        </View>
+        <View style={styles.actionButtonsContainer}>
+          <View style={styles.actionButtonContainer}>
+            <TouchableHighlightWrapper
+              ref={buttonRef}
+              canMoveRight={false}
+              canMoveUp={false}
+              canMoveDown={false}
+              onPress={switchSubscriptionModeActionHandler}
+              style={styles.actionButtonDefault}
+              styleFocused={styles.actionButtonFocus}>
+              <View style={styles.actionButtonContentContainer}>
+                <RohText style={styles.actionButtonText}>
+                  {actionButtonText}
+                </RohText>
+              </View>
+            </TouchableHighlightWrapper>
+          </View>
         </View>
       </View>
     </View>
@@ -66,10 +90,14 @@ export default SwitchSubscriptionMode;
 
 const styles = StyleSheet.create({
   root: {
+    flexDirection: 'row',
     flex: 1,
+    height: '100%',
+  },
+  contentContainer: {
     paddingTop: scaleSize(42),
     marginLeft: scaleSize(80),
-    marginRight: scaleSize(338),
+    width: scaleSize(700),
   },
   titleContainer: {
     marginBottom: scaleSize(34),

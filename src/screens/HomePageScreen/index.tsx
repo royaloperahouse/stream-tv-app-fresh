@@ -1,14 +1,19 @@
-import React, { useRef, useLayoutEffect, useCallback, useEffect } from 'react';
+import React, {
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import {
   View,
   StyleSheet,
   Dimensions,
   AppState,
   AppStateStatus,
-  Text,
-  TouchableHighlight,
+  findNodeHandle,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '@hooks/redux';
 import {
   startFullSubscriptionLoop,
   endFullSubscriptionLoop,
@@ -29,51 +34,30 @@ import {
 import { useMyList } from '@hooks/useMyList';
 import { useContinueWatchingList } from '@hooks/useContinueWatchingList';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
-import { navMenuManager } from '@components/NavMenu';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
 
-type THomePageScreenProps = {};
-const HomePageScreen: React.FC<THomePageScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const dispatch = useDispatch();
+const HomePageScreen: React.FC<
+  TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
+> = ({ navigation, route }) => {
+  const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
   const { data: myList, ejected: myListEjected } = useMyList();
   const { data: continueWatchingList, ejected: continueWatchingListEjected } =
     useContinueWatchingList();
-  const { data, eventsLoaded } = useSelector(
+  const { data, eventsLoaded } = useAppSelector(
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
   const previewRef = useRef(null);
-  const isFocused = useIsFocused();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  useLayoutEffect(() => {
-    if (
-      isFocused &&
-      myListEjected &&
-      continueWatchingListEjected &&
-      eventsLoaded
-    ) {
-      if (!data.length) {
-        navMenuManager.setNavMenuAccessible();
-        navMenuManager.showNavMenu();
-        navMenuManager.setNavMenuFocus();
-      }
-    }
-  }, [
-    isFocused,
-    route,
-    data.length,
-    navigation,
-    continueWatchingListEjected,
-    myListEjected,
-    eventsLoaded,
-  ]);
+
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (
@@ -107,101 +91,89 @@ const HomePageScreen: React.FC<THomePageScreenProps> = ({
     }
   }, [data]);
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(startFullSubscriptionLoop());
-      return () => {
-        dispatch(endFullSubscriptionLoop());
-      };
-    }, []),
-  );
-
+  useLayoutEffect(() => {
+    dispatch(startFullSubscriptionLoop());
+    return () => {
+      dispatch(endFullSubscriptionLoop());
+    };
+  }, [dispatch]);
   if (!data.length || !continueWatchingListEjected || !myListEjected) {
     return null;
   }
-
   const hasTVPreferredFocus = (
     isFirstRail: boolean,
     index: number,
     sectionIndex: number,
   ) => {
-    return route.params === undefined
+    return route?.params?.eventId
       ? isFirstRail && index === 0
-      : route.params.fromEventDetails &&
-          sectionIndex === route.params.sectionIndex &&
-          index === 0;
+      : sectionIndex === route.params.sectionIndex && index === 0;
   };
-
   return (
     <View style={styles.root}>
-      {/*       <NavMenuScreenRedirect
+      <NavMenuScreenRedirect
         screenName={route.name}
         ref={navMenuScreenRedirectRef}
-      /> */}
-      <View>
-        <Preview ref={previewRef} />
+      />
+      {
         <View>
-          <RailSections
-            containerStyle={styles.railContainerStyle}
-            headerContainerStyle={styles.railHeaderContainerStyle}
-            sectionIndex={route?.params?.sectionIndex || 0}
-            railStyle={styles.railStyle}
-            sections={data}
-            sectionKeyExtractor={item => item.sectionIndex?.toString()}
-            renderHeader={section => (
-              <DigitalEventSectionHeader>
-                {section.title}
-              </DigitalEventSectionHeader>
-            )}
-            renderItem={({
-              item,
-              section,
-              index,
-              scrollToRail,
-              isFirstRail,
-              isLastRail,
-              sectionIndex,
-              setRailItemRefCb,
-              removeRailItemRefCb,
-              hasEndlessScroll,
-            }) => (
-              <DigitalEventItem
-                event={item}
-                ref={previewRef}
-                screenNameFrom={route.name}
-                hasTVPreferredFocus={hasTVPreferredFocus(
-                  isFirstRail,
-                  index,
-                  sectionIndex,
-                )}
-                canMoveRight={index !== section.data.length - 1}
-                onFocus={scrollToRail}
-                continueWatching={section.title === continueWatchingRailTitle}
-                eventGroupTitle={section.title}
-                sectionIndex={sectionIndex}
-                lastItem={index === section.data.length - 1}
-                setRailItemRefCb={setRailItemRefCb}
-                removeRailItemRefCb={removeRailItemRefCb}
-                canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
-                canMoveUp={!isFirstRail}
-                setFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                removeFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
-                        ?.removeDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                index={index}
-              />
-            )}
-          />
+          <Preview ref={previewRef} />
+          <View>
+            <RailSections
+              containerStyle={styles.railContainerStyle}
+              headerContainerStyle={styles.railHeaderContainerStyle}
+              sectionIndex={route?.params?.sectionIndex || 0}
+              railStyle={styles.railStyle}
+              sections={data}
+              sectionKeyExtractor={item => item.sectionIndex?.toString()}
+              renderHeader={section => (
+                <DigitalEventSectionHeader>
+                  {section.title}
+                </DigitalEventSectionHeader>
+              )}
+              renderItem={({
+                item,
+                section,
+                index,
+                scrollToRail,
+                isFirstRail,
+                isLastRail,
+                sectionIndex,
+                setRailItemRefCb,
+                removeRailItemRefCb,
+                hasEndlessScroll,
+              }) => (
+                <DigitalEventItem
+                  event={item}
+                  ref={previewRef}
+                  screenNameFrom={route.name}
+                  hasTVPreferredFocus={hasTVPreferredFocus(
+                    isFirstRail,
+                    index,
+                    sectionIndex,
+                  )}
+                  canMoveRight={index !== section.data.length - 1}
+                  onFocus={scrollToRail}
+                  continueWatching={section.title === continueWatchingRailTitle}
+                  eventGroupTitle={section.title}
+                  sectionIndex={sectionIndex}
+                  lastItem={index === section.data.length - 1}
+                  setRailItemRefCb={setRailItemRefCb}
+                  removeRailItemRefCb={removeRailItemRefCb}
+                  canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
+                  canMoveUp={!isFirstRail}
+                  setFirstItemFocusable={
+                    index === 0
+                      ? navMenuScreenRedirectRef.current
+                          ?.setDefaultRedirectFromNavMenu
+                      : undefined
+                  }
+                />
+              )}
+            />
+          </View>
         </View>
-      </View>
+      }
     </View>
   );
 };
