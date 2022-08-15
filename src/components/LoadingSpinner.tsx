@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
   cancelAnimation,
   Easing,
 } from 'react-native-reanimated';
-import { scaleSize } from "@utils/scaleSize";
+import { scaleSize } from '@utils/scaleSize';
 
 interface LoginSpinnerProps {
   showSpinner: boolean;
@@ -38,7 +38,7 @@ const LoadingSpinner: React.FC<LoginSpinnerProps> = ({
       borderRadius: scaleSize(size / 2),
       borderWidth: scaleSize((size * 7) / 60),
     },
-});
+  });
 
   useLayoutEffect(() => {
     if (showSpinner) {
@@ -47,8 +47,10 @@ const LoadingSpinner: React.FC<LoginSpinnerProps> = ({
           duration: 1000,
           easing: Easing.linear,
         }),
-        99999999,
+        -1,
       );
+    } else {
+      rotation.value = 0;
     }
     return () => cancelAnimation(rotation);
   }, [showSpinner]);
