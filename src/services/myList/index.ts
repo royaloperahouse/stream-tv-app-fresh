@@ -1,18 +1,20 @@
 import { logError } from '@utils/loger';
 import { myListKey } from '@configs/myListConfig';
+import { SessionStorage } from '@services/sessionStorage';
 
 export const addToMyList = async (
   item: string,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = null;
+    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
     const parsedMyList: Array<string> = !savedMyList
       ? []
       : JSON.parse(savedMyList);
     const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
     if (existedIndex === -1) {
       parsedMyList.push(item);
+      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
     }
   } catch (error: any) {
     logError('Something went wromg with saving to MyList', error);
@@ -28,13 +30,14 @@ export const removeIdFromMyList = async (
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = null;
+    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
     const parsedMyList: Array<string> = !savedMyList
       ? []
       : JSON.parse(savedMyList);
     const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
     if (existedIndex !== -1) {
       parsedMyList.splice(existedIndex, 1);
+      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
     }
   } catch (error: any) {
     logError('Something went wromg with removing from MyList', error);
@@ -53,13 +56,14 @@ export const removeIdsFromMyList = async (
     return;
   }
   try {
-    const savedMyList: string | null = null;
+    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
     const parsedMyList: Array<string> = !savedMyList
       ? []
       : JSON.parse(savedMyList);
     const filteredMyList = parsedMyList.filter(
       listItem => !items.some(item => item === listItem),
     );
+    await SessionStorage.setItem(myListKey, JSON.stringify(filteredMyList));
   } catch (error: any) {
     logError('Something went wromg with removing from MyList', error);
   } finally {
@@ -69,11 +73,12 @@ export const removeIdsFromMyList = async (
   }
 };
 
-export const clearMyList = (): Promise<void> => Promise.resolve();
+export const clearMyList = (): Promise<void> =>
+  SessionStorage.removeItem(myListKey);
 
 export const getMyList = async (): Promise<Array<string>> => {
   try {
-    const savedMyList: string | null = null;
+    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
     const parsedMyList: Array<string> = !savedMyList
       ? []
       : JSON.parse(savedMyList);
@@ -87,7 +92,7 @@ export const getMyList = async (): Promise<Array<string>> => {
 export const hasMyListItem = async (item: string): Promise<boolean> => {
   let result: boolean = false;
   try {
-    const savedMyList: string | null = null;
+    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
     const parsedMyList: Array<string> = !savedMyList
       ? []
       : JSON.parse(savedMyList);

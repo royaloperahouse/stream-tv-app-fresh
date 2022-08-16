@@ -1,13 +1,16 @@
 import { logError } from '@utils/loger';
 import { bitMovinPlayerKey } from '@configs/bitMovinPlayerConfig';
 import { TBitMovinPlayerSavedPosition } from '@services/types/models';
+import { SessionStorage } from '@services/sessionStorage';
 
 export const savePosition = async (
   item: TBitMovinPlayerSavedPosition,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     const existedIndex = parsedSavedPositionList.findIndex(
@@ -18,6 +21,10 @@ export const savePosition = async (
     } else {
       parsedSavedPositionList[existedIndex] = item;
     }
+    await SessionStorage.setItem(
+      bitMovinPlayerKey,
+      JSON.stringify(parsedSavedPositionList),
+    );
   } catch (error: any) {
     logError(
       'Something went wrong with saving to BitMovinPlayerSavedPositionList',
@@ -38,7 +45,9 @@ export const removeItemsFromSavedPositionList = async (
     return;
   }
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     const filteredSavedPositionList = parsedSavedPositionList.filter(
@@ -46,6 +55,10 @@ export const removeItemsFromSavedPositionList = async (
         !items.some(
           item => item.id === listItem.id && item.eventId === listItem.eventId,
         ),
+    );
+    await SessionStorage.setItem(
+      bitMovinPlayerKey,
+      JSON.stringify(filteredSavedPositionList),
     );
   } catch (error: any) {
     logError(
@@ -60,14 +73,16 @@ export const removeItemsFromSavedPositionList = async (
 };
 
 export const clearListOfBitmovinSavedPosition = (): Promise<void> =>
-  Promise.resolve();
+  SessionStorage.removeItem(bitMovinPlayerKey);
 
 export const getBitMovinSavedPosition = async (
   id: string,
   eventId: string,
 ): Promise<TBitMovinPlayerSavedPosition | null> => {
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     return (
@@ -90,7 +105,9 @@ export const removeBitMovinSavedPositionByIdAndEventId = async (
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     const existedIndex = parsedSavedPositionList.findIndex(
@@ -98,6 +115,10 @@ export const removeBitMovinSavedPositionByIdAndEventId = async (
     );
     if (existedIndex !== -1) {
       parsedSavedPositionList.splice(existedIndex, 1);
+      await SessionStorage.setItem(
+        bitMovinPlayerKey,
+        JSON.stringify(parsedSavedPositionList),
+      );
     }
   } catch (error: any) {
     logError(
@@ -113,7 +134,9 @@ export const removeBitMovinSavedPositionByIdAndEventId = async (
 
 export const getListOfUniqueEventId = async (): Promise<Array<string>> => {
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     return Object.keys(
@@ -144,11 +167,17 @@ export const removeItemsFromSavedPositionListByEventIds = async (
     return;
   }
   try {
-    const savedPositions: string | null = null;
+    const savedPositions: string | null = await SessionStorage.getItem(
+      bitMovinPlayerKey,
+    );
     const parsedSavedPositionList: Array<TBitMovinPlayerSavedPosition> =
       !savedPositions ? [] : JSON.parse(savedPositions);
     const filteredSavedPositionList = parsedSavedPositionList.filter(
       listItem => !ids.some(id => id === listItem.eventId),
+    );
+    await SessionStorage.setItem(
+      bitMovinPlayerKey,
+      JSON.stringify(filteredSavedPositionList),
     );
   } catch (error: any) {
     logError(

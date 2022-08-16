@@ -3,10 +3,12 @@ import {
   prevSearchListKey,
   maxPrevSearchListSize,
 } from '@configs/previousSearchesConfig';
+import { SessionStorage } from '@services/sessionStorage';
 
 export const addItemToPrevSearchList = async (item: string): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null = null;
+    const alreadySavedPrevSearchList: string | null =
+      await SessionStorage.getItem(prevSearchListKey);
     const prevSearchSetCollection = !alreadySavedPrevSearchList
       ? new Set<string>()
       : new Set<string>(JSON.parse(alreadySavedPrevSearchList));
@@ -16,6 +18,10 @@ export const addItemToPrevSearchList = async (item: string): Promise<void> => {
         Array.from<string>(prevSearchSetCollection).shift() || '',
       );
     }
+    await SessionStorage.setItem(
+      prevSearchListKey,
+      JSON.stringify(Array.from(prevSearchSetCollection)),
+    );
   } catch (err: any) {
     logError('AddItemToPrevSearchList', err);
   }
@@ -23,7 +29,8 @@ export const addItemToPrevSearchList = async (item: string): Promise<void> => {
 
 export const getPrevSearchList = async (): Promise<Array<string>> => {
   try {
-    const alreadySavedPrevSearchList: string | null = null;
+    const alreadySavedPrevSearchList: string | null =
+      await SessionStorage.getItem(prevSearchListKey);
     const prevSearchSetCollection = !alreadySavedPrevSearchList
       ? []
       : JSON.parse(alreadySavedPrevSearchList);
@@ -38,11 +45,16 @@ export const removeItemFromPrevSearchList = async (
   item: string,
 ): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null = null;
+    const alreadySavedPrevSearchList: string | null =
+      await SessionStorage.getItem(prevSearchListKey);
     const prevSearchSetCollection = !alreadySavedPrevSearchList
       ? new Set()
       : new Set(JSON.parse(alreadySavedPrevSearchList));
     prevSearchSetCollection.delete(item);
+    await SessionStorage.setItem(
+      prevSearchListKey,
+      JSON.stringify(Array.from(prevSearchSetCollection)),
+    );
   } catch (err: any) {
     logError('removeItemFromPrevSearchList', err);
   }
@@ -50,7 +62,7 @@ export const removeItemFromPrevSearchList = async (
 
 export const clearPrevSearchList = async (): Promise<void> => {
   try {
-    Promise.resolve();
+    await SessionStorage.setItem(prevSearchListKey, JSON.stringify([]));
   } catch (err: any) {
     logError('clearPrevSearchList', err);
   }
