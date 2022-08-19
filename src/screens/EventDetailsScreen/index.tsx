@@ -24,6 +24,9 @@ import GoBack, { goBackButtonuManager } from '@components/GoBack';
 //import { ErrorModal, PlayerModal } from '@components/GlobalModal/variants';
 import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import { isTVOS } from '@configs/globalConfig';
+import { globalModalManager } from "components/GlobalModals";
+import { PlayerModal } from "components/GlobalModals/variants";
+import Player from "components/Player";
 type TEventDetailsScreenProps = {};
 const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
   const { event, continueWatching } = route.params;
@@ -65,40 +68,40 @@ const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
       moveToTopSectionButtonRef.current.showButton();
     }
   }, []);
-  const openPlayer = useCallback(() => {}, []);
- /*  const openPlayer = useCallback(
-    ({
-      url,
-      poster = '',
-      offset = '0.0',
-      title: playerTitle = '',
-      subtitle = '',
-      onClose = () => {},
-      analytics = {},
-      guidance = '',
-      guidanceDetails = [],
-    }) => {
-      goBackButtonuManager.hideGoBackButton();
-      globalModalManager.openModal({
-        contentComponent: PlayerModal,
-        contentProps: {
-          autoPlay: true,
-          configuration: {
-            url,
-            poster,
-            offset,
-          },
-          title: playerTitle,
-          subtitle,
-          onClose,
-          analytics,
-          guidance,
-          guidanceDetails,
-        },
-      });
-    },
-    [],
-  ); */
+  // const openPlayer = useCallback(() => {}, []);
+  // const openPlayer = useCallback(
+  //   ({
+  //     url,
+  //     poster = '',
+  //     offset = '0.0',
+  //     title: playerTitle = '',
+  //     subtitle = '',
+  //     onClose = () => {},
+  //     analytics = {},
+  //     guidance = '',
+  //     guidanceDetails = [],
+  //   }) => {
+  //     goBackButtonuManager.hideGoBackButton();
+  //     globalModalManager.openModal({
+  //       contentComponent: Player,
+  //       contentProps: {
+  //         autoPlay: true,
+  //         configuration: {
+  //           url: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd',
+  //           poster,
+  //           offset,
+  //         },
+  //         title: playerTitle,
+  //         subtitle,
+  //         onClose,
+  //         analytics,
+  //         guidance,
+  //         guidanceDetails,
+  //       },
+  //     });
+  //   },
+  //   [],
+  // );
 
   const closeModal = useCallback((ref, clearLoadingState) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
@@ -111,7 +114,7 @@ const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
       clearLoadingState();
     }
   }, []);
-  const closePlayer = useCallback(() => {}, []);
+  // const closePlayer = useCallback(() => {}, []);
 
 /*   const closePlayer = useCallback(
     ({

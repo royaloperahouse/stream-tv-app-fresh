@@ -40,14 +40,14 @@ export const Icons = Object.freeze({
 });
 
 export const PlayerIcons = Object.freeze({
-/*   play: require('@assets/icons/player_play.png'),
+  play: require('@assets/icons/player_play.png'),
   pause: require('@assets/icons/player_pause.png'),
   seekForward: require('@assets/icons/player_seek_forward.png'),
   seekBackward: require('@assets/icons/player_seek_backward.png'),
   subtitles: require('@assets/icons/player_subtitles.png'),
   description: require('@assets/icons/player_description.png'),
   close: require('@assets/icons/player_close.png'),
-  restart: require('@assets/icons/player_restart.png'), */
+  restart: require('@assets/icons/player_restart.png'),
 });
 
 export default Object.freeze({
