@@ -5,9 +5,6 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAppDispatch } from 'hooks/redux';
 import GoBack from '@components/GoBack';
-//import { globalModalManager } from '@components/GlobalModal';
-//import { ErrorModal, PlayerModal } from '@components/GlobalModal/variants';
-import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import type {
   TContentScreensProps,
   NSNavigationScreensNames,
