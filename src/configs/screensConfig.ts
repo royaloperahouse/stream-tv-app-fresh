@@ -4,39 +4,22 @@ import {
   CompositeScreenProps,
   NavigatorScreenParams,
 } from '@react-navigation/native';
+import { ECellItemKey } from '@components/EventDetailsComponents/commonControls/MultiColumnAboutProductionList';
+import {
+  rootStackScreensNames,
+  contentScreenNames,
+  eventDetailsScreenNames,
+} from '@services/types/models';
+import type {
+  TContentStackScreensNames,
+  TEventDetailsStackScreensNames,
+  TContentScreenReverseNames,
+  TEventDetailsScreenReverseNames,
+  TExtrasVideo,
+} from 'services/types/models';
 
-export const rootStackScreensNames = Object.freeze({
-  content: 'Content',
-  player: 'Player',
-});
-
-export const contentScreenNames = Object.freeze({
-  home: 'Home',
-  operaMusic: 'Opera&music',
-  balletDance: 'Ballet&dance',
-  search: 'Search',
-  myList: 'MyList',
-  settings: 'Settings',
-  eventDetails: 'EventDetails',
-  exit: 'Exit',
-  liveStream: 'LiveStream',
-});
-
-export const contentScreenReverseNames = Object.freeze({
-  [contentScreenNames.home]: 'home',
-  [contentScreenNames.operaMusic]: 'operaMusic',
-  [contentScreenNames.balletDance]: 'balletDance',
-  [contentScreenNames.search]: 'search',
-  [contentScreenNames.myList]: 'myList',
-  [contentScreenNames.settings]: 'settings',
-  [contentScreenNames.eventDetails]: 'eventDetails',
-  [contentScreenNames.exit]: 'exit',
-  [contentScreenNames.liveStream]: 'liveStream',
-});
-
-type TContentStackScreensNames = typeof contentScreenNames;
-
-export type TContentScreenReverseNames = keyof typeof contentScreenReverseNames;
+export { rootStackScreensNames, contentScreenNames, eventDetailsScreenNames };
+export type { TContentScreenReverseNames, TEventDetailsScreenReverseNames };
 
 export type TContentScreenReverseNamesOfNavToDetails = Exclude<
   TContentScreenReverseNames,
@@ -56,23 +39,127 @@ export type TRootStackScreensParamList = {
 export type TRootStackScreenProps<T extends keyof TRootStackScreensParamList> =
   NativeStackScreenProps<TRootStackScreensParamList, T>;
 
+export type TEventDetailsStackScreenProps<
+  T extends TEventDetailsScreensNamesList,
+> = NativeStackScreenProps<TEventDetailsScreensParamList, T>;
+
 export type TContentScreensParamList = {
-  [contentScreenNames.home]: { eventId: string | null } | undefined;
-  [contentScreenNames.operaMusic]: { eventId: string | null } | undefined;
-  [contentScreenNames.balletDance]: { eventId: string | null } | undefined;
-  [contentScreenNames.search]: { eventId: string | null } | undefined;
-  [contentScreenNames.myList]: { eventId: string | null } | undefined;
+  [contentScreenNames.home]:
+    | {
+        eventId: string | null;
+        sectionIndex: number;
+        selectedItemIndex?: number;
+      }
+    | undefined;
+  [contentScreenNames.operaMusic]:
+    | {
+        eventId: string | null;
+        sectionIndex: number;
+        selectedItemIndex?: number;
+      }
+    | undefined;
+  [contentScreenNames.balletDance]:
+    | {
+        eventId: string | null;
+        sectionIndex: number;
+        selectedItemIndex?: number;
+      }
+    | undefined;
+  [contentScreenNames.search]:
+    | {
+        eventId: string | null;
+        sectionIndex: number;
+        selectedItemIndex?: number;
+      }
+    | undefined;
+  [contentScreenNames.myList]:
+    | {
+        eventId: string | null;
+        sectionIndex: number;
+        selectedItemIndex?: number;
+      }
+    | undefined;
   [contentScreenNames.settings]: undefined;
-  [contentScreenNames.eventDetails]: { eventId: string | null };
+  [contentScreenNames.eventDetails]: {
+    eventId: string;
+    screenNameFrom: TContentScreenReverseNames;
+    sectionIndex: number;
+    selectedItemIndex?: number;
+  };
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
 };
+
+export type TEventDetailsScreensParamContextProps = {
+  [eventDetailsScreenNames.general]: {
+    nextSectionTitle?: string;
+    publishingDate: string;
+    title: string;
+    shortDescription: string;
+    snapshotImageUrl: string;
+    vs_guidance: string;
+    vs_guidance_details: string;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    performanceInfo: { eventId: string; videoId: string } | null;
+    trailerInfo: { eventId: string; videoId: string } | null;
+    eventId: string;
+  };
+  [eventDetailsScreenNames.cast]: {
+    nextSectionTitle?: string;
+    castList: Array<{ role: string; name: string }>;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+  };
+  [eventDetailsScreenNames.creatives]: {
+    nextSectionTitle?: string;
+    creatives: Array<{ role: string; name: string }>;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+  };
+  [eventDetailsScreenNames.synopsis]: {
+    nextSectionTitle?: string;
+    synopsis: Array<{ key: string; text: string }>;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+  };
+  [eventDetailsScreenNames.info]: {
+    nextSectionTitle?: string;
+    aboutProduction: Array<{ key: string; type: ECellItemKey; content: any }>;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+  };
+  [eventDetailsScreenNames.extras]: {
+    nextSectionTitle?: string;
+    videosInfo: Array<TExtrasVideo>;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+    eventId: string;
+  };
+};
+
+export type TEventDetailsScreensParamList = {
+  [eventDetailsScreenNames.general]: undefined;
+  [eventDetailsScreenNames.cast]: undefined;
+  [eventDetailsScreenNames.creatives]: undefined;
+  [eventDetailsScreenNames.synopsis]: undefined;
+  [eventDetailsScreenNames.info]: undefined;
+  [eventDetailsScreenNames.extras]: undefined;
+};
+
 export type TContentScreensNamesList = keyof TContentScreensParamList;
+
+export type TEventDetailsScreensNamesList = keyof TEventDetailsScreensParamList;
 
 export type TContentScreensProps<T extends keyof TContentScreensParamList> =
   CompositeScreenProps<
     DrawerScreenProps<TContentScreensParamList, T>,
     TRootStackScreenProps<keyof TRootStackScreensParamList>
+  >;
+
+export type TEventDetailsScreensProps<T extends TEventDetailsScreensNamesList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<TEventDetailsScreensParamList, T>,
+    TContentScreensProps<'EventDetails'>
   >;
 
 declare global {
@@ -84,6 +171,8 @@ declare global {
 export declare namespace NSNavigationScreensNames {
   export interface RootStackScreens extends TRootStackScreensNames {}
   export interface ContentStackScreens extends TContentStackScreensNames {}
+  export interface EventDetailsStackScreens
+    extends TEventDetailsStackScreensNames {}
   export interface NavigateToDetailsScreens
     extends Omit<
       TContentStackScreensNames,

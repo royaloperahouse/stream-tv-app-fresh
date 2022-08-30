@@ -41,7 +41,7 @@ const ScrollingArrowPagination = forwardRef<
   }, []);
   return (
     <View style={styles.root}>
-      {!!activeIndex && (
+      {Boolean(activeIndex) && (
         <View style={styles.leftArrowContainer}>
           <RohText style={styles.arrowsText}>{leftArrow}</RohText>
         </View>

@@ -9,6 +9,8 @@ export type TNavMenuNodesRefsContextValue = {
     [key: string]: React.RefObject<TouchableHighlight>;
   }) => void;
   setExitOfAppButtonRef: (ref: React.RefObject<TouchableHighlight>) => void;
+  isFirstRun: boolean;
+  setIsFirstRun: (isFirstRun: boolean) => void;
 };
 const Context = createContext<TNavMenuNodesRefsContextValue>({} as any);
 type TNavMenuNodesRefsProviderProps = {
@@ -18,6 +20,7 @@ export const NavMenuNodesRefsContext = Context;
 export const NavMenuNodesRefsProvider: React.FC<
   TNavMenuNodesRefsProviderProps
 > = ({ children }) => {
+  const [isInit, setIsInit] = useState<boolean>(true);
   const [nodesRefsMapping, setNodesRefsMapping] = useState<
     TNavMenuNodesRefsContextValue['navMenuNodesRefs']
   >({});
@@ -33,14 +36,23 @@ export const NavMenuNodesRefsProvider: React.FC<
   >(ref => {
     setExitOfAppButtonRefCB(ref);
   }, []);
+  const setIsFirstRun = useCallback<
+    TNavMenuNodesRefsContextValue['setIsFirstRun']
+  >(isFirstRun => {
+    setIsInit(isFirstRun);
+  }, []);
   const ctx = useMemo<TNavMenuNodesRefsContextValue>(
     () => ({
+      isFirstRun: isInit,
       setNavMenuNodesRefs,
       setExitOfAppButtonRef,
       navMenuNodesRefs: nodesRefsMapping,
       exitOfAppButtonRef,
+      setIsFirstRun,
     }),
     [
+      isInit,
+      setIsFirstRun,
       setNavMenuNodesRefs,
       nodesRefsMapping,
       exitOfAppButtonRef,

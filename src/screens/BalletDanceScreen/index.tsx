@@ -38,6 +38,21 @@ const BalletDanceScreen: React.FC<
   const runningOnceRef = useRef<boolean>(false);
 
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
+  const sectionIndexAvailable = data
+    .find(section => section.sectionIndex === route.params?.sectionIndex)
+    ?.data.some(event => event.id === route.params?.eventId);
+
+  const hasTVPreferredFocus = (
+    isFirstRail: boolean,
+    index: number,
+    sectionIndex: number,
+  ) => {
+    return !route.params?.eventId
+      ? false
+      : !sectionIndexAvailable
+      ? isFirstRail && index === 0
+      : route.params?.sectionIndex === sectionIndex && index === 0;
+  };
 
   useLayoutEffect(() => {
     if (
@@ -65,7 +80,7 @@ const BalletDanceScreen: React.FC<
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
             railStyle={styles.railStyle}
-            sectionIndex={route.params.sectionIndex || 0}
+            sectionIndex={route?.params?.sectionIndex || 0}
             sections={data}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
             renderHeader={section => (
@@ -90,11 +105,11 @@ const BalletDanceScreen: React.FC<
                 event={item}
                 ref={previewRef}
                 canMoveUp={!isFirstRail}
-                hasTVPreferredFocus={
-                  route.params.fromEventDetails &&
-                  sectionIndex === route.params.sectionIndex &&
-                  index === 0
-                }
+                hasTVPreferredFocus={hasTVPreferredFocus(
+                  isFirstRail,
+                  index,
+                  sectionIndex,
+                )}
                 canMoveRight={index !== section.data.length - 1}
                 onFocus={scrollToRail}
                 eventGroupTitle={section.title}

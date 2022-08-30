@@ -28,21 +28,20 @@ const MyListScreen: React.FC<
 > = ({ route }) => {
   const { data: myList, ejected } = useMyList();
   const data = useSelector(digitalEventsForMyListScreenSelector(myList));
-  const listRef = useRef(null);
+  const listRef = useRef<FlatList>(null);
   const itemRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  const selectedIndex =
-    route.params?.sectionIndex < data.length
-      ? route.params.sectionIndex
-      : data.length - 1;
+  const selectedIndex = data.findIndex(
+    event => route.params?.eventId === event.id,
+  );
   useLayoutEffect(() => {
-    if (route?.params?.fromEventDetails && ejected) {
-      if (data.length) {
-        listRef.current.scrollToIndex({
-          animated: false,
-          index: Math.floor(selectedIndex / countOfItemsPeerRail),
-        });
-      }
+    if (selectedIndex !== -1 && ejected) {
+      listRef?.current?.scrollToIndex?.({
+        animated: false,
+        index: Math.floor(
+          (selectedIndex === -1 ? 0 : selectedIndex) / countOfItemsPeerRail,
+        ),
+      });
     }
   }, [route, data.length, ejected, selectedIndex]);
 
@@ -67,9 +66,7 @@ const MyListScreen: React.FC<
               <DigitalEventItem
                 ref={itemRef}
                 screenNameFrom={route.name}
-                hasTVPreferredFocus={
-                  route.params.fromEventDetails && selectedIndex === index
-                }
+                hasTVPreferredFocus={index === 0}
                 event={item}
                 canMoveUp={index >= countOfItemsPeerRail}
                 canMoveRight={

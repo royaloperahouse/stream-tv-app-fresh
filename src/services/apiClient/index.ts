@@ -99,17 +99,11 @@ export const getEventsByFeeIds = (feeIds: string, isProductionEnv: boolean) =>
   });
 
 export const getAccessToWatchVideo = async (
-  getVideoDetails: Promise<any>,
+  videoDetails: { eventId: string; videoId: string } | null,
   isProductionEnv: boolean,
   customerId: number | null,
 ): Promise<{ [key: string]: any }> => {
-  const digitalEventVideoResponse = await getVideoDetails;
-  const videoFromPrismic = digitalEventVideoResponse.results.find(
-    (prismicResponseResult: any) =>
-      prismicResponseResult.data?.video?.video_type === 'performance',
-  );
-
-  if (videoFromPrismic === undefined || !videoFromPrismic.id) {
+  if (!videoDetails?.videoId) {
     throw new UnableToCheckRentalStatusError();
   }
   const subscriptionResponse = await getSubscribeInfo(isProductionEnv);
@@ -118,7 +112,7 @@ export const getAccessToWatchVideo = async (
     subscriptionResponse.status < 400 &&
     subscriptionResponse?.data?.data?.attributes?.isSubscriptionActive
   ) {
-    return videoFromPrismic;
+    return videoDetails;
   }
   const purchasedStreamsResponse = await getPurchasedStreams(
     isProductionEnv,
@@ -164,10 +158,10 @@ export const getAccessToWatchVideo = async (
       if (
         eventsForPPVData.included.some(
           (item: any) =>
-            item.type === 'videoInfo' && item.id === videoFromPrismic.id,
+            item.type === 'videoInfo' && item.id === videoDetails.videoId,
         )
       ) {
-        return videoFromPrismic;
+        return videoDetails;
       }
       throw new NotRentedItemError();
     } else {
@@ -223,7 +217,7 @@ export const getAccessToWatchVideo = async (
       if (
         availablePPVEventsWithPrismicRelation.data
           .filter(item => item.type === 'digitalEvent')
-          .some(item => item.id === videoFromPrismic.id)
+          .some(item => item.id === videoDetails.videoId)
       ) {
         throw new NotRentedItemError();
       } else {
