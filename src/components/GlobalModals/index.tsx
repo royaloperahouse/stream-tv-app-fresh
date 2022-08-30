@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   },
   overlayLayer: {
     position: 'absolute',
+    zIndex: 2,
     top: 0,
     left: 0,
     right: 0,

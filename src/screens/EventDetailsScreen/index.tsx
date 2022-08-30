@@ -24,6 +24,9 @@ const EventDetailsScreen: React.FC<
   >
 > = ({ route }) => {
   const { eventId } = route.params;
+  const { extrasLoading, sectionsParams, sectionsCollection } = useEventDetails(
+    { eventId },
+  );
   const dispatch = useAppDispatch();
   const eventDetailsScreenMounted = useRef<boolean>(false);
   useEffect(() => {
@@ -32,9 +35,6 @@ const EventDetailsScreen: React.FC<
       dispatch(getEventListLoopStart());
     };
   }, [dispatch]);
-  const { extrasLoading, sectionsParams, sectionsCollection } = useEventDetails(
-    { eventId },
-  );
 
   useLayoutEffect(() => {
     eventDetailsScreenMounted.current = true;
