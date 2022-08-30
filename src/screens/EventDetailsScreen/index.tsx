@@ -25,14 +25,15 @@ import GoBack, { goBackButtonuManager } from '@components/GoBack';
 import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import { isTVOS } from '@configs/globalConfig';
 import { globalModalManager } from "components/GlobalModals";
-import { PlayerModal } from "components/GlobalModals/variants";
+import {ErrorModal, PlayerModal} from "components/GlobalModals/variants";
 import Player from "components/Player";
+import {General} from "components/EventDetailsComponents";
 type TEventDetailsScreenProps = {};
 const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
   const { event, continueWatching } = route.params;
   const VirtualizedListRef = useRef<VirtualizedList<any>>(null);
   const eventDetailsScreenMounted = useRef<boolean>(false);
-  const generalSectionRef = useRef<TGeneralRef>(null);
+  const generalSectionRef = useRef<TGeneralRef>(General);
   const movedToTopSection = useRef<boolean>(false);
 
   const moveToTopSectionButtonRef = useRef<TMoveToTopSectionButtonRef>(null);
@@ -69,39 +70,39 @@ const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
     }
   }, []);
   // const openPlayer = useCallback(() => {}, []);
-  // const openPlayer = useCallback(
-  //   ({
-  //     url,
-  //     poster = '',
-  //     offset = '0.0',
-  //     title: playerTitle = '',
-  //     subtitle = '',
-  //     onClose = () => {},
-  //     analytics = {},
-  //     guidance = '',
-  //     guidanceDetails = [],
-  //   }) => {
-  //     goBackButtonuManager.hideGoBackButton();
-  //     globalModalManager.openModal({
-  //       contentComponent: Player,
-  //       contentProps: {
-  //         autoPlay: true,
-  //         configuration: {
-  //           url: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd',
-  //           poster,
-  //           offset,
-  //         },
-  //         title: playerTitle,
-  //         subtitle,
-  //         onClose,
-  //         analytics,
-  //         guidance,
-  //         guidanceDetails,
-  //       },
-  //     });
-  //   },
-  //   [],
-  // );
+  const openPlayer = useCallback(
+    ({
+      url,
+      poster = '',
+      offset = '0.0',
+      title: playerTitle = '',
+      subtitle = '',
+      onClose = () => {},
+      analytics = {},
+      guidance = '',
+      guidanceDetails = [],
+    }) => {
+      goBackButtonuManager.hideGoBackButton();
+      globalModalManager.openModal({
+        contentComponent: Player,
+        contentProps: {
+          autoPlay: true,
+          configuration: {
+            url: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+            poster,
+            offset,
+          },
+          title: playerTitle,
+          subtitle,
+          onClose,
+          analytics,
+          guidance,
+          guidanceDetails,
+        },
+      });
+    },
+    [],
+  );
 
   const closeModal = useCallback((ref, clearLoadingState) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
@@ -116,7 +117,7 @@ const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
   }, []);
   // const closePlayer = useCallback(() => {}, []);
 
-/*   const closePlayer = useCallback(
+   const closePlayer = useCallback(
     ({
         savePositionCB,
         videoId,
@@ -155,7 +156,7 @@ const EventDetailsScreen: React.FC<TEventDetailsScreenProps> = ({ route }) => {
         }
       },
     [closeModal],
-  ); */
+  );
 
   const setRefToMovingUp = useCallback(
     (

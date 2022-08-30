@@ -38,6 +38,7 @@ const ROHBitmovinPlayerModule = NativeModules.ROHBitMovinPlayerControl;
 
 const eventEmitter = new NativeEventEmitter(NativeModules.ROHBitMovinPlayer);
 
+
 type TCallbackFunc = (data?: any) => void;
 
 type TOnLoadPayload = {
@@ -146,7 +147,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const [subtitleCue, setSubtitleCue] = useState('');
 
   const appState = useRef(AppState.currentState);
-
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (appState.current === 'active' && nextAppState === 'background') {

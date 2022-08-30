@@ -9,6 +9,7 @@ import RohText from '@components/RohText';
 import { buildInfo } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
 import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
+import GlobalModal from "components/GlobalModals";
 //import GlobalModal from '@components/GlobalModal';
 
 type TMainLayoutProps = {};
@@ -19,6 +20,7 @@ const MainLayout: React.FC<TMainLayoutProps> = () => {
       <WithLogo>
         <NavMenuNodesRefsProvider>
           <View style={styles.root}>
+            <GlobalModal/>
             <View style={styles.maninContentContainer}>
               <NavigationContainer
                 onReady={React.useCallback(() => RNBootSplash.hide(), [])}>
