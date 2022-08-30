@@ -12,6 +12,7 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import FastImage from 'react-native-fast-image';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 type Props = {
   focusCallback?: (pressingHandler?: () => void) => void;
@@ -125,7 +126,9 @@ const ExtrasVideoButton = forwardRef<any, Props>(
               loading ? styles.activeSpinnerStyle : {},
             ]}
           />
-          <View style={[styles.spinnerContainer]} />
+          <View style={[styles.spinnerContainer]}>
+            <LoadingSpinner showSpinner={loading} />
+          </View>
         </View>
       </TouchableHighlightWrapper>
     );

@@ -43,10 +43,12 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
 > = ({ navigation, route }) => {
+  const { isFirstRun, setIsFirstRun } = useContext(NavMenuNodesRefsContext);
   const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
   const { data: myList, ejected: myListEjected } = useMyList();
@@ -92,23 +94,39 @@ const HomePageScreen: React.FC<
   }, [data]);
 
   useLayoutEffect(() => {
+    if (isFirstRun) {
+      setIsFirstRun(false);
+    }
+  }, [isFirstRun, setIsFirstRun]);
+
+  useLayoutEffect(() => {
     dispatch(startFullSubscriptionLoop());
     return () => {
       dispatch(endFullSubscriptionLoop());
     };
   }, [dispatch]);
-  if (!data.length || !continueWatchingListEjected || !myListEjected) {
-    return null;
-  }
+  const sectionIndexAvailable =
+    !isFirstRun &&
+    data
+      .find(section => section.sectionIndex === route.params?.sectionIndex)
+      ?.data.some(event => event.id === route.params?.eventId);
+
   const hasTVPreferredFocus = (
     isFirstRail: boolean,
     index: number,
     sectionIndex: number,
   ) => {
-    return route?.params?.eventId
-      ? isFirstRail && index === 0
-      : sectionIndex === route.params.sectionIndex && index === 0;
+    return isFirstRun || !sectionIndexAvailable
+      ? route.params?.eventId
+        ? isFirstRail && index === 0
+        : route.params?.sectionIndex === sectionIndex && index === 0
+      : false;
   };
+
+  if (!data.length || !continueWatchingListEjected || !myListEjected) {
+    return null;
+  }
+
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect

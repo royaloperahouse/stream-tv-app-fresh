@@ -36,6 +36,21 @@ const OperaMusicScreen: React.FC<
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
+  const sectionIndexAvailable = data
+    .find(section => section.sectionIndex === route.params?.sectionIndex)
+    ?.data.some(event => event.id === route.params?.eventId);
+
+  const hasTVPreferredFocus = (
+    isFirstRail: boolean,
+    index: number,
+    sectionIndex: number,
+  ) => {
+    return !route.params?.eventId
+      ? false
+      : !sectionIndexAvailable
+      ? isFirstRail && index === 0
+      : route.params?.sectionIndex === sectionIndex && index === 0;
+  };
 
   useLayoutEffect(() => {
     if (
@@ -62,7 +77,7 @@ const OperaMusicScreen: React.FC<
           <RailSections
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
-            sectionIndex={route.params.sectionIndex || 0}
+            sectionIndex={route?.params?.sectionIndex || 0}
             railStyle={styles.railStyle}
             sections={data}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
@@ -86,11 +101,11 @@ const OperaMusicScreen: React.FC<
               <DigitalEventItem
                 screenNameFrom={route.name}
                 event={item}
-                hasTVPreferredFocus={
-                  route.params.fromEventDetails &&
-                  sectionIndex === route.params.sectionIndex &&
-                  index === 0
-                }
+                hasTVPreferredFocus={hasTVPreferredFocus(
+                  isFirstRail,
+                  index,
+                  sectionIndex,
+                )}
                 ref={previewRef}
                 onFocus={scrollToRail}
                 canMoveUp={!isFirstRail}

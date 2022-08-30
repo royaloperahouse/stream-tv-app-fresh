@@ -166,23 +166,6 @@ export const NavMenuScreenRedirect = forwardRef<
         })
         .map(([_, value]) => value);
 
-  console.log(
-    screenName + 'ToNavMenu',
-    Array.isArray(redirectToContent) &&
-      redirectToContent?.length > 0 &&
-      Array.isArray(redirectFromContent) &&
-      redirectFromContent?.length > 0 &&
-      typeof (redirectFromContent?.[0] as any)?.setNativeProps === 'function',
-  );
-
-  console.log(
-    screenName + 'ToContent',
-    Array.isArray(redirectToContent) &&
-      redirectToContent?.length > 0 &&
-      Array.isArray(redirectFromContent) &&
-      redirectFromContent?.length > 0 &&
-      typeof (redirectToContent?.[0] as any)?.setNativeProps === 'function',
-  );
   useLayoutEffect(() => {
     isMounted.current = true;
     return () => {
@@ -205,18 +188,16 @@ export const NavMenuScreenRedirect = forwardRef<
           }
           underlayColor="transparent"
           onFocus={() => {
-            console.log('qqqq');
             if (
               redirectToContent?.[0] &&
               typeof redirectToContent?.[0] !== 'number'
             ) {
-              console.log('qqqq1');
               (redirectToContent?.[0] as any)?.setNativeProps({
                 hasTVPreferredFocus: true,
               });
             }
           }}>
-          <View />
+          <View collapsable={false}/>
         </TouchableHighlight>
         <TouchableHighlight
           underlayColor="transparent"
@@ -230,18 +211,16 @@ export const NavMenuScreenRedirect = forwardRef<
           }
           style={[styles.redirectBlock]}
           onFocus={() => {
-            console.log('focus');
             if (
               redirectFromContent?.[0] &&
               typeof redirectFromContent?.[0] !== 'number'
             ) {
-              console.log('focus1');
               (redirectFromContent?.[0] as any)?.setNativeProps({
                 hasTVPreferredFocus: true,
               });
             }
           }}>
-          <View />
+          <View collapsable={false} />
         </TouchableHighlight>
       </View>
     );
@@ -251,10 +230,12 @@ export const NavMenuScreenRedirect = forwardRef<
       <TVFocusGuideView
         style={[styles.redirectBlock]}
         destinations={redirectToContent}
+        collapsable={false}
       />
       <TVFocusGuideView
         style={[styles.redirectBlock]}
         destinations={redirectFromContent}
+        collapsable={false}
       />
     </View>
   );

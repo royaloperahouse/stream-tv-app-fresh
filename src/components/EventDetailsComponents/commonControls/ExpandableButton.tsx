@@ -12,6 +12,7 @@ import TouchableHighlightWrapper, {
   TTouchableHighlightWrapperRef,
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 type Props = {
   Icon: any;
@@ -109,6 +110,7 @@ const ExpandableButton = forwardRef<any, Props>(
                 {text}
               </RohText>
             }
+            <LoadingSpinner showSpinner={loading} size={40} />
           </View>
         </TouchableHighlightWrapper>
       </View>
