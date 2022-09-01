@@ -302,7 +302,6 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   useLayoutEffect(() => {
     TVEventManager.init();
     const toggleNavMenuCB = (event: HWEvent) => {
-      console.log('event test', event)
       const { eventType, tag } = event;
       switch (eventType) {
         case 'blur': {

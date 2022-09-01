@@ -98,6 +98,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
     const exitButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
     const restartButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
     const [fastForwardClickStack, setFastForwardClickStack] = useState(0);
+    const [prevRewindBtn, setprevRewindBtn] = useState<string>('');
 
     const focusToSutitleButton = useCallback(() => {
       if (
@@ -234,9 +235,11 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       TVEventManager.setEventListeners([
         (eve: HWEvent) => {
           if (eve?.eventType === 'blur' || eve?.eventType === 'focus') {
+            setFastForwardClickStack(0);
             return;
           }
           if (eve?.eventKeyAction === 1) {
+
             switch (eve.eventType) {
               case 'select': {
                 if (
@@ -298,46 +301,50 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
             switch (eve.eventType) {
               case 'select': {
 
+                // <---fast forward logic--->
                 if (
-                    eve.tag === centralControlsRef.current?.getFwdNode() &&
-                    seekUpdatingOnDevice.current === false &&
-                    (seekOperation.current === ESeekOperations.fastForward)
+                  eve.tag === centralControlsRef.current?.getFwdNode() &&
+                  seekOperation.current === ESeekOperations.fastForward
                 ) {
-                  setFastForwardClickStack((prevState) => prevState + 1);
-                  console.log(fastForwardClickStack, 'move right')
+                  if (prevRewindBtn === 'left') {
+                    setFastForwardClickStack(0);
+                  }
+
+                  setprevRewindBtn('right');
+                  setFastForwardClickStack(prevState => prevState + 1);
                 }
 
+                if (
+                  eve.tag === centralControlsRef.current?.getRwdNode() &&
+                  seekOperation.current === ESeekOperations.rewind
+                ) {
+                  if (prevRewindBtn === 'right') {
+                    setFastForwardClickStack(0);
+                  }
 
-                // if (
-                //     eve.tag === centralControlsRef.current?.getRwdNode() &&
-                //     seekUpdatingOnDevice.current === false &&
-                //     (seekOperation.current === ESeekOperations.rewind)
-                // ) {
-                //
-                //   setFastForwardClickStack((prevState) => prevState + 1);
-                //   console.log(fastForwardClickStack, 'move left')
-                //   seekOperation.current = ESeekOperations.rewind;
-                //
-                // }
-
-
+                  setprevRewindBtn('left');
+                  setFastForwardClickStack(prevState => prevState + 1);
+                }
+                // <---fast forward logic--->
 
                 if (
                   eve.tag === centralControlsRef.current?.getFwdNode() &&
                   countOfFastForwardClicks.current &&
                   seekOperation.current === ESeekOperations.fastForward
                 ) {
-                  console.log(countOfFastForwardClicks.current)
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                      fastForwardClickStack > 5 ? 2 : 1,
+                    fastForwardClickStack > 5
+                      ? calculateRewindStep(fastForwardClickStack)
+                      : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
                     countOfFastForwardClicks.current = 0;
+                    setFastForwardClickStack(0);
                     seekUpdatingOnDevice.current = false;
-                   seekQueueuBusy.current = false;
+                    seekQueueuBusy.current = false;
                     break;
                   }
                   seekTo(timeForSeeking);
@@ -351,11 +358,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    countOfRewindClicks.current,
+                    fastForwardClickStack > 5
+                      ? calculateRewindStep(fastForwardClickStack)
+                      : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
                     countOfRewindClicks.current = 0;
+                    setFastForwardClickStack(0);
                     seekUpdatingOnDevice.current = false;
                     seekQueueuBusy.current = false;
                     break;
@@ -365,11 +375,22 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                 break;
               }
               case 'fastForward': {
+                // <---fast forward logic--->
                 if (countOfFastForwardClicks.current) {
+                  if (prevRewindBtn === 'left') {
+                    setFastForwardClickStack(0);
+                  }
+
+                  setprevRewindBtn('right');
+                  setFastForwardClickStack(prevState => prevState + 1);
+                  // <---fast forward logic--->
+
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    countOfFastForwardClicks.current,
+                    fastForwardClickStack > 5
+                      ? calculateRewindStep(fastForwardClickStack)
+                      : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
@@ -384,10 +405,22 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               }
               case 'rewind': {
                 if (countOfRewindClicks.current) {
+
+                  // <---fast forward logic--->
+                  if (prevRewindBtn === 'right') {
+                    setFastForwardClickStack(0);
+                  }
+
+                  setprevRewindBtn('left');
+                  setFastForwardClickStack(prevState => prevState + 1);
+                  // <---fast forward logic--->
+
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    countOfRewindClicks.current,
+                    fastForwardClickStack > 5
+                      ? calculateRewindStep(fastForwardClickStack)
+                      : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
@@ -405,6 +438,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   ? onPausePress
                   : onPlayPress;
                 currentPlayerAction();
+                setFastForwardClickStack(0);
                 break;
               }
               default:
@@ -435,6 +469,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                 }).start(({ finished: animationFinished }) => {
                   if (animationFinished) {
                     controlPanelVisibleRef.current = false;
+                    setFastForwardClickStack(0);
                   }
                 });
               }, 5000);
@@ -443,6 +478,16 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         },
       ]);
     }, [onPausePress, onPlayPress, calculateTimeForSeeking, seekTo, fastForwardClickStack]);
+
+    const calculateRewindStep = (numberOfClicks: number) => {
+      if (numberOfClicks === 5) {
+        return 2;
+      } else if (numberOfClicks < 25) {
+        return numberOfClicks;
+      } else {
+        return 25;
+      }
+    };
 
     useLayoutEffect(() => {
       const intervalId = setInterval(() => {
