@@ -11,15 +11,14 @@ const RohImage: FC<TRohImageProps> = ({ resizeMode, style, source }) => {
   const [imageSource, setDefaultImageSource] = useState<Source>({
     uri: source,
   });
+  const placeholderImage = require('@assets/image-placeholder.png');
 
   return (
     <FastImage
       resizeMode={resizeMode}
       style={style}
       source={imageSource}
-      onError={() =>
-        setDefaultImageSource(require('@assets/image-placeholder.png'))
-      }
+      onError={() => setDefaultImageSource(placeholderImage)}
     />
   );
 };
