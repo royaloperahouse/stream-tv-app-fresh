@@ -69,6 +69,7 @@ import GoDown from '../commonControls/GoDown';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import GoBack, { goBackButtonuManager } from '@components/GoBack';
 import { useFocusLayoutEffect } from '@hooks/useFocusLayoutEffect';
+import RohImage from 'components/RohImage';
 const General: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['general']
@@ -551,10 +552,10 @@ const General: React.FC<
         ) : null}
       </View>
       <View style={styles.snapshotContainer}>
-        <FastImage
+        <RohImage
           resizeMode={FastImage.resizeMode.cover}
           style={styles.snapshotContainer}
-          source={{ uri: snapshotImageUrl }}
+          source={snapshotImageUrl}
         />
       </View>
     </View>

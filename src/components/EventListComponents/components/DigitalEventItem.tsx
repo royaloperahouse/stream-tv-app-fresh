@@ -28,6 +28,7 @@ import {
   TContentScreenReverseNamesOfNavToDetails,
   TContentScreensProps,
 } from '@configs/screensConfig';
+import RohImage from "components/RohImage";
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -178,11 +179,10 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
               styles.imageContainer,
               focused ? styles.imageContainerActive : {},
             ]}>
-            <FastImage
+            <RohImage
               resizeMode={FastImage.resizeMode.cover}
               style={styles.image}
-              source={{ uri: snapshotImageUrl }}
-            />
+              source={snapshotImageUrl}></RohImage>
           </View>
           <RohText style={styles.title}>{eventTitle}</RohText>
         </View>

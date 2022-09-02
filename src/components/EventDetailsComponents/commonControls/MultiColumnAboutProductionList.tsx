@@ -18,6 +18,7 @@ import ScrollingPagination, {
 import FastImage from 'react-native-fast-image';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import { ScrollView } from 'react-native-gesture-handler';
+import RohImage from 'components/RohImage';
 
 export enum ECellItemKey {
   'guidance' = 'guidance',
@@ -74,7 +75,7 @@ const MultiColumnAboutProductionList: React.FC<
             {item.content.img && (
               <View>
                 <RohText style={styles.title}>Production sponsor</RohText>
-                <FastImage
+                <RohImage
                   resizeMode={FastImage.resizeMode.cover}
                   style={[
                     styles.image,
@@ -84,8 +85,7 @@ const MultiColumnAboutProductionList: React.FC<
                       columnWidth,
                     ),
                   ]}
-                  source={{ uri: item.content.img.url }}
-                />
+                  source={item.content.img.url}></RohImage>
               </View>
             )}
             {item.content.info && (

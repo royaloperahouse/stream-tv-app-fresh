@@ -13,6 +13,7 @@ import get from 'lodash.get';
 import FastImage from 'react-native-fast-image';
 import { Colors } from '@themes/Styleguide';
 import { OverflowingContainer } from '@components/OverflowingContainer';
+import RohImage from 'components/RohImage';
 
 export type TPreviewRef = {
   setDigitalEvent?: (
@@ -96,11 +97,10 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
       </View>
 
       <View style={styles.snapshotContainer}>
-        <FastImage
+        <RohImage
           resizeMode={FastImage.resizeMode.cover}
           style={styles.previewImage}
-          source={{ uri: snapshotImageUrl }}
-        />
+          source={snapshotImageUrl}></RohImage>
       </View>
     </Animated.View>
   );
