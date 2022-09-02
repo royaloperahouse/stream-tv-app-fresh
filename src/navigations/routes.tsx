@@ -26,6 +26,7 @@ import SettingsInActiveIcon from '@assets/svg/navIcons/Settings.svg';
 import SettingsActiveIcon from '@assets/svg/navIcons/SettingsActive.svg';
 import { TRoutes, TRoute } from '@services/types/models';
 import { contentScreenNames } from '@configs/screensConfig';
+
 //import { isTVOS } from '@configs/globalConfig';
 
 export const routes: TRoutes = [
@@ -113,7 +114,7 @@ export const additionalRoutesWithoutNavMenuNavigation: {
     navMenuTitle: undefined,
     isDefault: false,
     position: 8,
-    initialParams: undefined,
+    initialParams: { eventId: '' },
   },
   exit: {
     navMenuScreenName: contentScreenNames.exit,
@@ -131,7 +132,3 @@ export const allRoutes: TRoutes = [
   ...routes,
   ...Object.values(additionalRoutesWithoutNavMenuNavigation),
 ];
-
-/* export const allRoutes = !isTVOS
-  ? [...routes, ...Object.values(additionalRoutesWithoutNavMenuNavigation)]
-  : [...Object.values(additionalRoutesWithoutNavMenuNavigation), ...routes]; */

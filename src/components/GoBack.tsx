@@ -6,19 +6,28 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import { View, StyleSheet, Dimensions, BackHandler } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  BackHandler,
+  HWEvent,
+} from 'react-native';
 import { navMenuManager } from '@components/NavMenu';
 import { scaleSize } from '@utils/scaleSize';
-import {
-  RouteProp,
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import GoBackIcon from '@assets/svg/navIcons/GoBack.svg';
-import TouchableHighlightWrapper from './TouchableHighlightWrapper';
+import TouchableHighlightWrapper, {
+  TTouchableHighlightWrapperRef,
+} from './TouchableHighlightWrapper';
 //import { globalModalManager } from '@components/GlobalModal';
-import { isTVOS } from '@configs/globalConfig';
+import type {
+  TContentScreensProps,
+  NSNavigationScreensNames,
+} from '@configs/screensConfig';
+import { TVEventManager } from '@services/tvRCEventListener';
+import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
+
 const goBackButtonWidth = scaleSize(160);
 const goBackButtonRef = createRef<
   Partial<{
@@ -60,57 +69,69 @@ type TGoBackProps = {};
 
 const GoBack: React.FC<TGoBackProps> = () => {
   const [show, setShow] = useState<boolean>(true);
-  const [accessible, setAccessible] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
+  const [accessible, setAccessible] = useState<boolean>(true);
+
+  const navigation =
+    useNavigation<
+      TContentScreensProps<
+        NSNavigationScreensNames.ContentStackScreens['eventDetails']
+      >['navigation']
+    >();
   const isMounted = useRef<boolean>(false);
-  const route = useRoute<RouteProp<any, string>>();
-  const onFocusHandler = () => {
+  const route =
+    useRoute<
+      TContentScreensProps<
+        NSNavigationScreensNames.ContentStackScreens['eventDetails']
+      >['route']
+    >();
+  const onFocusHandler = useCallback(() => {
     if (route.params?.screenNameFrom) {
       navigation.navigate(route.params.screenNameFrom, {
-        fromEventDetails: true,
+        eventId: route.params.eventId,
         sectionIndex: route.params.sectionIndex,
-        eventId: route.params.event.id,
+        selectedItemIndex: route.params.selectedItemIndex,
       });
     } else if (navigation.canGoBack()) {
       navigation.goBack();
     }
     navMenuManager.showNavMenu();
-    //navigation.openDrawer();
-/*     if (!isTVOS) {
-      navMenuManager.showNavMenu();
-    } else {
-      setTimeout(() => {
-        navMenuManager.showNavMenu();
-      }, 500);
-    } */
-  };
-  useLayoutEffect(() => {
-    const handleBackButtonClick = () => {
-      //if (globalModalManager.isModalOpen() || !show)
-      if (!show) {
+  }, [
+    route.params.eventId,
+    route.params.screenNameFrom,
+    route.params.sectionIndex,
+    route.params.selectedItemIndex,
+    navigation,
+  ]);
+  useFocusLayoutEffect(
+    useCallback(() => {
+      const handleBackButtonClick = () => {
+        //if (globalModalManager.isModalOpen() || !show)
+        if (!show) {
+          return false;
+        }
+        if (route.params?.screenNameFrom) {
+          navigation.navigate(route.params.screenNameFrom, {
+            eventId: route.params.eventId,
+            sectionIndex: route.params.sectionIndex,
+            selectedItemIndex: route.params.selectedItemIndex,
+          });
+          navMenuManager.showNavMenu();
+        } else if (navigation.canGoBack()) {
+          navigation.goBack();
+          navMenuManager.showNavMenu();
+        }
         return true;
-      }
-      if (route.params?.screenNameFrom) {
-        navigation.navigate(route.params.screenNameFrom, {
-          fromEventDetails: true,
-          sectionIndex: route.params.sectionIndex,
-          eventId: route.params.event.id,
-        });
-        navMenuManager.showNavMenu();
-      } else if (navigation.canGoBack()) {
-        navigation.goBack();
-        navMenuManager.showNavMenu();
-      }
-      return true;
-    };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
-  }, [navigation, route.params, show]);
+      };
+      BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+      return () => {
+        BackHandler.removeEventListener(
+          'hardwareBackPress',
+          handleBackButtonClick,
+        );
+      };
+    }, [navigation, route.params, show]),
+  );
   useImperativeHandle(
     goBackButtonRef,
     () => ({
@@ -131,7 +152,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
           setAccessible(true);
         }
       },
-      setUnAccessibleGoBackButtonn: () => {
+      setUnAccessibleGoBackButton: () => {
         if (isMounted.current) {
           setAccessible(false);
         }
@@ -146,29 +167,28 @@ const GoBack: React.FC<TGoBackProps> = () => {
     };
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      const timeout = setTimeout(() => {
-        if (!isMounted.current) {
-          return;
-        }
-        setAccessible(true);
-      }, 0);
-      return () => {
-        clearTimeout(timeout);
-      };
-    }, []),
-  );
-
+  useLayoutEffect(() => {
+    const cb = (event: HWEvent) => {
+      if (
+        event.tag === btnRef.current?.getNode?.() &&
+        event.eventType === 'left'
+      ) {
+        onFocusHandler();
+      }
+    };
+    TVEventManager.addEventListener(cb);
+    return () => {
+      TVEventManager.removeEventListener(cb);
+    };
+  }, [onFocusHandler]);
   if (!show) {
     return null;
   }
+
   return (
     <View style={styles.container}>
       <TouchableHighlightWrapper
-        onFocus={onFocusHandler}
-        onBlur={() => 'blur'}
-        hasTVPreferredFocus={false}
+        ref={btnRef}
         style={styles.wrapperStyle}
         accessible={accessible}
         styleFocused={styles.wrapperStyleActive}>

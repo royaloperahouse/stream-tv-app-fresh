@@ -12,9 +12,7 @@ import {
   TargetedEvent,
   TouchableHighlight,
   TouchableHighlightProps,
-  Platform,
 } from 'react-native';
-import { navMenuManager } from '@components/NavMenu';
 
 type TTouchableHighlightWrapperProps = TouchableHighlightProps & {
   canMoveUp?: boolean;

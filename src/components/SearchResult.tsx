@@ -16,7 +16,10 @@ import { scaleSize } from '@utils/scaleSize';
 import { Colors } from '@themes/Styleguide';
 import { getPrevSearchList } from '@services/previousSearch';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import { TEventContainer } from '@services/types/models';
+import {
+  TContentScreenReverseNames,
+  TEventContainer,
+} from '@services/types/models';
 import { navMenuManager } from '@components/NavMenu';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import { contentScreenNames } from '@configs/screensConfig';
@@ -34,21 +37,21 @@ const SearchResult: React.FC<TSearchResultProps> = ({
   const resultListRef = useRef<FlatList>(null);
   const digitalEventDetailsLength = useRef<number>(0);
   const digitalEventDetails = useAppSelector(digitalEventDetailsSearchSelector);
+  const selectedIndex = digitalEventDetails.findIndex(
+    event => event.id === route.params?.eventId,
+  );
   useLayoutEffect(() => {
     if (
       digitalEventDetails.length &&
-      route.params?.fromEventDetails &&
+      route.params?.eventId &&
       resultListRef.current
     ) {
       resultListRef.current.scrollToIndex({
         animated: true,
-        index:
-          route.params.sectionIndex < digitalEventDetails.length
-            ? route.params.sectionIndex
-            : 0,
+        index: selectedIndex === -1 ? 0 : selectedIndex,
       });
     }
-  }, [digitalEventDetails.length, route]);
+  }, [digitalEventDetails.length, route, selectedIndex]);
   if (!digitalEventDetails.length && digitalEventDetailsLength.current) {
     onUnMountAllToSearchResultTransition?.();
   }
@@ -98,7 +101,10 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           canMoveDown={index !== digitalEventDetails.length - 1}
           screenNameFrom={route.name}
           sectionIndex={index}
-          //hasTVPreferredFocus={(route?.params?.sectionIndex || 0) === index}
+          hasTVPreferredFocus={Boolean(
+            route.params?.eventId &&
+              (selectedIndex === -1 ? 0 : selectedIndex) === index,
+          )}
           onMountToSearchResultTransition={onMountToSearchResultTransition}
         />
       )}
@@ -111,7 +117,7 @@ type TSearchItemComponentProps = {
   isFirst: boolean;
   item: TEventContainer;
   canMoveUp: boolean;
-  screenNameFrom: string;
+  screenNameFrom: TContentScreenReverseNames;
   sectionIndex: number;
   canMoveDown: boolean;
   hasTVPreferredFocus: boolean;
@@ -136,8 +142,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   const touchableHandler = () => {
     navMenuManager.hideNavMenu();
     navigation.navigate(contentScreenNames.eventDetails, {
-      fromEventDetails: false,
-      event: item,
+      eventId: item.id,
       screenNameFrom,
       sectionIndex,
     });

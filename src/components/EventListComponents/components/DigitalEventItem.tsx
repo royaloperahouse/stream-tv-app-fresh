@@ -66,7 +66,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       hasTVPreferredFocus,
       canMoveRight = true,
       onFocus,
-      continueWatching,
       screenNameFrom,
       eventGroupTitle,
       sectionIndex,
@@ -76,7 +75,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setRailItemRefCb = () => {},
       removeRailItemRefCb = () => {},
       setFirstItemFocusable,
-      removeFirstItemFocusable,
     },
     ref: any,
   ) => {
@@ -112,9 +110,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const onPressHandler = () => {
       navMenuManager.hideNavMenu();
       navigation.navigate(contentScreenNames.eventDetails, {
-        fromEventDetails: false,
-        event,
-        continueWatching,
+        eventId: event.id,
         screenNameFrom,
         sectionIndex,
         selectedItemIndex,
@@ -125,7 +121,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       if (isMounted.current) {
         setFocused(true);
       }
-      console.log('123!!!');
       if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
         setFirstItemFocusable(
           firstFocusItenKey,
@@ -139,7 +134,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     };
 
     useLayoutEffect(() => {
-      console.log('123');
       if (
         sectionIndex === 0 &&
         setFirstItemFocusable &&

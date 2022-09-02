@@ -1,8 +1,6 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { View, StyleSheet, HWEvent } from 'react-native';
-import Down from '@assets/svg/eventDetails/Down.svg';
 import { scaleSize } from '@utils/scaleSize';
-import RohText from '@components/RohText';
 import TouchableHighlightWrapper, {
   TTouchableHighlightWrapperRef,
 } from 'components/TouchableHighlightWrapper';
@@ -10,19 +8,18 @@ import { TVEventManager } from '@services/tvRCEventListener';
 import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
 
 type Props = {
-  text: string;
+  height?: number;
   onFocus: () => void;
 };
 
-const GoDown: React.FC<Props> = ({ text, onFocus }) => {
+const GoUp: React.FC<Props> = ({ height = 10, onFocus }) => {
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
-
   useFocusLayoutEffect(
     useCallback(() => {
       const cb = (event: HWEvent) => {
         if (
           event.tag === btnRef.current?.getNode?.() &&
-          event.eventType === 'down'
+          event.eventType === 'up'
         ) {
           onFocus();
         }
@@ -41,28 +38,17 @@ const GoDown: React.FC<Props> = ({ text, onFocus }) => {
       canMoveRight={false}
       canMoveUp={false}
       underlayColor="transparent"
-      style={{ height: scaleSize(50) }}>
-      <View style={styles.container}>
-        <Down width={scaleSize(50)} height={scaleSize(50)} />
-        <RohText style={styles.text}>{text.toUpperCase()}</RohText>
-      </View>
+      style={{ height: scaleSize(height) }}>
+      <View style={[styles.container, { height }]} collapsable={false} />
     </TouchableHighlightWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
-    opacity: 0.7,
-    height: scaleSize(50),
-    alignItems: 'center',
-  },
-  text: {
-    color: '#F1F1F1',
-    fontSize: scaleSize(24),
-    marginLeft: scaleSize(20),
+    flex: 1,
   },
 });
 
-export default GoDown;
+export default GoUp;

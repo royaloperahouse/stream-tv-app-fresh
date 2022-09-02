@@ -254,3 +254,9 @@ export const availablePPVEventsDateOfUpdateSelector = (store: TRootState) =>
 
 export const availblePpvEventsIdsSelector = (store: TRootState) =>
   store.events.availablePPVEventsIds;
+
+export const getEventById = (eventId: string) => (store: TRootState) => ({
+  event: store.events.allDigitalEventsDetail[eventId]?.data || {},
+  lastPublicationDate:
+    store.events.allDigitalEventsDetail[eventId]?.last_publication_date || '',
+});

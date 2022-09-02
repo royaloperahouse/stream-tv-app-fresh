@@ -269,7 +269,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   useLayoutEffect(() => {
     const backButtonCallback = () => {
       if (navMenuWidth.value === widthInvisble) {
-        return true;
+        return false;
       }
       if (navMenuWidth.value === widthWithOutFocus) {
         navMenuWidth.value = widthWithFocus;

@@ -53,7 +53,7 @@ const LoadingSpinner: React.FC<LoginSpinnerProps> = ({
       rotation.value = 0;
     }
     return () => cancelAnimation(rotation);
-  }, [showSpinner]);
+  }, [showSpinner, rotation]);
 
   if (!showSpinner) {
     return null;

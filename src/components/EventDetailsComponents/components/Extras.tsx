@@ -1,26 +1,22 @@
 import React, {
-  useState,
   useEffect,
   useRef,
   createRef,
   useCallback,
+  useContext,
 } from 'react';
 import {
   View,
   StyleSheet,
   Dimensions,
-  VirtualizedList,
   TouchableHighlight,
-  TVFocusGuideView,
+  HWEvent,
 } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
-import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
 import GoDown from '../commonControls/GoDown';
-import get from 'lodash.get';
+import GoUp from '@components/EventDetailsComponents/commonControls/GoUp';
 import { Colors } from '@themes/Styleguide';
-import { getVideoDetails } from '@services/prismicApiClient';
-import Prismic from '@prismicio/client';
 import ExtrasInfoBlock, {
   TExtrasInfoBlockRef,
 } from '../commonControls/ExtrasInfoBlock';
@@ -34,59 +30,35 @@ import ScrollingPagination, {
 //import { ErrorModal } from '@components/GlobalModal/variants';
 import { useFocusEffect } from '@react-navigation/native';
 import { TVEventManager } from '@services/tvRCEventListener';
+import type {
+  TEventDetailsScreensProps,
+  NSNavigationScreensNames,
+  TEventDetailsScreensParamContextProps,
+} from '@configs/screensConfig';
+import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
+import { ScrollView } from 'react-native-gesture-handler';
 
-type ExtrasProps = {
-  event: TEventContainer;
-  nextScreenText: string;
-  showMoveToTopSectionButton: () => void;
-  hideMoveToTopSectionButton: () => void;
-  closePlayer: (...args: any[]) => void;
-  openPlayer: (...args: any[]) => void;
-  closeModal: (...args: any[]) => void;
-  setRefToMovingUp: (
-    index: number,
-    cp:
-      | React.Component<any, any, any>
-      | React.ComponentClass<any, any>
-      | null
-      | number,
-  ) => void;
-  getPrevRefToMovingUp: (
-    index: number,
-  ) =>
-    | Array<
-        | React.Component<any, any, any>
-        | React.ComponentClass<any, any>
-        | null
-        | number
-      >
-    | undefined;
-  index: number;
-};
-const Extras: React.FC<ExtrasProps> = ({
-  event,
-  nextScreenText,
-  showMoveToTopSectionButton,
-  hideMoveToTopSectionButton,
-  closePlayer,
-  openPlayer,
-  closeModal,
-  index,
-  setRefToMovingUp,
-  getPrevRefToMovingUp,
-}) => {
+const Extras: React.FC<
+  TEventDetailsScreensProps<
+    NSNavigationScreensNames.EventDetailsStackScreens['extras']
+  >
+> = ({ route, navigation }) => {
+  const params = useContext<Partial<TEventDetailsScreensParamContextProps>>(
+    SectionsParamsContext,
+  )[route.name];
+  const {
+    nextSectionTitle,
+    videosInfo,
+    prevScreenName,
+    nextScreenName,
+    eventId,
+  } = params;
   const videosRefs = useRef<{
     [key: string]: any;
   }>({});
-  const [listOfFocusRef, setListOfFocusRef] = useState<
-    | Array<React.Component<any, any, any> | React.ComponentClass<any, any>>
-    | undefined
-  >();
+
   const scrollingPaginationRef = useRef<TScrolingPaginationRef>(null);
-  const isBMPlayerShowingRef = useRef<boolean>(false);
   const extrasInfoBlockRef = useRef<TExtrasInfoBlockRef>(null);
-  const [videosInfo, setVideosInfo] = useState<Array<Document>>([]);
-  const loaded = useRef<boolean>(false);
   const isMounted = useRef<boolean>(false);
   const loading = useRef<boolean>(false);
   const extrasVideoInFocusRef = useRef<TouchableHighlight | null | undefined>(
@@ -96,49 +68,12 @@ const Extras: React.FC<ExtrasProps> = ({
   const extrasVideoInFocusPressing = useRef<{
     pressingHandler: () => void;
   } | null>(null);
-  const closeModalCB = useCallback(
-    (...rest: any[]) => {
-      closeModal(...rest);
-      isBMPlayerShowingRef.current = false;
-      goBackButtonuManager.showGoBackButton();
-      showMoveToTopSectionButton();
-    },
-    [showMoveToTopSectionButton, closeModal],
-  );
 
-  useEffect(() => {
-    if (loaded.current || loading.current) {
-      return;
-    }
-    loading.current = true;
-    const videos = get(event.data, 'vs_videos', []).map(
-      ({ video }) => video.id,
-    );
-    if (!videos.length) {
-      loading.current = false;
-      return;
-    }
-    getVideoDetails({
-      queryPredicates: [Prismic.predicates.any('document.id', videos)],
-    })
-      .then(response => {
-        loaded.current = true;
-        const filteredResult = response.results.filter(
-          result =>
-            result.data.video.video_type !== 'performance' &&
-            result.data.video.video_type !== 'trailer' &&
-            result.data.video.video_type !== 'hero',
-        );
-        if (filteredResult.length && isMounted.current) {
-          setVideosInfo(filteredResult);
-        }
-      })
-      .catch(console.log)
-      .finally(() => {
-        loading.current = false;
-      });
-  });
-  const pressHandler = useCallback(() => {}, []);
+  const pressHandler = useCallback((_: any, clearLoadingState: () => void) => {
+    setTimeout(() => {
+      clearLoadingState();
+    }, 1000);
+  }, []);
   /* const pressHandler = useCallback(
     (ref, clearLoadingState) => {
       if (!isBMPlayerShowingRef.current && extrasVideoInFocus.current) {
@@ -231,26 +166,14 @@ const Extras: React.FC<ExtrasProps> = ({
     extrasVideoInFocusPressing.current = null;
   }, []);
 
-  /*
-  ToDo decide to implement it or left it at the end; moving to current section for tvos;
-  to this moment it works without this implementation
-  useFocusEffect(
-    useCallback(() => {
-      if (videosInfo.length && isMounted.current) {
-        setRefToMovingUp(index, videosRefs.current[videosInfo[0].id].current);
-        setListOfFocusRef(
-          videosRefs.current[videosInfo[0].id].current === null ||
-            typeof videosRefs.current[videosInfo[0].id].current === 'number'
-            ? undefined
-            : [videosRefs.current[videosInfo[0].id].current],
-        );
-      }
-      return () => {
-        setRefToMovingUp(index, null);
-        setListOfFocusRef(undefined);
-      };
-    }, [index, setRefToMovingUp, videosInfo]),
-  ); */
+  const goUpCB = useCallback(() => {
+    navigation.replace(prevScreenName);
+  }, [navigation, prevScreenName]);
+  const goDownCB = useCallback(() => {
+    if (nextScreenName) {
+      navigation.replace(nextScreenName);
+    }
+  }, [navigation, nextScreenName]);
 
   useEffect(() => {
     isMounted.current = true;
@@ -261,7 +184,7 @@ const Extras: React.FC<ExtrasProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      const cb = (_: any, eve: any) => {
+      const cb = (eve: HWEvent) => {
         if (
           eve?.eventType !== 'playPause' ||
           eve.eventKeyAction === 0 ||
@@ -279,132 +202,73 @@ const Extras: React.FC<ExtrasProps> = ({
     }, []),
   );
 
-  if (!videosInfo.length) {
-    return null;
-  }
-
   return (
     <View style={[styles.generalContainer]}>
-      <View style={styles.downContainer}>
-        <GoDown text={nextScreenText} />
-        <TVFocusGuideView
-          style={styles.navigationToDownContainer}
-          destinations={listOfFocusRef}
-        />
+      {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}
+      <View style={{ flex: 1 }}>
+        <View style={styles.wrapper}>
+          <View style={styles.leftSideContainer}>
+            <RohText style={styles.title}>Extras</RohText>
+            <ExtrasInfoBlock ref={extrasInfoBlockRef} />
+          </View>
+          <View style={styles.extrasGalleryContainer}>
+            <ScrollView
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              horizontal
+              style={styles.list}
+              contentContainerStyle={{ alignItems: 'center' }}>
+              {videosInfo.map((item: any, index: number) => (
+                <ExtrasVideoButton
+                  key={item.id}
+                  uri={item.previewImageUrl}
+                  hasTVPreferredFocus={index === 0}
+                  ref={
+                    videosRefs.current[item.id]
+                      ? videosRefs.current[item.id]
+                      : (videosRefs.current[item.id] =
+                          createRef<TouchableHighlight>())
+                  }
+                  paddingLeft={index === 0 ? scaleSize(147) : scaleSize(10)}
+                  paddingRight={
+                    videosInfo.length > 0 && index === videosInfo.length - 1
+                      ? scaleSize(147)
+                      : scaleSize(10)
+                  }
+                  containerStyle={[styles.extrasGalleryItemContainer]}
+                  canMoveRight={index !== videosInfo.length - 1}
+                  onPress={pressHandler}
+                  blurCallback={setExtrasrVideoBlur}
+                  focusCallback={(pressingHandler?: () => void) => {
+                    extrasVideoInFocus.current = item;
+                    if (pressingHandler) {
+                      extrasVideoInFocusPressing.current = { pressingHandler };
+                    }
+                    if (
+                      typeof scrollingPaginationRef.current?.setCurrentIndex ===
+                      'function'
+                    ) {
+                      scrollingPaginationRef.current.setCurrentIndex(index);
+                    }
+                    if (
+                      typeof extrasInfoBlockRef.current?.setVideoInfo ===
+                      'function'
+                    ) {
+                      extrasInfoBlockRef.current.setVideoInfo({
+                        title: item.title,
+                        descrription: item.descrription,
+                        participant_details: item.participant_details,
+                      });
+                    }
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        </View>
       </View>
-      <TVFocusGuideView
-        style={styles.navigationToUpContainer}
-        destinations={getPrevRefToMovingUp(index)}
-      />
-      <View style={styles.wrapper}>
-        <View style={styles.leftSideContainer}>
-          <RohText style={styles.title}>Extras</RohText>
-          <ExtrasInfoBlock ref={extrasInfoBlockRef} />
-        </View>
-        <View style={styles.extrasGalleryContainer}>
-          <VirtualizedList
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            horizontal
-            style={styles.list}
-            contentContainerStyle={{ alignItems: 'center' }}
-            data={videosInfo}
-            initialNumToRender={2}
-            maxToRenderPerBatch={2}
-            getItemCount={data => data?.length || 0}
-            keyExtractor={item => item.id}
-            getItem={(data, index) => data[index]}
-            windowSize={4}
-            renderItem={({
-              item,
-              index,
-            }: {
-              [key: string]: any;
-              item: any;
-            }) => (
-              <ExtrasVideoButton
-                uri={item.data.preview_image.url}
-                ref={
-                  videosRefs.current[item.id]
-                    ? videosRefs.current[item.id]
-                    : (videosRefs.current[item.id] =
-                        createRef<TouchableHighlight>())
-                }
-                paddingLeft={index === 0 ? scaleSize(147) : scaleSize(10)}
-                paddingRight={
-                  videosInfo.length > 0 && index === videosInfo.length - 1
-                    ? scaleSize(147)
-                    : scaleSize(10)
-                }
-                containerStyle={[styles.extrasGalleryItemContainer]}
-                canMoveRight={index !== videosInfo.length - 1}
-                onPress={pressHandler}
-                blurCallback={setExtrasrVideoBlur}
-                focusCallback={(pressingHandler?: () => void) => {
-                  extrasVideoInFocus.current = item;
-                  if (pressingHandler) {
-                    extrasVideoInFocusPressing.current = { pressingHandler };
-                  }
-                  if (
-                    typeof scrollingPaginationRef.current?.setCurrentIndex ===
-                    'function'
-                  ) {
-                    scrollingPaginationRef.current.setCurrentIndex(index);
-                  }
-                  if (
-                    typeof extrasInfoBlockRef.current?.setVideoInfo ===
-                    'function'
-                  ) {
-                    extrasInfoBlockRef.current.setVideoInfo({
-                      title: item.data.video_title.reduce(
-                        (acc: string, title: any, i: number) => {
-                          if (title.text) {
-                            acc +=
-                              title.type === 'paragraph'
-                                ? title.text + '\n'
-                                : i > 0
-                                ? ' ' + title.text
-                                : title.text;
-                          }
-                          return acc;
-                        },
-                        '',
-                      ),
-                      descrription: item.data.short_description.reduce(
-                        (acc: string, description: any, i: number) => {
-                          if (description.text) {
-                            acc +=
-                              description.type === 'paragraph'
-                                ? description.text + '\n'
-                                : i > 0
-                                ? ' ' + description.text
-                                : description.text;
-                          }
-                          return acc;
-                        },
-                        '',
-                      ),
-                      participant_details: item.data.participant_details.reduce(
-                        (acc: string, participant_detail: any, i: number) => {
-                          if (participant_detail.text) {
-                            acc +=
-                              participant_detail.type === 'paragraph'
-                                ? participant_detail.text + '\n'
-                                : i > 0
-                                ? ' ' + participant_detail.text
-                                : participant_detail.text;
-                          }
-                          return acc;
-                        },
-                        '',
-                      ),
-                    });
-                  }
-                }}
-              />
-            )}
-          />
-        </View>
+      <View style={styles.downContainer}>
+        <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
       </View>
       {videosInfo.length > 1 && (
         <View style={styles.paginationContainer}>
@@ -438,11 +302,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   downContainer: {
-    height: scaleSize(110),
-    top: -scaleSize(110),
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    marginBottom: scaleSize(60),
   },
   title: {
     marginTop: scaleSize(105),

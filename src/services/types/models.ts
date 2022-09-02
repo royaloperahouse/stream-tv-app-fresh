@@ -1,8 +1,52 @@
-import type { TContentScreenReverseNames } from '@configs/screensConfig';
+export const rootStackScreensNames = Object.freeze({
+  content: 'Content',
+  player: 'Player',
+});
+
+export const contentScreenNames = Object.freeze({
+  home: 'Home',
+  operaMusic: 'OperaMusic',
+  balletDance: 'BalletDance',
+  search: 'Search',
+  myList: 'MyList',
+  settings: 'Settings',
+  eventDetails: 'EventDetails',
+  exit: 'Exit',
+  liveStream: 'LiveStream',
+});
+
+export const eventDetailsScreenNames = Object.freeze({
+  general: 'General',
+  cast: 'Cast',
+  creatives: 'Creatives',
+  synopsis: 'Synopsis',
+  info: 'Info',
+  extras: 'Extras',
+});
+
+export type TContentStackScreensNames = typeof contentScreenNames;
+export type TEventDetailsStackScreensNames = typeof eventDetailsScreenNames;
+
+export type TContentScreenReverseNames = Capitalize<
+  keyof TContentStackScreensNames
+>;
+export type TEventDetailsScreenReverseNames = Capitalize<
+  keyof TEventDetailsStackScreensNames
+>;
+
 interface Cast {
   role: string;
   name: string;
 }
+
+export type TExtrasVideo = {
+  previewImageUrl: string;
+  title: string;
+  descrription: string;
+  participant_details: string;
+  id: string;
+  lastPublicationDate: string;
+};
 
 export type TRoutes = Array<TRoute>;
 
@@ -15,6 +59,12 @@ export type TRoute = {
   isDefault: boolean;
   ScreenComponent: React.FC<any>;
   initialParams: { [key: string]: any } | undefined;
+};
+
+export type TEventDetailsSection = {
+  key: TEventDetailsScreenReverseNames;
+  currentSectionTitle: string;
+  position: number;
 };
 
 export type TNavMenuItem = Omit<TRoute, 'ScreenComponent' | 'initialParams'>;

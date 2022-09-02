@@ -146,7 +146,6 @@ const ContentScreen: React.MemoExoticComponent<
         }}
         initialRouteName={initialRoute?.navMenuScreenName}
         defaultStatus="open"
-        backBehavior="none"
         detachInactiveScreens={true}
         screenOptions={{
           headerShown: false,
