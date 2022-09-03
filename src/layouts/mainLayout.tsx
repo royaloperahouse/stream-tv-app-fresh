@@ -9,7 +9,7 @@ import RohText from '@components/RohText';
 import { buildInfo } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
 import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
-//import GlobalModal from '@components/GlobalModal';
+import GlobalModal from '@components/GlobalModals';
 
 type TMainLayoutProps = {};
 
@@ -25,6 +25,7 @@ const MainLayout: React.FC<TMainLayoutProps> = () => {
                 <ContentLayout />
               </NavigationContainer>
             </View>
+            <GlobalModal />
             {/*           <GlobalModal /> */}
             {__DEV__ && (
               <View style={styles.buildInfo}>

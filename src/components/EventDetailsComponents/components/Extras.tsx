@@ -26,8 +26,8 @@ import { goBackButtonuManager } from '@components/GoBack';
 import ScrollingPagination, {
   TScrolingPaginationRef,
 } from '@components/ScrollingPagination';
-//import { globalModalManager } from '@components/GlobalModal';
-//import { ErrorModal } from '@components/GlobalModal/variants';
+import { globalModalManager } from '@components/GlobalModals';
+import { ErrorModal, PlayerModal } from '@components/GlobalModals/variants';
 import { useFocusEffect } from '@react-navigation/native';
 import { TVEventManager } from '@services/tvRCEventListener';
 import type {
@@ -37,6 +37,9 @@ import type {
 } from '@configs/screensConfig';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { ScrollView } from 'react-native-gesture-handler';
+import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
+import { useAppSelector } from 'hooks/redux';
+import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 
 const Extras: React.FC<
   TEventDetailsScreensProps<
@@ -60,60 +63,123 @@ const Extras: React.FC<
   const scrollingPaginationRef = useRef<TScrolingPaginationRef>(null);
   const extrasInfoBlockRef = useRef<TExtrasInfoBlockRef>(null);
   const isMounted = useRef<boolean>(false);
-  const loading = useRef<boolean>(false);
   const extrasVideoInFocusRef = useRef<TouchableHighlight | null | undefined>(
     null,
   );
+  const isBMPlayerShowingRef = useRef<boolean>(false);
   const extrasVideoInFocus = useRef<any | null>(null);
+  const isProduction = useAppSelector(isProductionEvironmentSelector);
   const extrasVideoInFocusPressing = useRef<{
     pressingHandler: () => void;
   } | null>(null);
 
-  const pressHandler = useCallback((_: any, clearLoadingState: () => void) => {
-    setTimeout(() => {
+  const closeModal = useCallback((ref, clearLoadingState: any) => {
+    if (typeof ref?.current?.setNativeProps === 'function') {
+      ref.current.setNativeProps({
+        hasTVPreferredFocus: true,
+      });
+    }
+    goBackButtonuManager.showGoBackButton();
+    if (typeof clearLoadingState === 'function') {
       clearLoadingState();
-    }, 1000);
+    }
   }, []);
-  /* const pressHandler = useCallback(
+
+  const closePlayer = useCallback(
+    ({
+        savePositionCB,
+        videoId,
+        eventId,
+        ref,
+        clearLoadingState,
+        closeModalCB = closeModal,
+      }) =>
+      async (error: TBMPlayerErrorObject | null, time: string) => {
+        if (typeof savePositionCB === 'function') {
+          await savePositionCB({ time, videoId, eventId });
+        }
+        if (error) {
+          globalModalManager.openModal({
+            contentComponent: ErrorModal,
+            contentProps: {
+              confirmActionHandler: () => {
+                globalModalManager.closeModal(() => {
+                  if (typeof closeModalCB === 'function') {
+                    closeModalCB(ref, clearLoadingState);
+                  }
+                });
+              },
+              title: 'Player Error',
+              subtitle: `Something went wrong.\n${error.errCode}: ${
+                error.errMessage
+              }\n${error.url || ''}`,
+            },
+          });
+        } else {
+          globalModalManager.closeModal(() => {
+            if (typeof closeModalCB === 'function') {
+              closeModalCB(ref, clearLoadingState);
+            }
+          });
+        }
+      },
+    [closeModal],
+  );
+
+  const openPlayer = useCallback(
+    ({
+      url,
+      poster = '',
+      offset = '0.0',
+      title: playerTitle = '',
+      subtitle = '',
+      onClose = () => {},
+      analytics = {},
+      guidance = '',
+      guidanceDetails = [],
+    }) => {
+      goBackButtonuManager.hideGoBackButton();
+      globalModalManager.openModal({
+        contentComponent: PlayerModal,
+        contentProps: {
+          autoPlay: true,
+          configuration: {
+            url,
+            poster,
+            offset,
+          },
+          title: playerTitle,
+          subtitle,
+          onClose,
+          analytics,
+          guidance,
+          guidanceDetails,
+        },
+      });
+    },
+    [],
+  );
+
+  const closeModalCB = useCallback(
+    (...rest: any[]) => {
+      closeModal(...rest);
+      isBMPlayerShowingRef.current = false;
+    },
+    [closeModal],
+  );
+
+  const pressHandler = useCallback(
     (ref, clearLoadingState) => {
       if (!isBMPlayerShowingRef.current && extrasVideoInFocus.current) {
         isBMPlayerShowingRef.current = true;
-        fetchVideoURL(extrasVideoInFocus.current.id)
+        fetchVideoURL(extrasVideoInFocus.current.id, isProduction)
           .then(response => {
             if (!response?.data?.data?.attributes?.hlsManifestUrl) {
               throw new Error('Something went wrong');
             }
-            const videoTitle =
-              extrasVideoInFocus.current.data.video_title.reduce(
-                (acc: string, title: any, i: number) => {
-                  if (title.text) {
-                    title.type === 'paragraph'
-                      ? title.text + '\n'
-                      : i > 0
-                      ? ' ' + title.text
-                      : title.text;
-                  }
-                  return acc;
-                },
-                '',
-              );
+            const videoTitle = extrasVideoInFocus.current.title;
 
-            const subtitle =
-              extrasVideoInFocus.current.data.participant_details.reduce(
-                (acc: string, participant_detail: any, i: number) => {
-                  if (participant_detail.text) {
-                    acc +=
-                      participant_detail.type === 'paragraph'
-                        ? participant_detail.text + '\n'
-                        : i > 0
-                        ? ' ' + participant_detail.text
-                        : participant_detail.text;
-                  }
-                  return acc;
-                },
-                '',
-              );
-            hideMoveToTopSectionButton();
+            const subtitle = extrasVideoInFocus.current.participant_details;
             openPlayer({
               url: response.data.data.attributes.hlsManifestUrl,
               poster:
@@ -121,7 +187,7 @@ const Extras: React.FC<
               title: videoTitle,
               subtitle,
               onClose: closePlayer({
-                eventId: event.id,
+                eventId,
                 clearLoadingState,
                 ref,
                 closeModalCB,
@@ -151,14 +217,8 @@ const Extras: React.FC<
         clearLoadingState();
       }
     },
-    [
-      closeModalCB,
-      closePlayer,
-      event.id,
-      openPlayer,
-      hideMoveToTopSectionButton,
-    ],
-  ); */
+    [closeModalCB, closePlayer, eventId, openPlayer, isProduction],
+  );
 
   const setExtrasrVideoBlur = useCallback(() => {
     extrasVideoInFocusRef.current = null;
@@ -187,7 +247,6 @@ const Extras: React.FC<
       const cb = (eve: HWEvent) => {
         if (
           eve?.eventType !== 'playPause' ||
-          eve.eventKeyAction === 0 ||
           typeof extrasVideoInFocusPressing.current?.pressingHandler !==
             'function'
         ) {

@@ -33,7 +33,7 @@
     "prismic-reactjs": "^1.3.4",
     "promise.allsettled": "^1.0.5",
     "react": "17.0.2",
-    "react-native": "npm:react-native-tvos@0.68.2-2",
+    "react-native": "npm:react-native-tvos@latest",
     "react-native-bootsplash": "^4.2.3",
     "react-native-countdown-component": "^2.7.1",
     "react-native-device-info": "^10.0.2",
