@@ -13,7 +13,8 @@ import {
   Animated,
   FlatList,
   SafeAreaView,
-  BackHandler, HWEvent
+  BackHandler,
+  HWEvent,
 } from 'react-native';
 import { Colors, PlayerIcons } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
@@ -25,7 +26,6 @@ import SubtitlesItem from './SubtitlesItem';
 import ArrowDropdown from '@assets/svg/player/ArrowDropdownForPlayer.svg';
 import { ESeekOperations } from '@configs/playerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
-
 
 type TPlayerControlsProps = {
   duration: number;
@@ -297,17 +297,13 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           if (eve?.eventKeyAction === 1) {
             switch (eve.eventType) {
               case 'select': {
-
                 if (
-                    eve.tag === centralControlsRef.current?.getFwdNode() &&
-                    seekUpdatingOnDevice.current === false &&
-                    (seekOperation.current === ESeekOperations.fastForward)
+                  eve.tag === centralControlsRef.current?.getFwdNode() &&
+                  seekUpdatingOnDevice.current === false &&
+                  seekOperation.current === ESeekOperations.fastForward
                 ) {
-                  setFastForwardClickStack((prevState) => prevState + 1);
-                  console.log(fastForwardClickStack, 'move right')
+                  setFastForwardClickStack(prevState => prevState + 1);
                 }
-
-
                 // if (
                 //     eve.tag === centralControlsRef.current?.getRwdNode() &&
                 //     seekUpdatingOnDevice.current === false &&
@@ -319,25 +315,22 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                 //   seekOperation.current = ESeekOperations.rewind;
                 //
                 // }
-
-
-
                 if (
                   eve.tag === centralControlsRef.current?.getFwdNode() &&
                   countOfFastForwardClicks.current &&
                   seekOperation.current === ESeekOperations.fastForward
                 ) {
-                  console.log(countOfFastForwardClicks.current)
+                  console.log(countOfFastForwardClicks.current);
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                      fastForwardClickStack > 5 ? 2 : 1,
+                    fastForwardClickStack > 5 ? 2 : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
                     countOfFastForwardClicks.current = 0;
                     seekUpdatingOnDevice.current = false;
-                   seekQueueuBusy.current = false;
+                    seekQueueuBusy.current = false;
                     break;
                   }
                   seekTo(timeForSeeking);
@@ -442,7 +435,13 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           }
         },
       ]);
-    }, [onPausePress, onPlayPress, calculateTimeForSeeking, seekTo, fastForwardClickStack]);
+    }, [
+      onPausePress,
+      onPlayPress,
+      calculateTimeForSeeking,
+      seekTo,
+      fastForwardClickStack,
+    ]);
 
     useLayoutEffect(() => {
       const intervalId = setInterval(() => {

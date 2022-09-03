@@ -1,68 +1,7 @@
-import React, {useCallback, useState} from "react";
-import LoadingSpinner from '@components/LoadingSpinner';
-import {View, TouchableHighlight} from 'react-native';
-import RohText from '@components/RohText';
-import GlobalModal, {globalModalManager} from '@components/GlobalModals';
-import {PlayerModal, WarningOfExitModal} from "components/GlobalModals/variants";
-import {goBackButtonuManager} from "components/GoBack";
+import React from 'react';
 
 type TExitScreenProps = {};
 
-const ExitScreen: React.FC<TExitScreenProps> = () => {
-    const [showSpinner, setShowSpinner] = useState<boolean>(false);
-
-    const openModal = () => {
-        globalModalManager.openModal({
-            contentComponent: WarningOfExitModal,
-            contentProps: {
-                title: 'title',
-            },
-        });
-    }
-
-    const openPlayer = () => {
-
-        console.log('')
-            globalModalManager.openModal({
-                contentComponent: PlayerModal,
-                contentProps: {
-                    confirmActionHandler: () => {
-                        openPlayer({
-                            url: 'https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd',
-                            poster:
-                                'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-                            title: "videoTitle",
-                            onClose: () => {},
-                            analytics: {
-                                videoId: 'videoFromPrismic.id',
-                                title: "videoTitle",
-                            },
-                            guidance: "vs_gui",
-                            guidanceDetails: "",
-                        });
-                    },
-                    videoTitle: "videoTitle",
-                    fromTime: 0,
-                },
-            })
-    }
-
-
-    return (
-        // eslint-disable-next-line react-native/no-inline-styles
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-
-            <LoadingSpinner showSpinner={showSpinner} size={90}/>
-            <TouchableHighlight underlayColor="transparent" onPress={() => {
-                // setShowSpinner(prevState => !prevState);
-                // openModal();
-                openPlayer();
-            }}>
-                <RohText style={{color: 'white', margin: 20}}>toggle spinner</RohText>
-
-            </TouchableHighlight>
-        </View>);
-
-};
+const ExitScreen: React.FC<TExitScreenProps> = () => null;
 
 export default ExitScreen;

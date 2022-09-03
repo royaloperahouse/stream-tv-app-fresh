@@ -103,6 +103,10 @@ export type TEventDetailsScreensParamContextProps = {
     performanceInfo: { eventId: string; videoId: string } | null;
     trailerInfo: { eventId: string; videoId: string } | null;
     eventId: string;
+    performanceVideoTimePosition: string | undefined;
+    setPerformanceVideoTimePosition: React.Dispatch<
+      React.SetStateAction<string | undefined>
+    >;
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;

@@ -38,7 +38,6 @@ const ROHBitmovinPlayerModule = NativeModules.ROHBitMovinPlayerControl;
 
 const eventEmitter = new NativeEventEmitter(NativeModules.ROHBitMovinPlayer);
 
-
 type TCallbackFunc = (data?: any) => void;
 
 type TOnLoadPayload = {
@@ -154,11 +153,11 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       }
       appState.current = nextAppState;
     };
-    AppState.addEventListener('change', _handleAppStateChange);
-
-    return () => {
-      AppState.removeEventListener('change', _handleAppStateChange);
-    };
+    const unsubscribe = AppState.addEventListener(
+      'change',
+      _handleAppStateChange,
+    );
+    return unsubscribe.remove;
   }, []);
 
   const onReady: TCallbackFunc = useCallback(data => {

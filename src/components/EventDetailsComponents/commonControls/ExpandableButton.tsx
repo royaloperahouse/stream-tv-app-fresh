@@ -47,6 +47,9 @@ const ExpandableButton = forwardRef<any, Props>(
     const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
     const isMounted = useRef<boolean>(false);
     const clearLoadingState = () => {
+      if (!isMounted.current) {
+        return;
+      }
       setFreezeButton(false);
       setLoading(false);
     };
@@ -110,7 +113,9 @@ const ExpandableButton = forwardRef<any, Props>(
                 {text}
               </RohText>
             }
-            <LoadingSpinner showSpinner={loading} size={40} />
+            <View style={styles.spinnerContainer}>
+              <LoadingSpinner showSpinner={loading} size={40} />
+            </View>
           </View>
         </TouchableHighlightWrapper>
       </View>
@@ -126,6 +131,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   button: {
     alignItems: 'center',
