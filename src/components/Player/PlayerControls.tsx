@@ -13,7 +13,8 @@ import {
   Animated,
   FlatList,
   SafeAreaView,
-  BackHandler, HWEvent
+  BackHandler,
+  HWEvent,
 } from 'react-native';
 import { Colors, PlayerIcons } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
@@ -97,8 +98,8 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
     const seekOperation = useRef<ESeekOperations>(ESeekOperations.fastForward);
     const exitButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
     const restartButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
-    const [fastForwardClickStack, setFastForwardClickStack] = useState(0);
-    const [prevRewindBtn, setprevRewindBtn] = useState<string>('');
+    let fastForwardClickStack = useRef<number>(0);
+    const prevRewindBtn = useRef<string>('');
 
     const focusToSutitleButton = useCallback(() => {
       if (
@@ -235,11 +236,10 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       TVEventManager.setEventListeners([
         (eve: HWEvent) => {
           if (eve?.eventType === 'blur' || eve?.eventType === 'focus') {
-            setFastForwardClickStack(0);
+            fastForwardClickStack.current = 0;
             return;
           }
           if (eve?.eventKeyAction === 1) {
-
             switch (eve.eventType) {
               case 'select': {
                 if (
@@ -300,30 +300,31 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           if (eve?.eventKeyAction === 1) {
             switch (eve.eventType) {
               case 'select': {
-
                 // <---fast forward logic--->
                 if (
                   eve.tag === centralControlsRef.current?.getFwdNode() &&
                   seekOperation.current === ESeekOperations.fastForward
                 ) {
-                  if (prevRewindBtn === 'left') {
-                    setFastForwardClickStack(0);
+                  if (prevRewindBtn.current === 'left') {
+                    fastForwardClickStack.current = 0;
                   }
 
-                  setprevRewindBtn('right');
-                  setFastForwardClickStack(prevState => prevState + 1);
+                  prevRewindBtn.current = 'right';
+                  fastForwardClickStack.current =
+                    fastForwardClickStack.current + 1;
                 }
 
                 if (
                   eve.tag === centralControlsRef.current?.getRwdNode() &&
                   seekOperation.current === ESeekOperations.rewind
                 ) {
-                  if (prevRewindBtn === 'right') {
-                    setFastForwardClickStack(0);
+                  if (prevRewindBtn.current === 'right') {
+                    fastForwardClickStack.current = 0;
                   }
 
-                  setprevRewindBtn('left');
-                  setFastForwardClickStack(prevState => prevState + 1);
+                  prevRewindBtn.current = 'left';
+                  fastForwardClickStack.current =
+                    fastForwardClickStack.current + 1;
                 }
                 // <---fast forward logic--->
 
@@ -335,14 +336,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    fastForwardClickStack > 5
-                      ? calculateRewindStep(fastForwardClickStack)
+                    fastForwardClickStack.current > 5
+                      ? calculateRewindStep(fastForwardClickStack.current)
                       : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
                     countOfFastForwardClicks.current = 0;
-                    setFastForwardClickStack(0);
+                    fastForwardClickStack.current = 0;
                     seekUpdatingOnDevice.current = false;
                     seekQueueuBusy.current = false;
                     break;
@@ -358,14 +359,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    fastForwardClickStack > 5
-                      ? calculateRewindStep(fastForwardClickStack)
+                    fastForwardClickStack.current > 5
+                      ? calculateRewindStep(fastForwardClickStack.current)
                       : 1,
                     seekOperation.current,
                   );
                   if (timeForSeeking === -1) {
                     countOfRewindClicks.current = 0;
-                    setFastForwardClickStack(0);
+                    fastForwardClickStack.current = 0;
                     seekUpdatingOnDevice.current = false;
                     seekQueueuBusy.current = false;
                     break;
@@ -377,19 +378,20 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               case 'fastForward': {
                 // <---fast forward logic--->
                 if (countOfFastForwardClicks.current) {
-                  if (prevRewindBtn === 'left') {
-                    setFastForwardClickStack(0);
+                  if (prevRewindBtn.current === 'left') {
+                    fastForwardClickStack.current = 0;
                   }
 
-                  setprevRewindBtn('right');
-                  setFastForwardClickStack(prevState => prevState + 1);
+                  prevRewindBtn.current = 'right';
+                  fastForwardClickStack.current =
+                    fastForwardClickStack.current + 1;
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    fastForwardClickStack > 5
-                      ? calculateRewindStep(fastForwardClickStack)
+                    fastForwardClickStack.current > 5
+                      ? calculateRewindStep(fastForwardClickStack.current)
                       : 1,
                     seekOperation.current,
                   );
@@ -405,21 +407,21 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               }
               case 'rewind': {
                 if (countOfRewindClicks.current) {
-
                   // <---fast forward logic--->
-                  if (prevRewindBtn === 'right') {
-                    setFastForwardClickStack(0);
+                  if (prevRewindBtn.current === 'right') {
+                    fastForwardClickStack.current = 0;
                   }
 
-                  setprevRewindBtn('left');
-                  setFastForwardClickStack(prevState => prevState + 1);
+                  prevRewindBtn.current = 'left';
+                  fastForwardClickStack.current =
+                    fastForwardClickStack.current + 1;
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
-                    fastForwardClickStack > 5
-                      ? calculateRewindStep(fastForwardClickStack)
+                    fastForwardClickStack.current > 5
+                      ? calculateRewindStep(fastForwardClickStack.current)
                       : 1,
                     seekOperation.current,
                   );
@@ -438,7 +440,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   ? onPausePress
                   : onPlayPress;
                 currentPlayerAction();
-                setFastForwardClickStack(0);
+                fastForwardClickStack.current = 0;
                 break;
               }
               default:
@@ -469,7 +471,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                 }).start(({ finished: animationFinished }) => {
                   if (animationFinished) {
                     controlPanelVisibleRef.current = false;
-                    setFastForwardClickStack(0);
+                    fastForwardClickStack.current = 0;
                   }
                 });
               }, 5000);
