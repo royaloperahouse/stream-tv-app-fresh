@@ -74,6 +74,7 @@ import {
   removeBitMovinSavedPositionByIdAndEventId,
   savePosition,
 } from '@services/bitMovinPlayer';
+import RohImage from 'components/RohImage';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -601,10 +602,11 @@ const General: React.FC<
         ) : null}
       </View>
       <View style={styles.snapshotContainer}>
-        <FastImage
+        <RohImage
           resizeMode={FastImage.resizeMode.cover}
           style={styles.snapshotContainer}
-          source={{ uri: snapshotImageUrl }}
+          source={snapshotImageUrl}
+          isPortrait={true}
         />
       </View>
     </View>
