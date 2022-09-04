@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import FastImage, { ResizeMode, Source } from 'react-native-fast-image';
 import PlaceholderLandscape from '../assets/image-placeholder-landscape.svg';
 import PlaceholderPortrait from '../assets/image-placeholder-portrait.svg';
-import {StyleSheet, View} from "react-native";
 
 type TRohImageProps = {
   resizeMode: ResizeMode;
