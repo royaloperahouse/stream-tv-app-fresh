@@ -22,6 +22,7 @@ import type {
   TEventDetailsScreenReverseNames,
   TEventDetailsScreensParamContextProps,
 } from '@configs/screensConfig';
+import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import useAsyncEffect from 'use-async-effect';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
@@ -48,11 +49,14 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
   const { aboutProduction, isAboutProductionAvailable } =
     getAboutProduction(event);
 
-  const { videosInfo, loading, performanceInfo, trailerInfo } = useGetExtras(
-    event,
-    isProduction,
-    eventId,
-  );
+  const {
+    videosInfo,
+    loading,
+    performanceInfo,
+    trailerInfo,
+    performanceVideoTimePosition,
+    setPerformanceVideoTimePosition,
+  } = useGetExtras(event, isProduction, eventId);
 
   const sectionsCollection = Object.values(eventDetailsSectionsConfig)
     .sort((itemA, itemB) => itemA.position - itemB.position)
@@ -92,6 +96,8 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           performanceInfo,
           trailerInfo,
           eventId,
+          performanceVideoTimePosition,
+          setPerformanceVideoTimePosition,
         };
         break;
       }
@@ -479,16 +485,28 @@ const useGetExtras = (
   eventId: string,
 ): {
   videosInfo: Array<TExtrasVideo>;
-  performanceInfo: { eventId: string; videoId: string } | null;
-  trailerInfo: { eventId: string; videoId: string } | null;
+  performanceInfo: { eventId: string; videoId: string; title?: string } | null;
+  trailerInfo: { eventId: string; videoId: string; title?: string } | null;
   loading: boolean;
   loaded: boolean;
+  performanceVideoTimePosition: string | undefined;
+  setPerformanceVideoTimePosition: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 } => {
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
-  const performanceInfo = useRef<{ eventId: string; videoId: string } | null>(
-    null,
-  );
-  const trailerInfo = useRef<{ eventId: string; videoId: string } | null>(null);
+  const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
+    useState<string>();
+  const performanceInfo = useRef<{
+    eventId: string;
+    videoId: string;
+    title?: string;
+  } | null>(null);
+  const trailerInfo = useRef<{
+    eventId: string;
+    videoId: string;
+    title?: string;
+  } | null>(null);
   const loading = useRef<boolean>(true);
   const loaded = useRef<boolean>(false);
   const isMounted = useRef<boolean>(false);
@@ -550,11 +568,28 @@ const useGetExtras = (
             ? {
                 eventId,
                 videoId: filteredResult.trailer[0].id,
+                title:
+                  filteredResult.trailer[0].data?.video_title[0]?.text || '',
               }
             : null;
           performanceInfo.current = filteredResult.performance.length
-            ? { eventId, videoId: filteredResult.performance[0].id }
+            ? {
+                eventId,
+                videoId: filteredResult.performance[0].id,
+                title:
+                  filteredResult.performance[0].data?.video_title[0]?.text ||
+                  '',
+              }
             : null;
+          if (performanceInfo.current) {
+            const videoPositionInfo = await getBitMovinSavedPosition(
+              performanceInfo.current.videoId,
+              performanceInfo.current.eventId,
+            );
+            if (videoPositionInfo && videoPositionInfo.position) {
+              setPerformanceVideoTimePosition(videoPositionInfo.position);
+            }
+          }
           setVideosInfo(
             filteredResult.extras.map(item => ({
               previewImageUrl: item.data.preview_image.url,
@@ -608,7 +643,6 @@ const useGetExtras = (
       } catch (err) {
         loading.current = false;
         loaded.current = true;
-        console.log(err, 'err');
         if (isActive()) {
           setVideosInfo([]);
         }
@@ -622,5 +656,7 @@ const useGetExtras = (
     trailerInfo: trailerInfo.current,
     loading: loading.current,
     loaded: loaded.current,
+    performanceVideoTimePosition,
+    setPerformanceVideoTimePosition,
   };
 };

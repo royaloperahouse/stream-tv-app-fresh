@@ -21,8 +21,8 @@ export const subscribedModeUpdateDateSelector = (store: TRootState) =>
 export const needSubscribedModeInfoUpdateSelector = (store: TRootState) =>
   !store.auth.fullSubscription ||
   !isValid(new Date(store.auth.fullSubscriptionUpdateDate)) ||
-  format(new Date(store.auth.fullSubscriptionUpdateDate), 'D') !==
-    format(new Date(), 'D') ||
+  format(new Date(store.auth.fullSubscriptionUpdateDate), 'DDD') !==
+    format(new Date(), 'DDD') ||
   format(new Date(store.auth.fullSubscriptionUpdateDate), 'yyyy') !==
     format(new Date(), 'yyyy');
 

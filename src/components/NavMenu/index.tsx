@@ -64,6 +64,8 @@ import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/componen
 import { TVEventManager } from '@services/tvRCEventListener';
 import type { HWEvent } from 'react-native';
 import { useForseUpdate } from '@hooks/useForseUpdate';
+import { globalModalManager } from '@components/GlobalModals';
+import { WarningOfExitModal } from '@components/GlobalModals/variants';
 
 type TNavMenuProps = {
   navMenuConfig: Array<{
@@ -201,8 +203,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   );
   const exitOfAppButtonRef = useRef<TouchableHighlight>(null);
   const dispatch = useAppDispatch();
-  const exitOfApp = useCallback((_?: boolean) => {}, []);
-  /*   const exitOfApp = useCallback(
+  const exitOfApp = useCallback(
     (isGlobalHandler?: boolean) => {
       globalModalManager.openModal({
         hasBackground: true,
@@ -223,22 +224,16 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               if (isGlobalHandler) {
                 return;
               }
-              if (
-                typeof exitOfAppButtonRef?.current?.getRef === 'function' &&
-                typeof exitOfAppButtonRef.current.getRef()?.current
-                  ?.setNativeProps === 'function'
-              ) {
-                exitOfAppButtonRef.current
-                  .getRef()
-                  .current?.setNativeProps({ hasTVPreferredFocus: true });
-              }
+              exitOfAppButtonRef?.current?.setNativeProps?.({
+                hasTVPreferredFocus: true,
+              });
             });
           },
         },
       });
     },
     [dispatch],
-  ); */
+  );
 
   const exitOfAppPressHandler = () => {
     exitOfApp();

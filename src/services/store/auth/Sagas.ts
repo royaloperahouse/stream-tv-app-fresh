@@ -170,8 +170,8 @@ function* fullSubscriptionLoopWorker(): any {
     if (
       !fullSubscription ||
       !isValid(fullSubscriptionUpdateDate) ||
-      format(new Date(fullSubscriptionUpdateDate), 'D') !==
-        format(new Date(), 'D') ||
+      format(new Date(fullSubscriptionUpdateDate), 'DDD') !==
+        format(new Date(), 'DDD') ||
       format(new Date(fullSubscriptionUpdateDate), 'yyyy') !==
         format(new Date(), 'yyyy')
     ) {
@@ -295,7 +295,7 @@ function* downloadListOfAvailablePPVEvents(): any {
   const nowDate = new Date();
   if (
     isValid(downloadedDate) &&
-    format(new Date(downloadedDate), 'D yyyy') === format(nowDate, 'D yyyy')
+    format(new Date(downloadedDate), 'DDD yyyy') === format(nowDate, 'DDD yyyy')
   ) {
     return;
   }

@@ -17,7 +17,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
  *   bundleAssetName: "index.android.bundle",
  *
  *   // the entry file for bundle generation. If none specified and
- *   // "index.android.js" exists, it will be used. Otherwise "index.js" is
+ *   // "index.android.js" exists, it will be used. Otherwise "index.tsx" is
  *   // default. Can be overridden with ENTRY_FILE environment variable.
  *   entryFile: "index.android.js",
  *
@@ -135,6 +135,7 @@ android {
             sourceCompatibility JavaVersion.VERSION_11
             targetCompatibility JavaVersion.VERSION_11
         }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -275,6 +276,10 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation "androidx.core:core-splashscreen:1.0.0-rc01" // For bootsplash
+
+    implementation 'com.bitmovin.player:player:3.11.0'
+    implementation 'com.bitmovin.analytics:collector-bitmovin-player:2.0.0'
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

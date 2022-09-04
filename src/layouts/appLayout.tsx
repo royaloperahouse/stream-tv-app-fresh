@@ -37,6 +37,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
   const hasQRCode = useFeature('hasQRCode');
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
+      console.log(nextAppState, isAuthenticated);
       if (
         appState.current.match(/inactive|background/) &&
         nextAppState === 'active' &&
@@ -60,6 +61,12 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
 
     return unsubscribe.remove;
   }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getEventListLoopStart());
+    }
+  }, [isAuthenticated, dispatch]);
 
   useLayoutEffect(() => {
     // we need to setup splashscreen for tvOS(iOS)

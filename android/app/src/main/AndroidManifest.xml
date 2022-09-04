@@ -6,9 +6,10 @@
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
+      android:banner="@drawable/ic_banner"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
+      android:allowBackup="true"
       android:theme="@style/BootTheme">
       <activity
         android:name=".MainActivity"
@@ -22,5 +23,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+        <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="1cb2ef33-6d56-4632-8d8b-1fdbf64b3511" />
+        <meta-data android:name="BITMOVIN_ANALYTICS_LICENSE_KEY" android:value="45a0bac7-b900-4a0f-9d87-41a120744160" />
     </application>
 </manifest>

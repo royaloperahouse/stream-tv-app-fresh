@@ -7,7 +7,13 @@ import React, {
   useImperativeHandle,
   useContext,
 } from 'react';
-import { View, StyleSheet, Dimensions, HWEvent } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  HWEvent,
+  TouchableHighlight,
+} from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
 import FastImage from 'react-native-fast-image';
@@ -24,21 +30,12 @@ import {
   addToMyList,
 } from '@services/myList';
 
-//import { globalModalManager } from '@components/GlobalModal';
-/* import {
-  NonSubscribedModeAlert,
-  СontinueWatchingModal,
-  ErrorModal,
-  RentalStateStatusModal,
-} from '@components/GlobalModal/variants'; */
 import {
   NonSubscribedStatusError,
   NotRentedItemError,
   UnableToCheckRentalStatusError,
 } from '@utils/customErrors';
-import Prismic from '@prismicio/client';
 import { fetchVideoURL, getAccessToWatchVideo } from '@services/apiClient';
-import { getVideoDetails } from '@services/prismicApiClient';
 import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import {
   resumeRollbackTime,
@@ -56,10 +53,6 @@ import { OverflowingContainer } from '@components/OverflowingContainer';
 import { useAppSelector } from 'hooks/redux';
 import { customerIdSelector } from '@services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
-import {
-  removeBitMovinSavedPositionByIdAndEventId,
-  savePosition,
-} from '@services/bitMovinPlayer';
 import type {
   TEventDetailsScreensProps,
   NSNavigationScreensNames,
@@ -67,9 +60,21 @@ import type {
 } from '@configs/screensConfig';
 import GoDown from '../commonControls/GoDown';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
-import GoBack, { goBackButtonuManager } from '@components/GoBack';
-import { useFocusLayoutEffect } from '@hooks/useFocusLayoutEffect';
-import RohImage from 'components/RohImage';
+import { globalModalManager } from '@components/GlobalModals';
+import {
+  СontinueWatchingModal,
+  PlayerModal,
+  ErrorModal,
+  NotSubscribedModal,
+  RentalStateStatusModal,
+} from '@components/GlobalModals/variants';
+import { goBackButtonuManager } from '@components/GoBack';
+import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
+import {
+  removeBitMovinSavedPositionByIdAndEventId,
+  savePosition,
+} from '@services/bitMovinPlayer';
+
 const General: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['general']
@@ -91,11 +96,14 @@ const General: React.FC<
     trailerInfo,
     performanceInfo,
     eventId,
+    performanceVideoTimePosition,
+    setPerformanceVideoTimePosition,
   } = params;
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
 
   const showCountDownTimer =
+    publishingDate &&
     isFocused &&
     !closeCountDown &&
     isValid(new Date(publishingDate)) &&
@@ -112,257 +120,298 @@ const General: React.FC<
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const [existInMyList, setExistInMyList] = useState<boolean>(false);
+  const needSubscribedModeInfoUpdate = useAppSelector(
+    needSubscribedModeInfoUpdateSelector,
+  );
 
-  const [showContinueWatching, setShowContinueWatching] =
-    useState<boolean>(false);
-
-  const setContinueWatching = useCallback(async () => {
-    if (!performanceInfo) {
-      return;
-    }
-    try {
-      const videoFromPrismic = await getAccessToWatchVideo(
-        performanceInfo,
-        isProductionEnv,
-        customerId,
-      );
-
-      const videoPositionInfo = await getBitMovinSavedPosition(
-        videoFromPrismic.videoId,
-        videoFromPrismic.eventId,
-      );
-      if (!generalMountedRef.current) {
-        return;
-      }
-
-      setShowContinueWatching(videoPositionInfo !== null);
-    } catch (err: any) {
-      if (!generalMountedRef.current) {
-        return;
-      }
-      setShowContinueWatching(false);
-    }
-  }, [performanceInfo, customerId, isProductionEnv]);
-
-  const savePositionCB = useCallback(async ({ time, videoId, eventId }) => {
-    const floatTime = parseFloat(time);
-    if (isNaN(floatTime) || floatTime < minResumeTime) {
-      await removeBitMovinSavedPositionByIdAndEventId(videoId, eventId);
-    } else {
-      await savePosition({
-        id: videoId,
-        position: time,
-        eventId,
+  const closeModal = useCallback((ref, clearLoadingState: any) => {
+    if (typeof ref?.current?.setNativeProps === 'function') {
+      ref.current.setNativeProps({
+        hasTVPreferredFocus: true,
       });
+    }
+    goBackButtonuManager.showGoBackButton();
+    if (typeof clearLoadingState === 'function') {
+      clearLoadingState();
     }
   }, []);
 
-  const getPerformanceVideoUrl = useCallback(() => {}, []);
-  /* const getPerformanceVideoUrl = useCallback(
-      async (
-        ref?: RefObject<TouchableHighlight>,
-        clearLoadingState?: () => void,
-      ) => {
-        try {
-          if (!videos.length) {
-            throw new Error('Something went wrong');
-          }
-          if (needSubscribedModeInfoUpdate) {
-            globalModalManager.openModal({
-              contentComponent: RentalStateStatusModal,
-              contentProps: {
-                title,
-              },
-            });
-          }
-
-          const videoFromPrismic = needSubscribedModeInfoUpdate
-            ? await promiseWait(
-                getAccessToWatchVideo(
-                  getVideoDetails({
-                    queryPredicates: [
-                      Prismic.predicates.any('document.id', videos),
-                    ],
-                  }),
-                ),
-              )
-            : (
-                await getVideoDetails({
-                  queryPredicates: [
-                    Prismic.predicates.any('document.id', videos),
-                  ],
-                })
-              ).results.find(
-                (prismicResponseResult: any) =>
-                  prismicResponseResult.data?.video?.video_type ===
-                  'performance',
-              );
-
-          const manifestInfo = await fetchVideoURL(videoFromPrismic.id);
-          if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
-            throw new Error('Something went wrong');
-          }
-          const videoPositionInfo = await getBitMovinSavedPosition(
-            videoFromPrismic.id,
-            event.id,
-          );
-          const videoTitle =
-            videoFromPrismic.data?.video_title[0]?.text || title || '';
-          if (videoPositionInfo && videoPositionInfo?.position) {
-            const fromTime = new Date(0);
-            const intPosition = parseInt(videoPositionInfo.position);
-            const rolledBackPos = intPosition - resumeRollbackTime;
-            fromTime.setSeconds(intPosition);
-            globalModalManager.openModal({
-              contentComponent: СontinueWatchingModal,
-              contentProps: {
-                confirmActionHandler: () => {
-                  openPlayer({
-                    url: manifestInfo.data.data.attributes.hlsManifestUrl,
-                    poster:
-                      'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-                    offset: rolledBackPos.toString(),
-                    title: videoTitle,
-                    onClose: closePlayer({
-                      savePositionCB,
-                      videoId: videoFromPrismic.id,
-                      eventId: event.id,
-                      clearLoadingState,
-                      ref,
-                    }),
-                    analytics: {
-                      videoId: videoFromPrismic.id,
-                      title: videoTitle,
-                    },
-                    guidance: vs_guidance,
-                    guidanceDetails: vs_guidance_details,
-                  });
-                },
-                rejectActionHandler: () => {
-                  openPlayer({
-                    url: manifestInfo.data.data.attributes.hlsManifestUrl,
-                    poster:
-                      'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-                    title: videoTitle,
-                    onClose: closePlayer({
-                      savePositionCB,
-                      videoId: videoFromPrismic.id,
-                      eventId: event.id,
-                      clearLoadingState,
-                      ref,
-                    }),
-                    analytics: {
-                      videoId: videoFromPrismic.id,
-                      title: videoTitle,
-                    },
-                    guidance: vs_guidance,
-                    guidanceDetails: vs_guidance_details,
-                  });
-                },
-                cancelActionHandler: () => {
-                  globalModalManager.closeModal(() => {
-                    closeModal(ref, clearLoadingState);
-                  });
-                },
-                videoTitle: videoTitle,
-                fromTime: fromTime.toISOString().substr(11, 8),
-              },
-            });
-            return;
-          }
-          openPlayer({
-            url: manifestInfo.data.data.attributes.hlsManifestUrl,
-            poster:
-              'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-            title: videoTitle,
-            onClose: closePlayer({
-              savePositionCB,
-              videoId: videoFromPrismic.id,
-              eventId: event.id,
-              clearLoadingState,
-              ref,
-            }),
-            analytics: {
-              videoId: videoFromPrismic.id,
-              title: videoTitle,
-            },
-            guidance: vs_guidance,
-            guidanceDetails: vs_guidance_details,
-          });
-        } catch (err: any) {
+  const closePlayer = useCallback(
+    ({
+        savePositionCB,
+        videoId,
+        eventId,
+        ref,
+        clearLoadingState,
+        closeModalCB = closeModal,
+      }) =>
+      async (error: TBMPlayerErrorObject | null, time: string) => {
+        if (typeof savePositionCB === 'function') {
+          await savePositionCB({ time, videoId, eventId });
+        }
+        if (error) {
           globalModalManager.openModal({
-            contentComponent:
-              err instanceof NonSubscribedStatusError
-                ? NonSubscribedModeAlert
-                : ErrorModal,
+            contentComponent: ErrorModal,
             contentProps: {
               confirmActionHandler: () => {
+                globalModalManager.closeModal(() => {
+                  if (typeof closeModalCB === 'function') {
+                    closeModalCB(ref, clearLoadingState);
+                  }
+                });
+              },
+              title: 'Player Error',
+              subtitle: `Something went wrong.\n${error.errCode}: ${
+                error.errMessage
+              }\n${error.url || ''}`,
+            },
+          });
+        } else {
+          globalModalManager.closeModal(() => {
+            if (typeof closeModalCB === 'function') {
+              closeModalCB(ref, clearLoadingState);
+            }
+          });
+        }
+      },
+    [closeModal],
+  );
+
+  const openPlayer = useCallback(
+    ({
+      url,
+      poster = '',
+      offset = '0.0',
+      title: playerTitle = '',
+      subtitle = '',
+      onClose = () => {},
+      analytics = {},
+      guidance = '',
+      guidanceDetails = [],
+    }) => {
+      goBackButtonuManager.hideGoBackButton();
+      globalModalManager.openModal({
+        contentComponent: PlayerModal,
+        contentProps: {
+          autoPlay: true,
+          configuration: {
+            url,
+            poster,
+            offset,
+          },
+          title: playerTitle,
+          subtitle,
+          onClose,
+          analytics,
+          guidance,
+          guidanceDetails,
+        },
+      });
+    },
+    [],
+  );
+
+  const savePositionCB = useCallback(
+    async ({ time, videoId, eventId }) => {
+      const floatTime = parseFloat(time);
+      if (isNaN(floatTime) || floatTime < minResumeTime) {
+        await removeBitMovinSavedPositionByIdAndEventId(videoId, eventId);
+        setPerformanceVideoTimePosition('');
+      } else {
+        await savePosition({
+          id: videoId,
+          position: time,
+          eventId,
+        });
+        setPerformanceVideoTimePosition(time);
+      }
+    },
+    [setPerformanceVideoTimePosition],
+  );
+
+  const getPerformanceVideoUrl = useCallback(
+    async (
+      ref?: React.RefObject<TouchableHighlight>,
+      clearLoadingState?: () => void,
+    ) => {
+      try {
+        if (needSubscribedModeInfoUpdate) {
+          globalModalManager.openModal({
+            contentComponent: RentalStateStatusModal,
+            contentProps: {
+              title: performanceInfo.title || title || '',
+            },
+          });
+        }
+        const videoFromPrismic = needSubscribedModeInfoUpdate
+          ? await promiseWait(
+              getAccessToWatchVideo(
+                performanceInfo,
+                isProductionEnv,
+                customerId,
+              ),
+            )
+          : performanceInfo;
+
+        const manifestInfo = await fetchVideoURL(
+          videoFromPrismic.videoId,
+          isProductionEnv,
+        );
+        if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
+          throw new Error('Something went wrong');
+        }
+        const videoTitle = videoFromPrismic.title || title || '';
+
+        if (performanceVideoTimePosition) {
+          const fromTime = new Date(0);
+          const intPosition = parseInt(performanceVideoTimePosition);
+          const rolledBackPos = intPosition - resumeRollbackTime;
+          fromTime.setSeconds(intPosition);
+          globalModalManager.openModal({
+            contentComponent: СontinueWatchingModal,
+            contentProps: {
+              confirmActionHandler: () => {
+                openPlayer({
+                  url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  poster:
+                    'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+                  offset: rolledBackPos.toString(),
+                  title: videoTitle,
+                  analytics: {
+                    videoId: videoFromPrismic.videoId,
+                    title: videoTitle,
+                  },
+                  onClose: closePlayer({
+                    savePositionCB,
+                    videoId: videoFromPrismic.videoId,
+                    eventId: videoFromPrismic.eventId,
+                    clearLoadingState,
+                    ref,
+                  }),
+                  guidance: vs_guidance,
+                  guidanceDetails: vs_guidance_details,
+                });
+              },
+              rejectActionHandler: () => {
+                openPlayer({
+                  url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  poster:
+                    'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+                  title: videoTitle,
+                  onClose: closePlayer({
+                    savePositionCB,
+                    videoId: videoFromPrismic.videoId,
+                    eventId: videoFromPrismic.eventId,
+                    clearLoadingState,
+                    ref,
+                  }),
+                  analytics: {
+                    videoId: videoFromPrismic.videoId,
+                    title: videoTitle,
+                  },
+                  guidance: vs_guidance,
+                  guidanceDetails: vs_guidance_details,
+                });
+              },
+              cancelActionHandler: () => {
                 globalModalManager.closeModal(() => {
                   closeModal(ref, clearLoadingState);
                 });
               },
-              title:
-                err instanceof NonSubscribedStatusError ||
-                err instanceof NotRentedItemError ||
-                err instanceof UnableToCheckRentalStatusError
-                  ? err.message
-                  : 'Player Error',
-              subtitle:
-                err instanceof NonSubscribedStatusError ||
-                err instanceof NotRentedItemError ||
-                err instanceof UnableToCheckRentalStatusError
-                  ? undefined
-                  : err.message,
+              videoTitle: videoTitle,
+              fromTime: fromTime.toISOString().substr(11, 8),
             },
           });
+          return;
         }
-      },
-      [
-        closePlayer,
-        event.id,
-        needSubscribedModeInfoUpdate,
-        openPlayer,
-        title,
-        videos,
-        vs_guidance,
-        vs_guidance_details,
-        savePositionCB,
-        closeModal,
-      ],
-    ); */
-  const getTrailerVideoUrl = useCallback(() => {}, []);
-  /* const getTrailerVideoUrl = async (
-      ref?: RefObject<TouchableHighlight>,
-      clearLoadingState?: () => void,
-    ) => {
-      try {
-        if (!videos.length) {
-          throw new Error('Something went wrong');
-        }
-        const prismicResponse = await getVideoDetails({
-          queryPredicates: [Prismic.predicates.any('document.id', videos)],
-        });
-
-        const videoFromPrismic = prismicResponse.results.find(
-          prismicResponseResult =>
-            prismicResponseResult.data?.video?.video_type === 'trailer',
-        );
-        if (videoFromPrismic === undefined) {
-          throw new Error('Something went wrong');
-        }
-        const manifestInfo = await fetchVideoURL(videoFromPrismic.id);
-        if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
-          throw new Error('Something went wrong');
-        }
-        const videoTitle =
-          videoFromPrismic.data?.video_title[0]?.text || title || '';
         openPlayer({
           url: manifestInfo.data.data.attributes.hlsManifestUrl,
           poster:
             'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
           title: videoTitle,
           onClose: closePlayer({
-            eventId: event.id,
+            savePositionCB,
+            videoId: videoFromPrismic.videoId,
+            eventId: videoFromPrismic.eventId,
+            clearLoadingState,
+            ref,
+          }),
+          analytics: {
+            videoId: videoFromPrismic.videoId,
+            title: videoTitle,
+          },
+          guidance: vs_guidance,
+          guidanceDetails: vs_guidance_details,
+        });
+      } catch (err: any) {
+        globalModalManager.openModal({
+          contentComponent:
+            err instanceof NonSubscribedStatusError
+              ? NotSubscribedModal
+              : ErrorModal,
+          contentProps: {
+            confirmActionHandler: () => {
+              globalModalManager.closeModal(() => {
+                closeModal(ref, clearLoadingState);
+              });
+            },
+            title:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? err.message
+                : 'Player Error',
+            subtitle:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? undefined
+                : err.message,
+          },
+        });
+      } finally {
+        if (typeof clearLoadingState === 'function') {
+          clearLoadingState();
+        }
+      }
+    },
+    [
+      closeModal,
+      closePlayer,
+      customerId,
+      isProductionEnv,
+      needSubscribedModeInfoUpdate,
+      openPlayer,
+      performanceInfo,
+      savePositionCB,
+      title,
+      vs_guidance,
+      vs_guidance_details,
+      performanceVideoTimePosition,
+    ],
+  );
+
+  const getTrailerVideoUrl = useCallback(
+    async (
+      ref?: React.RefObject<TouchableHighlight>,
+      clearLoadingState?: () => void,
+    ) => {
+      try {
+        const manifestInfo = await fetchVideoURL(
+          trailerInfo.videoId,
+          isProductionEnv,
+        );
+        if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
+          throw new Error('Something went wrong');
+        }
+        const videoTitle = trailerInfo.title || title || '';
+        openPlayer({
+          url: manifestInfo.data.data.attributes.hlsManifestUrl,
+          poster:
+            'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+          title: videoTitle,
+          onClose: closePlayer({
+            eventId: trailerInfo.eventId,
             clearLoadingState,
             ref,
           }),
@@ -380,8 +429,14 @@ const General: React.FC<
             subtitle: err.message,
           },
         });
+      } finally {
+        if (typeof clearLoadingState === 'function') {
+          clearLoadingState();
+        }
       }
-    }; */
+    },
+    [closeModal, closePlayer, isProductionEnv, openPlayer, title, trailerInfo],
+  );
 
   const addOrRemoveItemIdFromMyListHandler = () => {
     if (addOrRemoveBusyRef.current) {
@@ -427,7 +482,7 @@ const General: React.FC<
   const actionButtonList = [
     {
       key: 'WatchNow',
-      text: showContinueWatching ? 'Continue watching' : 'Watch now',
+      text: performanceVideoTimePosition ? 'Continue watching' : 'Watch now',
       hasTVPreferredFocus: true,
       onPress: getPerformanceVideoUrl,
       onFocus: setPerformanceVideoInFocus,
@@ -472,12 +527,6 @@ const General: React.FC<
     };
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setContinueWatching();
-    }, [setContinueWatching]),
-  );
-
   useEffect(() => {
     hasMyListItem(eventId)
       .then(isExist => setExistInMyList(isExist))
@@ -489,7 +538,7 @@ const General: React.FC<
   useFocusEffect(
     useCallback(() => {
       const cb = (eve: HWEvent) => {
-        if (eve?.eventType !== 'playPause' || eve.eventKeyAction === 0) {
+        if (eve?.eventType !== 'playPause') {
           return;
         }
         if (
@@ -552,10 +601,10 @@ const General: React.FC<
         ) : null}
       </View>
       <View style={styles.snapshotContainer}>
-        <RohImage
+        <FastImage
           resizeMode={FastImage.resizeMode.cover}
           style={styles.snapshotContainer}
-          source={snapshotImageUrl}
+          source={{ uri: snapshotImageUrl }}
         />
       </View>
     </View>
