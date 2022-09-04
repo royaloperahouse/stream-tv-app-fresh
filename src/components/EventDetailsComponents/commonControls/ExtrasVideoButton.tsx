@@ -13,6 +13,7 @@ import TouchableHighlightWrapper, {
 import { Colors } from '@themes/Styleguide';
 import FastImage from 'react-native-fast-image';
 import LoadingSpinner from '@components/LoadingSpinner';
+import RohImage from 'components/RohImage';
 
 type Props = {
   focusCallback?: (pressingHandler?: () => void) => void;
@@ -115,9 +116,9 @@ const ExtrasVideoButton = forwardRef<any, Props>(
             containerStyle,
             focused ? styles.extrasGalleryItemFocusedContainer : {},
           ]}>
-          <FastImage
+          <RohImage
             style={styles.extrasGalleryItemImage}
-            source={{ uri }}
+            source={uri}
             resizeMode={FastImage.resizeMode.cover}
           />
           <View
