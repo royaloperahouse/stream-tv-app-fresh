@@ -4,8 +4,7 @@ import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
 import { TGlobalModalContentProps } from '@services/types/globalModal';
-import Spinner from 'react-native-spinkit';
-import LoadingSpinner from "components/LoadingSpinner";
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const RentalStateStatusModal: React.FC<TGlobalModalContentProps> = ({
   title = '',
