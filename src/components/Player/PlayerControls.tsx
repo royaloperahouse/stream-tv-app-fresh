@@ -26,6 +26,7 @@ import SubtitlesItem from './SubtitlesItem';
 import ArrowDropdown from '@assets/svg/player/ArrowDropdownForPlayer.svg';
 import { ESeekOperations } from '@configs/playerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
+import debounce from 'lodash.debounce';
 
 type TPlayerControlsProps = {
   duration: number;
@@ -347,7 +348,9 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
+
+
                     break;
                   }
                   if (
@@ -370,7 +373,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
@@ -400,7 +403,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
@@ -430,7 +433,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
@@ -479,6 +482,10 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           },
         ]);
       }, [onPausePress, onPlayPress, calculateTimeForSeeking, seekTo, fastForwardClickStack]);
+
+      const debouncedSeekToo = debounce((time: number) => {
+        seekTo(time);
+      }, 250);
 
       const calculateRewindStep = (numberOfClicks: number) => {
         if (numberOfClicks === 5) {
