@@ -165,7 +165,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}
-        style={[lastItem ? styles.containeForListItem : styles.container]}
+        style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
           if (isMounted.current) {
             setFocused(false);
@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
     width: scaleSize(377),
     minHeight: scaleSize(262),
   },
-  containeForListItem: {
-    width: scaleSize(397),
+  containerForListItem: {
+    width: scaleSize(465),
     minHeight: scaleSize(262),
     paddingRight: scaleSize(20),
   },
