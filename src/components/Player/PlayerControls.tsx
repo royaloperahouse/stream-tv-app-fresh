@@ -26,6 +26,7 @@ import SubtitlesItem from './SubtitlesItem';
 import ArrowDropdown from '@assets/svg/player/ArrowDropdownForPlayer.svg';
 import { ESeekOperations } from '@configs/playerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
+import debounce from 'lodash.debounce';
 
 type TPlayerControlsProps = {
   duration: number;
@@ -98,7 +99,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       const exitButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
       const restartButtonRef = useRef<null | TTouchableHighlightWrapperRef>(null);
       let fastForwardClickStack = useRef<number>(0);
-      const prevRewindBtn = useRef<string>('');
 
       const focusToSutitleButton = useCallback(() => {
         if (
@@ -235,7 +235,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         TVEventManager.setEventListeners([
           (eve: HWEvent) => {
             if (eve?.eventType === 'blur' || eve?.eventType === 'focus') {
-              fastForwardClickStack.current = 0;
               return;
             }
             if (eve?.eventKeyAction === 1) {
@@ -304,26 +303,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       eve.tag === centralControlsRef.current?.getFwdNode() &&
                       seekOperation.current === ESeekOperations.fastForward
                   ) {
-                    if (prevRewindBtn.current === 'left') {
-                      fastForwardClickStack.current = 0;
-                    }
-
-                    prevRewindBtn.current = 'right';
-                    fastForwardClickStack.current =
-                        fastForwardClickStack.current + 1;
+                    fastForwardClickStack.current++;
                   }
 
                   if (
                       eve.tag === centralControlsRef.current?.getRwdNode() &&
                       seekOperation.current === ESeekOperations.rewind
                   ) {
-                    if (prevRewindBtn.current === 'right') {
-                      fastForwardClickStack.current = 0;
-                    }
-
-                    prevRewindBtn.current = 'left';
-                    fastForwardClickStack.current =
-                        fastForwardClickStack.current + 1;
+                    fastForwardClickStack.current++;
                   }
                   // <---fast forward logic--->
 
@@ -342,12 +329,15 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                     );
                     if (timeForSeeking === -1) {
                       countOfFastForwardClicks.current = 0;
-                      fastForwardClickStack.current = 0;
                       seekUpdatingOnDevice.current = false;
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+
+                    startPointForSeek.current = timeForSeeking;
+                    progressBarRef.current?.setCurrentTime(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
+
                     break;
                   }
                   if (
@@ -365,25 +355,21 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                     );
                     if (timeForSeeking === -1) {
                       countOfRewindClicks.current = 0;
-                      fastForwardClickStack.current = 0;
                       seekUpdatingOnDevice.current = false;
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+
+                    startPointForSeek.current = timeForSeeking;
+                    progressBarRef.current?.setCurrentTime(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
                 case 'fastForward': {
                   // <---fast forward logic--->
                   if (countOfFastForwardClicks.current) {
-                    if (prevRewindBtn.current === 'left') {
-                      fastForwardClickStack.current = 0;
-                    }
-
-                    prevRewindBtn.current = 'right';
-                    fastForwardClickStack.current =
-                        fastForwardClickStack.current + 1;
+                    fastForwardClickStack.current++;
                     // <---fast forward logic--->
 
                     seekUpdatingOnDevice.current = true;
@@ -400,20 +386,17 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+
+                    startPointForSeek.current = timeForSeeking;
+                    progressBarRef.current?.setCurrentTime(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
                 case 'rewind': {
                   if (countOfRewindClicks.current) {
                     // <---fast forward logic--->
-                    if (prevRewindBtn.current === 'right') {
-                      fastForwardClickStack.current = 0;
-                    }
-
-                    prevRewindBtn.current = 'left';
-                    fastForwardClickStack.current =
-                        fastForwardClickStack.current + 1;
+                    fastForwardClickStack.current++;
                     // <---fast forward logic--->
 
                     seekUpdatingOnDevice.current = true;
@@ -430,7 +413,10 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       seekQueueuBusy.current = false;
                       break;
                     }
-                    seekTo(timeForSeeking);
+
+                    startPointForSeek.current = timeForSeeking;
+                    progressBarRef.current?.setCurrentTime(timeForSeeking);
+                    debouncedSeekToo(timeForSeeking);
                   }
                   break;
                 }
@@ -480,14 +466,13 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         ]);
       }, [onPausePress, onPlayPress, calculateTimeForSeeking, seekTo, fastForwardClickStack]);
 
+      const debouncedSeekToo = debounce((time: number) => {
+        seekTo(time);
+        fastForwardClickStack.current = 0;
+      }, 250);
+
       const calculateRewindStep = (numberOfClicks: number) => {
-        if (numberOfClicks === 5) {
-          return 2;
-        } else if (numberOfClicks < 25) {
-          return numberOfClicks;
-        } else {
-          return 25;
-        }
+        return numberOfClicks * 0.5;
       };
 
       useLayoutEffect(() => {
