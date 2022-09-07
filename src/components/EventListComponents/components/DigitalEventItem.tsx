@@ -197,9 +197,9 @@ const styles = StyleSheet.create({
     minHeight: scaleSize(262),
   },
   containeForListItem: {
-    width: scaleSize(397),
+    width: scaleSize(480),
     minHeight: scaleSize(262),
-    paddingRight: scaleSize(20),
+    paddingRight: scaleSize(200),
   },
   title: {
     color: 'white',
