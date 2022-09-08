@@ -184,7 +184,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
               style={styles.image}
               source={snapshotImageUrl}></RohImage>
           </View>
-          <RohText style={styles.title}>{eventTitle}</RohText>
+          <RohText numberOfLines={2} style={styles.title}>{eventTitle}</RohText>
         </View>
       </TouchableHighlightWrapper>
     );
