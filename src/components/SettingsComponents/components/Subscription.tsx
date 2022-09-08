@@ -6,9 +6,9 @@ import { View, StyleSheet } from 'react-native';
 import { useAppSelector } from 'hooks/redux';
 import { subscribedModeSelector } from 'services/store/auth/Selectors';
 
-export type TAppVersionProps = {};
+export type TSubscriptionStatusProps = {};
 
-const Subscription: React.FC<TAppVersionProps> = () => {
+const Subscription: React.FC<TSubscriptionStatusProps> = () => {
     const isActiveSubscription: boolean = useAppSelector(subscribedModeSelector);
     return (
         <View style={styles.root}>
