@@ -2,7 +2,8 @@ import {
   SignOut,
   Account,
   AppVersion,
-  SwitchingBetweenEnvironments, SwitchSubscriptionMode, Subscription,
+  SwitchingBetweenEnvironments,
+  Subscription,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
 import type {
