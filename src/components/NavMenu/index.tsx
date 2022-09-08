@@ -115,7 +115,9 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const canExit = useFeature('canExit');
   const focusTag = useRef<number | undefined>();
   const navMenuMountedRef = useRef<boolean>(false);
-  const currenItemInFocus = useRef<string>('Home');
+  const currenItemInFocus = useRef<string>(
+    navMenuConfig?.find(item => item?.isDefault).navMenuTitle as string,
+  );
   const buttonsRefs = useRef<{
     [key: string]: React.RefObject<TouchableHighlight>;
   }>({});
@@ -137,6 +139,8 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   );
   const navMenuWidth = useSharedValue(widthWithOutFocus);
   const navMenuExitButton = useSharedValue(0);
+
+  console.log(navMenuConfig.find(item => item.isDefault))
 
   const navMenuAnimatedStyle = useAnimatedStyle(() => {
     return {
