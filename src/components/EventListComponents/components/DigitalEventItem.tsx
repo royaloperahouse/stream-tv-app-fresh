@@ -118,7 +118,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       });
     };
 
-    const truncate = (title: string) => {
+    const truncate = (title: string): string => {
       return title.length > 46 ? title.slice(0, 46 - 1) + '&hellip;' : title;
     };
 
