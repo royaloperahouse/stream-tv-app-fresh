@@ -3,6 +3,7 @@ import {
   Account,
   AppVersion,
   SwitchingBetweenEnvironments,
+  Subscription,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
 import type {
@@ -48,6 +49,11 @@ export const getSettingsSectionsConfig: () => {
       key: 'appVersion',
       navMenuItemTitle: 'APP VERSION',
       ContentComponent: AppVersion,
+    },
+    subscription: {
+      key: 'subscription',
+      navMenuItemTitle: 'SUBSCRIPTION',
+      ContentComponent: Subscription,
     },
   };
   if (store.getState().auth.userEmail.includes('roh.org.uk')) {
