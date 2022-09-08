@@ -118,10 +118,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       });
     };
 
-    const truncate = (title: string): string => {
-      return title.length > 46 ? title.slice(0, 46 - 1) + '&hellip;' : title;
-    };
-
     const onFocusHandler = () => {
       if (isMounted.current) {
         setFocused(true);
@@ -188,7 +184,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
               style={styles.image}
               source={snapshotImageUrl}></RohImage>
           </View>
-          <RohText style={styles.title}>{truncate(eventTitle)}</RohText>
+          <RohText numberOfLines={2} style={styles.title}>{eventTitle}</RohText>
         </View>
       </TouchableHighlightWrapper>
     );
