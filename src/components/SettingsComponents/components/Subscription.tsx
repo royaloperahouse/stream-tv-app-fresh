@@ -15,8 +15,8 @@ const Subscription: React.FC<TSubscriptionStatusProps> = () => {
             <View style={styles.titleContainer}>
                 <RohText style={styles.titleText}>SUBSCRIPTION</RohText>
             </View>
-            <View style={styles.appVersionContainer}>
-                <RohText style={styles.appVersionText}>{isActiveSubscription ? 'ACTIVE' : 'NOT ACTIVE'}</RohText>
+            <View style={styles.subscriptionStatusContainer}>
+                <RohText style={styles.subscriptionStatusText}>{isActiveSubscription ? 'ACTIVE' : 'NOT ACTIVE'}</RohText>
             </View>
         </View>
     );
@@ -40,14 +40,14 @@ const styles = StyleSheet.create({
         letterSpacing: scaleSize(1),
         color: Colors.tVMidGrey,
     },
-    appVersionContainer: {
+    subscriptionStatusContainer: {
         minHeight: scaleSize(80),
         minWidth: scaleSize(486),
         backgroundColor: Colors.tvMidGreyWith50Alpha,
         justifyContent: 'center',
         paddingLeft: scaleSize(24),
     },
-    appVersionText: {
+    subscriptionStatusText: {
         fontSize: scaleSize(26),
         lineHeight: scaleSize(30),
         letterSpacing: scaleSize(1),
