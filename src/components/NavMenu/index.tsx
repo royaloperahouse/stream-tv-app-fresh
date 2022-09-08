@@ -115,6 +115,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const canExit = useFeature('canExit');
   const focusTag = useRef<number | undefined>();
   const navMenuMountedRef = useRef<boolean>(false);
+  const currenItemInFocus = useRef<string>('Home');
   const buttonsRefs = useRef<{
     [key: string]: React.RefObject<TouchableHighlight>;
   }>({});
@@ -256,6 +257,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       if (state.routeNames[state.index] !== id) {
         navigation.navigate(id);
         navMenuWidth.value = widthWithFocus;
+        currenItemInFocus.current = id;
       }
     },
     [state.routeNames, state.index, navigation, navMenuWidth],
@@ -267,6 +269,12 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         return false;
       }
       if (navMenuWidth.value === widthWithOutFocus) {
+        buttonsRefs?.current[
+          currenItemInFocus.current
+        ]?.current?.setNativeProps?.({
+          hasTVPreferredFocus: true,
+        });
+
         navMenuWidth.value = widthWithFocus;
         return true;
       }
