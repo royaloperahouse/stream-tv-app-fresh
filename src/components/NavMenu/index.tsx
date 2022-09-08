@@ -140,8 +140,6 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const navMenuWidth = useSharedValue(widthWithOutFocus);
   const navMenuExitButton = useSharedValue(0);
 
-  console.log(navMenuConfig.find(item => item.isDefault))
-
   const navMenuAnimatedStyle = useAnimatedStyle(() => {
     return {
       width: withTiming(navMenuWidth.value, {
