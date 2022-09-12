@@ -14,6 +14,7 @@ import get from 'lodash.get';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
 import { removeItemsFromSavedPositionListByEventIds } from '@services/bitMovinPlayer';
 import difference from 'lodash.difference';
+import { includes } from 'lodash';
 import type { TRootState } from '../index';
 export const digitalEventDetailsSearchSelector = (
   store: TRootState,
@@ -155,7 +156,20 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
       return acc;
     }
     for (let i = 0; i < subtags.length; i++) {
-      const subtag = subtags[i].tag || 'without subtag';
+      const subtag = subtags[i].tag;
+
+      if (!subtag) {
+        const isIncludes = includes(
+          eventsWithoutSubtags.data,
+          store.events.allDigitalEventsDetail[id],
+        );
+        if (!isIncludes) {
+          eventsWithoutSubtags.data.push(
+            store.events.allDigitalEventsDetail[id],
+          );
+        }
+      }
+
       if (subtag in acc) {
         acc[subtag].data.push(store.events.allDigitalEventsDetail[id]);
       } else {
@@ -219,6 +233,20 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     }
     for (let i = 0; i < subtags.length; i++) {
       const subtag = subtags[i].tag;
+
+      if (!subtag) {
+        const isIncludes = includes(
+          eventsWithoutSubtags.data,
+          store.events.allDigitalEventsDetail[id],
+        );
+
+        if (!isIncludes) {
+          eventsWithoutSubtags.data.push(
+            store.events.allDigitalEventsDetail[id],
+          );
+        }
+      }
+
       if (subtag in acc) {
         acc[subtag].data.push(store.events.allDigitalEventsDetail[id]);
       } else {
