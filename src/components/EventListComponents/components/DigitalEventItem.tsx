@@ -28,7 +28,7 @@ import {
   TContentScreenReverseNamesOfNavToDetails,
   TContentScreensProps,
 } from '@configs/screensConfig';
-import RohImage from "components/RohImage";
+import RohImage from '@components/RohImage';
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -182,9 +182,12 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
             <RohImage
               resizeMode={FastImage.resizeMode.cover}
               style={styles.image}
-              source={snapshotImageUrl}></RohImage>
+              source={snapshotImageUrl}
+            />
           </View>
-          <RohText numberOfLines={2} style={styles.title}>{eventTitle}</RohText>
+          <RohText numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
+            {eventTitle}
+          </RohText>
         </View>
       </TouchableHighlightWrapper>
     );

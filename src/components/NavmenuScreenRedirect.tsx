@@ -12,11 +12,14 @@ import {
   TouchableHighlight,
   TVFocusGuideView,
   View,
+  HWEvent,
+  findNodeHandle,
 } from 'react-native';
 import { isTVOS } from '@configs/globalConfig';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 import { scaleSize } from 'utils/scaleSize';
+import { TVEventManager } from 'services/tvRCEventListener';
 
 export type TNavMenuScreenRedirectRef = {
   setDefaultRedirectFromNavMenu: (
@@ -51,6 +54,8 @@ export const NavMenuScreenRedirect = forwardRef<
     NavMenuNodesRefsContext,
   );
   const isMounted = useRef(false);
+  const navMenuRef = useRef<TouchableHighlight>(null);
+  const contentRef = useRef<TouchableHighlight>(null);
   const [difaultRedirectFromNavMenu, setDefRedirectFromNavMenu] = useState<{
     [key: string]:
       | React.Component<any, any, any>
@@ -167,6 +172,37 @@ export const NavMenuScreenRedirect = forwardRef<
         .map(([_, value]) => value);
 
   useLayoutEffect(() => {
+    const cb = (event: HWEvent) => {
+      if (
+        event.tag === findNodeHandle(navMenuRef.current) &&
+        event.eventType === 'right' &&
+        redirectToContent?.[0] &&
+        typeof redirectToContent?.[0] !== 'number'
+      ) {
+        (redirectToContent?.[0] as any)?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+        return;
+      }
+      if (
+        event.tag === findNodeHandle(contentRef.current) &&
+        event.eventType === 'left' &&
+        redirectFromContent?.[0] &&
+        typeof redirectFromContent?.[0] !== 'number'
+      ) {
+        (redirectFromContent?.[0] as any)?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+        return;
+      }
+    };
+
+    TVEventManager.addEventListener(cb);
+    return () => {
+      TVEventManager.removeEventListener(cb);
+    };
+  }, [redirectToContent]);
+  useLayoutEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -177,6 +213,7 @@ export const NavMenuScreenRedirect = forwardRef<
     return (
       <View style={styles.root}>
         <TouchableHighlight
+          ref={navMenuRef}
           style={[styles.redirectBlock]}
           accessible={
             Array.isArray(redirectToContent) &&
@@ -186,20 +223,11 @@ export const NavMenuScreenRedirect = forwardRef<
             typeof (redirectToContent?.[0] as any)?.setNativeProps ===
               'function'
           }
-          underlayColor="transparent"
-          onFocus={() => {
-            if (
-              redirectToContent?.[0] &&
-              typeof redirectToContent?.[0] !== 'number'
-            ) {
-              (redirectToContent?.[0] as any)?.setNativeProps({
-                hasTVPreferredFocus: true,
-              });
-            }
-          }}>
-          <View collapsable={false}/>
+          underlayColor="transparent">
+          <View collapsable={false} />
         </TouchableHighlight>
         <TouchableHighlight
+          ref={contentRef}
           underlayColor="transparent"
           accessible={
             Array.isArray(redirectToContent) &&
@@ -209,17 +237,7 @@ export const NavMenuScreenRedirect = forwardRef<
             typeof (redirectFromContent?.[0] as any)?.setNativeProps ===
               'function'
           }
-          style={[styles.redirectBlock]}
-          onFocus={() => {
-            if (
-              redirectFromContent?.[0] &&
-              typeof redirectFromContent?.[0] !== 'number'
-            ) {
-              (redirectFromContent?.[0] as any)?.setNativeProps({
-                hasTVPreferredFocus: true,
-              });
-            }
-          }}>
+          style={[styles.redirectBlock]}>
           <View collapsable={false} />
         </TouchableHighlight>
       </View>

@@ -102,6 +102,7 @@ export const getAccessToWatchVideo = async (
   videoObj: { videoId: string; eventId: string; title?: string },
   isProductionEnv: boolean,
   customerId: number | null,
+  checkRentalStateModalCB: () => void,
 ): Promise<{ videoId: string; eventId: string; title?: string }> => {
   const subscriptionResponse = await getSubscribeInfo(isProductionEnv);
   if (
@@ -111,6 +112,7 @@ export const getAccessToWatchVideo = async (
   ) {
     return videoObj;
   }
+  checkRentalStateModalCB();
   if (isProductionEnv) {
     throw new NonSubscribedStatusError(); //temporary, while  ppv is not working
   }
