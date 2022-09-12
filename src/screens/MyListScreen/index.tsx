@@ -53,7 +53,7 @@ const MyListScreen: React.FC<
       />
       <View style={styles.contentContainer}>
         <RohText style={styles.pageTitle}>{myListTitle}</RohText>
-        {data.length ? (
+        {ejected && data.length ? (
           <FlatList
             data={data}
             ref={listRef}
@@ -66,7 +66,11 @@ const MyListScreen: React.FC<
               <DigitalEventItem
                 ref={itemRef}
                 screenNameFrom={route.name}
-                hasTVPreferredFocus={index === 0}
+                hasTVPreferredFocus={
+                  !route.params?.eventId
+                    ? false
+                    : (selectedIndex === -1 ? 0 : selectedIndex) === index
+                }
                 event={item}
                 canMoveUp={index >= countOfItemsPeerRail}
                 canMoveRight={
@@ -75,7 +79,7 @@ const MyListScreen: React.FC<
                 }
                 sectionIndex={index}
                 setFirstItemFocusable={
-                  index === 0 || index % countOfItemsPeerRail === 0
+                  index === 0
                     ? navMenuScreenRedirectRef.current
                         ?.setDefaultRedirectFromNavMenu
                     : undefined

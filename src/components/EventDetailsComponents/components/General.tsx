@@ -43,7 +43,6 @@ import {
 } from '@configs/bitMovinPlayerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { promiseWait } from '@utils/promiseWait';
-import { needSubscribedModeInfoUpdateSelector } from '@services/store/auth/Selectors';
 import isAfter from 'date-fns/isAfter';
 import isValid from 'date-fns/isValid';
 import CountDown from '@components/EventDetailsComponents/commonControls/CountDown';
@@ -121,9 +120,6 @@ const General: React.FC<
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const [existInMyList, setExistInMyList] = useState<boolean>(false);
-  const needSubscribedModeInfoUpdate = useAppSelector(
-    needSubscribedModeInfoUpdateSelector,
-  );
 
   const closeModal = useCallback((ref, clearLoadingState: any) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
@@ -236,23 +232,21 @@ const General: React.FC<
       clearLoadingState?: () => void,
     ) => {
       try {
-        if (needSubscribedModeInfoUpdate) {
-          globalModalManager.openModal({
-            contentComponent: RentalStateStatusModal,
-            contentProps: {
-              title: performanceInfo.title || title || '',
+        const videoFromPrismic = await promiseWait(
+          getAccessToWatchVideo(
+            performanceInfo,
+            isProductionEnv,
+            customerId,
+            () => {
+              globalModalManager.openModal({
+                contentComponent: RentalStateStatusModal,
+                contentProps: {
+                  title: performanceInfo.title || title || '',
+                },
+              });
             },
-          });
-        }
-        const videoFromPrismic = needSubscribedModeInfoUpdate
-          ? await promiseWait(
-              getAccessToWatchVideo(
-                performanceInfo,
-                isProductionEnv,
-                customerId,
-              ),
-            )
-          : performanceInfo;
+          ),
+        );
 
         const manifestInfo = await fetchVideoURL(
           videoFromPrismic.videoId,
@@ -381,7 +375,6 @@ const General: React.FC<
       closePlayer,
       customerId,
       isProductionEnv,
-      needSubscribedModeInfoUpdate,
       openPlayer,
       performanceInfo,
       savePositionCB,
