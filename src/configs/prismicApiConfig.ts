@@ -6,10 +6,12 @@ export const prismicApiAccessToken =
 type TDocumentTypeList = {
   digitalEventDetails: string;
   digitalEventVideo: string;
+  prismicisedRails: string;
 };
 export const documentTypes: TDocumentTypeList = Object.freeze({
   digitalEventDetails: 'digital_event_details',
   digitalEventVideo: 'digital_event_video',
+  prismicisedRails: 'stream_home_page',
 });
 
 export const getRefLabelOfPublishing = (isProductionEnv: boolean) =>

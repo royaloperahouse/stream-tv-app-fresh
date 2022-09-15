@@ -42,6 +42,24 @@ const eventsSlice = createSlice({
       state.eventsLoaded = true;
     },
     getEventListLoopStop: state => state,
+
+    getPrismicisedRailsLoopStart: state => state,
+    getPrismicisedRailsSuccess: (
+      state,
+      action: PayloadAction<{
+        prismicisedRails: {
+          allDigitalEventsDetail: EventsState['allDigitalEventsDetail'];
+          eventGroups: EventsState['eventGroups'];
+        };
+      }>,
+    ) => {
+      const { payload } = action;
+      state.allDigitalEventsDetail =
+        payload.prismicisedRails.allDigitalEventsDetail;
+      state.eventGroups = payload.prismicisedRails.eventGroups;
+      state.eventsLoaded = true;
+    },
+    getPrismicisedRailsLoopStop: state => state,
     setSearchQuery: (
       state,
       action: PayloadAction<{ searchQuery: EventsState['searchQueryString'] }>,
@@ -127,6 +145,9 @@ export const {
   clearPPVEventsIds,
   setAvailablePPVEventsIds,
   clearAvailablePPVEventsIds,
+  getPrismicisedRailsLoopStart,
+  getPrismicisedRailsSuccess,
+  getPrismicisedRailsLoopStop,
   setAvailablePPVEventsDateOfUpdate,
   clearAvailablePPVEventsDateOfUpdate,
 } = eventsSlice.actions;
