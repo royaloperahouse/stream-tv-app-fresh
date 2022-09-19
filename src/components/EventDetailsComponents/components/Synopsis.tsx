@@ -49,7 +49,9 @@ const Synopsis: React.FC<
           </View>
         </View>
       </View>
-      <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+      <View style={styles.downContainer}>
+        <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+      </View>
     </View>
   );
 };
@@ -75,11 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   downContainer: {
-    height: scaleSize(110),
-    top: -scaleSize(110),
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    marginBottom: scaleSize(50),
   },
   title: {
     width: '100%',
