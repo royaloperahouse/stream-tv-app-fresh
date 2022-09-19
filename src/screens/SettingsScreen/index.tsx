@@ -23,7 +23,7 @@ import type {
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
 
-const searchItemKey = 'searchItemKey';
+const settingsItemKey = 'settingsItemKey';
 
 const SettingsScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['settings']>
@@ -70,7 +70,7 @@ const SettingsScreen: React.FC<
                 onFocus={touchableRef => {
                   if (touchableRef.current?.getRef?.().current) {
                     navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
-                      searchItemKey,
+                      settingsItemKey,
                       touchableRef.current.getRef().current,
                     );
                   }
@@ -79,7 +79,7 @@ const SettingsScreen: React.FC<
                 }}
                 onMount={touchableRef => {
                   navMenuScreenRedirectRef.current?.setDefaultRedirectFromNavMenu?.(
-                    searchItemKey,
+                    settingsItemKey,
                     touchableRef,
                   );
                 }}

@@ -4,6 +4,7 @@ import {
   AppVersion,
   SwitchingBetweenEnvironments,
   Subscription,
+  VideoPlayerSettings,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
 import type {
@@ -12,6 +13,7 @@ import type {
   TAppVersionProps,
   TSwitchingBetweenEnvironmentsProps,
   TSwitchSubscriptionMode,
+  TVideoPlayerSettingsProps,
 } from '@components/SettingsComponents';
 export const settingsTitle = 'SETTINGS';
 
@@ -24,7 +26,8 @@ export type TSettingsSection = {
         TSignOutProps &
         TAppVersionProps &
         TSwitchingBetweenEnvironmentsProps &
-        TSwitchSubscriptionMode
+        TSwitchSubscriptionMode &
+        TVideoPlayerSettingsProps
     >
   >;
 };
@@ -54,6 +57,11 @@ export const getSettingsSectionsConfig: () => {
       key: 'subscription',
       navMenuItemTitle: 'SUBSCRIPTION',
       ContentComponent: Subscription,
+    },
+    videoPlayerSettings: {
+      key: 'videoPlayerSettings',
+      navMenuItemTitle: 'VIDEO PLAYER SETTINGS',
+      ContentComponent: VideoPlayerSettings,
     },
   };
   if (store.getState().auth.userEmail.includes('roh.org.uk')) {

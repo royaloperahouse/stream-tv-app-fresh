@@ -1,5 +1,9 @@
 import { logError } from '@utils/loger';
-import { bitMovinPlayerKey } from '@configs/bitMovinPlayerConfig';
+import {
+  bitMovinPlayerKey,
+  bitMovinPlayerSelectedBitrateKey,
+  defaultPlayerBitrateKey,
+} from '@configs/bitMovinPlayerConfig';
 import { TBitMovinPlayerSavedPosition } from '@services/types/models';
 import { SessionStorage } from '@services/sessionStorage';
 
@@ -188,5 +192,47 @@ export const removeItemsFromSavedPositionListByEventIds = async (
     if (typeof cb === 'function') {
       cb();
     }
+  }
+};
+
+export const saveSelectedBitrateId = async (
+  bitrateId: string,
+  cb?: (...args: any[]) => void,
+): Promise<void> => {
+  try {
+    await SessionStorage.setItem(bitMovinPlayerSelectedBitrateKey, bitrateId);
+    if (typeof cb === 'function') {
+      cb(bitrateId);
+    }
+  } catch (err: any) {
+    logError('Something went wrong with saving selectedBitrateId', err.message);
+  }
+};
+
+export const getSelectedBitrateId = async (): Promise<
+  'high' | 'medium' | 'normal'
+> => {
+  try {
+    const savedBitrateId: 'high' | 'medium' | 'normal' | null =
+      (await SessionStorage.getItem(bitMovinPlayerSelectedBitrateKey)) as
+        | 'high'
+        | 'medium'
+        | 'normal'
+        | null;
+    return savedBitrateId || defaultPlayerBitrateKey;
+  } catch (err: any) {
+    logError(
+      'Something went wrong with getting selectedBitrateId',
+      err.message,
+    );
+    return defaultPlayerBitrateKey;
+  }
+};
+
+export const clearSelectedBitrate = async (): Promise<void> => {
+  try {
+    await SessionStorage.removeItem(bitMovinPlayerSelectedBitrateKey);
+  } catch (err: any) {
+    logError('Something went wrong with clearing selectedBitrate', err.message);
   }
 };

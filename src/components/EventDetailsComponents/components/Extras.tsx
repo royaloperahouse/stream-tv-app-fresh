@@ -55,6 +55,7 @@ const Extras: React.FC<
     prevScreenName,
     nextScreenName,
     eventId,
+    videoQualityBitrate,
   } = params;
   const videosRefs = useRef<{
     [key: string]: any;
@@ -137,6 +138,7 @@ const Extras: React.FC<
       analytics = {},
       guidance = '',
       guidanceDetails = [],
+      videoQualityBitrate = -1,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       globalModalManager.openModal({
@@ -154,6 +156,7 @@ const Extras: React.FC<
           analytics,
           guidance,
           guidanceDetails,
+          videoQualityBitrate,
         },
       });
     },
@@ -192,6 +195,7 @@ const Extras: React.FC<
                 ref,
                 closeModalCB,
               }),
+              videoQualityBitrate,
             });
           })
           .catch(err => {
@@ -217,7 +221,14 @@ const Extras: React.FC<
         clearLoadingState();
       }
     },
-    [closeModalCB, closePlayer, eventId, openPlayer, isProduction],
+    [
+      closeModalCB,
+      closePlayer,
+      eventId,
+      openPlayer,
+      isProduction,
+      videoQualityBitrate,
+    ],
   );
 
   const setExtrasrVideoBlur = useCallback(() => {

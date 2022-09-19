@@ -27,7 +27,7 @@ import {
 } from '@services/types/bitmovinPlayer';
 
 import { scaleSize } from '@utils/scaleSize';
-import { ESeekOperations } from '@configs/playerConfig';
+import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
 
@@ -49,6 +49,20 @@ type TOnReadyPayload = {
   message: 'ready';
   duration: string;
   subtitles: Array<{ url: string; id: string; label: string }>;
+  availableVideoQualities: Array<{
+    id: string;
+    label: string;
+    bitrate: string;
+    codec: string;
+    frameRate: string;
+  }>;
+  selectedVideoQuality: {
+    id: string;
+    label: string;
+    bitrate: string;
+    codec: string;
+    frameRate: string;
+  };
 };
 
 type TOnPlayPayload = {
@@ -87,6 +101,7 @@ export type TPlayerProps = {
   onEvent?: (event: any) => void;
   onError?: (event: any) => void;
   title: string;
+  videoQualityBitrate: number;
   subtitle?: string;
   seekingTimePoint?: number;
   onClose?: (error: TBMPlayerErrorObject | null, stoppedTime: string) => void;
@@ -135,6 +150,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     seekingTimePoint = 10.0,
     guidance,
     guidanceDetails,
+    videoQualityBitrate,
   } = cloneProps;
   const playerRef = useRef<typeof NativeBitMovinPlayer | null>(null);
   const controlRef = useRef<TPlayerControlsRef | null>(null);
@@ -162,6 +178,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   const onReady: TCallbackFunc = useCallback(data => {
     const payload: TOnReadyPayload = data.nativeEvent;
+    console.log(payload.availableVideoQualities, 'availableVideoQualities');
+    console.log(payload.selectedVideoQuality, 'selectedVideoQuality');
     const initDuration = parseFloat(payload?.duration);
     if (
       Array.isArray(payload?.subtitles) &&
@@ -173,6 +191,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       setDuration(initDuration);
     }
     setReady(true);
+  }, []);
+
+  const onLoad: TCallbackFunc = useCallback(_ => {
+    setLoaded(true);
   }, []);
 
   const onPlaying: TCallbackFunc = _ => {
@@ -278,9 +300,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         ROHBitmovinPlayerModule.destroy(findNodeHandle(playerRef.current));
       });
       eventEmitter.addListener('onSubtitleChanged', () => {});
-      eventEmitter.addListener('onLoad', () => {
-        setLoaded(true);
-      });
+      eventEmitter.addListener('onLoad', onLoad);
       eventEmitter.addListener('onCueEnter', (event: any) => {
         setSubtitleCue(event.cueText);
       });
@@ -308,7 +328,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         eventEmitter.removeAllListeners('onCueExit');
       }
     };
-  }, [onEvent, onClose, onReady, configuration.url]);
+  }, [onEvent, onClose, onReady, configuration.url, onLoad]);
 
   const getCurrentTime = useCallback(
     () =>
@@ -418,6 +438,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         ref={setPlayer}
         configuration={configuration}
         analytics={analytics}
+        initBitrate={videoQualityBitrate}
         style={loaded ? styles.playerLoaded : {}}
         autoPlay={autoPlay}
       />
