@@ -14,14 +14,14 @@ import type {
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 
 const Synopsis: React.FC<
-  TEventDetailsScreensProps<
-    NSNavigationScreensNames.EventDetailsStackScreens['synopsis']
-  >
-> = ({ route, navigation }) => {
+    TEventDetailsScreensProps<
+        NSNavigationScreensNames.EventDetailsStackScreens['synopsis']
+        >
+    > = ({ route, navigation }) => {
   const params =
-    useContext<Partial<TEventDetailsScreensParamContextProps>>(
-      SectionsParamsContext,
-    )[route.name] || {};
+      useContext<Partial<TEventDetailsScreensParamContextProps>>(
+          SectionsParamsContext,
+      )[route.name] || {};
   const { nextSectionTitle, synopsis, nextScreenName, prevScreenName } = params;
   const goUpCB = useCallback(() => {
     navigation.replace(prevScreenName);
@@ -32,25 +32,27 @@ const Synopsis: React.FC<
     }
   }, [navigation, nextScreenName]);
   return (
-    <View style={styles.generalContainer}>
-      {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}
-      <View style={{ flex: 1 }}>
-        <View style={styles.wrapper}>
-          <View style={styles.titleContainer}>
-            <RohText style={styles.title}>Synopsis</RohText>
-          </View>
-          <View style={styles.synopsisContainer}>
-            <MultiColumnSynopsisList
-              id={prevScreenName}
-              data={synopsis}
-              columnWidth={scaleSize(740)}
-              columnHeight={scaleSize(770)}
-            />
+      <View style={styles.generalContainer}>
+        {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}
+        <View style={{ flex: 1 }}>
+          <View style={styles.wrapper}>
+            <View style={styles.titleContainer}>
+              <RohText style={styles.title}>Synopsis</RohText>
+            </View>
+            <View style={styles.synopsisContainer}>
+              <MultiColumnSynopsisList
+                  id={prevScreenName}
+                  data={synopsis}
+                  columnWidth={scaleSize(740)}
+                  columnHeight={scaleSize(770)}
+              />
+            </View>
           </View>
         </View>
+        <View style={styles.downContainer}>
+          <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+        </View>
       </View>
-      <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
-    </View>
   );
 };
 
@@ -75,11 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   downContainer: {
-    height: scaleSize(110),
-    top: -scaleSize(110),
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    marginBottom: scaleSize(50),
   },
   title: {
     width: '100%',
