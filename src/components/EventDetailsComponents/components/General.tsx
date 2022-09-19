@@ -98,6 +98,7 @@ const General: React.FC<
     eventId,
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
+    videoQualityBitrate,
   } = params;
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
@@ -185,6 +186,7 @@ const General: React.FC<
       analytics = {},
       guidance = '',
       guidanceDetails = [],
+      videoQualityBitrate = -1,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       globalModalManager.openModal({
@@ -202,6 +204,7 @@ const General: React.FC<
           analytics,
           guidance,
           guidanceDetails,
+          videoQualityBitrate,
         },
       });
     },
@@ -285,6 +288,7 @@ const General: React.FC<
                   }),
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
+                  videoQualityBitrate,
                 });
               },
               rejectActionHandler: () => {
@@ -306,6 +310,7 @@ const General: React.FC<
                   },
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
+                  videoQualityBitrate,
                 });
               },
               cancelActionHandler: () => {
@@ -337,6 +342,7 @@ const General: React.FC<
           },
           guidance: vs_guidance,
           guidanceDetails: vs_guidance_details,
+          videoQualityBitrate,
         });
       } catch (err: any) {
         globalModalManager.openModal({
@@ -382,6 +388,7 @@ const General: React.FC<
       vs_guidance,
       vs_guidance_details,
       performanceVideoTimePosition,
+      videoQualityBitrate,
     ],
   );
 
@@ -409,6 +416,7 @@ const General: React.FC<
             clearLoadingState,
             ref,
           }),
+          videoQualityBitrate,
         });
       } catch (err: any) {
         globalModalManager.openModal({
@@ -429,7 +437,15 @@ const General: React.FC<
         }
       }
     },
-    [closeModal, closePlayer, isProductionEnv, openPlayer, title, trailerInfo],
+    [
+      closeModal,
+      closePlayer,
+      isProductionEnv,
+      openPlayer,
+      title,
+      trailerInfo,
+      videoQualityBitrate,
+    ],
   );
 
   const addOrRemoveItemIdFromMyListHandler = () => {

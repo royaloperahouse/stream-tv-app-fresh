@@ -1,6 +1,7 @@
 package com.rohtvapp.ROHBitMovinPlayerPackage;
 
 import android.content.Context;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
@@ -32,8 +33,14 @@ import com.bitmovin.player.api.deficiency.ErrorEvent;
 import com.bitmovin.player.api.PlaybackConfig;
 import com.bitmovin.player.api.SeekMode;
 import com.bitmovin.player.api.media.MediaFilter;
+import com.bitmovin.player.api.media.AdaptationConfig;
+import com.bitmovin.player.api.media.video.quality.VideoAdaptation;
+import com.bitmovin.player.api.media.video.quality.VideoAdaptationData;
+import com.bitmovin.player.api.media.video.quality.VideoQuality;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PlayerContainerView extends RelativeLayout {
@@ -48,6 +55,7 @@ public class PlayerContainerView extends RelativeLayout {
     private double stoppedTime = 0.0;
     private double duration = 0.0;
     private boolean mustAutoPlay = false;
+    private int initBitrateValue = Integer.MAX_VALUE;
 
     public PlayerContainerView(ThemedReactContext context) {
         super(context);
@@ -110,6 +118,9 @@ public class PlayerContainerView extends RelativeLayout {
         player.on(PlayerEvent.Error.class, this::onError);
         player.on(PlayerEvent.CueEnter.class, this::onCueEnter);
         player.on(PlayerEvent.CueExit.class, this::onCueExit);
+        player.on(PlayerEvent.VideoPlaybackQualityChanged.class, this::onVideoPlaybackQualityChanged);
+        player.on(SourceEvent.VideoQualityChanged.class, this::onVideoQualityChanged);
+        player.on(SourceEvent.VideoQualitiesChanged.class, this::onVideoQualitiesChanged);
 
         player.setVolume(100);
     }
@@ -122,6 +133,10 @@ public class PlayerContainerView extends RelativeLayout {
         mustAutoPlay = autoplay;
     }
 
+    public void setInitBitrate(Integer initBitrate) {
+        initBitrateValue = initBitrate;
+    }
+
     public void setAnalytics(BitmovinAnalyticsConfig bitmovinAnalyticsConfig, ThemedReactContext reactContext) {
         BitmovinPlayerCollector analyticsCollector = new BitmovinPlayerCollector(bitmovinAnalyticsConfig, reactContext);
         analyticsCollector.attachPlayer(player);
@@ -131,11 +146,12 @@ public class PlayerContainerView extends RelativeLayout {
         return playerView;
     }
 
-    private void onPlay(PlayerEvent.Playing event) {
+    private void onPlay(PlayerEvent event) {
         WritableMap map = Arguments.createMap();
         map.putString("message", "play");
         map.putString("time", String.valueOf(stoppedTime));
         map.putString("duration", String.valueOf(duration));
+        Log.i("msg", player.getSource().getSelectedVideoQuality().getLabel());
         ReactContext reactContext = (ReactContext)context;
         try {
             reactContext
@@ -193,6 +209,102 @@ public class PlayerContainerView extends RelativeLayout {
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit("onLoad", map);
 
+        } catch (Exception e) {
+            Log.e("ReactNative", "Caught Exception: " + e.getMessage());
+        }
+    }
+
+    private void onVideoPlaybackQualityChanged(PlayerEvent.VideoPlaybackQualityChanged event) {
+        try {
+            VideoQuality oldVideoQuality = event.getOldVideoQuality();
+            VideoQuality newVideoQuality = event.getNewVideoQuality();
+            WritableMap map = Arguments.createMap();
+            WritableNativeMap oldVQuality = new WritableNativeMap();
+            WritableNativeMap newVQuality = new WritableNativeMap();
+            if (oldVideoQuality != null) {
+                oldVQuality.putString("id", oldVideoQuality.getId());
+                oldVQuality.putString("codec", oldVideoQuality.getCodec());
+                oldVQuality.putString("label", oldVideoQuality.getLabel());
+                oldVQuality.putString("bitrate", String.valueOf(oldVideoQuality.getBitrate()));
+                oldVQuality.putString("frameRate", String.valueOf(oldVideoQuality.getFrameRate()));
+            }
+            if (newVideoQuality != null) {
+                newVQuality.putString("id", newVideoQuality.getId());
+                newVQuality.putString("codec", newVideoQuality.getCodec());
+                newVQuality.putString("label", newVideoQuality.getLabel());
+                newVQuality.putString("bitrate", String.valueOf(newVideoQuality.getBitrate()));
+                newVQuality.putString("frameRate", String.valueOf(newVideoQuality.getFrameRate()));
+            }
+            ReactContext reactContext = (ReactContext)context;
+            map.putMap("newVideoPlaybackQuality", newVQuality);
+            map.putMap("oldVideoPlaybackQuality", oldVQuality);
+            Log.i("msg", oldVideoQuality + " oldVideoPlaybackQuality");
+            Log.i("msg", newVideoQuality + " newVideoPlaybackQuality");
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onVideoQualityChanged", map);
+        } catch (Exception e) {
+            Log.e("ReactNative", "Caught Exception: " + e.getMessage());
+        }
+    }
+
+    private void onVideoQualityChanged(SourceEvent.VideoQualityChanged event) {
+        VideoQuality oldVideoQuality = event.getOldVideoQuality();
+        VideoQuality newVideoQuality = event.getNewVideoQuality();
+        WritableMap map = Arguments.createMap();
+        WritableNativeMap oldVQuality = new WritableNativeMap();
+        WritableNativeMap newVQuality = new WritableNativeMap();
+        oldVQuality.putString("id", oldVideoQuality.getId());
+        oldVQuality.putString("codec", oldVideoQuality.getCodec());
+        oldVQuality.putString("label", oldVideoQuality.getLabel());
+        oldVQuality.putString("bitrate", String.valueOf(oldVideoQuality.getBitrate()));
+        oldVQuality.putString("frameRate", String.valueOf(oldVideoQuality.getFrameRate()));
+        newVQuality.putString("id", newVideoQuality.getId());
+        newVQuality.putString("codec", newVideoQuality.getCodec());
+        newVQuality.putString("label", newVideoQuality.getLabel());
+        newVQuality.putString("bitrate", String.valueOf(newVideoQuality.getBitrate()));
+        newVQuality.putString("frameRate", String.valueOf(newVideoQuality.getFrameRate()));
+        ReactContext reactContext = (ReactContext)context;
+        map.putMap("newVideoQuality", newVQuality);
+        map.putMap("oldVideoQuality", oldVQuality);
+        Log.i("msg", oldVideoQuality + " oldVideoQualityy");
+        Log.i("msg", newVideoQuality + " newVideoQuality");
+        try {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onVideoQualityChanged", map);
+        } catch (Exception e) {
+            Log.e("ReactNative", "Caught Exception: " + e.getMessage());
+        }
+    }
+
+    private void onVideoQualitiesChanged(SourceEvent.VideoQualitiesChanged event) {
+        List<VideoQuality> oldVideoQualities = event.getOldVideoQualities();
+        List<VideoQuality> newVideoQualities = event.getNewVideoQualities();
+        WritableMap map = Arguments.createMap();
+        WritableArray oldVQualities = new WritableNativeArray();
+        WritableArray newVQualities = new WritableNativeArray();
+        for (VideoQuality videoQuality : oldVideoQualities) {
+            WritableMap oldQuality = new WritableNativeMap();
+            oldQuality.putString("id", videoQuality.getId());
+            oldQuality.putString("codec", videoQuality.getCodec());
+            oldQuality.putString("label", videoQuality.getLabel());
+            oldQuality.putString("bitrate", String.valueOf(videoQuality.getBitrate()));
+            oldQuality.putString("frameRate", String.valueOf(videoQuality.getFrameRate()));
+            oldVQualities.pushMap(oldQuality);
+        }
+        for (VideoQuality videoQuality : newVideoQualities) {
+            WritableMap newQuality = new WritableNativeMap();
+            newQuality.putString("id", videoQuality.getId());
+            newQuality.putString("codec", videoQuality.getCodec());
+            newQuality.putString("label", videoQuality.getLabel());
+            newQuality.putString("bitrate", String.valueOf(videoQuality.getBitrate()));
+            newQuality.putString("frameRate", String.valueOf(videoQuality.getFrameRate()));
+            newVQualities.pushMap(newQuality);
+        }
+        map.putArray("oldVideoQualities", oldVQualities);
+        map.putArray("newVideoQualities", newVQualities);
+        Log.i("msg", oldVideoQualities + " oldVideoQualities");
+        Log.i("msg", newVideoQualities + " newVideoQualities");
+        ReactContext reactContext = (ReactContext)context;
+        try {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onVideoQualitiesChanged", map);
         } catch (Exception e) {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
@@ -264,6 +376,59 @@ public class PlayerContainerView extends RelativeLayout {
 
     private void onReady(PlayerEvent.Ready event) {
         WritableMap map = Arguments.createMap();
+        Source source = player.getSource();
+        WritableNativeMap selectedVQuolity = new WritableNativeMap();
+        WritableArray quolity_list = new WritableNativeArray();
+        if (source != null && source.isAttachedToPlayer()) {
+            List<VideoQuality> videoQualities = source.getAvailableVideoQualities();
+            Comparator<VideoQuality> compareByBitrateMin = (VideoQuality q1, VideoQuality q2) ->
+                    q1.getBitrate() - q2.getBitrate();
+            Comparator<VideoQuality> compareByBitrateMax = (VideoQuality q1, VideoQuality q2) ->
+                     q2.getBitrate() - q1.getBitrate();
+            Collections.sort(videoQualities, compareByBitrateMin);
+            player.setMaxSelectableVideoBitrate(initBitrateValue);
+            for (int i = 0; i < videoQualities.size(); i++) {
+                VideoQuality vq = videoQualities.get(i);
+                if (i == (videoQualities.size() - 1)) {
+                    source.setVideoQuality(String.valueOf(vq.getId()));
+                    break;
+                }
+                if (vq.getBitrate() < initBitrateValue) {
+                    continue;
+                }
+                if (i == 0) {
+                    source.setVideoQuality(String.valueOf(vq.getId()));
+                } else {
+                    VideoQuality prevVq = videoQualities.get(i - 1);
+                    source.setVideoQuality(String.valueOf(prevVq.getId()));
+                }
+                break;
+            };
+            VideoQuality selectedVideoQuality = source.getSelectedVideoQuality();
+            if (selectedVideoQuality != null) {
+                selectedVQuolity.putString("id", selectedVideoQuality.getId());
+                selectedVQuolity.putString("label", selectedVideoQuality.getLabel());
+                selectedVQuolity.putString("bitrate", String.valueOf(selectedVideoQuality.getBitrate()));
+                selectedVQuolity.putString("codec", selectedVideoQuality.getCodec());
+                selectedVQuolity.putString("frameRate", Double.valueOf(selectedVideoQuality.getFrameRate()).toString());
+                map.putMap("selectedVideoQuality", selectedVQuolity);
+            }
+            Collections.sort(videoQualities, compareByBitrateMax);
+            for (VideoQuality videoQuality : videoQualities) {
+                try {
+                    WritableMap quolity = new WritableNativeMap();
+                    quolity.putString("id", videoQuality.getId());
+                    quolity.putString("label", videoQuality.getLabel());
+                    quolity.putString("bitrate", String.valueOf(videoQuality.getBitrate()));
+                    quolity.putString("codec", videoQuality.getCodec());
+                    quolity.putString("frameRate", Double.valueOf(videoQuality.getFrameRate()).toString());
+                    quolity_list.pushMap(quolity);
+                } catch (Exception ex) {
+                    System.err.println("Exception: " + ex.getMessage());
+                }
+            }
+        }
+
         List<SubtitleTrack> subtitles = player.getAvailableSubtitles();
         WritableArray app_list = new WritableNativeArray();
         for (SubtitleTrack subtitleTrack : subtitles) {
@@ -281,7 +446,8 @@ public class PlayerContainerView extends RelativeLayout {
         map.putString("message", "ready");
         map.putString("duration", String.valueOf(duration));
         map.putArray("subtitles", app_list);
-        if (mustAutoPlay == true) {
+        map.putArray("availableVideoQualities", quolity_list);
+        if (mustAutoPlay) {
             player.play();
         }
         ReactContext reactContext = (ReactContext)context;
@@ -371,4 +537,5 @@ public class PlayerContainerView extends RelativeLayout {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
     }
+
 }

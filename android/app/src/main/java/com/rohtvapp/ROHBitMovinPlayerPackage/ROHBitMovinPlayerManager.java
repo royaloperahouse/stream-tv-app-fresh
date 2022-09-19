@@ -79,6 +79,15 @@ public class ROHBitMovinPlayerManager extends SimpleViewManager<PlayerContainerV
     }
   }
 
+  @ReactProp(name = "initBitrate")
+  public void setInitBitrate(PlayerContainerView view, Integer initBitrate) {
+    if (initBitrate != null && initBitrate > 0) {
+      view.setInitBitrate(initBitrate);
+    } else {
+      view.setInitBitrate(Integer.MAX_VALUE);
+    }
+  }
+
   @ReactProp(name = "analytics")
   public void setAnalytics(PlayerContainerView view, ReadableMap analytics) {
 

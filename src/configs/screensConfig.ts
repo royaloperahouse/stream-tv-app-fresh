@@ -107,6 +107,7 @@ export type TEventDetailsScreensParamContextProps = {
     setPerformanceVideoTimePosition: React.Dispatch<
       React.SetStateAction<string | undefined>
     >;
+    videoQualityBitrate: number;
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;
@@ -138,6 +139,7 @@ export type TEventDetailsScreensParamContextProps = {
     nextScreenName?: TEventDetailsScreenReverseNames;
     prevScreenName: TEventDetailsScreenReverseNames;
     eventId: string;
+    videoQualityBitrate: number;
   };
 };
 

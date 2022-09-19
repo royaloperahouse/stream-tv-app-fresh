@@ -24,6 +24,11 @@ import type {
 } from '@configs/screensConfig';
 import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import useAsyncEffect from 'use-async-effect';
+import {
+  playerBitratesFilter,
+  defaultPlayerBitrateKey,
+} from '@configs/bitMovinPlayerConfig';
+import { getSelectedBitrateId } from '@services/bitMovinPlayer';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -56,6 +61,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     trailerInfo,
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
+    videoQualityBitrate,
   } = useGetExtras(event, isProduction, eventId);
 
   const sectionsCollection = Object.values(eventDetailsSectionsConfig)
@@ -98,6 +104,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           eventId,
           performanceVideoTimePosition,
           setPerformanceVideoTimePosition,
+          videoQualityBitrate,
         };
         break;
       }
@@ -129,6 +136,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
         params = {
           videosInfo,
           eventId,
+          videoQualityBitrate,
         };
         break;
       }
@@ -493,6 +501,7 @@ const useGetExtras = (
   setPerformanceVideoTimePosition: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
+  videoQualityBitrate: number;
 } => {
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
   const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
@@ -507,6 +516,9 @@ const useGetExtras = (
     videoId: string;
     title?: string;
   } | null>(null);
+  const bitrateValue = useRef<number>(
+    playerBitratesFilter[defaultPlayerBitrateKey].value,
+  );
   const loading = useRef<boolean>(true);
   const loaded = useRef<boolean>(false);
   const isMounted = useRef<boolean>(false);
@@ -524,6 +536,11 @@ const useGetExtras = (
         return;
       }
       try {
+        const videoQualityId: 'high' | 'medium' | 'normal' =
+          await getSelectedBitrateId();
+        const videoQualityBitrate: number =
+          playerBitratesFilter[videoQualityId].value;
+        bitrateValue.current = videoQualityBitrate;
         const response = await getVideoDetails({
           queryPredicates: [Prismic.Predicates.in('document.id', videos)],
           isProductionEnv: isProduction,
@@ -658,5 +675,6 @@ const useGetExtras = (
     loaded: loaded.current,
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
+    videoQualityBitrate: bitrateValue.current,
   };
 };
