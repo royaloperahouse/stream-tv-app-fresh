@@ -169,7 +169,7 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
             store.events.allDigitalEventsDetail[id],
           );
         }
-        return acc;
+        continue;
       }
 
       if (subtag in acc) {
@@ -247,7 +247,7 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
             store.events.allDigitalEventsDetail[id],
           );
         }
-        return acc;
+        continue;
       }
 
       if (subtag in acc) {
