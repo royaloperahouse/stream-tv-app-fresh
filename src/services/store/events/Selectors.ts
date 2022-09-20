@@ -16,6 +16,7 @@ import { removeItemsFromSavedPositionListByEventIds } from '@services/bitMovinPl
 import difference from 'lodash.difference';
 import { includes } from 'lodash';
 import type { TRootState } from '../index';
+
 export const digitalEventDetailsSearchSelector = (
   store: TRootState,
 ): Array<TEventContainer> =>
@@ -168,6 +169,7 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
             store.events.allDigitalEventsDetail[id],
           );
         }
+        return acc;
       }
 
       if (subtag in acc) {
@@ -245,6 +247,7 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
             store.events.allDigitalEventsDetail[id],
           );
         }
+        return acc;
       }
 
       if (subtag in acc) {
