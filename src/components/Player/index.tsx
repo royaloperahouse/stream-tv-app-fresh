@@ -44,6 +44,27 @@ type TOnLoadPayload = {
   message: 'load';
   duration: string;
 };
+type TOnVideoPlaybackQualityChanged = {
+  message: 'videoPlaybackQualityChanged';
+  newVideoPlaybackQuality: {
+    id: string;
+    codec: string;
+    label: string;
+    bitrate: string;
+    frameRate: string;
+    width: string;
+    height: string;
+  };
+  oldVideoPlaybackQuality?: {
+    id: string;
+    codec: string;
+    label: string;
+    bitrate: string;
+    frameRate: string;
+    width: string;
+    height: string;
+  } | null;
+};
 
 type TOnReadyPayload = {
   message: 'ready';
@@ -105,6 +126,7 @@ export type TPlayerProps = {
   subtitle?: string;
   seekingTimePoint?: number;
   onClose?: (error: TBMPlayerErrorObject | null, stoppedTime: string) => void;
+  showVideoInfo?: boolean;
   configuration: {
     url: string;
     poster?: string;
@@ -151,10 +173,12 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     guidance,
     guidanceDetails,
     videoQualityBitrate,
+    showVideoInfo,
   } = cloneProps;
   const playerRef = useRef<typeof NativeBitMovinPlayer | null>(null);
   const controlRef = useRef<TPlayerControlsRef | null>(null);
   const playerError = useRef<TBMPlayerErrorObject | null>(null);
+  const [videoInfo, setVideoInfo] = useState<string>();
 
   const [playerReady, setReady] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -197,6 +221,20 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     setLoaded(true);
   }, []);
 
+  const onVideoPlaybackQualityChanged: TCallbackFunc = useCallback(
+    (event: TOnVideoPlaybackQualityChanged) => {
+      console.log(event.oldVideoPlaybackQuality, 'oldVideoPlaybackQuality');
+      console.log(event.newVideoPlaybackQuality, 'newVideoPlaybackQuality');
+      if (event.newVideoPlaybackQuality && showVideoInfo) {
+        const { id, label, codec, bitrate, frameRate, width, height } =
+          event.newVideoPlaybackQuality;
+        setVideoInfo(
+          `Current video Quality is :  Id: ${id}, label: ${label}, codec: ${codec}, bitrate: ${bitrate}, frameRate: ${frameRate}, width: ${width}, height: ${height}`,
+        );
+      }
+    },
+    [showVideoInfo],
+  );
   const onPlaying: TCallbackFunc = _ => {
     if (typeof controlRef.current?.setPlay === 'function') {
       controlRef.current.setPlay(true);
@@ -307,6 +345,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       eventEmitter.addListener('onCueExit', (_event: any) => {
         setSubtitleCue('');
       });
+      eventEmitter.addListener(
+        'onVideoPlaybackQualityChanged',
+        onVideoPlaybackQualityChanged,
+      );
     }
     return () => {
       if (Platform.OS === 'android') {
@@ -326,9 +368,17 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         eventEmitter.removeAllListeners('onLoad');
         eventEmitter.removeAllListeners('onCueEnter');
         eventEmitter.removeAllListeners('onCueExit');
+        eventEmitter.removeAllListeners('onVideoPlaybackQualityChanged');
       }
     };
-  }, [onEvent, onClose, onReady, configuration.url, onLoad]);
+  }, [
+    onEvent,
+    onClose,
+    onReady,
+    configuration.url,
+    onLoad,
+    onVideoPlaybackQualityChanged,
+  ]);
 
   const getCurrentTime = useCallback(
     () =>
@@ -493,6 +543,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         subtitleCue={subtitleCue}
         calculateTimeForSeeking={calculateTimeForSeeking}
         seekTo={seekTo}
+        videoInfo={videoInfo}
       />
     </SafeAreaView>
   );

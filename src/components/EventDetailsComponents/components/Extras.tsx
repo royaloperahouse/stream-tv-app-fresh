@@ -139,6 +139,7 @@ const Extras: React.FC<
       guidance = '',
       guidanceDetails = [],
       videoQualityBitrate = -1,
+      showVideoInfo,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       globalModalManager.openModal({
@@ -157,6 +158,7 @@ const Extras: React.FC<
           guidance,
           guidanceDetails,
           videoQualityBitrate,
+          showVideoInfo,
         },
       });
     },
@@ -196,6 +198,7 @@ const Extras: React.FC<
                 closeModalCB,
               }),
               videoQualityBitrate,
+              showVideoInfo: !isProduction,
             });
           })
           .catch(err => {
