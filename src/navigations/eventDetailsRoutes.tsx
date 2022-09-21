@@ -50,7 +50,7 @@ export const eventDetailsSectionsConfig: {
   },
   extra: {
     key: 'Extras',
-    currentSectionTitle: 'EXTRAS & MORE',
+    currentSectionTitle: 'EXTRAS',
     Component: Extras,
     position: 6,
   },
