@@ -227,6 +227,8 @@ public class PlayerContainerView extends RelativeLayout {
                 oldVQuality.putString("label", oldVideoQuality.getLabel());
                 oldVQuality.putString("bitrate", String.valueOf(oldVideoQuality.getBitrate()));
                 oldVQuality.putString("frameRate", String.valueOf(oldVideoQuality.getFrameRate()));
+                oldVQuality.putString("width", String.valueOf(oldVideoQuality.getWidth()));
+                oldVQuality.putString("height", String.valueOf(oldVideoQuality.getHeight()));
             }
             if (newVideoQuality != null) {
                 newVQuality.putString("id", newVideoQuality.getId());
@@ -234,13 +236,16 @@ public class PlayerContainerView extends RelativeLayout {
                 newVQuality.putString("label", newVideoQuality.getLabel());
                 newVQuality.putString("bitrate", String.valueOf(newVideoQuality.getBitrate()));
                 newVQuality.putString("frameRate", String.valueOf(newVideoQuality.getFrameRate()));
+                newVQuality.putString("width", String.valueOf(newVideoQuality.getWidth()));
+                newVQuality.putString("height", String.valueOf(newVideoQuality.getHeight()));
             }
             ReactContext reactContext = (ReactContext)context;
+            map.putString("message", "videoPlaybackQualityChanged");
             map.putMap("newVideoPlaybackQuality", newVQuality);
             map.putMap("oldVideoPlaybackQuality", oldVQuality);
             Log.i("msg", oldVideoQuality + " oldVideoPlaybackQuality");
             Log.i("msg", newVideoQuality + " newVideoPlaybackQuality");
-            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onVideoQualityChanged", map);
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onVideoPlaybackQualityChanged", map);
         } catch (Exception e) {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
@@ -387,6 +392,7 @@ public class PlayerContainerView extends RelativeLayout {
                      q2.getBitrate() - q1.getBitrate();
             Collections.sort(videoQualities, compareByBitrateMin);
             player.setMaxSelectableVideoBitrate(initBitrateValue);
+            /*
             for (int i = 0; i < videoQualities.size(); i++) {
                 VideoQuality vq = videoQualities.get(i);
                 if (i == (videoQualities.size() - 1)) {
@@ -404,6 +410,7 @@ public class PlayerContainerView extends RelativeLayout {
                 }
                 break;
             };
+            */
             VideoQuality selectedVideoQuality = source.getSelectedVideoQuality();
             if (selectedVideoQuality != null) {
                 selectedVQuolity.putString("id", selectedVideoQuality.getId());

@@ -187,6 +187,7 @@ const General: React.FC<
       guidance = '',
       guidanceDetails = [],
       videoQualityBitrate = -1,
+      showVideoInfo,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       globalModalManager.openModal({
@@ -205,6 +206,7 @@ const General: React.FC<
           guidance,
           guidanceDetails,
           videoQualityBitrate,
+          showVideoInfo,
         },
       });
     },
@@ -289,6 +291,7 @@ const General: React.FC<
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
                   videoQualityBitrate,
+                  showVideoInfo: !isProductionEnv,
                 });
               },
               rejectActionHandler: () => {
@@ -311,6 +314,7 @@ const General: React.FC<
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
                   videoQualityBitrate,
+                  showVideoInfo: !isProductionEnv,
                 });
               },
               cancelActionHandler: () => {
@@ -343,6 +347,7 @@ const General: React.FC<
           guidance: vs_guidance,
           guidanceDetails: vs_guidance_details,
           videoQualityBitrate,
+          showVideoInfo: !isProductionEnv,
         });
       } catch (err: any) {
         globalModalManager.openModal({
@@ -417,6 +422,7 @@ const General: React.FC<
             ref,
           }),
           videoQualityBitrate,
+          showVideoInfo: !isProductionEnv,
         });
       } catch (err: any) {
         globalModalManager.openModal({

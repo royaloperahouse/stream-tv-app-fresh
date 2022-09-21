@@ -46,6 +46,7 @@ type TPlayerControlsProps = {
     seekOp: ESeekOperations,
   ) => number;
   seekTo: (time: number) => void;
+  videoInfo?: string;
 };
 
 export type TPlayerControlsRef = {
@@ -74,6 +75,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       subtitleCue,
       calculateTimeForSeeking,
       seekTo,
+      videoInfo,
     } = props;
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
     const activeAnimation = useRef<Animated.Value>(
@@ -543,6 +545,13 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               getControlPanelVisible={getControlPanelVisible}
               nextFocusDown={centralControlsRef.current?.getRwdNode()}
             />
+            {videoInfo && (
+              <View style={styles.infoContainer}>
+                <RohText style={styles.infoText} bold>
+                  {videoInfo}
+                </RohText>
+              </View>
+            )}
           </View>
           <View style={styles.titleContainer}>
             <RohText
@@ -1060,6 +1069,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   subtitleText: { color: 'white', fontSize: scaleSize(24) },
+  infoText: {
+    color: Colors.title,
+    fontSize: scaleSize(24),
+    textAlign: 'justify',
+  },
+  infoContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: '80%',
+  },
   dropDownArrow: {
     marginTop: scaleSize(16),
     marginBottom: scaleSize(12),
