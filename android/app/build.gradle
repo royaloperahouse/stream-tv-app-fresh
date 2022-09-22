@@ -279,7 +279,7 @@ dependencies {
 
     implementation 'com.bitmovin.player:player:3.24.1'//3.11.0
     implementation 'com.bitmovin.analytics:collector-bitmovin-player:2.0.0'
-
+    implementation 'io.sentry:sentry-android:6.4.2'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

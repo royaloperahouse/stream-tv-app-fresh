@@ -36,7 +36,6 @@ import {
   UnableToCheckRentalStatusError,
 } from '@utils/customErrors';
 import { fetchVideoURL, getAccessToWatchVideo } from '@services/apiClient';
-import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import {
   resumeRollbackTime,
   minResumeTime,
@@ -74,6 +73,7 @@ import {
   savePosition,
 } from '@services/bitMovinPlayer';
 import RohImage from 'components/RohImage';
+import { buildInfoForBitmovin } from '@configs/globalConfig';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -280,6 +280,7 @@ const General: React.FC<
                   analytics: {
                     videoId: videoFromPrismic.videoId,
                     title: videoTitle,
+                    buildInfoForBitmovin,
                   },
                   onClose: closePlayer({
                     savePositionCB,
@@ -310,6 +311,7 @@ const General: React.FC<
                   analytics: {
                     videoId: videoFromPrismic.videoId,
                     title: videoTitle,
+                    buildInfoForBitmovin,
                   },
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
@@ -343,6 +345,7 @@ const General: React.FC<
           analytics: {
             videoId: videoFromPrismic.videoId,
             title: videoTitle,
+            buildInfoForBitmovin,
           },
           guidance: vs_guidance,
           guidanceDetails: vs_guidance_details,
@@ -421,6 +424,11 @@ const General: React.FC<
             clearLoadingState,
             ref,
           }),
+          analytics: {
+            videoId: trailerInfo.videoId,
+            title: videoTitle,
+            buildInfoForBitmovin,
+          },
           videoQualityBitrate,
           showVideoInfo: !isProductionEnv,
         });

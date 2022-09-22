@@ -30,4 +30,4 @@ export const playerBitratesFilter = Object.freeze({
   }),
 });
 
-export const defaultPlayerBitrateKey = playerBitratesFilter.high.key;
+export const defaultPlayerBitrateKey = playerBitratesFilter.normal.key;

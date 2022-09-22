@@ -139,7 +139,7 @@ export type TPlayerProps = {
     title?: string;
     userId?: string;
     experiment?: string;
-    customData1?: string;
+    buildInfoForBitmovin?: string;
     customData2?: string;
     customData3?: string;
     customData4?: string;

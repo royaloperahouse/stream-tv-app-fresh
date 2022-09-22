@@ -5,8 +5,12 @@ import { Provider } from 'react-redux';
 import { store } from '@services/store';
 import AppLayout from '@layouts/appLayout';
 import { FlagsProvider } from 'flagged';
+import * as Sentry from '@sentry/react-native';
+import { SentryDSN } from '@configs/globalConfig';
+Sentry.init({
+  dsn: SentryDSN,
+});
 if (__DEV__) {
-  //require('./src/services/reactotronDebugger/reactotronConfig').default;
   fetch('https://jsonplaceholder.typicode.com/todos/1')
     .then(response => response.json())
     .then(() => console.log('fetch works'))
