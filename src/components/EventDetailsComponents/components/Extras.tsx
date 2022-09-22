@@ -40,6 +40,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import { useAppSelector } from 'hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
+import { buildInfoForBitmovin } from '@configs/globalConfig';
 
 const Extras: React.FC<
   TEventDetailsScreensProps<
@@ -191,6 +192,11 @@ const Extras: React.FC<
                 'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
               title: videoTitle,
               subtitle,
+              analytics: {
+                videoId: extrasVideoInFocus.current.id,
+                title: videoTitle,
+                buildInfoForBitmovin,
+              },
               onClose: closePlayer({
                 eventId,
                 clearLoadingState,
