@@ -1,6 +1,9 @@
 
 package com.rohtvapp.ROHBitMovinPlayerPackage;
 
+import android.media.AudioManager;
+import android.content.Context;
+
 import android.view.View;
 
 import com.bitmovin.player.PlayerView;
@@ -29,6 +32,9 @@ public class ROHBitMovinPlayerModule extends ReactContextBaseJavaModule {
     View playerContainerView = getCurrentActivity().findViewById(tag);
     if (playerContainerView instanceof PlayerContainerView) {
       if (((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().getCurrentTime() < ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().getDuration()) {
+        AudioManager audioManager = (AudioManager) this._reactContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
         ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().play();
       }
     } else {
