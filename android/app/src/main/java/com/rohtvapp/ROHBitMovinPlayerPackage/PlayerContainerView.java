@@ -14,7 +14,10 @@ import com.bitmovin.analytics.bitmovin.player.BitmovinPlayerCollector;
 import com.bitmovin.player.PlayerView;
 import com.bitmovin.player.SubtitleView;
 import com.bitmovin.player.api.Player;
+import com.bitmovin.player.api.deficiency.SourceWarningCode;
 import com.bitmovin.player.api.event.SourceEvent;
+import com.bitmovin.player.api.media.audio.AudioTrack;
+import com.bitmovin.player.api.media.audio.quality.AudioQuality;
 import com.bitmovin.player.api.source.Source;
 import com.bitmovin.player.api.media.subtitle.SubtitleTrack;
 import com.bitmovin.player.api.event.PlayerEvent;
@@ -121,7 +124,9 @@ public class PlayerContainerView extends RelativeLayout {
         player.on(PlayerEvent.VideoPlaybackQualityChanged.class, this::onVideoPlaybackQualityChanged);
         player.on(SourceEvent.VideoQualityChanged.class, this::onVideoQualityChanged);
         player.on(SourceEvent.VideoQualitiesChanged.class, this::onVideoQualitiesChanged);
-
+        player.on(SourceEvent.AudioTrackChanged.class, this::onAudioTrackChanged);
+        player.on(SourceEvent.Warning.class, this::onWarning);
+        player.on(PlayerEvent.AudioPlaybackQualityChanged.class, this::onAudioPlaybackQualityChanged);
         player.setVolume(100);
     }
 
@@ -179,6 +184,21 @@ public class PlayerContainerView extends RelativeLayout {
         } catch (Exception e) {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
+    }
+
+    private void onWarning(SourceEvent.Warning event) {
+        SourceWarningCode code = event.getCode();
+        String message = event.getMessage();
+        Log.d("msg", code + "  " + message);
+    }
+
+    private void onAudioPlaybackQualityChanged(PlayerEvent.AudioPlaybackQualityChanged event) {
+        AudioQuality newAudioQuality = event.getNewAudioQuality();
+        AudioQuality oldAudioQuality = event.getOldAudioQuality();
+        if (oldAudioQuality != null) {
+            Log.i("msg",oldAudioQuality + " oldAudioPlaybackQuality");
+        }
+        Log.i("msg",newAudioQuality + " newAudioPlaybackQuality");
     }
 
     private void onPause(PlayerEvent.Paused event) {
@@ -249,6 +269,15 @@ public class PlayerContainerView extends RelativeLayout {
         } catch (Exception e) {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
+    }
+
+    private void onAudioTrackChanged(SourceEvent.AudioTrackChanged event) {
+        AudioTrack newAudioTrack = event.getNewAudioTrack();
+        AudioTrack oldAudioTrack = event.getOldAudioTrack();
+        if (oldAudioTrack != null) {
+            Log.i("msg", oldAudioTrack + " oldAudioTrack");
+        }
+        Log.i("msg", newAudioTrack + " newAudioTrack");
     }
 
     private void onVideoQualityChanged(SourceEvent.VideoQualityChanged event) {
@@ -434,6 +463,8 @@ public class PlayerContainerView extends RelativeLayout {
                     System.err.println("Exception: " + ex.getMessage());
                 }
             }
+            List<AudioQuality> availableAudioQualities = source.getAvailableAudioQualities();
+            Log.i("msg", availableAudioQualities + " availableAudioQualities");
         }
 
         List<SubtitleTrack> subtitles = player.getAvailableSubtitles();
