@@ -1,6 +1,9 @@
 
 package com.rohtvapp.ROHBitMovinPlayerPackage;
 
+import android.media.AudioManager;
+import android.content.Context;
+
 import android.view.View;
 
 import com.bitmovin.player.PlayerView;
@@ -19,6 +22,20 @@ public class ROHBitMovinPlayerModule extends ReactContextBaseJavaModule {
     _reactContext = reactContext;
   }
 
+  private void gainAudioFocus() {
+    AudioManager audioManager = (AudioManager) this._reactContext.getSystemService(Context.AUDIO_SERVICE);
+    audioManager.requestAudioFocus(
+      null,
+      AudioManager.STREAM_MUSIC,
+      AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+    );
+  }
+
+  private void releaseAudioFocus() {
+    AudioManager audioManager = (AudioManager) this._reactContext.getSystemService(Context.AUDIO_SERVICE);
+    audioManager.abandonAudioFocus(null);
+  }
+
   @Override
   public String getName() {
     return "ROHBitMovinPlayerControl";
@@ -30,6 +47,7 @@ public class ROHBitMovinPlayerModule extends ReactContextBaseJavaModule {
     if (playerContainerView instanceof PlayerContainerView) {
       if (((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().getCurrentTime() < ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().getDuration()) {
         ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().play();
+        this.gainAudioFocus();
       }
     } else {
       throw new ClassCastException(String.format("Cannot play: view with tag #%d is not a ROHBitMovinPlayer", tag));
@@ -42,6 +60,7 @@ public class ROHBitMovinPlayerModule extends ReactContextBaseJavaModule {
 
     if (playerContainerView instanceof PlayerContainerView) {
       ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().pause();
+      this.releaseAudioFocus();
     } else {
       throw new ClassCastException(String.format("Cannot pause: view with tag #%d is not a ROHBitMovinPlayer", tag));
     }
