@@ -82,6 +82,8 @@ public class PlayerContainerView extends RelativeLayout {
         videoCodecPriority.add("vp9");
         videoCodecPriority.add("avc");
         ArrayList<String> audioCodecPriority = new ArrayList<String>();
+        audioCodecPriority.add("mp3");
+        audioCodecPriority.add("aac");
         audioCodecPriority.add("ec-3");
         audioCodecPriority.add("mp4a.a6");
         audioCodecPriority.add("ac-3");
