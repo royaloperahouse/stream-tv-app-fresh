@@ -226,6 +226,7 @@ public class PlayerContainerView extends RelativeLayout {
         map.putString("message", "load");
         map.putString("duration", String.valueOf(duration));
         ReactContext reactContext = (ReactContext)context;
+        Log.i("msg", "playerLoaded");
         try {
             reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
@@ -384,6 +385,7 @@ public class PlayerContainerView extends RelativeLayout {
         map.putString("time", String.valueOf(stoppedTime));
         map.putString("duration", String.valueOf(duration));
         ReactContext reactContext = (ReactContext)context;
+        Log.i("msg", "playerDestroyet");
         try {
             reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
@@ -487,8 +489,10 @@ public class PlayerContainerView extends RelativeLayout {
         map.putString("duration", String.valueOf(duration));
         map.putArray("subtitles", app_list);
         map.putArray("availableVideoQualities", quolity_list);
+        Log.i("msg", "playerReady");
         if (mustAutoPlay) {
             player.play();
+            Log.i("msg", "playerAutoplay");
         }
         ReactContext reactContext = (ReactContext)context;
         try {
