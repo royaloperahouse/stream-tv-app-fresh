@@ -62,6 +62,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
     videoQualityBitrate,
+    videoQualityId,
   } = useGetExtras(event, isProduction, eventId);
 
   const sectionsCollection = Object.values(eventDetailsSectionsConfig)
@@ -105,6 +106,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           performanceVideoTimePosition,
           setPerformanceVideoTimePosition,
           videoQualityBitrate,
+          videoQualityId,
         };
         break;
       }
@@ -137,6 +139,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           videosInfo,
           eventId,
           videoQualityBitrate,
+          videoQualityId,
         };
         break;
       }
@@ -502,6 +505,7 @@ const useGetExtras = (
     React.SetStateAction<string | undefined>
   >;
   videoQualityBitrate: number;
+  videoQualityId: 'high' | 'medium' | 'normal';
 } => {
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
   const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
@@ -676,5 +680,6 @@ const useGetExtras = (
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
     videoQualityBitrate: bitrateValue.current,
+    videoQualityId,
   };
 };

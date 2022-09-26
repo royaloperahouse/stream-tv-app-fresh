@@ -99,6 +99,7 @@ const General: React.FC<
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
     videoQualityBitrate,
+    videoQualityId,
   } = params;
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
@@ -281,6 +282,7 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     title: videoTitle,
                     buildInfoForBitmovin,
+                    customData3: videoQualityId,
                   },
                   onClose: closePlayer({
                     savePositionCB,
@@ -312,6 +314,7 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     title: videoTitle,
                     buildInfoForBitmovin,
+                    customData3: videoQualityId,
                   },
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
@@ -346,6 +349,7 @@ const General: React.FC<
             videoId: videoFromPrismic.videoId,
             title: videoTitle,
             buildInfoForBitmovin,
+            customData3: videoQualityId,
           },
           guidance: vs_guidance,
           guidanceDetails: vs_guidance_details,
@@ -397,6 +401,7 @@ const General: React.FC<
       vs_guidance_details,
       performanceVideoTimePosition,
       videoQualityBitrate,
+      videoQualityId,
     ],
   );
 
@@ -428,6 +433,7 @@ const General: React.FC<
             videoId: trailerInfo.videoId,
             title: videoTitle,
             buildInfoForBitmovin,
+            customData3: videoQualityId,
           },
           videoQualityBitrate,
           showVideoInfo: !isProductionEnv,
@@ -459,6 +465,7 @@ const General: React.FC<
       title,
       trailerInfo,
       videoQualityBitrate,
+      videoQualityId,
     ],
   );
 

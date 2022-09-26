@@ -57,6 +57,7 @@ const Extras: React.FC<
     nextScreenName,
     eventId,
     videoQualityBitrate,
+    videoQualityId,
   } = params;
   const videosRefs = useRef<{
     [key: string]: any;
@@ -196,6 +197,7 @@ const Extras: React.FC<
                 videoId: extrasVideoInFocus.current.id,
                 title: videoTitle,
                 buildInfoForBitmovin,
+                customData3: videoQualityId,
               },
               onClose: closePlayer({
                 eventId,
@@ -237,6 +239,7 @@ const Extras: React.FC<
       openPlayer,
       isProduction,
       videoQualityBitrate,
+      videoQualityId,
     ],
   );
 

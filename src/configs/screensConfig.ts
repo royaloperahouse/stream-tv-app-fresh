@@ -108,6 +108,7 @@ export type TEventDetailsScreensParamContextProps = {
       React.SetStateAction<string | undefined>
     >;
     videoQualityBitrate: number;
+    videoQualityId: 'high' | 'medium' | 'normal';
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;
@@ -140,6 +141,7 @@ export type TEventDetailsScreensParamContextProps = {
     prevScreenName: TEventDetailsScreenReverseNames;
     eventId: string;
     videoQualityBitrate: number;
+    videoQualityId: 'high' | 'medium' | 'normal';
   };
 };
 

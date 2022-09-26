@@ -96,7 +96,6 @@ public class ROHBitMovinPlayerManager extends SimpleViewManager<PlayerContainerV
     String userId = "";
     String experiment = "";
     String buildInfoForBitmovin = "";
-    String customData2 = "";
     String customData3 = "";
     String customData4 = "";
     String customData5 = "";
@@ -141,10 +140,6 @@ public class ROHBitMovinPlayerManager extends SimpleViewManager<PlayerContainerV
       buildInfoForBitmovin = analytics.getString("buildInfoForBitmovin");
     }
 
-    if (analytics != null && analytics.getString("customData2") != null) {
-      customData2 = analytics.getString("customData2");
-    }
-
     if (analytics != null && analytics.getString("customData3") != null) {
       customData3 = analytics.getString("customData3");
     }
@@ -171,7 +166,7 @@ public class ROHBitMovinPlayerManager extends SimpleViewManager<PlayerContainerV
     bitmovinAnalyticsConfig.setCdnProvider(CDNProvider.BITMOVIN);
     bitmovinAnalyticsConfig.setExperimentName(experiment);
     bitmovinAnalyticsConfig.setCustomData1(buildInfoForBitmovin);
-    bitmovinAnalyticsConfig.setCustomData2(customData2);
+    bitmovinAnalyticsConfig.setCustomData2(userId);
     bitmovinAnalyticsConfig.setCustomData3(customData3);
     bitmovinAnalyticsConfig.setCustomData4(customData4);
     bitmovinAnalyticsConfig.setCustomData5(customData5);
