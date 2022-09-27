@@ -96,10 +96,10 @@ public class PlayerContainerView extends RelativeLayout {
             true,
             videoCodecPriority,
             audioCodecPriority,
-            true,
+            false,
             SeekMode.Exact,
             null,
-            MediaFilter.Loose,
+            MediaFilter.Strict,
             MediaFilter.Loose
         );
         //playbackConfig.setTunneledPlaybackEnabled(true);
