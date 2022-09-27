@@ -527,6 +527,9 @@ const useGetExtras = (
   const loaded = useRef<boolean>(false);
   const isMounted = useRef<boolean>(false);
   const videos = get(event, 'vs_videos', []).map(({ video }) => video.id);
+  const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
+    defaultPlayerBitrateKey,
+  );
   useEffect(() => {
     isMounted.current = true;
     return () => {
@@ -545,6 +548,7 @@ const useGetExtras = (
         const videoQualityBitrate: number =
           playerBitratesFilter[videoQualityId].value;
         bitrateValue.current = videoQualityBitrate;
+        videoQualityIdRef.current = videoQualityId;
         const response = await getVideoDetails({
           queryPredicates: [Prismic.Predicates.in('document.id', videos)],
           isProductionEnv: isProduction,
@@ -680,6 +684,6 @@ const useGetExtras = (
     performanceVideoTimePosition,
     setPerformanceVideoTimePosition,
     videoQualityBitrate: bitrateValue.current,
-    videoQualityId,
+    videoQualityId: videoQualityIdRef.current,
   };
 };

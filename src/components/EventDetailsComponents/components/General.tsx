@@ -589,6 +589,7 @@ const General: React.FC<
       };
     }, []),
   );
+
   return (
     <View style={styles.generalContainer}>
       <View style={styles.contentContainer}>
@@ -597,26 +598,26 @@ const General: React.FC<
             fixedHeight
             contentMaxVisibleHeight={scaleSize(368)}>
             <RohText style={styles.title} numberOfLines={2}>
-              {title.toUpperCase()}
+              {title?.toUpperCase?.() || ''}
             </RohText>
             <RohText style={styles.description}>{shortDescription}</RohText>
-            {Boolean(vs_guidance) && (
+            {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
-            )}
+            ) : null}
             {vs_guidance_details.length ? (
               <RohText style={styles.description}>
                 {vs_guidance_details}
               </RohText>
             ) : null}
           </OverflowingContainer>
-          {showCountDownTimer && (
+          {showCountDownTimer ? (
             <CountDown
               publishingDate={publishingDate}
               finishCB={() => {
                 setCloseCountDown(true);
               }}
             />
-          )}
+          ) : null}
           <View style={styles.buttonsContainer}>
             <ActionButtonList
               ref={watchNowButtonRef}
