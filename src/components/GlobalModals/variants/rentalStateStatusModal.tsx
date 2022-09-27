@@ -9,7 +9,7 @@ import LoadingSpinner from '@components/LoadingSpinner';
 const RentalStateStatusModal: React.FC<TGlobalModalContentProps> = ({
   title = '',
 }) => {
-  const headerText = `Checking rental status of ${title}`;
+  const headerText = `Checking subscription status of ${title}`;
   useLayoutEffect(() => {
     const handleBackButtonClick = () => {
       return true;
