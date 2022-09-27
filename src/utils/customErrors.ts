@@ -2,7 +2,7 @@ export class UnableToCheckRentalStatusError extends Error {
   constructor(message?: string) {
     super(
       message ||
-        'Sorry, we have been unable to check the rental status. Please try again later',
+        'Sorry, we have been unable to check the subscription status. Please try again later',
     );
   }
 }
