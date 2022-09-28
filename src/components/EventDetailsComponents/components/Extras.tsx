@@ -41,6 +41,7 @@ import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import { useAppSelector } from 'hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import { buildInfoForBitmovin } from '@configs/globalConfig';
+import { customerIdSelector } from '@services/store/auth/Selectors';
 
 const Extras: React.FC<
   TEventDetailsScreensProps<
@@ -76,6 +77,7 @@ const Extras: React.FC<
     pressingHandler: () => void;
   } | null>(null);
 
+  const customerId = useAppSelector(customerIdSelector);
   const closeModal = useCallback((ref, clearLoadingState: any) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
       ref.current.setNativeProps({
@@ -198,6 +200,7 @@ const Extras: React.FC<
                 title: videoTitle,
                 buildInfoForBitmovin,
                 customData3: videoQualityId,
+                userId: customerId ? String(customerId) : null,
               },
               onClose: closePlayer({
                 eventId,
@@ -240,6 +243,7 @@ const Extras: React.FC<
       isProduction,
       videoQualityBitrate,
       videoQualityId,
+      customerId,
     ],
   );
 
