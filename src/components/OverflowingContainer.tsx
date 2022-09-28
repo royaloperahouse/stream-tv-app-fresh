@@ -4,7 +4,8 @@ import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
 import { Colors } from '@themes/Styleguide';
 import debounce from 'lodash.debounce';
-
+import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
+import { useAppSelector } from '@hooks/redux';
 type OverflowingContainerProps = {
   contentMaxVisibleHeight: number;
   contentMaxVisibleWidth?: number;
@@ -20,6 +21,7 @@ export const OverflowingContainer: React.FC<OverflowingContainerProps> = ({
   fixedHeight,
 }) => {
   const [showThreeDots, setShowThreeDots] = useState<boolean>(false);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const setThreeDotsEnding = debounce(
     (height: number) => {
       const newstate = height >= contentMaxVisibleHeight;
@@ -32,11 +34,14 @@ export const OverflowingContainer: React.FC<OverflowingContainerProps> = ({
   );
   const onLayoutEventHaandler = useCallback(
     (event: LayoutChangeEvent) => {
+      if (isProductionEnv) {
+        return;
+      }
       event.persist();
       const { nativeEvent: { layout: { height = 0 } = {} } = {} } = event;
       setThreeDotsEnding(height);
     },
-    [setThreeDotsEnding],
+    [setThreeDotsEnding, isProductionEnv],
   );
 
   if (!children) {
