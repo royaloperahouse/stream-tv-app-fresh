@@ -91,6 +91,11 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
   sectionsCollection.forEach((item, index, items) => {
     type sectionName = typeof item.key;
     let params: Partial<TEventDetailsScreensParamContextProps[sectionName]>;
+    const nextIndex = index + 1;
+    const prevIndex = index - 1;
+    const hasMore = index + 2 < items.length;
+    const isLast = index === items.length - 1;
+    const isSingl = items.length === 1;
     switch (item.key) {
       case 'General': {
         params = {
@@ -147,22 +152,24 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
         params = {};
         break;
     }
-    if (items.length === 1) {
+    if (isSingl) {
       sectionsParams[item.key] = params;
       return;
     }
-    if (index === items.length - 1) {
+    if (isLast) {
       params.nextSectionTitle = items[0].currentSectionTitle;
-      params.prevScreenName = items[index - 1].key;
+      params.prevScreenName = items[prevIndex].key;
       params.nextScreenName = items[0].key;
       sectionsParams[item.key] = params;
       return;
     }
     if (item.key !== 'General') {
-      params.prevScreenName = items[index - 1].key;
+      params.prevScreenName = items[prevIndex].key;
     }
-    params.nextScreenName = items[index + 1].key;
-    params.nextSectionTitle = items[index + 1].currentSectionTitle;
+    params.nextScreenName = items[nextIndex].key;
+    params.nextSectionTitle =
+      items[nextIndex].currentSectionTitle + (hasMore ? ' & MORE' : '');
+
     sectionsParams[item.key] = params;
     return;
   });
