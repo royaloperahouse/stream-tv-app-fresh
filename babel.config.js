@@ -27,6 +27,7 @@ module.exports = {
           '@themes': './src/themes/',
           '@utils': './src/utils/',
           '@navigations': './src/navigations/',
+          '@polyfills': './src/polyfills',
         },
       },
     ],
