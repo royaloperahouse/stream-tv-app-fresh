@@ -91,7 +91,7 @@ public class PlayerContainerView extends RelativeLayout {
         audioCodecPriority.add("mp4a.a5");
         audioCodecPriority.add("mp4a.40");
 
-        boolean shouldEnableTunneledPlayback = Build.MANUFACTURER.contains("Google") || Build.MANUFACTURER.contains("Amazon");
+        boolean shouldEnableTunneledPlayback = this.isTargettedDevice();
 
         PlaybackConfig playbackConfig = new PlaybackConfig(
             false,
@@ -154,6 +154,10 @@ public class PlayerContainerView extends RelativeLayout {
 
     public PlayerView getPlayerView() {
         return playerView;
+    }
+
+    private boolean isTargettedDevice() {
+        return Build.MANUFACTURER.contains("Google") || Build.MANUFACTURER.contains("Amazon");
     }
 
     private void onPlay(PlayerEvent event) {
