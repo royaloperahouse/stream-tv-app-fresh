@@ -157,7 +157,7 @@ public class PlayerContainerView extends RelativeLayout {
     }
 
     private boolean isTargettedDevice() {
-        return Build.MANUFACTURER.contains("Google") || Build.MANUFACTURER.contains("Amazon");
+        return Build.MANUFACTURER.startsWith("Google") || Build.MANUFACTURER.startsWith("Amazon");
     }
 
     private void onPlay(PlayerEvent event) {
