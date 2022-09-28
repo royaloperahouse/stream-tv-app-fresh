@@ -13,6 +13,7 @@ import com.rohtvapp.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.rohtvapp.ROHBitMovinPlayerPackage.ROHBitMovinPlayerPackage;
+import com.rohtvapp.ROHDeviceInfo.ROHDeviceInfoPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
            packages.add(new ROHBitMovinPlayerPackage());
+           packages.add(new ROHDeviceInfoPackage());
           return packages;
         }
 
