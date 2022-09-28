@@ -126,7 +126,7 @@ const HomePageScreen: React.FC<
         setIsFirstRun(false);
         return hasFocus;
       }
-      if (route.params?.eventId) {
+      if (!route.params?.eventId) {
         hasFocus = isFirstRail && index === 0;
       } else {
         hasFocus = route.params?.sectionIndex === sectionIndex && index === 0;
