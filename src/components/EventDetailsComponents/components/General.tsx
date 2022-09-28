@@ -283,6 +283,7 @@ const General: React.FC<
                     title: videoTitle,
                     buildInfoForBitmovin,
                     customData3: videoQualityId,
+                    userId: customerId ? String(customerId) : null,
                   },
                   onClose: closePlayer({
                     savePositionCB,
@@ -315,6 +316,7 @@ const General: React.FC<
                     title: videoTitle,
                     buildInfoForBitmovin,
                     customData3: videoQualityId,
+                    userId: customerId ? String(customerId) : null,
                   },
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
@@ -350,6 +352,7 @@ const General: React.FC<
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoQualityId,
+            userId: customerId ? String(customerId) : null,
           },
           guidance: vs_guidance,
           guidanceDetails: vs_guidance_details,
@@ -434,6 +437,7 @@ const General: React.FC<
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoQualityId,
+            userId: customerId ? String(customerId) : null,
           },
           videoQualityBitrate,
           showVideoInfo: !isProductionEnv,
@@ -466,6 +470,7 @@ const General: React.FC<
       trailerInfo,
       videoQualityBitrate,
       videoQualityId,
+      customerId,
     ],
   );
 
