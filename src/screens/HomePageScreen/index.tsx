@@ -44,7 +44,6 @@ import type {
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
-import { first } from 'rxjs/operators';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
