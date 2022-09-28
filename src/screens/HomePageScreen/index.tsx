@@ -44,6 +44,7 @@ import type {
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import { first } from 'rxjs/operators';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
@@ -59,6 +60,7 @@ const HomePageScreen: React.FC<
   );
   const previewRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
+  const isFirsRunRef = useRef<boolean>(isFirstRun);
 
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -116,11 +118,24 @@ const HomePageScreen: React.FC<
     index: number,
     sectionIndex: number,
   ) => {
-    return isFirstRun || !sectionIndexAvailable
-      ? route.params?.eventId
-        ? isFirstRail && index === 0
-        : route.params?.sectionIndex === sectionIndex && index === 0
-      : false;
+    let hasFocus: boolean = true;
+
+    if (isFirsRunRef.current || !sectionIndexAvailable) {
+      // check if first run and switch flag to false after first iteration
+      if (isFirsRunRef.current) {
+        isFirsRunRef.current = false;
+        setIsFirstRun(false);
+        return hasFocus;
+      }
+      if (route.params?.eventId) {
+        hasFocus = isFirstRail && index === 0;
+      } else {
+        hasFocus = route.params?.sectionIndex === sectionIndex && index === 0;
+      }
+    } else {
+      hasFocus = false;
+    }
+    return hasFocus;
   };
 
   if (!data.length || !continueWatchingListEjected || !myListEjected) {
