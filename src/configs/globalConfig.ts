@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { getVersion, getBuildNumber } from 'react-native-device-info';
+import { getVersion, getBuildNumber } from '@polyfills/react-native-device-info';
 export const SentryDSN =
   'https://1a830de5cb974a1dbd0ed139dd5e6d7d@o936063.ingest.sentry.io/5886190';
 

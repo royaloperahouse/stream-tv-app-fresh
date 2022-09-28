@@ -2,7 +2,7 @@ import Reactotron from 'reactotron-react-native';
 //import ReactotronFlipper from 'reactotron-react-native/dist/flipper';
 import { reactotronRedux } from 'reactotron-redux';
 import sagaPlugin from 'reactotron-redux-saga';
-import { getUniqueId } from 'react-native-device-info';
+import { getUniqueId } from '@polyfills/react-native-device-info';
 
 /*
 import {Platform} from 'react-native';

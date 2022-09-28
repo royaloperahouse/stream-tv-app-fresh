@@ -3,7 +3,7 @@ import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { getVersion } from 'react-native-device-info';
+import { getVersion } from '@polyfills/react-native-device-info';
 
 export type TAppVersionProps = {};
 
