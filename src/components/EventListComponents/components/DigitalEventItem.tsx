@@ -31,6 +31,7 @@ import {
 import RohImage from '@components/RohImage';
 type DigitalEventItemProps = {
   event: TEventContainer;
+  eventIndex: number;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
   sectionIndex: number;
@@ -63,6 +64,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
   (
     {
       event,
+      eventIndex,
       canMoveUp,
       hasTVPreferredFocus,
       canMoveRight = true,
@@ -128,7 +130,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
           touchableRef.current?.getRef?.().current,
         );
       }
-      ref?.current?.setDigitalEvent(event, eventGroupTitle);
+      ref?.current?.setDigitalEvent(event, eventIndex, eventGroupTitle);
       if (typeof onFocus === 'function') {
         onFocus(touchableRef.current?.getRef?.().current);
       }
