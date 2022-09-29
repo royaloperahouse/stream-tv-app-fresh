@@ -4,6 +4,7 @@ import React, {
   useRef,
   forwardRef,
   useLayoutEffect,
+  useCallback,
 } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
@@ -16,8 +17,10 @@ import { OverflowingContainer } from '@components/OverflowingContainer';
 import RohImage from 'components/RohImage';
 
 export type TPreviewRef = {
+  index: number;
   setDigitalEvent?: (
     digitalEvent: TEventContainer,
+    itemIndexInRail?: number,
     eveGroupTitle?: string,
   ) => void;
   setShowContinueWatching?: (showContinueWatching: boolean) => void;
@@ -29,22 +32,32 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   const fadeAnimation = useRef<Animated.Value>(new Animated.Value(0)).current;
   const mountedRef = useRef<boolean>(false);
   const [event, setEvent] = useState<TEvent | null>(null);
+
+  const [index, setIndex] = useState<number>(0);
+
   const [eventGroupTitle, setEventGroupTitle] = useState<string>('');
-  useImperativeHandle(
-    ref,
-    () => ({
-      setDigitalEvent: (
-        digitalEvent: TEventContainer,
-        eveGroupTitle: string = '',
-      ) => {
-        if (mountedRef.current) {
-          setEvent(digitalEvent.data);
-          setEventGroupTitle(eveGroupTitle);
-        }
-      },
-    }),
+
+  const setDigitalEvent = useCallback(
+    (
+      digitalEvent: TEventContainer,
+      itemIndexInRail: number = 0,
+      eveGroupTitle: string = '',
+    ) => {
+      if (mountedRef.current) {
+        console.log({
+          data: digitalEvent.data.vs_title[0].text,
+          itemIndexInRail,
+          eveGroupTitle: eveGroupTitle,
+        });
+        setEvent(digitalEvent.data);
+        setIndex(itemIndexInRail);
+        setEventGroupTitle(eveGroupTitle);
+      }
+    },
     [],
   );
+
+  useImperativeHandle(ref, () => ({ index, setDigitalEvent }), [index, setDigitalEvent]);
 
   const eventTitle: string =
     get(event, ['vs_title', '0', 'text'], '').replace(/(<([^>]+)>)/gi, '') ||
