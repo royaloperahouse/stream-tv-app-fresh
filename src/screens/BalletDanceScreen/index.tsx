@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForBalletAndDanceSelector } from '@services/store/events/Selectors';
@@ -34,6 +34,9 @@ const BalletDanceScreen: React.FC<
   const { data, eventsLoaded } = useSelector(
     digitalEventsForBalletAndDanceSelector,
   );
+
+  const [horizontalRailOffset, setHorizontalRailOffset] = useState<number>(0);
+
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
 
@@ -74,9 +77,17 @@ const BalletDanceScreen: React.FC<
         ref={navMenuScreenRedirectRef}
       />
       <View style={styles.contentContainer}>
-        <Preview ref={previewRef} />
+        <Preview
+          ref={component => {
+            if (component?.index && horizontalRailOffset !== component.index) {
+              setHorizontalRailOffset(component.index);
+            }
+            previewRef.current = component;
+          }}
+        />
         <View>
           <RailSections
+            horizontalRailOffset={horizontalRailOffset}
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
             railStyle={styles.railStyle}
@@ -103,6 +114,7 @@ const BalletDanceScreen: React.FC<
               <DigitalEventItem
                 screenNameFrom={route.name}
                 event={item}
+                eventIndex={index}
                 ref={previewRef}
                 canMoveUp={!isFirstRail}
                 hasTVPreferredFocus={hasTVPreferredFocus(

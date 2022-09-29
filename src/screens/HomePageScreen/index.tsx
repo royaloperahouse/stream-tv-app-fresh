@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useContext,
+  useState,
 } from 'react';
 import {
   View,
@@ -44,6 +45,7 @@ import type {
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import { TPreviewRef } from 'components/EventListComponents/components/Preview';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
@@ -57,7 +59,10 @@ const HomePageScreen: React.FC<
   const { data, eventsLoaded } = useAppSelector(
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
-  const previewRef = useRef(null);
+
+  const [horizontalRailOffset, setHorizontalRailOffset] = useState<number>(0);
+
+  const previewRef = useRef<TPreviewRef | null>(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const isFirsRunRef = useRef<boolean>(isFirstRun);
 
@@ -149,9 +154,20 @@ const HomePageScreen: React.FC<
       />
       {
         <View>
-          <Preview ref={previewRef} />
+          <Preview
+            ref={component => {
+              if (
+                component?.index &&
+                horizontalRailOffset !== component.index
+              ) {
+                setHorizontalRailOffset(component.index);
+              }
+              previewRef.current = component;
+            }}
+          />
           <View>
             <RailSections
+              horizontalRailOffset={horizontalRailOffset}
               containerStyle={styles.railContainerStyle}
               headerContainerStyle={styles.railHeaderContainerStyle}
               sectionIndex={route?.params?.sectionIndex || 0}
@@ -177,6 +193,7 @@ const HomePageScreen: React.FC<
               }) => (
                 <DigitalEventItem
                   event={item}
+                  eventIndex={index}
                   ref={previewRef}
                   screenNameFrom={route.name}
                   hasTVPreferredFocus={hasTVPreferredFocus(
