@@ -182,14 +182,14 @@ const HomePageScreen: React.FC<
                     sectionIndex,
                   )}
                   canMoveRight={index !== section.data.length - 1}
-                  onFocus={({ eventIndex }) => {
+                  onFocus={({ selectedEventIndex }) => {
                     const railItemsList: VirtualizedList<any> | null =
                       scrollToRail();
 
                     if (railItemsList) {
                       railItemsList.scrollToIndex({
                         animated: true,
-                        index: eventIndex,
+                        index: selectedEventIndex,
                       });
                     }
                   }}
