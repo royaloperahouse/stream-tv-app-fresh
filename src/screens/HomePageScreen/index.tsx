@@ -60,8 +60,6 @@ const HomePageScreen: React.FC<
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
 
-  const [horizontalRailOffset, setHorizontalRailOffset] = useState<number>(0);
-
   const previewRef = useRef<TPreviewRef | null>(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const isFirsRunRef = useRef<boolean>(isFirstRun);
@@ -167,7 +165,6 @@ const HomePageScreen: React.FC<
           />
           <View>
             <RailSections
-              horizontalRailOffset={horizontalRailOffset}
               containerStyle={styles.railContainerStyle}
               headerContainerStyle={styles.railHeaderContainerStyle}
               sectionIndex={route?.params?.sectionIndex || 0}

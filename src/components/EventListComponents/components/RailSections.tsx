@@ -24,7 +24,6 @@ import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
 
 type TRailSectionsProps = {
-  horizontalRailOffset: number;
   containerStyle?: ViewProps['style'];
   sections: Array<{ [key: string]: any }>;
   sectionKeyExtractor?: (data: { [key: string]: any }) => string;
@@ -42,7 +41,6 @@ type TRailSectionsProps = {
 
 const RailSections: React.FC<TRailSectionsProps> = props => {
   const {
-    horizontalRailOffset,
     containerStyle = {},
     sections,
     sectionKeyExtractor = data => data.id,
@@ -212,15 +210,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       };
     }, []),
   );
-
-  useEffect(() => {
-    if (mountedRef.current) {
-      railItemsListRef.current?.scrollToOffset({
-        animated: true,
-        offset: horizontalRailOffset * 187.5,
-      });
-    }
-  }, [horizontalRailOffset]);
 
   return (
     <View style={[containerStyle]}>

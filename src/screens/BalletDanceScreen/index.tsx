@@ -35,8 +35,6 @@ const BalletDanceScreen: React.FC<
     digitalEventsForBalletAndDanceSelector,
   );
 
-  const [horizontalRailOffset, setHorizontalRailOffset] = useState<number>(0);
-
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
 
@@ -87,7 +85,6 @@ const BalletDanceScreen: React.FC<
         />
         <View>
           <RailSections
-            horizontalRailOffset={horizontalRailOffset}
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
             railStyle={styles.railStyle}
