@@ -308,7 +308,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   isLastRail: sections.length - 1 === sectionItemIndex,
                   setRailItemRefCb: setRailItemRef,
                   removeRailItemRefCb: removeRailItemRef,
-                  hasEndlessScroll: sections.length > 1,
+                  hasEndlessScroll: sections.length > 2,
                 });
               }}
             />
