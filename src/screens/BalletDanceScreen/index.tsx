@@ -113,7 +113,17 @@ const BalletDanceScreen: React.FC<
                   sectionIndex,
                 )}
                 canMoveRight={index !== section.data.length - 1}
-                onFocus={scrollToRail}
+                onFocus={({ eventIndex }) => {
+                  const railItemsList: VirtualizedList<any> | null =
+                    scrollToRail();
+
+                  if (railItemsList) {
+                    railItemsList.scrollToIndex({
+                      animated: true,
+                      index: eventIndex,
+                    });
+                  }
+                }}
                 eventGroupTitle={section.title}
                 sectionIndex={sectionIndex}
                 lastItem={index === section.data.length - 1}

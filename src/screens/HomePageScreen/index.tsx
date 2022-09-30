@@ -189,7 +189,17 @@ const HomePageScreen: React.FC<
                     sectionIndex,
                   )}
                   canMoveRight={index !== section.data.length - 1}
-                  onFocus={scrollToRail}
+                  onFocus={({ eventIndex }) => {
+                    const railItemsList: VirtualizedList<any> | null =
+                      scrollToRail();
+
+                    if (railItemsList) {
+                      railItemsList.scrollToIndex({
+                        animated: true,
+                        index: eventIndex,
+                      });
+                    }
+                  }}
                   continueWatching={section.title === continueWatchingRailTitle}
                   eventGroupTitle={section.title}
                   sectionIndex={sectionIndex}

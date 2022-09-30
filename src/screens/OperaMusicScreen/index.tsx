@@ -109,7 +109,17 @@ const OperaMusicScreen: React.FC<
                   sectionIndex,
                 )}
                 ref={previewRef}
-                onFocus={scrollToRail}
+                onFocus={({ eventIndex }) => {
+                  const railItemsList: VirtualizedList<any> | null =
+                    scrollToRail();
+
+                  if (railItemsList) {
+                    railItemsList.scrollToIndex({
+                      animated: true,
+                      index: eventIndex,
+                    });
+                  }
+                }}
                 canMoveUp={!isFirstRail}
                 canMoveRight={index !== section.data.length - 1}
                 eventGroupTitle={section.title}
