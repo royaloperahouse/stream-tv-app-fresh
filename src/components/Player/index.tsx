@@ -178,8 +178,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const controlRef = useRef<TPlayerControlsRef | null>(null);
   const playerError = useRef<TBMPlayerErrorObject | null>(null);
   const [videoInfo, setVideoInfo] = useState<string>();
-
   const [playerReady, setReady] = useState(false);
+  const [continueShowingGuidance, setContinueShowingGuidance] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [duration, setDuration] = useState(0.0);
   const [subtitleCue, setSubtitleCue] = useState('');
@@ -196,6 +196,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       'change',
       _handleAppStateChange,
     );
+    setTimeout(() => {
+      setContinueShowingGuidance(false);
+    }, 7000);
+
     return unsubscribe.remove;
   }, []);
 
@@ -214,6 +218,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       setDuration(initDuration);
     }
     setReady(true);
+    setContinueShowingGuidance(true);
   }, []);
 
   const onLoad: TCallbackFunc = useCallback(_ => {
@@ -467,6 +472,44 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     [],
   );
 
+  const renderGuidanceText = (showTitle = true) => {
+    return (
+      <View style={[styles.overlayContainer]}>
+        {Boolean(guidance) ? (
+          <View style={styles.guidanceContainer}>
+            <RohText
+              style={styles.guidanceTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              guidance
+            </RohText>
+            <RohText
+              style={styles.guidanceSubTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {guidance}
+            </RohText>
+            {Boolean(guidanceDetails) ? (
+              <RohText style={styles.guidanceSubTitle}>
+                {guidanceDetails}
+              </RohText>
+            ) : null}
+          </View>
+        ) : null}
+        <View style={styles.titleContainer}>
+          {showTitle && (
+            <RohText
+              style={styles.title}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {title}
+            </RohText>
+          )}
+        </View>
+      </View>
+    );
+  };
+
   useEffect(() => {
     const handleBackButtonClick = () => {
       actionClose();
@@ -493,39 +536,11 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       />
       {!playerReady && (
         <SafeAreaView style={styles.overlayOuter}>
-          <View style={[styles.overlayContainer]}>
-            {Boolean(guidance) ? (
-              <View style={styles.guidanceContainer}>
-                <RohText
-                  style={styles.guidanceTitle}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  guidance
-                </RohText>
-                <RohText
-                  style={styles.guidanceSubTitle}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {guidance}
-                </RohText>
-                {Boolean(guidanceDetails) ? (
-                  <RohText style={styles.guidanceSubTitle}>
-                    {guidanceDetails}
-                  </RohText>
-                ) : null}
-              </View>
-            ) : null}
-            <View style={styles.titleContainer}>
-              <RohText
-                style={styles.title}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {title}
-              </RohText>
-            </View>
-          </View>
+          {renderGuidanceText()}
         </SafeAreaView>
       )}
+
+      {continueShowingGuidance && renderGuidanceText(false)}
 
       <PlayerControls
         ref={controlRef}
