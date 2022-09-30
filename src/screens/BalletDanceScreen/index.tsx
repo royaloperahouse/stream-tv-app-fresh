@@ -1,5 +1,5 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useRef, useLayoutEffect } from 'react';
+import { View, StyleSheet, Dimensions, VirtualizedList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForBalletAndDanceSelector } from '@services/store/events/Selectors';
 import {
@@ -15,7 +15,6 @@ import {
   marginLeftStop,
 } from '@configs/navMenuConfig';
 import { TPreviewRef } from '@components/EventListComponents/components/Preview';
-import { useIsFocused } from '@react-navigation/native';
 
 import {
   NavMenuScreenRedirect,

@@ -1,5 +1,5 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useRef, useLayoutEffect } from 'react';
+import { View, StyleSheet, Dimensions, VirtualizedList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForOperaAndMusicSelector } from '@services/store/events/Selectors';
 import {

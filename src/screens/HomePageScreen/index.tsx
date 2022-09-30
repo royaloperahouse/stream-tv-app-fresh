@@ -1,18 +1,11 @@
-import React, {
-  useRef,
-  useLayoutEffect,
-  useCallback,
-  useEffect,
-  useContext,
-  useState,
-} from 'react';
+import React, { useRef, useLayoutEffect, useEffect, useContext } from 'react';
 import {
   View,
   StyleSheet,
   Dimensions,
   AppState,
   AppStateStatus,
-  findNodeHandle,
+  VirtualizedList,
 } from 'react-native';
 import { useAppSelector, useAppDispatch } from '@hooks/redux';
 import {

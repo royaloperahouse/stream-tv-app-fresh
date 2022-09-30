@@ -4,7 +4,6 @@ import React, {
   useRef,
   forwardRef,
   useLayoutEffect,
-  useCallback,
 } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
