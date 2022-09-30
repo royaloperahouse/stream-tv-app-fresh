@@ -132,7 +132,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       }
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
       if (typeof onFocus === 'function') {
-        onFocus?.({ selectedEventIndex: eventIndex });
+        onFocus({ selectedEventIndex: eventIndex });
       }
     };
 
