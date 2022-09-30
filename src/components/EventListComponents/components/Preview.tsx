@@ -30,7 +30,6 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   const mountedRef = useRef<boolean>(false);
   const [event, setEvent] = useState<TEvent | null>(null);
   const [eventGroupTitle, setEventGroupTitle] = useState<string>('');
-
   useImperativeHandle(
     ref,
     () => ({
