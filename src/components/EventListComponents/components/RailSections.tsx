@@ -6,7 +6,6 @@ import React, {
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
-  useEffect,
 } from 'react';
 import {
   View,
