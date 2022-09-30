@@ -38,7 +38,7 @@ type DigitalEventItemProps = {
   hasTVPreferredFocus?: boolean;
   canMoveRight?: boolean;
   continueWatching?: boolean;
-  onFocus?: (...[]: any[]) => void;
+  onFocus?: ({ eventIndex }: { eventIndex: number }) => void;
   screenNameFrom: TContentScreenReverseNamesOfNavToDetails;
   eventGroupTitle?: string;
   selectedItemIndex?: number;
@@ -132,7 +132,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       }
       ref?.current?.setDigitalEvent(event, eventIndex, eventGroupTitle);
       if (typeof onFocus === 'function') {
-        onFocus(touchableRef.current?.getRef?.().current);
+        onFocus?.({ eventIndex });
       }
     };
 
