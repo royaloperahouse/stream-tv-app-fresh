@@ -152,17 +152,7 @@ const HomePageScreen: React.FC<
       />
       {
         <View>
-          <Preview
-            ref={component => {
-              if (
-                component?.index &&
-                horizontalRailOffset !== component.index
-              ) {
-                setHorizontalRailOffset(component.index);
-              }
-              previewRef.current = component;
-            }}
-          />
+          <Preview ref={previewRef} />
           <View>
             <RailSections
               containerStyle={styles.railContainerStyle}

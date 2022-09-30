@@ -61,6 +61,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const scrollToTop = useRef<boolean>(false);
   const scrollToBottom = useRef<boolean>(false);
   const railItemsListRef = useRef<VirtualizedList<any> | null>(null);
+  const railCollection = useRef<(VirtualizedList<any> | null)[]>([]);
   const railsItemsNodesRef = useRef<{
     [key: string]: string;
   }>({});
@@ -159,6 +160,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         index,
       });
     }
+    return railCollection.current[index];
   };
 
   useFocusEffect(
@@ -260,9 +262,14 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               initialNumToRender={sectionItemsInitialNumber}
               getItem={(data, index) => data[index]}
               data={sectionItem.data}
-              ref={
-                sectionItemIndex === sectionIndex ? railItemsListRef : undefined
-              }
+              ref={component => {
+                railCollection.current[sectionItemIndex] = component;
+
+                if (sectionItemIndex !== sectionIndex) {
+                  return;
+                }
+                railItemsListRef.current = component;
+              }}
               keyExtractor={(sectionItemForKeyExtracting: any) =>
                 sectionItemKeyExtractor(sectionItemForKeyExtracting)
               }
