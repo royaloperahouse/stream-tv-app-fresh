@@ -32,6 +32,7 @@ import {
   TStreamHomePageElement,
 } from '@services/types/models';
 import { isProductionEvironmentSelector } from '../settings/Selectors';
+import { customerIdSelector } from '../auth/Selectors';
 
 export default function* eventRootSagas() {
   yield all([
@@ -147,8 +148,9 @@ function* getEventListLoopWorker(): any {
 }
 
 function* saveSearchResultQueryWorker(): any {
+  const customerId = yield select(customerIdSelector);
   const searchQueryString = yield select(searchQuerySelector);
-  yield call(addItemToPrevSearchList, searchQueryString);
+  yield call(addItemToPrevSearchList, customerId, searchQueryString);
 }
 
 function eventPromiseFill(

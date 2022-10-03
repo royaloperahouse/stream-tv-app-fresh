@@ -25,6 +25,7 @@ import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import { contentScreenNames } from '@configs/screensConfig';
 import type { TContentScreensProps } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -279,6 +280,8 @@ type TPreviousSearchListProps = {
 const PreviousSearchList: React.FC<TPreviousSearchListProps> = ({
   onMountToSearchResultTransition,
 }) => {
+  const customerId = useAppSelector(customerIdSelector);
+
   const isMounted = useRef<boolean>(false);
   const [previousSearchesList, setPreviousSearchesList] =
     useState<Array<string>>();
@@ -291,13 +294,15 @@ const PreviousSearchList: React.FC<TPreviousSearchListProps> = ({
   }, []);
 
   useEffect(() => {
-    getPrevSearchList()
-      .then(previousSearchesListData => {
-        if (isMounted.current) {
-          setPreviousSearchesList(previousSearchesListData?.reverse());
-        }
-      })
-      .catch(console.log);
+    if (customerId) {
+      getPrevSearchList(customerId)
+        .then(previousSearchesListData => {
+          if (isMounted.current) {
+            setPreviousSearchesList(previousSearchesListData);
+          }
+        })
+        .catch(console.log);
+    }
   }, []);
 
   if (!Array.isArray(previousSearchesList) || !previousSearchesList.length) {
