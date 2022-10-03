@@ -583,6 +583,8 @@ const styles = StyleSheet.create({
   },
   guidanceContainer: {
     position: 'absolute',
+    backgroundColor: 'black',
+    opacity: 0.4,
     top: scaleSize(130),
     left: 0,
   },
