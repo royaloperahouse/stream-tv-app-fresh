@@ -2,7 +2,6 @@ import Fuse from 'fuse.js';
 import { detailEventsSearchOptions } from '@configs/fuseConfig';
 import { TEventContainer } from '@services/types/models';
 import { myListTitle } from '@configs/myListConfig';
-import { removeIdsFromMyList } from '@services/myList';
 import {
   homePageWhiteList,
   operaAndMusicWhiteList,
@@ -12,7 +11,6 @@ import {
 } from '@configs/eventListScreensConfig';
 import get from 'lodash.get';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
-import { removeItemsFromSavedPositionListByEventIds } from '@services/bitMovinPlayer';
 import difference from 'lodash.difference';
 import includes from 'lodash.includes';
 import type { TRootState } from '../index';
@@ -76,8 +74,6 @@ export const digitalEventsForHomePageSelector =
     eventGroupsArray.unshift(...exploreAllTrays);
     eventGroupsArray.unshift(...propositionPageElements);
 
-    const arrayOfIdsForRemoveFromMyList: Array<string> = [];
-    const arrayOfIdsForRemoveFromContinueWatchingList: Array<string> = [];
     if (eventGroupsArray.length) {
       if (store.auth.fullSubscription) {
         eventGroupsArray.unshift([
@@ -115,10 +111,6 @@ export const digitalEventsForHomePageSelector =
         data: groupInfo.ids.reduce<Array<TEventContainer>>((accEvents, id) => {
           if (id in store.events.allDigitalEventsDetail) {
             accEvents.push(store.events.allDigitalEventsDetail[id]);
-          } else if (groupInfo.title === myListTitle) {
-            arrayOfIdsForRemoveFromMyList.push(id);
-          } else if (groupInfo.title === continueWatchingRailTitle) {
-            arrayOfIdsForRemoveFromContinueWatchingList.push(id);
           }
           return accEvents;
         }, []),
@@ -128,41 +120,21 @@ export const digitalEventsForHomePageSelector =
       }
       return acc;
     }, []);
-    if (store.events.eventsLoaded) {
-      if (store.auth.customerId) {
-        removeIdsFromMyList(
-          store.auth.customerId,
-          arrayOfIdsForRemoveFromMyList,
-        );
-      }
-      removeItemsFromSavedPositionListByEventIds(
-        arrayOfIdsForRemoveFromContinueWatchingList,
-      );
-    }
 
     return { data: eventSections, eventsLoaded: store.events.eventsLoaded };
   };
 
 export const digitalEventsForMyListScreenSelector =
   (myList: Array<string>) => (store: TRootState) => {
-    const arrayOfIdsForRemoveFromMyList: Array<string> = [];
     const eventListForMyList = myList.reduce<Array<TEventContainer>>(
       (acc, id) => {
         if (id in store.events.allDigitalEventsDetail) {
           acc.push(store.events.allDigitalEventsDetail[id]);
-        } else {
-          arrayOfIdsForRemoveFromMyList.push(id);
         }
         return acc;
       },
       [],
     );
-    if (store.events.eventsLoaded && store.auth.customerId) {
-      removeIdsFromMyList(
-        store.auth.customerId,
-        arrayOfIdsForRemoveFromMyList,
-      );
-    }
     return eventListForMyList;
   };
 

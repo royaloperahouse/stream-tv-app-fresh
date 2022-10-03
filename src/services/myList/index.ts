@@ -42,30 +42,6 @@ export const removeIdFromMyList = async (
   }
 };
 
-export const removeIdsFromMyList = async (
-  customerId: number,
-  items: Array<string>,
-  cb?: (...args: any[]) => void,
-): Promise<void> => {
-  if (!Array.isArray(items) || !items.length) {
-    return;
-  }
-  try {
-    await axiosClient.delete('/user/tv/my-list', {
-      data: {
-        customerId,
-        eventIds: items,
-      },
-    });
-  } catch (error: any) {
-    logError('Something went wrong with removing from MyList', error);
-  } finally {
-    if (typeof cb === 'function') {
-      cb();
-    }
-  }
-};
-
 export const clearMyList = async (customerId: number): Promise<void> => {
   try {
     await axiosClient.delete('/user/tv/my-list/clear', {
