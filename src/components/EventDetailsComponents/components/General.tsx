@@ -479,8 +479,14 @@ const General: React.FC<
       return;
     }
     addOrRemoveBusyRef.current = true;
-    (existInMyList ? removeIdFromMyList : addToMyList)(eventId, () => {
-      hasMyListItem(eventId)
+    const myListAction = existInMyList ? removeIdFromMyList : addToMyList;
+
+    if (!customerId) {
+      return;
+    }
+
+    myListAction(customerId.toString(), eventId, () => {
+      hasMyListItem(customerId.toString(), eventId)
         .then(isExist => {
           if (generalMountedRef.current) {
             setExistInMyList(isExist);
@@ -563,13 +569,19 @@ const General: React.FC<
     };
   }, []);
 
-  useEffect(() => {
-    hasMyListItem(eventId)
-      .then(isExist => setExistInMyList(isExist))
-      .finally(() => {
-        addOrRemoveBusyRef.current = false;
-      });
-  }, [eventId]);
+  useEffect(
+    () => {
+      if (customerId) {
+        hasMyListItem(customerId.toString(), eventId)
+          .then(isExist => setExistInMyList(isExist))
+          .finally(() => {
+            addOrRemoveBusyRef.current = false;
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [eventId],
+  );
 
   useFocusEffect(
     useCallback(() => {

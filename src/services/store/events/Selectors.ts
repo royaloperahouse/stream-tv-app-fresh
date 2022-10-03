@@ -129,7 +129,12 @@ export const digitalEventsForHomePageSelector =
       return acc;
     }, []);
     if (store.events.eventsLoaded) {
-      removeIdsFromMyList(arrayOfIdsForRemoveFromMyList);
+      if (store.auth.customerId) {
+        removeIdsFromMyList(
+          store.auth.customerId.toString(),
+          arrayOfIdsForRemoveFromMyList,
+        );
+      }
       removeItemsFromSavedPositionListByEventIds(
         arrayOfIdsForRemoveFromContinueWatchingList,
       );
@@ -152,8 +157,11 @@ export const digitalEventsForMyListScreenSelector =
       },
       [],
     );
-    if (store.events.eventsLoaded) {
-      removeIdsFromMyList(arrayOfIdsForRemoveFromMyList);
+    if (store.events.eventsLoaded && store.auth.customerId) {
+      removeIdsFromMyList(
+        store.auth.customerId.toString(),
+        arrayOfIdsForRemoveFromMyList,
+      );
     }
     return eventListForMyList;
   };

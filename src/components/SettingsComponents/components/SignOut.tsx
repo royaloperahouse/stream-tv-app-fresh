@@ -25,6 +25,7 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 
 export type TSignOutProps = {
   listItemGetNode?: () => number;
@@ -34,6 +35,7 @@ export type TSignOutProps = {
 const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
   const dispatch = useAppDispatch();
   const isProduction = useAppSelector(isProductionEvironmentSelector);
+  const customerId = useAppSelector(customerIdSelector);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
   const signOutActionHandler = () =>
@@ -47,11 +49,15 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
         dispatch(endFullSubscriptionLoop());
         dispatch(clearAuthState());
         dispatch(clearEventState());
-        return Promise.all([
+
+        const actions = [
           clearPrevSearchList(),
           clearListOfBitmovinSavedPosition(),
-          clearMyList(),
-        ]);
+        ];
+        if (customerId) {
+          actions.push(clearMyList(customerId.toString()));
+        }
+        return Promise.all(actions);
       })
       .catch(console.log);
   useLayoutEffect(() => {
