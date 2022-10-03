@@ -29,6 +29,7 @@ import {
   defaultPlayerBitrateKey,
 } from '@configs/bitMovinPlayerConfig';
 import { getSelectedBitrateId } from '@services/bitMovinPlayer';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -507,6 +508,8 @@ const useGetExtras = (
   videoQualityBitrate: number;
   videoQualityId: 'high' | 'medium' | 'normal';
 } => {
+  const customerId = useAppSelector(customerIdSelector);
+
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
   const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
     useState<string>();
@@ -606,8 +609,9 @@ const useGetExtras = (
                   '',
               }
             : null;
-          if (performanceInfo.current) {
+          if (performanceInfo.current && customerId) {
             const videoPositionInfo = await getBitMovinSavedPosition(
+              customerId,
               performanceInfo.current.videoId,
               performanceInfo.current.eventId,
             );

@@ -18,14 +18,11 @@ import {
   endFullSubscriptionLoop,
 } from '@services/store/auth/Slices';
 import { pinUnlink } from '@services/apiClient';
-import { clearPrevSearchList } from '@services/previousSearch';
-import { clearListOfBitmovinSavedPosition } from '@services/bitMovinPlayer';
-import { clearMyList } from '@services/myList';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
-import { customerIdSelector } from 'services/store/auth/Selectors';
 
 export type TSignOutProps = {
   listItemGetNode?: () => number;
@@ -35,7 +32,6 @@ export type TSignOutProps = {
 const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
   const dispatch = useAppDispatch();
   const isProduction = useAppSelector(isProductionEvironmentSelector);
-  const customerId = useAppSelector(customerIdSelector);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
   const signOutActionHandler = () =>
@@ -49,15 +45,6 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
         dispatch(endFullSubscriptionLoop());
         dispatch(clearAuthState());
         dispatch(clearEventState());
-
-        const actions = [
-          clearPrevSearchList(),
-          clearListOfBitmovinSavedPosition(),
-        ];
-        if (customerId) {
-          actions.push(clearMyList(customerId));
-        }
-        return Promise.all(actions);
       })
       .catch(console.log);
   useLayoutEffect(() => {

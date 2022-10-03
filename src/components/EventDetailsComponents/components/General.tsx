@@ -217,11 +217,18 @@ const General: React.FC<
   const savePositionCB = useCallback(
     async ({ time, videoId, eventId }) => {
       const floatTime = parseFloat(time);
+      if (!customerId) {
+        return;
+      }
       if (isNaN(floatTime) || floatTime < minResumeTime) {
-        await removeBitMovinSavedPositionByIdAndEventId(videoId, eventId);
+        await removeBitMovinSavedPositionByIdAndEventId(
+          customerId,
+          videoId,
+          eventId,
+        );
         setPerformanceVideoTimePosition('');
       } else {
-        await savePosition({
+        await savePosition(customerId, {
           id: videoId,
           position: time,
           eventId,
@@ -229,7 +236,7 @@ const General: React.FC<
         setPerformanceVideoTimePosition(time);
       }
     },
-    [setPerformanceVideoTimePosition],
+    [customerId, setPerformanceVideoTimePosition],
   );
 
   const getPerformanceVideoUrl = useCallback(
