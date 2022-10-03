@@ -66,6 +66,7 @@ import type { HWEvent } from 'react-native';
 import { useForseUpdate } from '@hooks/useForseUpdate';
 import { globalModalManager } from '@components/GlobalModals';
 import { WarningOfExitModal } from '@components/GlobalModals/variants';
+import { FocusManager } from 'services/focusService/focusManager';
 
 type TNavMenuProps = {
   navMenuConfig: Array<{
@@ -219,6 +220,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               dispatch(endFullSubscriptionLoop());
               dispatch(endLoginLoop());
               dispatch(clearEventState());
+              FocusManager.switchOnFirstLounch();
               BackHandler.exitApp();
             });
           },

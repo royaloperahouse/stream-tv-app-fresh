@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import WithLogo from '@components/WithLogo';
 import WithBackground from '@components/WithBackground';
@@ -10,10 +10,14 @@ import { buildInfo } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
 import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
 import GlobalModal from '@components/GlobalModals';
+import { FocusManager } from 'services/focusService/focusManager';
 
 type TMainLayoutProps = {};
 
 const MainLayout: React.FC<TMainLayoutProps> = () => {
+  useEffect(() => {
+    FocusManager.init();
+  }, []);
   return (
     <WithBackground>
       <WithLogo>

@@ -16,6 +16,7 @@ import {
   TouchableHighlight,
   findNodeHandle,
   ViewToken,
+  HWEvent,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
@@ -36,6 +37,7 @@ type TRailSectionsProps = {
   sectionsWindowSize?: number;
   railWindowSize?: number;
   sectionIndex?: number;
+  itemIndex?: number;
 };
 
 const RailSections: React.FC<TRailSectionsProps> = props => {
@@ -53,6 +55,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     railWindowSize = 5,
     renderItem,
     sectionIndex = 0,
+    itemIndex = -1,
   } = props;
   const mountedRef = useRef<boolean>(false);
   const sectionsListRef = useRef<VirtualizedList<any> | null>(null);
@@ -114,11 +117,11 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [],
   );
   const getSectionCount = useCallback(
-    data => (Array.isArray(data) ? data.length : 0),
+    (data: Array<any>) => (Array.isArray(data) ? data.length : 0),
     [],
   );
   const getSectionItemCount = useCallback(
-    data => (Array.isArray(data) ? data.length : 0),
+    (data: Array<any>) => (Array.isArray(data) ? data.length : 0),
     [],
   );
   const viewableItemsChangeHandler = useMemo(
@@ -175,18 +178,18 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     useCallback(() => {
       let outerBlur: boolean = true;
       let outerFocus: boolean = true;
-      const cb = (_: any, eve: any) => {
+      const cb = (eve: HWEvent) => {
         if (eve?.eventType === 'blur' && mountedRef.current) {
           outerBlur = !(
-            Boolean(railsItemsNodesRef.current[eve.target]) ||
-            bottomEndlessScrollRef.current?.getNode?.() === eve.target
+            Boolean(eve.tag && railsItemsNodesRef.current[eve.tag]) ||
+            bottomEndlessScrollRef.current?.getNode?.() === eve.tag
           );
           return;
         }
         if (eve?.eventType === 'focus' && mountedRef.current) {
           outerFocus = !(
-            Boolean(railsItemsNodesRef.current[eve.target]) ||
-            bottomEndlessScrollRef.current?.getNode?.() === eve.target
+            Boolean(eve.tag && railsItemsNodesRef.current[eve.tag]) ||
+            bottomEndlessScrollRef.current?.getNode?.() === eve.tag
           );
           if ((!outerFocus && outerBlur) || (!outerFocus && !outerBlur)) {
             bottomEndlessScrollRef.current?.setAccessible?.(true);

@@ -29,6 +29,7 @@ import {
   TContentScreensProps,
 } from '@configs/screensConfig';
 import RohImage from '@components/RohImage';
+import { FocusManager } from 'services/focusService/focusManager';
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -122,6 +123,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       if (isMounted.current) {
         setFocused(true);
       }
+      FocusManager.switchOffFirstLounch();
       if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
         setFirstItemFocusable(
           firstFocusItenKey,

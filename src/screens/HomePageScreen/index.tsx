@@ -43,14 +43,20 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
-import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import { FocusManager } from '@services/focusService/focusManager';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
 > = ({ navigation, route }) => {
-  const { isFirstRun, setIsFirstRun } = useContext(NavMenuNodesRefsContext);
   const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
+  let focusPosition: {
+    sectionIndex: number;
+    itemIndex: number;
+  } = {
+    sectionIndex: -1,
+    itemIndex: -1,
+  };
   const { data: myList, ejected: myListEjected } = useMyList();
   const { data: continueWatchingList, ejected: continueWatchingListEjected } =
     useContinueWatchingList();
@@ -59,7 +65,6 @@ const HomePageScreen: React.FC<
   );
   const previewRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  const isFirsRunRef = useRef<boolean>(isFirstRun);
 
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -95,49 +100,28 @@ const HomePageScreen: React.FC<
   }, [data]);
 
   useLayoutEffect(() => {
-    if (isFirstRun) {
-      setIsFirstRun(false);
-    }
-  }, [isFirstRun, setIsFirstRun]);
-
-  useLayoutEffect(() => {
     dispatch(startFullSubscriptionLoop());
     return () => {
       dispatch(endFullSubscriptionLoop());
     };
   }, [dispatch]);
-  const sectionIndexAvailable =
-    !isFirstRun &&
-    data
-      .find(section => section.sectionIndex === route.params?.sectionIndex)
-      ?.data.some(event => event.id === route.params?.eventId);
 
-  const hasTVPreferredFocus = (
-    isFirstRail: boolean,
-    index: number,
-    sectionIndex: number,
-  ) => {
-    let hasFocus: boolean = true;
-
-    if (isFirsRunRef.current || !sectionIndexAvailable) {
-      // check if first run and switch flag to false after first iteration
-      if (isFirsRunRef.current) {
-        isFirsRunRef.current = false;
-        setIsFirstRun(false);
-        return hasFocus;
-      }
-      if (!route.params?.eventId) {
-        hasFocus = isFirstRail && index === 0;
-      } else {
-        hasFocus = route.params?.sectionIndex === sectionIndex && index === 0;
-      }
-    } else {
-      hasFocus = false;
-    }
-    return hasFocus;
-  };
-
-  if (!data.length || !continueWatchingListEjected || !myListEjected) {
+  if (eventsLoaded && continueWatchingListEjected && myListEjected) {
+    focusPosition = FocusManager.getFocusPosition({
+      eventId: route.params?.eventId || null,
+      data,
+      searchingCB: FocusManager.searchingCBForRails,
+      sectionIndex: route.params?.sectionIndex,
+      itemIndex: route.params?.selectedItemIndex,
+      moveToMenuItem: () => {},
+    });
+  }
+  if (
+    !data.length ||
+    !continueWatchingListEjected ||
+    !myListEjected ||
+    !eventsLoaded
+  ) {
     return null;
   }
 
@@ -179,11 +163,10 @@ const HomePageScreen: React.FC<
                   event={item}
                   ref={previewRef}
                   screenNameFrom={route.name}
-                  hasTVPreferredFocus={hasTVPreferredFocus(
-                    isFirstRail,
-                    index,
-                    sectionIndex,
-                  )}
+                  hasTVPreferredFocus={
+                    sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex
+                  }
                   canMoveRight={index !== section.data.length - 1}
                   onFocus={scrollToRail}
                   continueWatching={section.title === continueWatchingRailTitle}
@@ -192,6 +175,7 @@ const HomePageScreen: React.FC<
                   lastItem={index === section.data.length - 1}
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
+                  selectedItemIndex={index}
                   canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
                   canMoveUp={!isFirstRail}
                   setFirstItemFocusable={
