@@ -1,23 +1,19 @@
 import { logError } from '@utils/loger';
-import { myListKey } from '@configs/myListConfig';
-import { SessionStorage } from '@services/sessionStorage';
+import { axiosClient } from 'services/apiClient';
+import { GetMyListResponse } from 'services/types/tv/responses';
 
 export const addToMyList = async (
+  customerId: string,
   item: string,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex === -1) {
-      parsedMyList.push(item);
-      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
-    }
+    await axiosClient.post('/user/tv/my-list', {
+      customerId,
+      eventIds: [item],
+    });
   } catch (error: any) {
-    logError('Something went wromg with saving to MyList', error);
+    logError('Something went wrong with saving to MyList', error);
   } finally {
     if (typeof cb === 'function') {
       cb();
@@ -26,21 +22,19 @@ export const addToMyList = async (
 };
 
 export const removeIdFromMyList = async (
+  customerId: string,
   item: string,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex !== -1) {
-      parsedMyList.splice(existedIndex, 1);
-      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
-    }
+    await axiosClient.delete('/user/tv/my-list', {
+      data: {
+        customerId,
+        eventIds: [item],
+      },
+    });
   } catch (error: any) {
-    logError('Something went wromg with removing from MyList', error);
+    logError('Something went wrong with removing from MyList', error);
   } finally {
     if (typeof cb === 'function') {
       cb();
@@ -49,6 +43,7 @@ export const removeIdFromMyList = async (
 };
 
 export const removeIdsFromMyList = async (
+  customerId: string,
   items: Array<string>,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
@@ -56,16 +51,14 @@ export const removeIdsFromMyList = async (
     return;
   }
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const filteredMyList = parsedMyList.filter(
-      listItem => !items.some(item => item === listItem),
-    );
-    await SessionStorage.setItem(myListKey, JSON.stringify(filteredMyList));
+    await axiosClient.delete('/user/tv/my-list', {
+      data: {
+        customerId,
+        eventIds: items,
+      },
+    });
   } catch (error: any) {
-    logError('Something went wromg with removing from MyList', error);
+    logError('Something went wrong with removing from MyList', error);
   } finally {
     if (typeof cb === 'function') {
       cb();
@@ -73,36 +66,41 @@ export const removeIdsFromMyList = async (
   }
 };
 
-export const clearMyList = (): Promise<void> =>
-  SessionStorage.removeItem(myListKey);
-
-export const getMyList = async (): Promise<Array<string>> => {
+export const clearMyList = async (customerId: string): Promise<void> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    return parsedMyList;
+    await axiosClient.delete('/user/tv/my-list/clear', {
+      data: { customerId },
+    });
+  } catch (error: any) {
+    logError('Something went wrong with clearing MyList', error);
+  }
+};
+
+export const getMyList = async (customerId: string): Promise<Array<string>> => {
+  try {
+    const { data } = await axiosClient.get<GetMyListResponse>(
+      '/user/tv/my-list',
+      {
+        params: { customerId },
+      },
+    );
+    const { myList } = data.data.attributes;
+    return myList.map(item => item.id);
   } catch (error: any) {
     logError('Something went wrong with getting MyList', error);
     return [];
   }
 };
 
-export const hasMyListItem = async (item: string): Promise<boolean> => {
-  let result: boolean = false;
+export const hasMyListItem = async (
+  customerId: string,
+  item: string,
+): Promise<boolean> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex !== -1) {
-      result = true;
-    }
+    const myList = await getMyList(customerId);
+    return myList.includes(item);
   } catch (error: any) {
-    logError('Something went wromg with getting MyList', error);
-  } finally {
-    return result;
+    logError('Something went wrong with getting MyList', error);
+    return false;
   }
 };
