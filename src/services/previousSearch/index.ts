@@ -1,40 +1,39 @@
 import { logError } from '@utils/loger';
-import {
-  prevSearchListKey,
-  maxPrevSearchListSize,
-} from '@configs/previousSearchesConfig';
-import { SessionStorage } from '@services/sessionStorage';
+import { maxPrevSearchListSize } from '@configs/previousSearchesConfig';
+import { axiosClient } from 'services/apiClient';
+import { GetSearchHistoryResponse } from 'services/types/tv/responses';
 
-export const addItemToPrevSearchList = async (item: string): Promise<void> => {
+export const addItemToPrevSearchList = async (
+  customerId: string,
+  item: string,
+): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? new Set<string>()
-      : new Set<string>(JSON.parse(alreadySavedPrevSearchList));
-    prevSearchSetCollection.add(item);
-    if (prevSearchSetCollection.size > maxPrevSearchListSize) {
-      prevSearchSetCollection.delete(
-        Array.from<string>(prevSearchSetCollection).shift() || '',
-      );
-    }
-    await SessionStorage.setItem(
-      prevSearchListKey,
-      JSON.stringify(Array.from(prevSearchSetCollection)),
-    );
+    await axiosClient.post('/user/tv/search-history', {
+      customerId,
+      searchTerm: item,
+    });
   } catch (err: any) {
     logError('AddItemToPrevSearchList', err);
   }
 };
 
-export const getPrevSearchList = async (): Promise<Array<string>> => {
+export const getPrevSearchList = async (
+  customerId: number,
+): Promise<Array<string>> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? []
-      : JSON.parse(alreadySavedPrevSearchList);
-    return prevSearchSetCollection;
+    const { data } = await axiosClient.get<GetSearchHistoryResponse>(
+      '/user/tv/search-history',
+      {
+        params: { customerId },
+      },
+    );
+    const { searchHistory } = data.data.attributes;
+    const searchTerms = new Set(searchHistory.map(item => item.text));
+
+    if (searchTerms.size > maxPrevSearchListSize) {
+      searchTerms.delete(Array.from<string>(searchTerms).shift() || '');
+    }
+    return [...searchTerms];
   } catch (err: any) {
     logError('getPrevSearchList', err);
     return [];
@@ -42,27 +41,28 @@ export const getPrevSearchList = async (): Promise<Array<string>> => {
 };
 
 export const removeItemFromPrevSearchList = async (
+  customerId: number,
   item: string,
 ): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? new Set()
-      : new Set(JSON.parse(alreadySavedPrevSearchList));
-    prevSearchSetCollection.delete(item);
-    await SessionStorage.setItem(
-      prevSearchListKey,
-      JSON.stringify(Array.from(prevSearchSetCollection)),
-    );
+    await axiosClient.delete('/user/tv/search-history', {
+      data: {
+        customerId,
+        searchTerm: item,
+      },
+    });
   } catch (err: any) {
     logError('removeItemFromPrevSearchList', err);
   }
 };
 
-export const clearPrevSearchList = async (): Promise<void> => {
+export const clearPrevSearchList = async (
+  customerId: number,
+): Promise<void> => {
   try {
-    await SessionStorage.setItem(prevSearchListKey, JSON.stringify([]));
+    await axiosClient.delete('/user/tv/search-history/clear', {
+      data: { customerId },
+    });
   } catch (err: any) {
     logError('clearPrevSearchList', err);
   }
