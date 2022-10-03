@@ -5,7 +5,7 @@ import {
   NotRentedItemError,
   NonSubscribedStatusError,
 } from '@utils/customErrors';
-const axiosClient: AxiosInstance = axios.create({
+export const axiosClient: AxiosInstance = axios.create({
   baseURL: ApiConfig.host,
   timeout: 20 * 1000,
 });
