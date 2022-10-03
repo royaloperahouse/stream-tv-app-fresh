@@ -16,6 +16,4 @@ export interface WatchStatus {
   [videoId: string]: WatchStatusItem | undefined;
 }
 
-export interface SearchHistory {
-  [text: string]: SearchItem | undefined;
-}
+export type SearchHistory = (SearchItem & { text: string })[];

@@ -37,3 +37,15 @@ export interface GetWatchStatusResponse {
   };
   included: [];
 }
+
+export interface GetSearchHistoryResponse {
+  data: {
+    id: string;
+    type: string;
+    attributes: {
+      searchHistory: SearchHistory;
+    };
+    relationships: Record<string, unknown>;
+  };
+  included: [];
+}
