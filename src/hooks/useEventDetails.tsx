@@ -18,10 +18,7 @@ import { getVideoDetails } from '@services/prismicApiClient';
 import * as Prismic from '@prismicio/client';
 import { PrismicDocument } from '@prismicio/types';
 import get from 'lodash.get';
-import type {
-  TEventDetailsScreenReverseNames,
-  TEventDetailsScreensParamContextProps,
-} from '@configs/screensConfig';
+import type { TEventDetailsScreensParamContextProps } from '@configs/screensConfig';
 import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import useAsyncEffect from 'use-async-effect';
 import {
