@@ -131,7 +131,7 @@ export const digitalEventsForHomePageSelector =
     if (store.events.eventsLoaded) {
       if (store.auth.customerId) {
         removeIdsFromMyList(
-          store.auth.customerId.toString(),
+          store.auth.customerId,
           arrayOfIdsForRemoveFromMyList,
         );
       }
@@ -159,7 +159,7 @@ export const digitalEventsForMyListScreenSelector =
     );
     if (store.events.eventsLoaded && store.auth.customerId) {
       removeIdsFromMyList(
-        store.auth.customerId.toString(),
+        store.auth.customerId,
         arrayOfIdsForRemoveFromMyList,
       );
     }

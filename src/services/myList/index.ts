@@ -3,7 +3,7 @@ import { axiosClient } from 'services/apiClient';
 import { GetMyListResponse } from 'services/types/tv/responses';
 
 export const addToMyList = async (
-  customerId: string,
+  customerId: number,
   item: string,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
@@ -22,7 +22,7 @@ export const addToMyList = async (
 };
 
 export const removeIdFromMyList = async (
-  customerId: string,
+  customerId: number,
   item: string,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
@@ -43,7 +43,7 @@ export const removeIdFromMyList = async (
 };
 
 export const removeIdsFromMyList = async (
-  customerId: string,
+  customerId: number,
   items: Array<string>,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
@@ -66,7 +66,7 @@ export const removeIdsFromMyList = async (
   }
 };
 
-export const clearMyList = async (customerId: string): Promise<void> => {
+export const clearMyList = async (customerId: number): Promise<void> => {
   try {
     await axiosClient.delete('/user/tv/my-list/clear', {
       data: { customerId },
@@ -76,7 +76,7 @@ export const clearMyList = async (customerId: string): Promise<void> => {
   }
 };
 
-export const getMyList = async (customerId: string): Promise<Array<string>> => {
+export const getMyList = async (customerId: number): Promise<Array<string>> => {
   try {
     const { data } = await axiosClient.get<GetMyListResponse>(
       '/user/tv/my-list',
@@ -93,7 +93,7 @@ export const getMyList = async (customerId: string): Promise<Array<string>> => {
 };
 
 export const hasMyListItem = async (
-  customerId: string,
+  customerId: number,
   item: string,
 ): Promise<boolean> => {
   try {

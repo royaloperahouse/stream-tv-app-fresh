@@ -485,8 +485,8 @@ const General: React.FC<
       return;
     }
 
-    myListAction(customerId.toString(), eventId, () => {
-      hasMyListItem(customerId.toString(), eventId)
+    myListAction(customerId, eventId, () => {
+      hasMyListItem(customerId, eventId)
         .then(isExist => {
           if (generalMountedRef.current) {
             setExistInMyList(isExist);
@@ -572,7 +572,7 @@ const General: React.FC<
   useEffect(
     () => {
       if (customerId) {
-        hasMyListItem(customerId.toString(), eventId)
+        hasMyListItem(customerId, eventId)
           .then(isExist => setExistInMyList(isExist))
           .finally(() => {
             addOrRemoveBusyRef.current = false;

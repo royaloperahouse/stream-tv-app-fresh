@@ -55,7 +55,7 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
           clearListOfBitmovinSavedPosition(),
         ];
         if (customerId) {
-          actions.push(clearMyList(customerId.toString()));
+          actions.push(clearMyList(customerId));
         }
         return Promise.all(actions);
       })

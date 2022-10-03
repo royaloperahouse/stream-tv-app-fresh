@@ -14,7 +14,7 @@ export const useMyList = (): { data: Array<string>; ejected: boolean } => {
     useCallback(() => {
       mountedRef.current = true;
       if (customerId) {
-        getMyList(customerId.toString()).then(items => {
+        getMyList(customerId).then(items => {
           if (mountedRef && mountedRef.current) {
             ejected.current = true;
             setMyList(items);
