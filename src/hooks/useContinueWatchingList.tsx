@@ -32,12 +32,14 @@ export const useContinueWatchingList = (): {
     useCallback(() => {
       mountedRef.current = true;
       if (customerId) {
-        getListOfUniqueEventId(customerId, videoDetailsRetriever).then(items => {
-          if (mountedRef.current) {
-            ejected.current = true;
-            setContinueWatchingList(items);
-          }
-        });
+        getListOfUniqueEventId(customerId, videoDetailsRetriever).then(
+          items => {
+            if (mountedRef.current) {
+              ejected.current = true;
+              setContinueWatchingList(items);
+            }
+          },
+        );
       }
       return () => {
         mountedRef.current = false;
