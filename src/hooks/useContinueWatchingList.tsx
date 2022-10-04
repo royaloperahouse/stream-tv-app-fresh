@@ -27,8 +27,6 @@ export const useContinueWatchingList = (): {
 
         const { activity_id: dieseId } = eventDetail.data.diese_activity;
 
-        console.log(dieseVideoIdPrefixes);
-
         const dieseVideoIdIndex = dieseVideoIdPrefixes.findIndex(
           id => id && id === dieseId.toString(),
         );
