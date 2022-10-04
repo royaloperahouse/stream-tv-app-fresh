@@ -74,6 +74,8 @@ import {
 } from '@services/bitMovinPlayer';
 import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin } from '@configs/globalConfig';
+import { getVideoDetails } from 'services/prismicApiClient';
+import * as Prismic from '@prismicio/client';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -220,23 +222,35 @@ const General: React.FC<
       if (!customerId) {
         return;
       }
+      const videoDetails = await getVideoDetails({
+        queryPredicates: [Prismic.predicate.in('document.id', [videoId])],
+        isProductionEnv,
+      });
+      const dieseVideoId = videoDetails.results.map(
+        detail => detail.data.video.video_key,
+      )[0];
+
       if (isNaN(floatTime) || floatTime < minResumeTime) {
-        await removeBitMovinSavedPositionByIdAndEventId(
-          customerId,
-          videoId,
-          eventId,
-        );
+        if (dieseVideoId) {
+          await removeBitMovinSavedPositionByIdAndEventId(
+            customerId,
+            dieseVideoId,
+            eventId,
+          );
+        }
         setPerformanceVideoTimePosition('');
       } else {
-        await savePosition(customerId, {
-          id: videoId,
-          position: time,
-          eventId,
-        });
+        if (dieseVideoId) {
+          await savePosition(customerId, {
+            id: dieseVideoId,
+            position: time,
+            eventId,
+          });
+        }
         setPerformanceVideoTimePosition(time);
       }
     },
-    [customerId, setPerformanceVideoTimePosition],
+    [customerId, setPerformanceVideoTimePosition, isProductionEnv],
   );
 
   const getPerformanceVideoUrl = useCallback(

@@ -513,6 +513,7 @@ const useGetExtras = (
   const performanceInfo = useRef<{
     eventId: string;
     videoId: string;
+    dieseId: string;
     title?: string;
   } | null>(null);
   const trailerInfo = useRef<{
@@ -601,6 +602,7 @@ const useGetExtras = (
             ? {
                 eventId,
                 videoId: filteredResult.performance[0].id,
+                dieseId: filteredResult.performance[0].data.video.video_key,
                 title:
                   filteredResult.performance[0].data?.video_title[0]?.text ||
                   '',
@@ -609,7 +611,7 @@ const useGetExtras = (
           if (performanceInfo.current && customerId) {
             const videoPositionInfo = await getBitMovinSavedPosition(
               customerId,
-              performanceInfo.current.videoId,
+              performanceInfo.current.dieseId,
               performanceInfo.current.eventId,
             );
             if (videoPositionInfo && videoPositionInfo.position) {

@@ -10,7 +10,6 @@ import {
   GetTVDataResponse,
   GetWatchStatusResponse,
 } from 'services/types/tv/responses';
-import { getVideoDetails } from 'services/prismicApiClient';
 
 export const savePosition = async (
   customerId: number,
@@ -46,7 +45,7 @@ export const getBitMovinSavedPosition = async (
       {
         params: {
           customerId,
-          videoId: `${eventId}|${id}`,
+          videoId: id,
         },
       },
     );
@@ -79,11 +78,8 @@ export const removeBitMovinSavedPositionByIdAndEventId = async (
 ): Promise<void> =>
   savePosition(customerId, { eventId, id, position: '0:00' }, cb);
 
-export const getListOfUniqueEventId = async (
+export const getListOfWatchedVideos = async (
   customerId: number,
-  videoDetailsRetriever: (
-    videoIDs: string[],
-  ) => ReturnType<typeof getVideoDetails>,
 ): Promise<Array<string>> => {
   try {
     const { data } = await axiosClient.get<GetTVDataResponse>('/user/tv', {
@@ -91,7 +87,7 @@ export const getListOfUniqueEventId = async (
     });
     const { watchStatus } = data.data.attributes.tv;
 
-    const videoIDs = Object.entries(watchStatus).flatMap(entry => {
+    return Object.entries(watchStatus).flatMap(entry => {
       const [videoId, watchStatusItem] = entry;
 
       if (!watchStatusItem) {
@@ -104,12 +100,6 @@ export const getListOfUniqueEventId = async (
 
       return [videoId];
     });
-
-    const eventIDs = (await videoDetailsRetriever(videoIDs)).results.map(
-      detail => detail.id,
-    );
-
-    return [...new Set(eventIDs)];
   } catch (error: any) {
     logError(
       'Something went wrong with getting the list of unique EventId with a saved position of playing',
