@@ -1,50 +1,82 @@
-import { useState, useCallback, useRef, useContext, useMemo } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/core';
-import { getListOfUniqueEventId } from '@services/bitMovinPlayer';
+import { getListOfWatchedVideos } from '@services/bitMovinPlayer';
 import { useAppSelector } from './redux';
 import { customerIdSelector } from 'services/store/auth/Selectors';
-import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
-
-import * as Prismic from '@prismicio/client';
-import { getVideoDetails } from 'services/prismicApiClient';
 
 export const useContinueWatchingList = (): {
   data: Array<string>;
   ejected: boolean;
 } => {
   const customerId = useAppSelector(customerIdSelector);
-  const isProduction = useAppSelector(isProductionEvironmentSelector);
-  const videoDetailsRetriever = useMemo(
-    () => (videoIDs: string[]) =>
-      getVideoDetails({
-        queryPredicates: [Prismic.Predicates.in('document.id', videoIDs)],
-        isProductionEnv: isProduction,
-      }),
-    [isProduction],
+  const { eventsLoaded } = useAppSelector(state => state.events);
+
+  const createVideoToEventMap = useAppSelector(
+    state => (dieseVideoIds: string[]) => {
+      const dieseVideoIdPrefixes = dieseVideoIds.flatMap(
+        id => id.split(/\D/)[0],
+      );
+      return Object.entries(state.events.allDigitalEventsDetail).reduce<
+        Record<string, string>
+      >((acc, detail) => {
+        const [eventId, eventDetail] = detail;
+
+        if (!eventDetail.data.diese_activity) {
+          return acc;
+        }
+
+        const { activity_id: dieseId } = eventDetail.data.diese_activity;
+
+        console.log(dieseVideoIdPrefixes);
+
+        const dieseVideoIdIndex = dieseVideoIdPrefixes.findIndex(
+          id => id && id === dieseId.toString(),
+        );
+        if (dieseVideoIdIndex === -1) {
+          return acc;
+        }
+
+        const foundDieseVideoId = dieseVideoIds[dieseVideoIdIndex];
+        return {
+          ...acc,
+          [foundDieseVideoId]: eventId,
+        };
+      }, {});
+    },
   );
 
-  const ejected = useRef<boolean>(false);
   const [continueWatchingList, setContinueWatchingList] = useState<
     Array<string>
   >([]);
+  const ejected = useRef<boolean>(false);
   const mountedRef = useRef<boolean | undefined>(false);
+
   useFocusEffect(
-    useCallback(() => {
-      mountedRef.current = true;
-      if (customerId) {
-        getListOfUniqueEventId(customerId, videoDetailsRetriever).then(
-          items => {
+    useCallback(
+      () => {
+        mountedRef.current = true;
+        if (customerId && eventsLoaded) {
+          getListOfWatchedVideos(customerId).then(items => {
             if (mountedRef.current) {
               ejected.current = true;
-              setContinueWatchingList(items);
+
+              const videoToEventMap = createVideoToEventMap(items);
+              setContinueWatchingList(
+                items.flatMap(videoId =>
+                  videoToEventMap[videoId] ? [videoToEventMap[videoId]] : [],
+                ),
+              );
             }
-          },
-        );
-      }
-      return () => {
-        mountedRef.current = false;
-      };
-    }, [customerId]),
+          });
+        }
+        return () => {
+          mountedRef.current = false;
+        };
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [customerId, eventsLoaded],
+    ),
   );
+
   return { data: continueWatchingList, ejected: ejected.current };
 };
