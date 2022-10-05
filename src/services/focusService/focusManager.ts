@@ -118,15 +118,22 @@ export abstract class FocusManager {
     ) {
       return { sectionIndex: -1, itemIndex: -1 };
     }
-    if (data[sectionIndex].data[itemIndex].id === eventId) {
+    if (
+      data[sectionIndex] !== undefined &&
+      data[sectionIndex].data[itemIndex] !== undefined &&
+      data[sectionIndex].data[itemIndex].id === eventId
+    ) {
       return {
         sectionIndex,
         itemIndex,
       };
     }
-    const foundIndex = data[sectionIndex].data.findIndex(
-      (item: TEventContainer) => item.id === eventId,
-    );
+    const foundIndex =
+      data[sectionIndex] === undefined
+        ? -1
+        : data[sectionIndex].data.findIndex(
+            (item: TEventContainer) => item.id === eventId,
+          );
     if (foundIndex !== -1) {
       return { sectionIndex, itemIndex: foundIndex };
     }
