@@ -202,7 +202,6 @@ const styles = StyleSheet.create({
   containerForListItem: {
     width: scaleSize(465),
     minHeight: scaleSize(262),
-    paddingRight: scaleSize(20),
   },
   title: {
     color: 'white',

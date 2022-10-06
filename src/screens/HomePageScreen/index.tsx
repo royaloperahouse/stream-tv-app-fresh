@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     width:
       Dimensions.get('window').width -
       (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
+    paddingRight: 40,
   },
   railHeaderContainerStyle: {},
   railStyle: {

@@ -28,38 +28,32 @@ const RohImage: FC<TRohImageProps> = ({
 
   return (
     <View style={style}>
-        <View style={styles.overlay}>
-      {
-        isPortrait ? (
-            <PlaceholderPortrait width={style.width} height={style.height} />
+      <View>
+        {isPortrait ? (
+          <PlaceholderPortrait width={style.width} height={style.height} />
         ) : (
-            <PlaceholderLandscape width={style.width} height={style.height} />
-        )
-      }
-        </View>
+          <PlaceholderLandscape width={style.width} height={style.height} />
+        )}
+      </View>
 
       <FastImage
-            resizeMode={resizeMode}
-            style={[style, styles.container]}
-            source={{
-              uri: source,
-            }}
-            onError={() => setIsError(true)}
-        />
-      </View>
+        resizeMode={resizeMode}
+        style={[style, styles.container]}
+        source={{
+          uri: source,
+        }}
+        onError={() => setIsError(true)}
+      />
+    </View>
   );
 };
 const styles = StyleSheet.create({
-      container: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        left: 0,
-        bottom: 0,
-      },
-      overlay: {
-          opacity: 0.1
-      }
-    }
-)
+  container: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+  },
+});
 export default RohImage;
