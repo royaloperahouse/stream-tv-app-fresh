@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useContext } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForBalletAndDanceSelector } from '@services/store/events/Selectors';
@@ -15,7 +15,6 @@ import {
   marginLeftStop,
 } from '@configs/navMenuConfig';
 import { TPreviewRef } from '@components/EventListComponents/components/Preview';
-import { useIsFocused } from '@react-navigation/native';
 
 import {
   NavMenuScreenRedirect,
@@ -25,6 +24,9 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { FocusManager } from '@services/focusService/focusManager';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const BalletDanceScreen: React.FC<
   TContentScreensProps<
@@ -38,21 +40,31 @@ const BalletDanceScreen: React.FC<
   const runningOnceRef = useRef<boolean>(false);
 
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  const sectionIndexAvailable = data
-    .find(section => section.sectionIndex === route.params?.sectionIndex)
-    ?.data.some(event => event.id === route.params?.eventId);
-
-  const hasTVPreferredFocus = (
-    isFirstRail: boolean,
-    index: number,
-    sectionIndex: number,
-  ) => {
-    return !route.params?.eventId
-      ? false
-      : !sectionIndexAvailable
-      ? isFirstRail && index === 0
-      : route.params?.sectionIndex === sectionIndex && index === 0;
+  let focusPosition: {
+    sectionIndex: number;
+    itemIndex: number;
+  } = {
+    sectionIndex: -1,
+    itemIndex: -1,
   };
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
+
+  if (eventsLoaded) {
+    focusPosition = FocusManager.getFocusPosition({
+      eventId: route.params?.eventId || null,
+      data,
+      searchingCB: FocusManager.searchingCBForRails,
+      sectionIndex: route.params?.sectionIndex,
+      itemIndex: route.params?.selectedItemIndex,
+      moveToMenuItem: () => {
+        navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+      },
+    });
+  }
 
   useLayoutEffect(() => {
     if (
@@ -64,7 +76,7 @@ const BalletDanceScreen: React.FC<
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
     }
   }, [data]);
-  if (!data.length) {
+  if (!data.length || !eventsLoaded) {
     return null;
   }
   return (
@@ -80,7 +92,7 @@ const BalletDanceScreen: React.FC<
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
             railStyle={styles.railStyle}
-            sectionIndex={route?.params?.sectionIndex || 0}
+            sectionIndex={0}
             sections={data}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
             renderHeader={section => (
@@ -105,15 +117,15 @@ const BalletDanceScreen: React.FC<
                 event={item}
                 ref={previewRef}
                 canMoveUp={!isFirstRail}
-                hasTVPreferredFocus={hasTVPreferredFocus(
-                  isFirstRail,
-                  index,
-                  sectionIndex,
-                )}
+                hasTVPreferredFocus={
+                  sectionIndex === focusPosition.sectionIndex &&
+                  index === focusPosition.itemIndex
+                }
                 canMoveRight={index !== section.data.length - 1}
                 onFocus={scrollToRail}
                 eventGroupTitle={section.title}
                 sectionIndex={sectionIndex}
+                selectedItemIndex={0}
                 lastItem={index === section.data.length - 1}
                 setRailItemRefCb={setRailItemRefCb}
                 removeRailItemRefCb={removeRailItemRefCb}

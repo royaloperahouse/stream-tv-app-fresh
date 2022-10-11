@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useContext } from 'react';
 import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
@@ -22,28 +22,41 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { FocusManager } from '@services/focusService/focusManager';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const MyListScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['myList']>
 > = ({ route }) => {
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
   const { data: myList, ejected } = useMyList();
   const data = useSelector(digitalEventsForMyListScreenSelector(myList));
+  const { itemIndex } = FocusManager.getFocusPosition({
+    searchingCB: FocusManager.searchingCBForList,
+    eventId: route.params?.eventId || null,
+    data,
+    moveToMenuItem: () => {
+      navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
+        hasTVPreferredFocus: true,
+      });
+    },
+  });
   const listRef = useRef<FlatList>(null);
-  const itemRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  const selectedIndex = data.findIndex(
-    event => route.params?.eventId === event.id,
-  );
+
   useLayoutEffect(() => {
-    if (selectedIndex !== -1 && ejected) {
+    if (itemIndex !== -1 && ejected) {
       listRef?.current?.scrollToIndex?.({
         animated: false,
         index: Math.floor(
-          (selectedIndex === -1 ? 0 : selectedIndex) / countOfItemsPeerRail,
+          (itemIndex === -1 ? 0 : itemIndex) / countOfItemsPeerRail,
         ),
       });
     }
-  }, [route, data.length, ejected, selectedIndex]);
+  }, [data.length, ejected, itemIndex]);
 
   return (
     <View style={styles.root}>
@@ -64,13 +77,8 @@ const MyListScreen: React.FC<
             numColumns={countOfItemsPeerRail}
             renderItem={({ item, index }) => (
               <DigitalEventItem
-                ref={itemRef}
                 screenNameFrom={route.name}
-                hasTVPreferredFocus={
-                  !route.params?.eventId
-                    ? false
-                    : (selectedIndex === -1 ? 0 : selectedIndex) === index
-                }
+                hasTVPreferredFocus={index === itemIndex}
                 event={item}
                 canMoveUp={index >= countOfItemsPeerRail}
                 canMoveRight={

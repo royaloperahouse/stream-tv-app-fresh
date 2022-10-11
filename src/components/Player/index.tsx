@@ -205,8 +205,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   const onReady: TCallbackFunc = useCallback(data => {
     const payload: TOnReadyPayload = data.nativeEvent;
-    console.log(payload.availableVideoQualities, 'availableVideoQualities');
-    console.log(payload.selectedVideoQuality, 'selectedVideoQuality');
     const initDuration = parseFloat(payload?.duration);
     if (
       Array.isArray(payload?.subtitles) &&
@@ -227,8 +225,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   const onVideoPlaybackQualityChanged: TCallbackFunc = useCallback(
     (event: TOnVideoPlaybackQualityChanged) => {
-      console.log(event.oldVideoPlaybackQuality, 'oldVideoPlaybackQuality');
-      console.log(event.newVideoPlaybackQuality, 'newVideoPlaybackQuality');
       if (event.newVideoPlaybackQuality && showVideoInfo) {
         const { id, label, codec, bitrate, frameRate, width, height } =
           event.newVideoPlaybackQuality;

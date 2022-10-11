@@ -105,8 +105,7 @@ export abstract class FocusManager {
       FocusManager.switchOffFirstLounch();
       moveToMenuItem();
     }
-    console.log(FocusManager.getFirstLounch(), 'firstLounch');
-    console.log(data.length, eventId, sectionIndex, itemIndex, ' focusParams');
+
     if (data.length && FocusManager.getFirstLounch()) {
       return initFocusPosition;
     }
@@ -118,6 +117,7 @@ export abstract class FocusManager {
     ) {
       return { sectionIndex: -1, itemIndex: -1 };
     }
+    return initFocusPosition;
     if (
       data[sectionIndex] !== undefined &&
       data[sectionIndex].data[itemIndex] !== undefined &&
@@ -159,6 +159,33 @@ export abstract class FocusManager {
       }
     }
     return initFocusPosition;
+  }
+
+  static searchingCBForList({
+    eventId,
+    data,
+    moveToMenuItem = () => {},
+  }: {
+    eventId: string | null;
+    initFocusPosition: { itemIndex: number };
+    itemIndex?: number;
+    data: Array<TEventContainer>;
+    moveToMenuItem?: () => void;
+  }): {
+    itemIndex: number;
+    sectionIndex: number;
+  } {
+    if (!data.length && eventId) {
+      moveToMenuItem();
+    }
+    if (!data.length || !eventId) {
+      return { itemIndex: -1, sectionIndex: 0 };
+    }
+
+    const foundIndex = data.findIndex(
+      (item: TEventContainer) => item.id === eventId,
+    );
+    return { itemIndex: foundIndex === -1 ? 0 : foundIndex, sectionIndex: 0 };
   }
 
   private static firstLounchStateChangingEventLoop() {

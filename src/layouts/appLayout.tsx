@@ -37,7 +37,6 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
   const hasQRCode = useFeature('hasQRCode');
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
-      console.log(nextAppState, isAuthenticated);
       if (
         appState.current.match(/inactive|background/) &&
         nextAppState === 'active' &&

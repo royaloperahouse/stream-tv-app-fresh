@@ -24,6 +24,7 @@ import { navMenuManager } from '@components/NavMenu';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import { contentScreenNames } from '@configs/screensConfig';
 import type { TContentScreensProps } from '@configs/screensConfig';
+import { FocusManager } from '@services/focusService/focusManager';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -67,6 +68,11 @@ const SearchResult: React.FC<TSearchResultProps> = ({
     onUnMountAllToSearchResultTransition?.();
     digitalEventDetailsLength.current = digitalEventDetails.length;
   }
+  const { itemIndex } = FocusManager.getFocusPosition({
+    searchingCB: FocusManager.searchingCBForList,
+    eventId: route.params?.eventId || null,
+    data: digitalEventDetails,
+  });
   return (
     <FlatList
       ref={resultListRef}
@@ -101,10 +107,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           canMoveDown={index !== digitalEventDetails.length - 1}
           screenNameFrom={route.name}
           sectionIndex={index}
-          hasTVPreferredFocus={Boolean(
-            route.params?.eventId &&
-              (selectedIndex === -1 ? 0 : selectedIndex) === index,
-          )}
+          hasTVPreferredFocus={index === itemIndex}
           onMountToSearchResultTransition={onMountToSearchResultTransition}
         />
       )}

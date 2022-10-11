@@ -44,11 +44,16 @@ import type {
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
 > = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
   const appState = useRef(AppState.currentState);
   let focusPosition: {
     sectionIndex: number;
@@ -113,7 +118,11 @@ const HomePageScreen: React.FC<
       searchingCB: FocusManager.searchingCBForRails,
       sectionIndex: route.params?.sectionIndex,
       itemIndex: route.params?.selectedItemIndex,
-      moveToMenuItem: () => {},
+      moveToMenuItem: () => {
+        navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+      },
     });
   }
   if (
@@ -138,7 +147,7 @@ const HomePageScreen: React.FC<
             <RailSections
               containerStyle={styles.railContainerStyle}
               headerContainerStyle={styles.railHeaderContainerStyle}
-              sectionIndex={route?.params?.sectionIndex || 0}
+              sectionIndex={0}
               railStyle={styles.railStyle}
               sections={data}
               sectionKeyExtractor={item => item.sectionIndex?.toString()}
@@ -175,7 +184,7 @@ const HomePageScreen: React.FC<
                   lastItem={index === section.data.length - 1}
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
-                  selectedItemIndex={index}
+                  selectedItemIndex={0}
                   canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
                   canMoveUp={!isFirstRail}
                   setFirstItemFocusable={
