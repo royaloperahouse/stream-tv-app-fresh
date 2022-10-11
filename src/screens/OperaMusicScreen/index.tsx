@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useContext } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForOperaAndMusicSelector } from '@services/store/events/Selectors';
@@ -24,6 +24,9 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { FocusManager } from '@services/focusService/focusManager';
+import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
+import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 
 const OperaMusicScreen: React.FC<
   TContentScreensProps<
@@ -33,24 +36,34 @@ const OperaMusicScreen: React.FC<
   const { data, eventsLoaded } = useSelector(
     digitalEventsForOperaAndMusicSelector,
   );
+  let focusPosition: {
+    sectionIndex: number;
+    itemIndex: number;
+  } = {
+    sectionIndex: -1,
+    itemIndex: -1,
+  };
+  const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
+    NavMenuNodesRefsContext,
+  );
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-  const sectionIndexAvailable = data
-    .find(section => section.sectionIndex === route.params?.sectionIndex)
-    ?.data.some(event => event.id === route.params?.eventId);
 
-  const hasTVPreferredFocus = (
-    isFirstRail: boolean,
-    index: number,
-    sectionIndex: number,
-  ) => {
-    return !route.params?.eventId
-      ? false
-      : !sectionIndexAvailable
-      ? isFirstRail && index === 0
-      : route.params?.sectionIndex === sectionIndex && index === 0;
-  };
+  if (eventsLoaded) {
+    focusPosition = FocusManager.getFocusPosition({
+      eventId: route.params?.eventId || null,
+      data,
+      searchingCB: FocusManager.searchingCBForRails,
+      sectionIndex: route.params?.sectionIndex,
+      itemIndex: route.params?.selectedItemIndex,
+      moveToMenuItem: () => {
+        navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+      },
+    });
+  }
 
   useLayoutEffect(() => {
     if (
@@ -62,7 +75,7 @@ const OperaMusicScreen: React.FC<
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
     }
   }, [data]);
-  if (!data.length) {
+  if (!data.length || !eventsLoaded) {
     return null;
   }
   return (
@@ -77,7 +90,7 @@ const OperaMusicScreen: React.FC<
           <RailSections
             containerStyle={styles.railContainerStyle}
             headerContainerStyle={styles.railHeaderContainerStyle}
-            sectionIndex={route?.params?.sectionIndex || 0}
+            sectionIndex={0}
             railStyle={styles.railStyle}
             sections={data}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
@@ -101,17 +114,17 @@ const OperaMusicScreen: React.FC<
               <DigitalEventItem
                 screenNameFrom={route.name}
                 event={item}
-                hasTVPreferredFocus={hasTVPreferredFocus(
-                  isFirstRail,
-                  index,
-                  sectionIndex,
-                )}
+                hasTVPreferredFocus={
+                  sectionIndex === focusPosition.sectionIndex &&
+                  index === focusPosition.itemIndex
+                }
                 ref={previewRef}
                 onFocus={scrollToRail}
                 canMoveUp={!isFirstRail}
                 canMoveRight={index !== section.data.length - 1}
                 eventGroupTitle={section.title}
                 sectionIndex={sectionIndex}
+                selectedItemIndex={0}
                 lastItem={index === section.data.length - 1}
                 setRailItemRefCb={setRailItemRefCb}
                 removeRailItemRefCb={removeRailItemRefCb}

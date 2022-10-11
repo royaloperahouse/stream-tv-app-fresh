@@ -16,6 +16,7 @@ import {
   TouchableHighlight,
   findNodeHandle,
   ViewToken,
+  HWEvent,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
@@ -36,6 +37,7 @@ type TRailSectionsProps = {
   sectionsWindowSize?: number;
   railWindowSize?: number;
   sectionIndex?: number;
+  itemIndex?: number;
 };
 
 const RailSections: React.FC<TRailSectionsProps> = props => {
@@ -44,7 +46,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     sections,
     sectionKeyExtractor = data => data.id,
     sectionItemKeyExtractor = data => data.id,
-    sectionsInitialNumber = 2,
+    sectionsInitialNumber = 5,
     sectionItemsInitialNumber = 5,
     railStyle = {},
     renderHeader = _ => null,
@@ -53,13 +55,18 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     railWindowSize = 5,
     renderItem,
     sectionIndex = 0,
+    itemIndex = 0,
   } = props;
   const mountedRef = useRef<boolean>(false);
   const sectionsListRef = useRef<VirtualizedList<any> | null>(null);
   const bottomEndlessScrollRef = useRef<TEndlessScrollRef>(null);
   const scrollToTop = useRef<boolean>(false);
   const scrollToBottom = useRef<boolean>(false);
-  const railItemsListRef = useRef<VirtualizedList<any> | null>(null);
+  const scrollToNecessaryRail = useRef<boolean>(false);
+  const scrollToNecessaryRailItem = useRef<boolean>(false);
+  const railItemsListRef = useRef<{
+    [key: string]: VirtualizedList<any> | null;
+  }>({});
   const railsItemsNodesRef = useRef<{
     [key: string]: string;
   }>({});
@@ -114,16 +121,54 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [],
   );
   const getSectionCount = useCallback(
-    data => (Array.isArray(data) ? data.length : 0),
+    (data: Array<any>) => (Array.isArray(data) ? data.length : 0),
     [],
   );
   const getSectionItemCount = useCallback(
-    data => (Array.isArray(data) ? data.length : 0),
+    (data: Array<any>) => (Array.isArray(data) ? data.length : 0),
     [],
   );
+
+  const scrollToRail = (index: number) => () => {
+    if (
+      sectionsListRef.current &&
+      !scrollToNecessaryRail.current &&
+      !scrollToNecessaryRailItem.current
+    ) {
+      sectionsListRef.current.scrollToIndex({
+        animated: true,
+        index,
+      });
+    }
+  };
+
+  const initScrollToRail = () => {
+    if (sectionsListRef.current) {
+      scrollToNecessaryRail.current = true;
+      sectionsListRef.current.scrollToIndex({
+        animated: false,
+        index: sectionIndex,
+      });
+    }
+  };
+
+  const initScrollToRailItem = useCallback(() => {
+    if (railItemsListRef.current[sectionIndex]) {
+      scrollToNecessaryRailItem.current = true;
+      railItemsListRef.current[sectionIndex]?.scrollToIndex({
+        animated: false,
+        index: itemIndex,
+      });
+    }
+  }, [itemIndex, sectionIndex]);
+
   const viewableItemsChangeHandler = useMemo(
     () =>
       debounce((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+        if (scrollToNecessaryRail.current) {
+          scrollToNecessaryRail.current = false;
+          return;
+        }
         if (scrollToBottom.current || scrollToTop.current) {
           const sectionIndexToScroll = scrollToBottom.current
             ? sections.length - 1
@@ -151,64 +196,72 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       }, 500),
     [sections.length],
   );
-  const scrollToRail = (index: number) => () => {
-    if (sectionsListRef.current) {
-      sectionsListRef.current.scrollToIndex({
-        animated: true,
-        index,
-      });
-    }
-  };
 
-  useFocusEffect(
-    useCallback(() => {
-      mountedRef.current = true;
-      return () => {
-        if (mountedRef && mountedRef.current) {
-          mountedRef.current = false;
-        }
-      };
-    }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      let outerBlur: boolean = true;
-      let outerFocus: boolean = true;
-      const cb = (_: any, eve: any) => {
-        if (eve?.eventType === 'blur' && mountedRef.current) {
-          outerBlur = !(
-            Boolean(railsItemsNodesRef.current[eve.target]) ||
-            bottomEndlessScrollRef.current?.getNode?.() === eve.target
-          );
+  const viewableRailItemsChangeHandler = useMemo(
+    () =>
+      debounce((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
+        if (
+          scrollToNecessaryRailItem.current &&
+          info.viewableItems.some(
+            item => item.index === itemIndex && item.isViewable,
+          )
+        ) {
+          scrollToNecessaryRailItem.current = false;
           return;
         }
-        if (eve?.eventType === 'focus' && mountedRef.current) {
-          outerFocus = !(
-            Boolean(railsItemsNodesRef.current[eve.target]) ||
-            bottomEndlessScrollRef.current?.getNode?.() === eve.target
-          );
-          if ((!outerFocus && outerBlur) || (!outerFocus && !outerBlur)) {
-            bottomEndlessScrollRef.current?.setAccessible?.(true);
-            return;
-          }
-          if ((outerFocus && !outerBlur) || (outerFocus && outerBlur)) {
-            bottomEndlessScrollRef.current?.setAccessible?.(false);
-            return;
-          }
-        }
-      };
-      TVEventManager.addEventListener(cb);
-      return () => {
-        TVEventManager.removeEventListener(cb);
-        outerBlur = true;
-        outerFocus = true;
-        bottomEndlessScrollRef.current?.setAccessible?.(false);
-        scrollToTop.current = false;
-        scrollToBottom.current = false;
-      };
-    }, []),
+      }, 250),
+    [itemIndex],
   );
+
+  useLayoutEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      if (mountedRef && mountedRef.current) {
+        mountedRef.current = false;
+      }
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    initScrollToRail();
+  }, []);
+
+  useLayoutEffect(() => {
+    let outerBlur: boolean = true;
+    let outerFocus: boolean = true;
+    const cb = (eve: HWEvent) => {
+      if (eve?.eventType === 'blur' && mountedRef.current) {
+        outerBlur = !(
+          Boolean(eve.tag && railsItemsNodesRef.current[eve.tag]) ||
+          bottomEndlessScrollRef.current?.getNode?.() === eve.tag
+        );
+        return;
+      }
+      if (eve?.eventType === 'focus' && mountedRef.current) {
+        outerFocus = !(
+          Boolean(eve.tag && railsItemsNodesRef.current[eve.tag]) ||
+          bottomEndlessScrollRef.current?.getNode?.() === eve.tag
+        );
+        if ((!outerFocus && outerBlur) || (!outerFocus && !outerBlur)) {
+          bottomEndlessScrollRef.current?.setAccessible?.(true);
+          return;
+        }
+        if ((outerFocus && !outerBlur) || (outerFocus && outerBlur)) {
+          bottomEndlessScrollRef.current?.setAccessible?.(false);
+          return;
+        }
+      }
+    };
+    TVEventManager.addEventListener(cb);
+    return () => {
+      TVEventManager.removeEventListener(cb);
+      outerBlur = true;
+      outerFocus = true;
+      bottomEndlessScrollRef.current?.setAccessible?.(false);
+      scrollToTop.current = false;
+      scrollToBottom.current = false;
+    };
+  }, []);
   return (
     <View style={[containerStyle]}>
       <VirtualizedList
@@ -218,13 +271,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         initialNumToRender={sectionsInitialNumber}
-        initialScrollIndex={
-          !sections.length
-            ? 0
-            : sectionIndex < sections.length
-            ? sectionIndex
-            : sections.length - 1
-        }
         getItemCount={getSectionCount}
         windowSize={sectionsWindowSize}
         getItem={(data, index) => data[index]}
@@ -232,11 +278,14 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
           wait.then(() => {
             if (
-              !mountedRef ||
               !mountedRef.current ||
               info.index === undefined ||
               !sectionsListRef.current
             ) {
+              return;
+            }
+            if (scrollToNecessaryRail.current) {
+              initScrollToRail();
               return;
             }
             sectionsListRef.current.scrollToIndex({
@@ -255,35 +304,29 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               horizontal
               listKey={sectionItem.sectionIndex?.toString()}
               windowSize={railWindowSize}
-              initialNumToRender={sectionItemsInitialNumber}
               getItem={(data, index) => data[index]}
               data={sectionItem.data}
-              ref={
-                sectionItemIndex === sectionIndex ? railItemsListRef : undefined
-              }
+              ref={component => {
+                railItemsListRef.current[sectionItemIndex] = component;
+              }}
               keyExtractor={(sectionItemForKeyExtracting: any) =>
                 sectionItemKeyExtractor(sectionItemForKeyExtracting)
               }
               onScrollToIndexFailed={info => {
-                const wait = new Promise(resolve => setTimeout(resolve, 1000));
+                const wait = new Promise(resolve => setTimeout(resolve, 500));
                 wait.then(() => {
-                  if (
-                    !mountedRef ||
-                    !mountedRef.current ||
-                    info.index === undefined ||
-                    !railItemsListRef.current
-                  ) {
+                  if (!mountedRef.current) {
                     return;
                   }
-                  railItemsListRef.current.scrollToIndex({
-                    animated: false,
-                    index: info.index,
-                  });
+                  if (scrollToNecessaryRailItem.current) {
+                    initScrollToRailItem();
+                  }
                 });
               }}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               getItemCount={getSectionItemCount}
+              onViewableItemsChanged={viewableRailItemsChangeHandler}
               renderItem={({
                 index: railItemIndexInList,
                 item: railItemInList,
