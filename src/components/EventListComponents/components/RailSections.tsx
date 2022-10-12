@@ -46,13 +46,13 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     sections,
     sectionKeyExtractor = data => data.id,
     sectionItemKeyExtractor = data => data.id,
-    sectionsInitialNumber = 5,
+    sectionsInitialNumber = 2,
     sectionItemsInitialNumber = 5,
     railStyle = {},
     renderHeader = _ => null,
     headerContainerStyle = {},
-    sectionsWindowSize = 2,
-    railWindowSize = 5,
+    sectionsWindowSize = 3,
+    railWindowSize = 10,
     renderItem,
     sectionIndex = 0,
     itemIndex = 0,
@@ -64,6 +64,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const scrollToBottom = useRef<boolean>(false);
   const scrollToNecessaryRail = useRef<boolean>(false);
   const scrollToNecessaryRailItem = useRef<boolean>(false);
+  const prevSectionIndex = useRef<number>(-1);
   const railItemsListRef = useRef<{
     [key: string]: VirtualizedList<any> | null;
   }>({});
@@ -136,7 +137,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       !scrollToNecessaryRailItem.current
     ) {
       sectionsListRef.current.scrollToIndex({
-        animated: true,
+        animated: false,
         index,
       });
     }
@@ -161,6 +162,22 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       });
     }
   }, [itemIndex, sectionIndex]);
+
+  const scrollToRailItem = useCallback(
+    (currentSectionIndex: number, index: number) => {
+      if (
+        railItemsListRef.current[currentSectionIndex] &&
+        currentSectionIndex === prevSectionIndex.current
+      ) {
+        railItemsListRef.current[currentSectionIndex]?.scrollToIndex({
+          animated: true,
+          index,
+        });
+      }
+      prevSectionIndex.current = currentSectionIndex;
+    },
+    [],
+  );
 
   const viewableItemsChangeHandler = useMemo(
     () =>
@@ -271,6 +288,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         initialNumToRender={sectionsInitialNumber}
+        maxToRenderPerBatch={sectionsInitialNumber}
         getItemCount={getSectionCount}
         windowSize={sectionsWindowSize}
         getItem={(data, index) => data[index]}
@@ -289,7 +307,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               return;
             }
             sectionsListRef.current.scrollToIndex({
-              animated: true,
+              animated: false,
               index: info.index,
             });
           });
@@ -305,6 +323,8 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               listKey={sectionItem.sectionIndex?.toString()}
               windowSize={railWindowSize}
               getItem={(data, index) => data[index]}
+              initialNumToRender={sectionItemsInitialNumber}
+              maxToRenderPerBatch={sectionItemsInitialNumber}
               data={sectionItem.data}
               ref={component => {
                 railItemsListRef.current[sectionItemIndex] = component;
@@ -320,7 +340,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   }
                   if (scrollToNecessaryRailItem.current) {
                     initScrollToRailItem();
+                    return;
                   }
+                  railItemsListRef.current[sectionItemIndex]?.scrollToIndex({
+                    animated: false,
+                    index: info.index,
+                  });
                 });
               }}
               showsHorizontalScrollIndicator={false}
@@ -343,6 +368,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   setRailItemRefCb: setRailItemRef,
                   removeRailItemRefCb: removeRailItemRef,
                   hasEndlessScroll: sections.length > 2,
+                  scrollToRailItem,
                 });
               }}
             />

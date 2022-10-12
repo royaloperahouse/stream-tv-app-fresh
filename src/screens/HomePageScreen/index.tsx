@@ -167,6 +167,7 @@ const HomePageScreen: React.FC<
                 setRailItemRefCb,
                 removeRailItemRefCb,
                 hasEndlessScroll,
+                scrollToRailItem,
               }) => (
                 <DigitalEventItem
                   event={item}
@@ -184,7 +185,7 @@ const HomePageScreen: React.FC<
                   lastItem={index === section.data.length - 1}
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
-                  selectedItemIndex={0}
+                  selectedItemIndex={index}
                   canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
                   canMoveUp={!isFirstRail}
                   setFirstItemFocusable={
@@ -193,6 +194,7 @@ const HomePageScreen: React.FC<
                           ?.setDefaultRedirectFromNavMenu
                       : undefined
                   }
+                  scrollToRailItem={scrollToRailItem}
                 />
               )}
             />
