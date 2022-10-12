@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
   previewImage: {
     width: scaleSize(975),
     height: scaleSize(600),
+    backgroundColor: Colors.defaultBlue,
     zIndex: 0,
   },
 });

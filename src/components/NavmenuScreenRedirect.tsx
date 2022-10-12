@@ -173,6 +173,15 @@ export const NavMenuScreenRedirect = forwardRef<
 
   useLayoutEffect(() => {
     const cb = (event: HWEvent) => {
+      console.log('eventType', event.eventType);
+      if (event.eventType === 'select') {
+        (redirectToContent?.[0] as any)?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+
+        return;
+      }
+
       if (
         event.tag === findNodeHandle(navMenuRef.current) &&
         event.eventType === 'right' &&

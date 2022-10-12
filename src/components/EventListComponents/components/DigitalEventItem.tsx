@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
     width: scaleSize(357),
     height: scaleSize(200),
     zIndex: 0,
+    backgroundColor: Colors.defaultBlue,
   },
 });
 

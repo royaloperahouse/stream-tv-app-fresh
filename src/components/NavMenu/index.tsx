@@ -377,7 +377,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               navMenuTitle={item.navMenuTitle}
               onFocus={setMenuFocus}
               isLastItem={index === navMenuConfig.length - 1}
-              setMunuItemRef={setButtonRef}
+              setMenuItemRef={setButtonRef}
               labelOpacityWorklet={labelOpacityWorklet}
               iconOpacityWorklet={iconOpacityWorklet}
               accessibleWorklet={navMenuWidth}

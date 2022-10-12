@@ -24,7 +24,7 @@ type TNavMenuItemProps = {
   onFocus: (id: TRoute['navMenuScreenName']) => void;
   isLastItem: boolean;
   labelOpacityWorklet: Readonly<Animated.SharedValue<1 | 0>>;
-  setMunuItemRef: (
+  setMenuItemRef: (
     id: TRoute['navMenuScreenName'],
     ref: React.RefObject<TouchableHighlight>,
     isLast?: boolean,
@@ -44,7 +44,7 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
   onFocus,
   isLastItem,
   labelOpacityWorklet,
-  setMunuItemRef,
+  setMenuItemRef,
   accessibleWorklet,
   iconOpacityWorklet,
   nextFocusDown,
@@ -96,8 +96,8 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
     [accessibleWorklet.value],
   );
   useLayoutEffect(() => {
-    setMunuItemRef(id, touchRef, isLastItem);
-  }, [setMunuItemRef, id, isLastItem]);
+    setMenuItemRef(id, touchRef, isLastItem);
+  }, [setMenuItemRef, id, isLastItem]);
   return (
     <NavMenuButtonAnimated
       animatedProps={accessibleAnimatedProps}
