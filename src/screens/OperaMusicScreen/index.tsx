@@ -110,6 +110,7 @@ const OperaMusicScreen: React.FC<
               setRailItemRefCb,
               removeRailItemRefCb,
               hasEndlessScroll,
+              scrollToRailItem,
             }) => (
               <DigitalEventItem
                 screenNameFrom={route.name}
@@ -124,7 +125,7 @@ const OperaMusicScreen: React.FC<
                 canMoveRight={index !== section.data.length - 1}
                 eventGroupTitle={section.title}
                 sectionIndex={sectionIndex}
-                selectedItemIndex={0}
+                selectedItemIndex={index}
                 lastItem={index === section.data.length - 1}
                 setRailItemRefCb={setRailItemRefCb}
                 removeRailItemRefCb={removeRailItemRefCb}
@@ -135,6 +136,7 @@ const OperaMusicScreen: React.FC<
                         ?.setDefaultRedirectFromNavMenu
                     : undefined
                 }
+                scrollToRailItem={scrollToRailItem}
               />
             )}
           />

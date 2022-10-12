@@ -56,6 +56,8 @@ type DigitalEventItemProps = {
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
   nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
+  scrollToRailItem?: (sectionIndex: number, itemIndex: number) => void;
+  accessible?: boolean;
 };
 
 const firstFocusItenKey = 'firstFocusItenKey';
@@ -77,6 +79,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setRailItemRefCb = () => {},
       removeRailItemRefCb = () => {},
       setFirstItemFocusable,
+      scrollToRailItem = () => {},
+      accessible,
     },
     ref: any,
   ) => {
@@ -87,6 +91,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
+    const timeoutId = useRef<NodeJS.Timeout | null>(null);
     const snapshotImageUrl: string = get(
       event.data,
       ['vs_event_image', 'wide_event_image', 'url'],
@@ -105,6 +110,10 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     useLayoutEffect(() => {
       isMounted.current = true;
       return () => {
+        if (timeoutId.current) {
+          clearTimeout(timeoutId.current);
+          timeoutId.current = null;
+        }
         isMounted.current = false;
       };
     }, []);
@@ -118,22 +127,25 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         selectedItemIndex,
       });
     };
-
     const onFocusHandler = () => {
-      if (isMounted.current) {
-        setFocused(true);
-      }
-      FocusManager.switchOffFirstLounch();
-      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
-        setFirstItemFocusable(
-          firstFocusItenKey,
-          touchableRef.current?.getRef?.().current,
-        );
-      }
-      ref?.current?.setDigitalEvent(event, eventGroupTitle);
-      if (typeof onFocus === 'function') {
-        onFocus(touchableRef.current?.getRef?.().current);
-      }
+      timeoutId.current = setTimeout(() => {
+        timeoutId.current = null;
+        if (isMounted.current) {
+          setFocused(true);
+        }
+        FocusManager.switchOffFirstLounch();
+        scrollToRailItem(sectionIndex, selectedItemIndex || 0);
+        if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+          setFirstItemFocusable(
+            firstFocusItenKey,
+            touchableRef.current?.getRef?.().current,
+          );
+        }
+        ref?.current?.setDigitalEvent(event, eventGroupTitle);
+        if (typeof onFocus === 'function') {
+          onFocus(touchableRef.current?.getRef?.().current);
+        }
+      }, 100);
     };
 
     useLayoutEffect(() => {
@@ -169,11 +181,17 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveRight={canMoveRight}
         style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
+          if (timeoutId.current) {
+            clearTimeout(timeoutId.current);
+            timeoutId.current = null;
+            return;
+          }
           if (isMounted.current) {
             setFocused(false);
           }
         }}
         onFocus={onFocusHandler}
+        accessible={accessible}
         onPress={onPressHandler}>
         <View style={styles.container}>
           <View
