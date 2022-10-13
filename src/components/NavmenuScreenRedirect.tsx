@@ -153,9 +153,9 @@ export const NavMenuScreenRedirect = forwardRef<
           })
           .map(([_, value]) => value);
   /*
-  !can be used not only to navigate between nav menu and content screen
-
- */
+    !can be used not only to navigate between nav menu and content screen
+  
+   */
   const redirectFromContent = navMenuNodesRefs?.[screenName]?.current
     ? [navMenuNodesRefs[screenName].current]
     : Object.values(difaultRedirectToNavMenu).length === 0
@@ -173,12 +173,15 @@ export const NavMenuScreenRedirect = forwardRef<
 
   useLayoutEffect(() => {
     const cb = (event: HWEvent) => {
-      console.log('eventType', event.eventType);
-      if (event.eventType === 'select') {
+      if (
+        event.eventType === 'select' &&
+        Object.values(navMenuNodesRefs).some(
+          item => findNodeHandle(item.current) === event.tag,
+        )
+      ) {
         (redirectToContent?.[0] as any)?.setNativeProps({
           hasTVPreferredFocus: true,
         });
-
         return;
       }
 
