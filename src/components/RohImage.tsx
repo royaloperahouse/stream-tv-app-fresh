@@ -3,11 +3,13 @@ import FastImage, { ResizeMode } from 'react-native-fast-image';
 import PlaceholderLandscape from '../assets/image-placeholder-landscape.svg';
 import PlaceholderPortrait from '../assets/image-placeholder-portrait.svg';
 import { StyleSheet, View } from 'react-native';
+import { Colors } from 'themes/Styleguide';
 
 type TRohImageProps = {
   resizeMode: ResizeMode;
   style: any;
   source: string;
+  focused: boolean;
   isPortrait?: boolean;
 };
 
@@ -15,6 +17,7 @@ const RohImage: FC<TRohImageProps> = ({
   resizeMode,
   style,
   source,
+  focused,
   isPortrait = false,
 }) => {
   const [isError, setIsError] = useState<boolean>(false);
@@ -38,7 +41,11 @@ const RohImage: FC<TRohImageProps> = ({
 
       <FastImage
         resizeMode={resizeMode}
-        style={[style, styles.container]}
+        style={[
+          style,
+          styles.container,
+          focused ? { backgroundColor: Colors.defaultBlue } : {},
+        ]}
         source={{
           uri: source,
         }}
