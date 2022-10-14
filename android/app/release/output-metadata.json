@@ -11,13 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-<<<<<<< HEAD
       "versionCode": 46,
       "versionName": "2.2.1",
-=======
-      "versionCode": 29,
-      "versionName": "2.0.2",
->>>>>>> add logic related to fetching data from prismic
       "outputFile": "app-release.apk"
     }
   ],
