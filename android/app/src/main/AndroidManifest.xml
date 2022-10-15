@@ -1,9 +1,8 @@
-q<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.rohtvapp">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.rohtvapp">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.software.leanback"
-                  android:required="true" />
+                android:required="true" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application
             android:name=".MainApplication"

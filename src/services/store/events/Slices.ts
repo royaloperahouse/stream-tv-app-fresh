@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { TEventContainer } from '@services/types/models';
+import { TEventContainer, TStreamHomePageRail } from '@services/types/models';
 
 interface EventsState {
   allDigitalEventsDetail: { [key: string]: TEventContainer };
@@ -10,6 +10,13 @@ interface EventsState {
   ppvEventsIds: Array<string>;
   availablePPVEventsIds: Array<string>;
   availablePPVEventsDateOfUpdate: string | null;
+  showOnlyVisisbleEvents: boolean;
+  exploreAllTrays: Array<TStreamHomePageRail>;
+  operaAndMusicTopTrays: Array<TStreamHomePageRail>;
+  operaAndMusicBottomTrays: Array<TStreamHomePageRail>;
+  balletAndDanceTopTrays: Array<TStreamHomePageRail>;
+  balletAndDanceBottomTrays: Array<TStreamHomePageRail>;
+  propositionPageElements: Array<TStreamHomePageRail>;
 }
 
 const initialState: EventsState = {
@@ -20,6 +27,13 @@ const initialState: EventsState = {
   ppvEventsIds: [],
   availablePPVEventsIds: [],
   availablePPVEventsDateOfUpdate: null,
+  showOnlyVisisbleEvents: true,
+  exploreAllTrays: [],
+  operaAndMusicTopTrays: [],
+  operaAndMusicBottomTrays: [],
+  balletAndDanceTopTrays: [],
+  balletAndDanceBottomTrays: [],
+  propositionPageElements: [],
 };
 const eventsSlice = createSlice({
   name: 'events',
@@ -32,34 +46,33 @@ const eventsSlice = createSlice({
         digitalEventDetailsList: {
           allDigitalEventsDetail: EventsState['allDigitalEventsDetail'];
           eventGroups: EventsState['eventGroups'];
+          exploreAllTrays: EventsState['exploreAllTrays'];
+          operaAndMusicTopTrays: EventsState['operaAndMusicTopTrays'];
+          operaAndMusicBottomTrays: EventsState['operaAndMusicBottomTrays'];
+          balletAndDanceTopTrays: EventsState['balletAndDanceTopTrays'];
+          balletAndDanceBottomTrays: EventsState['balletAndDanceBottomTrays'];
+          propositionPageElements: EventsState['propositionPageElements'];
         };
       }>,
     ) => {
       const { payload } = action;
       state.allDigitalEventsDetail =
         payload.digitalEventDetailsList.allDigitalEventsDetail;
+      state.exploreAllTrays = payload.digitalEventDetailsList.exploreAllTrays;
+      state.balletAndDanceTopTrays =
+        payload.digitalEventDetailsList.balletAndDanceTopTrays;
+      state.propositionPageElements =
+        payload.digitalEventDetailsList.propositionPageElements;
+      state.balletAndDanceBottomTrays =
+        payload.digitalEventDetailsList.balletAndDanceBottomTrays;
+      state.operaAndMusicTopTrays =
+        payload.digitalEventDetailsList.operaAndMusicTopTrays;
+      state.operaAndMusicBottomTrays =
+        payload.digitalEventDetailsList.operaAndMusicBottomTrays;
       state.eventGroups = payload.digitalEventDetailsList.eventGroups;
       state.eventsLoaded = true;
     },
     getEventListLoopStop: state => state,
-
-    getPrismicisedRailsLoopStart: state => state,
-    getPrismicisedRailsSuccess: (
-      state,
-      action: PayloadAction<{
-        prismicisedRails: {
-          allDigitalEventsDetail: EventsState['allDigitalEventsDetail'];
-          eventGroups: EventsState['eventGroups'];
-        };
-      }>,
-    ) => {
-      const { payload } = action;
-      state.allDigitalEventsDetail =
-        payload.prismicisedRails.allDigitalEventsDetail;
-      state.eventGroups = payload.prismicisedRails.eventGroups;
-      state.eventsLoaded = true;
-    },
-    getPrismicisedRailsLoopStop: state => state,
     setSearchQuery: (
       state,
       action: PayloadAction<{ searchQuery: EventsState['searchQueryString'] }>,
@@ -128,6 +141,9 @@ const eventsSlice = createSlice({
       state.availablePPVEventsDateOfUpdate =
         initialState.availablePPVEventsDateOfUpdate;
     },
+    toggleShowOnlyVisisbleEvents: state => {
+      state.showOnlyVisisbleEvents = !state.showOnlyVisisbleEvents;
+    },
     clearEventState: () => ({ ...initialState }),
   },
 });
@@ -145,11 +161,9 @@ export const {
   clearPPVEventsIds,
   setAvailablePPVEventsIds,
   clearAvailablePPVEventsIds,
-  getPrismicisedRailsLoopStart,
-  getPrismicisedRailsSuccess,
-  getPrismicisedRailsLoopStop,
   setAvailablePPVEventsDateOfUpdate,
   clearAvailablePPVEventsDateOfUpdate,
+  toggleShowOnlyVisisbleEvents,
 } = eventsSlice.actions;
 
 export const { reducer, name } = eventsSlice;

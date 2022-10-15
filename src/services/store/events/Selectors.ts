@@ -14,7 +14,7 @@ import get from 'lodash.get';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
 import { removeItemsFromSavedPositionListByEventIds } from '@services/bitMovinPlayer';
 import difference from 'lodash.difference';
-import { includes } from 'lodash';
+import includes from 'lodash.includes';
 import type { TRootState } from '../index';
 
 export const digitalEventDetailsSearchSelector = (
@@ -37,6 +37,45 @@ export const digitalEventsForHomePageSelector =
       title: string;
       ids: Array<string>;
     }>(store.events.eventGroups).filter(([key]) => key in homePageWhiteList);
+    const exploreAllTrays: Array<
+      [string, { title: string; ids: Array<string> }]
+    > = [];
+    for (let i = 0; i < store.events.exploreAllTrays.length; i++) {
+      if (
+        store.events.showOnlyVisisbleEvents &&
+        store.events.exploreAllTrays[i].isVisible === false
+      ) {
+        continue;
+      }
+      exploreAllTrays.push([
+        '',
+        {
+          title: store.events.exploreAllTrays[i].title || '',
+          ids: store.events.exploreAllTrays[i].ids,
+        },
+      ]);
+    }
+    const propositionPageElements: Array<
+      [string, { title: string; ids: Array<string> }]
+    > = [];
+    for (let i = 0; i < store.events.propositionPageElements.length; i++) {
+      if (
+        store.events.showOnlyVisisbleEvents &&
+        store.events.propositionPageElements[i].isVisible === false
+      ) {
+        continue;
+      }
+      propositionPageElements.push([
+        '',
+        {
+          title: store.events.propositionPageElements[i].title || '',
+          ids: store.events.propositionPageElements[i].ids,
+        },
+      ]);
+    }
+    eventGroupsArray.unshift(...exploreAllTrays);
+    eventGroupsArray.unshift(...propositionPageElements);
+
     const arrayOfIdsForRemoveFromMyList: Array<string> = [];
     const arrayOfIdsForRemoveFromContinueWatchingList: Array<string> = [];
     if (eventGroupsArray.length) {
@@ -126,13 +165,41 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
   }>(store.events.eventGroups).filter(
     ([key]) => key in balletAndDanceWhiteList,
   );
-  let sectionIndex = 0;
+
+  const balletAndDanceTopTrays: Array<{
+    sectionIndex: number;
+    title: string;
+    data: Array<TEventContainer>;
+  }> = [];
+  for (let i = 0, j = 0; i < store.events.balletAndDanceTopTrays.length; i++) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.balletAndDanceTopTrays[i].isVisible === false
+    ) {
+      continue;
+    }
+    balletAndDanceTopTrays.push({
+      title: store.events.balletAndDanceTopTrays[i].title || '',
+      data: store.events.balletAndDanceTopTrays[i].ids.reduce(
+        (acc: Array<TEventContainer>, id) => {
+          if (id in store.events.allDigitalEventsDetail) {
+            acc.push(store.events.allDigitalEventsDetail[id]);
+          }
+          return acc;
+        },
+        [],
+      ),
+      sectionIndex: j++,
+    });
+  }
+
+  let sectionIndex = balletAndDanceTopTrays.length;
   const eventsWithoutSubtags: {
     sectionIndex: number;
     title: string;
     data: Array<TEventContainer>;
   } = {
-    sectionIndex: 0,
+    sectionIndex,
     title: '',
     data: [],
   };
@@ -184,9 +251,46 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
     }
     return acc;
   }, {});
+
+  const balletAndDanceBottomTrays: Array<{
+    sectionIndex: number;
+    title: string;
+    data: Array<TEventContainer>;
+  }> = [];
+  for (
+    let i = 0,
+      j = !eventsWithoutSubtags.data.length ? sectionIndex : sectionIndex + 1;
+    i < store.events.balletAndDanceBottomTrays.length;
+    i++
+  ) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.balletAndDanceBottomTrays[i].isVisible === false
+    ) {
+      continue;
+    }
+    balletAndDanceBottomTrays.push({
+      title: store.events.balletAndDanceBottomTrays[i].title || '',
+      data: store.events.balletAndDanceBottomTrays[i].ids.reduce(
+        (acc: Array<TEventContainer>, id) => {
+          if (id in store.events.allDigitalEventsDetail) {
+            acc.push(store.events.allDigitalEventsDetail[id]);
+          }
+          return acc;
+        },
+        [],
+      ),
+      sectionIndex: ++j,
+    });
+  }
+
   if (!eventsWithoutSubtags.data.length) {
     return {
-      data: Object.values(eventSections),
+      data: [
+        ...balletAndDanceTopTrays,
+        ...Object.values(eventSections),
+        ...balletAndDanceBottomTrays,
+      ],
       eventsLoaded: store.events.eventsLoaded,
     };
   }
@@ -194,8 +298,15 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
     ...eventSection,
     sectionIndex: ++eventSection.sectionIndex,
   }));
-  sections.unshift(eventsWithoutSubtags);
-  return { data: sections, eventsLoaded: store.events.eventsLoaded };
+  return {
+    data: [
+      ...balletAndDanceTopTrays,
+      eventsWithoutSubtags,
+      ...sections,
+      ...balletAndDanceBottomTrays,
+    ],
+    eventsLoaded: store.events.eventsLoaded,
+  };
 };
 
 export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
@@ -203,13 +314,41 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     title: string;
     ids: Array<string>;
   }>(store.events.eventGroups).filter(([key]) => key in operaAndMusicWhiteList);
-  let sectionIndex = 0;
+
+  const operaAndMusicTopTrays: Array<{
+    sectionIndex: number;
+    title: string;
+    data: Array<TEventContainer>;
+  }> = [];
+  for (let i = 0, j = 0; i < store.events.operaAndMusicTopTrays.length; i++) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.operaAndMusicTopTrays[i].isVisible === false
+    ) {
+      continue;
+    }
+    operaAndMusicTopTrays.push({
+      title: store.events.operaAndMusicTopTrays[i].title || '',
+      data: store.events.operaAndMusicTopTrays[i].ids.reduce(
+        (acc: Array<TEventContainer>, id) => {
+          if (id in store.events.allDigitalEventsDetail) {
+            acc.push(store.events.allDigitalEventsDetail[id]);
+          }
+          return acc;
+        },
+        [],
+      ),
+      sectionIndex: j++,
+    });
+  }
+
+  let sectionIndex = operaAndMusicTopTrays.length;
   const eventsWithoutSubtags: {
     sectionIndex: number;
     title: string;
     data: Array<TEventContainer>;
   } = {
-    sectionIndex: 0,
+    sectionIndex,
     title: '',
     data: [],
   };
@@ -263,9 +402,45 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     return acc;
   }, {});
 
+  const operaAndMusicBottomTrays: Array<{
+    sectionIndex: number;
+    title: string;
+    data: Array<TEventContainer>;
+  }> = [];
+  for (
+    let i = 0,
+      j = !eventsWithoutSubtags.data.length ? sectionIndex : sectionIndex + 1;
+    i < store.events.operaAndMusicBottomTrays.length;
+    i++
+  ) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.operaAndMusicBottomTrays[i].isVisible === false
+    ) {
+      continue;
+    }
+    operaAndMusicBottomTrays.push({
+      title: store.events.operaAndMusicBottomTrays[i].title || '',
+      data: store.events.operaAndMusicBottomTrays[i].ids.reduce(
+        (acc: Array<TEventContainer>, id) => {
+          if (id in store.events.allDigitalEventsDetail) {
+            acc.push(store.events.allDigitalEventsDetail[id]);
+          }
+          return acc;
+        },
+        [],
+      ),
+      sectionIndex: ++j,
+    });
+  }
+
   if (!eventsWithoutSubtags.data.length) {
     return {
-      data: Object.values(eventSections),
+      data: [
+        ...operaAndMusicTopTrays,
+        ...Object.values(eventSections),
+        ...operaAndMusicBottomTrays,
+      ],
       eventsLoaded: store.events.eventsLoaded,
     };
   }
@@ -273,8 +448,17 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     ...eventSection,
     sectionIndex: ++eventSection.sectionIndex,
   }));
-  sections.unshift(eventsWithoutSubtags);
-  return { data: sections, eventsLoaded: store.events.eventsLoaded };
+
+  console.log(eventsWithoutSubtags.data.length)
+  return {
+    data: [
+      ...operaAndMusicTopTrays,
+      eventsWithoutSubtags,
+      ...sections,
+      ...operaAndMusicBottomTrays,
+    ],
+    eventsLoaded: store.events.eventsLoaded,
+  };
 };
 
 export const ppvEventsIdsSelector = (store: TRootState) =>
@@ -291,3 +475,6 @@ export const getEventById = (eventId: string) => (store: TRootState) => ({
   lastPublicationDate:
     store.events.allDigitalEventsDetail[eventId]?.last_publication_date || '',
 });
+
+export const showOnlyVisisbleEventsSelector = (store: TRootState) =>
+  store.events.showOnlyVisisbleEvents;
