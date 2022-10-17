@@ -65,12 +65,12 @@ const HomePageScreen: React.FC<
   const { data: myList, ejected: myListEjected } = useMyList();
   const { data: continueWatchingList, ejected: continueWatchingListEjected } =
     useContinueWatchingList();
+
   const { data, eventsLoaded } = useAppSelector(
     digitalEventsForHomePageSelector(myList, continueWatchingList),
   );
   const previewRef = useRef(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (

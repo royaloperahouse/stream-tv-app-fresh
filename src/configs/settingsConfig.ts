@@ -5,6 +5,7 @@ import {
   SwitchingBetweenEnvironments,
   Subscription,
   VideoPlayerSettings,
+  ShowTrayEvents,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
 import type {
@@ -14,6 +15,7 @@ import type {
   TSwitchingBetweenEnvironmentsProps,
   TSwitchSubscriptionMode,
   TVideoPlayerSettingsProps,
+  TShowTrayEventsProps,
 } from '@components/SettingsComponents';
 export const settingsTitle = 'SETTINGS';
 
@@ -69,6 +71,12 @@ export const getSettingsSectionsConfig: () => {
       key: 'switchingBetweenEnv',
       navMenuItemTitle: 'ENVIRONMENT SWITCHING',
       ContentComponent: SwitchingBetweenEnvironments,
+    };
+
+    settingsSections.showTrayEvents = {
+      key: 'showTrayEvents',
+      navMenuItemTitle: 'SHOWING TRAYS',
+      ContentComponent: ShowTrayEvents,
     };
   }
   return settingsSections;

@@ -330,3 +330,111 @@ export type TVSSponsor = {
   };
   sponsor_description: Array<{ type: string; text: string; spans: Array<any> }>;
 };
+
+export type TStreamHomePageData = {
+  header_image: {
+    dimensions: {
+      width: number;
+      height: number;
+    };
+    alt: string | null;
+    copyright: string | null;
+    url: string;
+  };
+  title: string;
+  sub_title: Array<{
+    type: 'paragraph';
+    text: string;
+    spans: Array<any>;
+  }>;
+  banner_text: Array<{
+    type: 'paragraph';
+    text: string;
+    spans: Array<any>;
+  }>;
+  above_button_text: Array<{
+    type: 'paragraph';
+    text: string;
+    spans: Array<any>;
+  }>;
+  cta_text: string;
+  cta_link: string;
+  show_sponsor_logo: boolean;
+  help_title: string;
+  help_text: Array<{
+    type: 'paragraph';
+    text: string;
+    spans: Array<any>;
+  }>;
+  help_cta_text: string;
+  help_cta_link: string;
+  proposition_page_elements: Array<TStreamHomePageElement>;
+  explore_all_elements: Array<TStreamHomePageElement>;
+  opera_and_music_section_title: null | string;
+  opera_and_music_section_standfirst: null | string;
+  opera_and_music_section_grid_title: null | string;
+  opera_and_music_top_elements: Array<TStreamHomePageElement>;
+  opera_and_music_bottom_elements: Array<TStreamHomePageElement>;
+  ballet_and_dance_section_title: string | null;
+  ballet_and_dance_section_standfirst: string | null;
+  ballet_and_dance_section_grid_title: string | null;
+  ballet_and_dance_top_elements: Array<TStreamHomePageElement>;
+  ballet_and_dance_bottom_elements: Array<TStreamHomePageElement>;
+  meta_title_unsubscribed_view: string | null;
+  meta_description_unsubscribed_view: string | null;
+  meta_title_subscribed_view: string | null;
+  meta_description_subscribed_view: string | null;
+};
+
+export type TStreamHomePageRail = {
+  title: string | null;
+  isVisible: boolean;
+  ids: Array<string>;
+};
+
+export type TStreamHomePageElement = {
+  primary:
+    | {
+        block_title: Array<TelementBlock>;
+        block_text: Array<TelementBlock>;
+        cta_text: string;
+        cta_link: string;
+      }
+    | {
+        sticky_bar_title: Array<TelementBlock>;
+        sticky_bar_link: string;
+      }
+    | {
+        title: string;
+        tray_type: 'Small';
+        show_tray: boolean;
+      };
+  items: Array<{
+    element: TPageElementItem;
+  }>;
+  id: string;
+  slice_type:
+    | 'proposition_page_information_block'
+    | 'events_tray'
+    | 'proposition_page_sticky_bar';
+  slice_label: string | null;
+};
+
+type TelementBlock = {
+  type: 'heading1' | 'paragraph';
+  text: string;
+  spans: Array<any>;
+};
+
+type TPageElementItem = {
+  id: string;
+  type: 'digital_event_details' | 'digital_event_video';
+  tags: Array<any>;
+  lang: 'en-gb';
+  slug: string;
+  first_publication_date: string;
+  last_publication_date: string;
+  uid?: string;
+  link_type: Document;
+  isBroken: boolean;
+};

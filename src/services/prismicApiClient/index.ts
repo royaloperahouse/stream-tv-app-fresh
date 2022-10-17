@@ -196,4 +196,20 @@ export const getVideoDetails = (
     isProductionEnv: queryObj.isProductionEnv,
   });
 
+export const getPrismicisedRails = (
+  queryObj: TQueryObj = { isProductionEnv: true },
+): Promise<prismicT.Query<prismicT.PrismicDocument>> =>
+  commonQuery({
+    queryPredicates: [
+      Prismic.Predicates.at('document.type', documentTypes.prismicisedRails),
+      ...[
+        ...(Array.isArray(queryObj.queryPredicates)
+          ? queryObj.queryPredicates
+          : []),
+      ],
+    ],
+    queryOptions: queryObj.queryOptions,
+    isProductionEnv: queryObj.isProductionEnv,
+  });
+
 export default prismicApiClient;

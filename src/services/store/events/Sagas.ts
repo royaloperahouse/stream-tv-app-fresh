@@ -19,10 +19,18 @@ import {
   takeEvery,
 } from 'redux-saga/effects';
 import { logError } from '@utils/loger';
-import { getDigitalEventDetails } from '@services/prismicApiClient';
+import {
+  getDigitalEventDetails,
+  getPrismicisedRails,
+} from '@services/prismicApiClient';
 import { addItemToPrevSearchList } from '@services/previousSearch';
 import { bigDelay } from '@utils/bigDelay';
-import { TVSVideo } from '@services/types/models';
+import {
+  TVSVideo,
+  TStreamHomePageRail,
+  TStreamHomePageData,
+  TStreamHomePageElement,
+} from '@services/types/models';
 import { isProductionEvironmentSelector } from '../settings/Selectors';
 
 export default function* eventRootSagas() {
@@ -64,10 +72,11 @@ function* saveSearchResultQueryWatcher() {
 function* getEventListLoopWorker(): any {
   while (true) {
     const result = [];
+    const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
-      const isProductionEnv = yield select(isProductionEvironmentSelector);
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
         yield call(getDigitalEventDetails, { isProductionEnv });
+
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -99,10 +108,37 @@ function* getEventListLoopWorker(): any {
       logError('something went wrong with prismic request', err);
     }
     if (result.length) {
+      let prismicisedRails: {
+        exploreAllTrays: Array<TStreamHomePageRail>;
+        operaAndMusicTopTrays: Array<TStreamHomePageRail>;
+        operaAndMusicBottomTrays: Array<TStreamHomePageRail>;
+        balletAndDanceTopTrays: Array<TStreamHomePageRail>;
+        balletAndDanceBottomTrays: Array<TStreamHomePageRail>;
+        propositionPageElements: Array<TStreamHomePageRail>;
+      } = {
+        exploreAllTrays: [],
+        operaAndMusicTopTrays: [],
+        operaAndMusicBottomTrays: [],
+        balletAndDanceTopTrays: [],
+        balletAndDanceBottomTrays: [],
+        propositionPageElements: [],
+      };
+      try {
+        const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
+          yield call(getPrismicisedRails, { isProductionEnv });
+        prismicisedRails = retrievePrismicisedRails(
+          initialResponse.results[0].data as TStreamHomePageData,
+        );
+      } catch (err: any) {
+        logError('something went wrong with PrismicisedRails request', err);
+      }
       const resultForDigitalEventsDetailUpdate = groupDigitalEvents(result);
       yield put(
         getEventListSuccess({
-          digitalEventDetailsList: resultForDigitalEventsDetailUpdate,
+          digitalEventDetailsList: {
+            ...resultForDigitalEventsDetailUpdate,
+            ...prismicisedRails,
+          },
         }),
       );
     }
@@ -177,4 +213,91 @@ function groupDigitalEvents(digitalEventsDetail: Array<any>): any {
       eventGroups: {},
     },
   );
+}
+
+function retrievePrismicisedRails(data: TStreamHomePageData): {
+  exploreAllTrays: Array<TStreamHomePageRail>;
+  operaAndMusicTopTrays: Array<TStreamHomePageRail>;
+  operaAndMusicBottomTrays: Array<TStreamHomePageRail>;
+  balletAndDanceTopTrays: Array<TStreamHomePageRail>;
+  balletAndDanceBottomTrays: Array<TStreamHomePageRail>;
+  propositionPageElements: Array<TStreamHomePageRail>;
+} {
+  const prismicisedRails: {
+    exploreAllTrays: Array<TStreamHomePageRail>;
+    operaAndMusicTopTrays: Array<TStreamHomePageRail>;
+    operaAndMusicBottomTrays: Array<TStreamHomePageRail>;
+    balletAndDanceTopTrays: Array<TStreamHomePageRail>;
+    balletAndDanceBottomTrays: Array<TStreamHomePageRail>;
+    propositionPageElements: Array<TStreamHomePageRail>;
+  } = {
+    exploreAllTrays: [],
+    operaAndMusicTopTrays: [],
+    operaAndMusicBottomTrays: [],
+    balletAndDanceTopTrays: [],
+    balletAndDanceBottomTrays: [],
+    propositionPageElements: [],
+  };
+
+  if (Array.isArray(data.proposition_page_elements)) {
+    prismicisedRails.propositionPageElements.push(
+      ...filterPrismicisedRail(data.proposition_page_elements),
+    );
+  }
+  if (Array.isArray(data.explore_all_elements)) {
+    prismicisedRails.exploreAllTrays.push(
+      ...filterPrismicisedRail(data.explore_all_elements),
+    );
+  }
+  if (Array.isArray(data.opera_and_music_top_elements)) {
+    prismicisedRails.operaAndMusicTopTrays.push(
+      ...filterPrismicisedRail(data.opera_and_music_top_elements),
+    );
+  }
+  if (Array.isArray(data.opera_and_music_bottom_elements)) {
+    prismicisedRails.operaAndMusicBottomTrays.push(
+      ...filterPrismicisedRail(data.opera_and_music_bottom_elements),
+    );
+  }
+  if (Array.isArray(data.ballet_and_dance_top_elements)) {
+    prismicisedRails.balletAndDanceTopTrays.push(
+      ...filterPrismicisedRail(data.ballet_and_dance_top_elements),
+    );
+  }
+  if (Array.isArray(data.ballet_and_dance_bottom_elements)) {
+    prismicisedRails.balletAndDanceBottomTrays.push(
+      ...filterPrismicisedRail(data.ballet_and_dance_bottom_elements),
+    );
+  }
+  return prismicisedRails;
+}
+
+function filterPrismicisedRail(
+  data: Array<TStreamHomePageElement>,
+): Array<TStreamHomePageRail> {
+  return data
+    .filter(
+      slice =>
+        slice.slice_type === 'events_tray' &&
+        slice.items.some(
+          item =>
+            item?.element.type === 'digital_event_details' &&
+            item?.element.isBroken !== true,
+        ),
+    )
+    .map(slice => ({
+      title: slice.primary?.title || '',
+      isVisible: slice.primary?.show_tray || false,
+      ids: Array.from(
+        slice.items.reduce((acc: any, item) => {
+          if (
+            item?.element.type === 'digital_event_details' &&
+            item?.element.isBroken !== true
+          ) {
+            acc.add(item.element.id);
+          }
+          return acc;
+        }, new Set()),
+      ),
+    }));
 }
