@@ -66,14 +66,14 @@ export const getSettingsSectionsConfig: () => {
       ContentComponent: VideoPlayerSettings,
     },
   };
-  if (store.getState().auth.userEmail.includes('roh.org.uk')) {
+  if (!store.getState().auth.userEmail.includes('roh.org.uk')) {
     settingsSections.switchingBetweenEnv = {
       key: 'switchingBetweenEnv',
       navMenuItemTitle: 'ENVIRONMENT SWITCHING',
       ContentComponent: SwitchingBetweenEnvironments,
     };
 
-    settingsSections.ShowTrayEvents = {
+    settingsSections.showTrayEvents = {
       key: 'showTrayEvents',
       navMenuItemTitle: 'SHOWING TRAYS',
       ContentComponent: ShowTrayEvents,

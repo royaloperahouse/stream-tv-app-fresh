@@ -433,7 +433,6 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
       sectionIndex: ++j,
     });
   }
-
   if (!eventsWithoutSubtags.data.length) {
     return {
       data: [
@@ -448,8 +447,6 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     ...eventSection,
     sectionIndex: ++eventSection.sectionIndex,
   }));
-
-  console.log(eventsWithoutSubtags.data.length)
   return {
     data: [
       ...operaAndMusicTopTrays,
