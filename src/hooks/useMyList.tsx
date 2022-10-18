@@ -1,15 +1,21 @@
 import { useState, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/core';
 import { getMyList } from '@services/myList';
+import { useAppSelector } from './redux';
+import { customerIdSelector } from 'services/store/auth/Selectors';
+import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 
 export const useMyList = (): { data: Array<string>; ejected: boolean } => {
+  const customerId = useAppSelector(customerIdSelector);
+
   const ejected = useRef<boolean>(false);
   const [myList, setMyList] = useState<Array<string>>([]);
   const mountedRef = useRef<boolean | undefined>(false);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   useFocusEffect(
     useCallback(() => {
       mountedRef.current = true;
-      getMyList().then(items => {
+      getMyList(customerId, isProductionEnv).then(items => {
         if (mountedRef && mountedRef.current) {
           ejected.current = true;
           setMyList(items);
@@ -20,7 +26,7 @@ export const useMyList = (): { data: Array<string>; ejected: boolean } => {
           mountedRef.current = false;
         }
       };
-    }, []),
+    }, [customerId, isProductionEnv]),
   );
   return { data: myList, ejected: ejected.current };
 };

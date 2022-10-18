@@ -1,23 +1,26 @@
 import { logError } from '@utils/loger';
-import { myListKey } from '@configs/myListConfig';
-import { SessionStorage } from '@services/sessionStorage';
+import {
+  addToMyListReq,
+  clearMyListReq,
+  getMyListReq,
+  removeIdFromMyListReq,
+} from 'services/apiClient';
 
 export const addToMyList = async (
+  customerId: number | null,
   item: string,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex === -1) {
-      parsedMyList.push(item);
-      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
+    if (customerId === null || !item) {
+      throw new Error(
+        `Something went wrong with customerId ${customerId} etheir eventId ${item}`,
+      );
     }
+    await addToMyListReq(customerId, item, isProductionEnv);
   } catch (error: any) {
-    logError('Something went wromg with saving to MyList', error);
+    logError('Something went wrong with saving to MyList', error);
   } finally {
     if (typeof cb === 'function') {
       cb();
@@ -26,21 +29,20 @@ export const addToMyList = async (
 };
 
 export const removeIdFromMyList = async (
+  customerId: number | null,
   item: string,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex !== -1) {
-      parsedMyList.splice(existedIndex, 1);
-      await SessionStorage.setItem(myListKey, JSON.stringify(parsedMyList));
+    if (customerId === null || !item) {
+      throw new Error(
+        `Something went wrong with customerId ${customerId} etheir eventId ${item}`,
+      );
     }
+    await removeIdFromMyListReq(customerId, item, isProductionEnv);
   } catch (error: any) {
-    logError('Something went wromg with removing from MyList', error);
+    logError('Something went wrong with removing from MyList', error);
   } finally {
     if (typeof cb === 'function') {
       cb();
@@ -48,61 +50,50 @@ export const removeIdFromMyList = async (
   }
 };
 
-export const removeIdsFromMyList = async (
-  items: Array<string>,
-  cb?: (...args: any[]) => void,
+export const clearMyList = async (
+  customerId: number | null,
+  isProductionEnv: boolean,
 ): Promise<void> => {
-  if (!Array.isArray(items) || !items.length) {
-    return;
-  }
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const filteredMyList = parsedMyList.filter(
-      listItem => !items.some(item => item === listItem),
-    );
-    await SessionStorage.setItem(myListKey, JSON.stringify(filteredMyList));
-  } catch (error: any) {
-    logError('Something went wromg with removing from MyList', error);
-  } finally {
-    if (typeof cb === 'function') {
-      cb();
+    if (customerId === null) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
     }
+    await clearMyListReq(customerId, isProductionEnv);
+  } catch (error: any) {
+    logError('Something went wrong with clearing MyList', error);
   }
 };
 
-export const clearMyList = (): Promise<void> =>
-  SessionStorage.removeItem(myListKey);
-
-export const getMyList = async (): Promise<Array<string>> => {
+export const getMyList = async (
+  customerId: number | null,
+  isProductionEnv: boolean,
+): Promise<Array<string>> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    return parsedMyList;
+    if (customerId === null) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
+    }
+    const { data } = await getMyListReq(customerId, isProductionEnv);
+    const { myList } = data.data.attributes;
+    return myList.map(item => item.id);
   } catch (error: any) {
     logError('Something went wrong with getting MyList', error);
     return [];
   }
 };
 
-export const hasMyListItem = async (item: string): Promise<boolean> => {
-  let result: boolean = false;
+export const hasMyListItem = async (
+  customerId: number | null,
+  item: string,
+  isProductionEnv: boolean,
+): Promise<boolean> => {
   try {
-    const savedMyList: string | null = await SessionStorage.getItem(myListKey);
-    const parsedMyList: Array<string> = !savedMyList
-      ? []
-      : JSON.parse(savedMyList);
-    const existedIndex = parsedMyList.findIndex(listItem => listItem === item);
-    if (existedIndex !== -1) {
-      result = true;
+    if (customerId === undefined || customerId === null) {
+      throw Error(`Something went wrong with customerId ${customerId}`);
     }
+    const myList = await getMyList(customerId, isProductionEnv);
+    return myList.includes(item);
   } catch (error: any) {
-    logError('Something went wromg with getting MyList', error);
-  } finally {
-    return result;
+    logError('Something went wrong with getting MyList', error);
+    return false;
   }
 };

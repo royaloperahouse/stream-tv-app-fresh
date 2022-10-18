@@ -1,29 +1,56 @@
-import { useState, useCallback, useRef } from 'react';
-import { useFocusEffect } from '@react-navigation/core';
-import { getListOfUniqueEventId } from '@services/bitMovinPlayer';
+import { useState, useRef, useLayoutEffect } from 'react';
+import { getListOfWatchedVideos } from '@services/bitMovinPlayer';
+import { useAppSelector } from './redux';
+import { customerIdSelector } from 'services/store/auth/Selectors';
+import {
+  getEventsLoadedStatusSelector,
+  videoToEventMapSelector,
+} from 'services/store/events/Selectors';
+import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 
 export const useContinueWatchingList = (): {
   data: Array<string>;
   ejected: boolean;
 } => {
-  const ejected = useRef<boolean>(false);
+  const customerId = useAppSelector(customerIdSelector);
+  const eventsLoaded = useAppSelector(getEventsLoadedStatusSelector);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+
+  const createVideoToEventMap = useAppSelector(videoToEventMapSelector);
+
   const [continueWatchingList, setContinueWatchingList] = useState<
     Array<string>
   >([]);
+  const ejected = useRef<boolean>(false);
   const mountedRef = useRef<boolean | undefined>(false);
-  useFocusEffect(
-    useCallback(() => {
-      mountedRef.current = true;
-      getListOfUniqueEventId().then(items => {
-        if (mountedRef.current) {
-          ejected.current = true;
-          setContinueWatchingList(items);
-        }
-      });
-      return () => {
-        mountedRef.current = false;
-      };
-    }, []),
+
+  useLayoutEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useLayoutEffect(
+    () => {
+      if (customerId && eventsLoaded) {
+        getListOfWatchedVideos(customerId, isProductionEnv).then(items => {
+          if (mountedRef.current) {
+            ejected.current = true;
+
+            const videoToEventMap = createVideoToEventMap(items);
+            setContinueWatchingList(
+              items.flatMap(videoId =>
+                videoToEventMap[videoId] ? [videoToEventMap[videoId]] : [],
+              ),
+            );
+          }
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [customerId, eventsLoaded, isProductionEnv],
   );
+
   return { data: continueWatchingList, ejected: ejected.current };
 };

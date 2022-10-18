@@ -74,6 +74,8 @@ import {
 } from '@services/bitMovinPlayer';
 import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin } from '@configs/globalConfig';
+import { getVideoDetails } from 'services/prismicApiClient';
+import * as Prismic from '@prismicio/client';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -97,7 +99,7 @@ const General: React.FC<
     performanceInfo,
     eventId,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
   } = params;
@@ -143,10 +145,12 @@ const General: React.FC<
         ref,
         clearLoadingState,
         closeModalCB = closeModal,
-      }) =>
+        dieseVideoId,
+        isProductionEnv,
+      }: any) =>
       async (error: TBMPlayerErrorObject | null, time: string) => {
         if (typeof savePositionCB === 'function') {
-          await savePositionCB({ time, videoId, eventId });
+          savePositionCB({ time, videoId, eventId, dieseVideoId, isProductionEnv });
         }
         if (error) {
           globalModalManager.openModal({
@@ -215,21 +219,34 @@ const General: React.FC<
   );
 
   const savePositionCB = useCallback(
-    async ({ time, videoId, eventId }) => {
+    async ({ time, videoId, eventId, dieseVideoId, isProductionEnv }) => {
       const floatTime = parseFloat(time);
+      if (!customerId) {
+        return;
+      }
+
       if (isNaN(floatTime) || floatTime < minResumeTime) {
-        await removeBitMovinSavedPositionByIdAndEventId(videoId, eventId);
-        setPerformanceVideoTimePosition('');
-      } else {
-        await savePosition({
-          id: videoId,
-          position: time,
+        removeBitMovinSavedPositionByIdAndEventId(
+          customerId,
+          dieseVideoId,
           eventId,
-        });
-        setPerformanceVideoTimePosition(time);
+          isProductionEnv,
+          () => setPerformanceVideoTimePositionCB(''),
+        );
+      } else {
+        savePosition(
+          customerId,
+          {
+            id: dieseVideoId,
+            position: time,
+            eventId,
+          },
+          isProductionEnv,
+          () => setPerformanceVideoTimePositionCB(time),
+        );
       }
     },
-    [setPerformanceVideoTimePosition],
+    [customerId, setPerformanceVideoTimePositionCB],
   );
 
   const getPerformanceVideoUrl = useCallback(
@@ -290,7 +307,9 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     eventId: videoFromPrismic.eventId,
                     clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
                     ref,
+                    isProductionEnv,
                   }),
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
@@ -309,7 +328,9 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     eventId: videoFromPrismic.eventId,
                     clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
                     ref,
+                    isProductionEnv,
                   }),
                   analytics: {
                     videoId: videoFromPrismic.videoId,
@@ -346,6 +367,8 @@ const General: React.FC<
             eventId: videoFromPrismic.eventId,
             clearLoadingState,
             ref,
+            dieseVideoId: videoFromPrismic.dieseId,
+            isProductionEnv,
           }),
           analytics: {
             videoId: videoFromPrismic.videoId,
@@ -479,8 +502,14 @@ const General: React.FC<
       return;
     }
     addOrRemoveBusyRef.current = true;
-    (existInMyList ? removeIdFromMyList : addToMyList)(eventId, () => {
-      hasMyListItem(eventId)
+    const myListAction = existInMyList ? removeIdFromMyList : addToMyList;
+
+    if (!customerId) {
+      return;
+    }
+
+    myListAction(customerId, eventId, isProductionEnv, () => {
+      hasMyListItem(customerId, eventId, isProductionEnv)
         .then(isExist => {
           if (generalMountedRef.current) {
             setExistInMyList(isExist);
@@ -563,13 +592,17 @@ const General: React.FC<
     };
   }, []);
 
-  useEffect(() => {
-    hasMyListItem(eventId)
-      .then(isExist => setExistInMyList(isExist))
-      .finally(() => {
-        addOrRemoveBusyRef.current = false;
-      });
-  }, [eventId]);
+  useEffect(
+    () => {
+      hasMyListItem(customerId, eventId, isProductionEnv)
+        .then(setExistInMyList)
+        .finally(() => {
+          addOrRemoveBusyRef.current = false;
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [eventId, eventId, isProductionEnv],
+  );
 
   useFocusEffect(
     useCallback(() => {

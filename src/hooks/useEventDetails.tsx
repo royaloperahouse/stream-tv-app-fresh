@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   eventDetailsSectionsConfig,
   TEventDetailsSectionItem,
@@ -18,10 +18,7 @@ import { getVideoDetails } from '@services/prismicApiClient';
 import * as Prismic from '@prismicio/client';
 import { PrismicDocument } from '@prismicio/types';
 import get from 'lodash.get';
-import type {
-  TEventDetailsScreenReverseNames,
-  TEventDetailsScreensParamContextProps,
-} from '@configs/screensConfig';
+import type { TEventDetailsScreensParamContextProps } from '@configs/screensConfig';
 import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
 import useAsyncEffect from 'use-async-effect';
 import {
@@ -29,6 +26,7 @@ import {
   defaultPlayerBitrateKey,
 } from '@configs/bitMovinPlayerConfig';
 import { getSelectedBitrateId } from '@services/bitMovinPlayer';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -60,7 +58,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     performanceInfo,
     trailerInfo,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
   } = useGetExtras(event, isProduction, eventId);
@@ -104,7 +102,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           trailerInfo,
           eventId,
           performanceVideoTimePosition,
-          setPerformanceVideoTimePosition,
+          setPerformanceVideoTimePositionCB,
           videoQualityBitrate,
           videoQualityId,
         };
@@ -501,18 +499,20 @@ const useGetExtras = (
   loading: boolean;
   loaded: boolean;
   performanceVideoTimePosition: string | undefined;
-  setPerformanceVideoTimePosition: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
+  setPerformanceVideoTimePositionCB: (time: string) => void;
   videoQualityBitrate: number;
   videoQualityId: 'high' | 'medium' | 'normal';
 } => {
+  const customerId = useAppSelector(customerIdSelector);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
   const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
-    useState<string>();
+    useState<string>('');
   const performanceInfo = useRef<{
     eventId: string;
     videoId: string;
+    dieseId: string;
     title?: string;
   } | null>(null);
   const trailerInfo = useRef<{
@@ -530,6 +530,11 @@ const useGetExtras = (
   const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
     defaultPlayerBitrateKey,
   );
+  const setPerformanceVideoTimePositionCB = useCallback((time: string) => {
+    if (isMounted.current) {
+      setPerformanceVideoTimePosition(time);
+    }
+  }, []);
   useEffect(() => {
     isMounted.current = true;
     return () => {
@@ -601,15 +606,18 @@ const useGetExtras = (
             ? {
                 eventId,
                 videoId: filteredResult.performance[0].id,
+                dieseId: filteredResult.performance[0].data.video.video_key,
                 title:
                   filteredResult.performance[0].data?.video_title[0]?.text ||
                   '',
               }
             : null;
-          if (performanceInfo.current) {
+          if (performanceInfo.current && customerId) {
             const videoPositionInfo = await getBitMovinSavedPosition(
-              performanceInfo.current.videoId,
+              customerId,
+              performanceInfo.current.dieseId,
               performanceInfo.current.eventId,
+              isProductionEnv,
             );
             if (videoPositionInfo && videoPositionInfo.position) {
               setPerformanceVideoTimePosition(videoPositionInfo.position);
@@ -682,7 +690,7 @@ const useGetExtras = (
     loading: loading.current,
     loaded: loaded.current,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate: bitrateValue.current,
     videoQualityId: videoQualityIdRef.current,
   };

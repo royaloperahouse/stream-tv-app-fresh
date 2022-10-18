@@ -9,7 +9,7 @@ type TRohImageProps = {
   resizeMode: ResizeMode;
   style: any;
   source: string;
-  focused: boolean;
+  focused?: boolean;
   isPortrait?: boolean;
 };
 

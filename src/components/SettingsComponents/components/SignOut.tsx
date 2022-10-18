@@ -18,9 +18,7 @@ import {
   endFullSubscriptionLoop,
 } from '@services/store/auth/Slices';
 import { pinUnlink } from '@services/apiClient';
-import { clearPrevSearchList } from '@services/previousSearch';
-import { clearListOfBitmovinSavedPosition } from '@services/bitMovinPlayer';
-import { clearMyList } from '@services/myList';
+
 import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
@@ -47,11 +45,6 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
         dispatch(endFullSubscriptionLoop());
         dispatch(clearAuthState());
         dispatch(clearEventState());
-        return Promise.all([
-          clearPrevSearchList(),
-          clearListOfBitmovinSavedPosition(),
-          clearMyList(),
-        ]);
       })
       .catch(console.log);
   useLayoutEffect(() => {

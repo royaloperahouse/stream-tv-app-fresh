@@ -1,40 +1,40 @@
 import { logError } from '@utils/loger';
+import { maxPrevSearchListSize } from '@configs/previousSearchesConfig';
 import {
-  prevSearchListKey,
-  maxPrevSearchListSize,
-} from '@configs/previousSearchesConfig';
-import { SessionStorage } from '@services/sessionStorage';
+  addItemToPreviousSearchList,
+  getPreviousSearchList,
+  removeItemFromPreviousSearchList,
+  clearPreviousSearchList,
+} from '@services/apiClient';
 
-export const addItemToPrevSearchList = async (item: string): Promise<void> => {
+export const addItemToPrevSearchList = async (
+  customerId: string,
+  item: string,
+  isProductionEnv: boolean,
+): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? new Set<string>()
-      : new Set<string>(JSON.parse(alreadySavedPrevSearchList));
-    prevSearchSetCollection.add(item);
-    if (prevSearchSetCollection.size > maxPrevSearchListSize) {
-      prevSearchSetCollection.delete(
-        Array.from<string>(prevSearchSetCollection).shift() || '',
-      );
-    }
-    await SessionStorage.setItem(
-      prevSearchListKey,
-      JSON.stringify(Array.from(prevSearchSetCollection)),
-    );
+    await addItemToPreviousSearchList(customerId, item, isProductionEnv);
   } catch (err: any) {
     logError('AddItemToPrevSearchList', err);
   }
 };
 
-export const getPrevSearchList = async (): Promise<Array<string>> => {
+export const getPrevSearchList = async (
+  customerId: number | null,
+  isProductionEnv: boolean,
+): Promise<Array<string>> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? []
-      : JSON.parse(alreadySavedPrevSearchList);
-    return prevSearchSetCollection;
+    if (customerId === null || customerId === undefined) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
+    }
+    const { data } = await getPreviousSearchList(customerId, isProductionEnv);
+    const { searchHistory } = data.data.attributes;
+    const searchTerms = new Set(searchHistory.map(item => item.text));
+
+    if (searchTerms.size > maxPrevSearchListSize) {
+      searchTerms.delete(Array.from<string>(searchTerms).shift() || '');
+    }
+    return [...searchTerms];
   } catch (err: any) {
     logError('getPrevSearchList', err);
     return [];
@@ -42,27 +42,23 @@ export const getPrevSearchList = async (): Promise<Array<string>> => {
 };
 
 export const removeItemFromPrevSearchList = async (
+  customerId: number,
   item: string,
+  isProductionEnv: boolean,
 ): Promise<void> => {
   try {
-    const alreadySavedPrevSearchList: string | null =
-      await SessionStorage.getItem(prevSearchListKey);
-    const prevSearchSetCollection = !alreadySavedPrevSearchList
-      ? new Set()
-      : new Set(JSON.parse(alreadySavedPrevSearchList));
-    prevSearchSetCollection.delete(item);
-    await SessionStorage.setItem(
-      prevSearchListKey,
-      JSON.stringify(Array.from(prevSearchSetCollection)),
-    );
+    await removeItemFromPreviousSearchList(customerId, item, isProductionEnv);
   } catch (err: any) {
     logError('removeItemFromPrevSearchList', err);
   }
 };
 
-export const clearPrevSearchList = async (): Promise<void> => {
+export const clearPrevSearchList = async (
+  customerId: number,
+  isProductionEnv: boolean,
+): Promise<void> => {
   try {
-    await SessionStorage.setItem(prevSearchListKey, JSON.stringify([]));
+    await clearPreviousSearchList(customerId, isProductionEnv);
   } catch (err: any) {
     logError('clearPrevSearchList', err);
   }
