@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   eventDetailsSectionsConfig,
   TEventDetailsSectionItem,
@@ -58,7 +58,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     performanceInfo,
     trailerInfo,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
   } = useGetExtras(event, isProduction, eventId);
@@ -102,7 +102,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           trailerInfo,
           eventId,
           performanceVideoTimePosition,
-          setPerformanceVideoTimePosition,
+          setPerformanceVideoTimePositionCB,
           videoQualityBitrate,
           videoQualityId,
         };
@@ -499,17 +499,16 @@ const useGetExtras = (
   loading: boolean;
   loaded: boolean;
   performanceVideoTimePosition: string | undefined;
-  setPerformanceVideoTimePosition: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
+  setPerformanceVideoTimePositionCB: (time: string) => void;
   videoQualityBitrate: number;
   videoQualityId: 'high' | 'medium' | 'normal';
 } => {
   const customerId = useAppSelector(customerIdSelector);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
 
   const [videosInfo, setVideosInfo] = useState<Array<TExtrasVideo>>([]);
   const [performanceVideoTimePosition, setPerformanceVideoTimePosition] =
-    useState<string>();
+    useState<string>('');
   const performanceInfo = useRef<{
     eventId: string;
     videoId: string;
@@ -531,6 +530,11 @@ const useGetExtras = (
   const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
     defaultPlayerBitrateKey,
   );
+  const setPerformanceVideoTimePositionCB = useCallback((time: string) => {
+    if (isMounted.current) {
+      setPerformanceVideoTimePosition(time);
+    }
+  }, []);
   useEffect(() => {
     isMounted.current = true;
     return () => {
@@ -613,6 +617,7 @@ const useGetExtras = (
               customerId,
               performanceInfo.current.dieseId,
               performanceInfo.current.eventId,
+              isProductionEnv,
             );
             if (videoPositionInfo && videoPositionInfo.position) {
               setPerformanceVideoTimePosition(videoPositionInfo.position);
@@ -685,7 +690,7 @@ const useGetExtras = (
     loading: loading.current,
     loaded: loaded.current,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate: bitrateValue.current,
     videoQualityId: videoQualityIdRef.current,
   };

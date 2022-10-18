@@ -1,6 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiConfig } from '@configs/apiConfig';
 import {
+  GetSearchHistoryResponse,
+  GetTVDataResponse,
+  GetWatchStatusResponse,
+  GetMyListResponse,
+} from '@services/types/tv/responses';
+import { TBitMovinPlayerSavedPosition } from '@services/types/models';
+import {
   UnableToCheckRentalStatusError,
   NotRentedItemError,
   NonSubscribedStatusError,
@@ -249,3 +256,128 @@ export function eventsOnFeePromiseFill(
   }
   return Promise.allSettled(allPromises);
 }
+
+export const addItemToPreviousSearchList = (
+  customerId: string,
+  item: string,
+  isProductionEnv: boolean,
+): Promise<void> =>
+  axiosClient.post(
+    ApiConfig.routes.searchHistory,
+    {
+      customerId,
+      searchTerm: item,
+    },
+    {
+      baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+    },
+  );
+
+export const getPreviousSearchList = (
+  customerId: number,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.get<GetSearchHistoryResponse>(ApiConfig.routes.searchHistory, {
+    params: { customerId },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const removeItemFromPreviousSearchList = (
+  customerId: number,
+  item: string,
+  isProductionEnv: boolean,
+): Promise<void> =>
+  axiosClient.delete(ApiConfig.routes.searchHistory, {
+    data: {
+      customerId,
+      searchTerm: item,
+    },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const clearPreviousSearchList = (
+  customerId: number,
+  isProductionEnv: boolean,
+): Promise<void> =>
+  axiosClient.delete(ApiConfig.routes.clearSearchHistory, {
+    data: { customerId },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const getListOfWatchedVideosReq = (
+  customerId: number,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.get<GetTVDataResponse>(ApiConfig.routes.tvDataStatus, {
+    params: { customerId },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const getBitMovinPosition = async (
+  customerId: number,
+  id: string,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.get<GetWatchStatusResponse>(ApiConfig.routes.watchStatus, {
+    params: {
+      customerId,
+      videoId: id,
+    },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const saveBitMovinPosition = (
+  customerId: number,
+  item: TBitMovinPlayerSavedPosition,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.post(
+    ApiConfig.routes.watchStatus,
+    {
+      customerId,
+      videoId: item.id,
+      position: item.position,
+    },
+    {
+      baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+    },
+  );
+
+export const addToMyListReq = (
+  customerId: number,
+  item: string,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.post(
+    ApiConfig.routes.myLsit,
+    {
+      customerId,
+      eventIds: [item],
+    },
+    { baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv },
+  );
+
+export const removeIdFromMyListReq = (
+  customerId: number,
+  item: string,
+  isProductionEnv: boolean,
+) =>
+  axiosClient.delete(ApiConfig.routes.myLsit, {
+    data: {
+      customerId,
+      eventIds: [item],
+    },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const clearMyListReq = (customerId: number, isProductionEnv: boolean) =>
+  axiosClient.delete(ApiConfig.routes.clearMyList, {
+    data: { customerId },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });
+
+export const getMyListReq = (customerId: number, isProductionEnv: boolean) =>
+  axiosClient.get<GetMyListResponse>(ApiConfig.routes.myLsit, {
+    params: { customerId },
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+  });

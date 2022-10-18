@@ -191,38 +191,24 @@ export const DisplayForVirtualKeyboard = forwardRef<
   const { containerStyle = {}, textStyle = {} } = props;
   const searchText = useSelector(searchQuerySelector, shallowEqual);
   const dispatch = useDispatch();
-  const route = useRoute();
-  const navigation = useNavigation();
 
   useImperativeHandle(
     ref,
     () => ({
       addLetterToSearch: (text: string): void => {
-        if (route?.params?.sectionIndex !== undefined) {
-          navigation.setParams({ sectionIndex: undefined });
-        }
         dispatch(setSearchQuery({ searchQuery: text }));
       },
       addSpaceToSearch: (): void => {
-        if (route?.params?.sectionIndex !== undefined) {
-          navigation.setParams({ sectionIndex: undefined });
-        }
         dispatch(setSearchQuery({ searchQuery: ' ' }));
       },
       removeLetterFromSearch: (): void => {
-        if (route?.params?.sectionIndex !== undefined) {
-          navigation.setParams({ sectionIndex: undefined });
-        }
         dispatch(setSearchQuery({ searchQuery: '' }));
       },
       clearLettersFromSearch: (): void => {
-        if (route?.params?.sectionIndex !== undefined) {
-          navigation.setParams({ sectionIndex: undefined });
-        }
         dispatch(clearSearchQuery());
       },
     }),
-    [dispatch, route, navigation],
+    [dispatch],
   );
   return (
     <View style={[dStyle.container, containerStyle]}>

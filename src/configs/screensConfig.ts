@@ -104,9 +104,7 @@ export type TEventDetailsScreensParamContextProps = {
     trailerInfo: { eventId: string; videoId: string } | null;
     eventId: string;
     performanceVideoTimePosition: string | undefined;
-    setPerformanceVideoTimePosition: React.Dispatch<
-      React.SetStateAction<string | undefined>
-    >;
+    setPerformanceVideoTimePositionCB: (tyme: string) => void;
     videoQualityBitrate: number;
     videoQualityId: 'high' | 'medium' | 'normal';
   };

@@ -1,32 +1,33 @@
 import { logError } from '@utils/loger';
 import { maxPrevSearchListSize } from '@configs/previousSearchesConfig';
-import { axiosClient } from 'services/apiClient';
-import { GetSearchHistoryResponse } from 'services/types/tv/responses';
+import {
+  addItemToPreviousSearchList,
+  getPreviousSearchList,
+  removeItemFromPreviousSearchList,
+  clearPreviousSearchList,
+} from '@services/apiClient';
 
 export const addItemToPrevSearchList = async (
   customerId: string,
   item: string,
+  isProductionEnv: boolean,
 ): Promise<void> => {
   try {
-    await axiosClient.post('/user/tv/search-history', {
-      customerId,
-      searchTerm: item,
-    });
+    await addItemToPreviousSearchList(customerId, item, isProductionEnv);
   } catch (err: any) {
     logError('AddItemToPrevSearchList', err);
   }
 };
 
 export const getPrevSearchList = async (
-  customerId: number,
+  customerId: number | null,
+  isProductionEnv: boolean,
 ): Promise<Array<string>> => {
   try {
-    const { data } = await axiosClient.get<GetSearchHistoryResponse>(
-      '/user/tv/search-history',
-      {
-        params: { customerId },
-      },
-    );
+    if (customerId === null || customerId === undefined) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
+    }
+    const { data } = await getPreviousSearchList(customerId, isProductionEnv);
     const { searchHistory } = data.data.attributes;
     const searchTerms = new Set(searchHistory.map(item => item.text));
 
@@ -43,14 +44,10 @@ export const getPrevSearchList = async (
 export const removeItemFromPrevSearchList = async (
   customerId: number,
   item: string,
+  isProductionEnv: boolean,
 ): Promise<void> => {
   try {
-    await axiosClient.delete('/user/tv/search-history', {
-      data: {
-        customerId,
-        searchTerm: item,
-      },
-    });
+    await removeItemFromPreviousSearchList(customerId, item, isProductionEnv);
   } catch (err: any) {
     logError('removeItemFromPrevSearchList', err);
   }
@@ -58,11 +55,10 @@ export const removeItemFromPrevSearchList = async (
 
 export const clearPrevSearchList = async (
   customerId: number,
+  isProductionEnv: boolean,
 ): Promise<void> => {
   try {
-    await axiosClient.delete('/user/tv/search-history/clear', {
-      data: { customerId },
-    });
+    await clearPreviousSearchList(customerId, isProductionEnv);
   } catch (err: any) {
     logError('clearPrevSearchList', err);
   }

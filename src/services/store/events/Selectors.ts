@@ -455,3 +455,33 @@ export const getEventById = (eventId: string) => (store: TRootState) => ({
 
 export const showOnlyVisisbleEventsSelector = (store: TRootState) =>
   store.events.showOnlyVisisbleEvents;
+
+export const getEventsLoadedStatusSelector = (store: TRootState) =>
+  store.events.eventsLoaded;
+
+export const videoToEventMapSelector =
+  (store: TRootState) => (dieseVideoIds: string[]) => {
+    const dieseVideoIdPrefixes = dieseVideoIds.flatMap(id => id.split(/\D/)[0]);
+    return Object.entries(store.events.allDigitalEventsDetail).reduce<
+      Record<string, string>
+    >((acc, [eventId, eventDetail]) => {
+      if (!eventDetail.data.diese_activity) {
+        return acc;
+      }
+
+      const { activity_id: dieseId } = eventDetail.data.diese_activity;
+
+      const dieseVideoIdIndex = dieseVideoIdPrefixes.findIndex(
+        id => id && id === dieseId.toString(),
+      );
+      if (dieseVideoIdIndex === -1) {
+        return acc;
+      }
+
+      const foundDieseVideoId = dieseVideoIds[dieseVideoIdIndex];
+      return {
+        ...acc,
+        [foundDieseVideoId]: eventId,
+      };
+    }, {});
+  };

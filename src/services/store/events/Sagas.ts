@@ -150,7 +150,13 @@ function* getEventListLoopWorker(): any {
 function* saveSearchResultQueryWorker(): any {
   const customerId = yield select(customerIdSelector);
   const searchQueryString = yield select(searchQuerySelector);
-  yield call(addItemToPrevSearchList, customerId, searchQueryString);
+  const isProductionEnv = yield select(isProductionEvironmentSelector);
+  yield call(
+    addItemToPrevSearchList,
+    customerId,
+    searchQueryString,
+    isProductionEnv,
+  );
 }
 
 function eventPromiseFill(

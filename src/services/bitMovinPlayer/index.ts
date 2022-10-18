@@ -5,23 +5,25 @@ import {
 } from '@configs/bitMovinPlayerConfig';
 import { TBitMovinPlayerSavedPosition } from '@services/types/models';
 import { SessionStorage } from '@services/sessionStorage';
-import { axiosClient } from 'services/apiClient';
 import {
-  GetTVDataResponse,
-  GetWatchStatusResponse,
-} from 'services/types/tv/responses';
+  getBitMovinPosition,
+  getListOfWatchedVideosReq,
+  saveBitMovinPosition,
+} from 'services/apiClient';
 
 export const savePosition = async (
   customerId: number,
   item: TBitMovinPlayerSavedPosition,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    await axiosClient.post('/user/tv/watch-status', {
-      customerId,
-      videoId: item.id,
-      position: item.position,
-    });
+    if (!item.id || !item.position) {
+      throw Error(
+        `Something went wrong with id ${item.id} etheir position ${item.position}`,
+      );
+    }
+    await saveBitMovinPosition(customerId, item, isProductionEnv);
   } catch (error: any) {
     logError(
       'Something went wrong with saving to BitMovinPlayerSavedPositionList',
@@ -38,19 +40,12 @@ export const getBitMovinSavedPosition = async (
   customerId: number,
   id: string,
   eventId: string,
+  isProductionEnv: boolean,
 ): Promise<TBitMovinPlayerSavedPosition | null> => {
   try {
-    const { data } = await axiosClient.get<GetWatchStatusResponse>(
-      '/user/tv/watch-status',
-      {
-        params: {
-          customerId,
-          videoId: id,
-        },
-      },
-    );
+    const { data } = await getBitMovinPosition(customerId, id, isProductionEnv);
 
-    const { position } = data.data.attributes.watchStatus;
+    const { position } = data?.data?.attributes?.watchStatus || {};
 
     if (!position || position === '0' || position === '0:00') {
       return null;
@@ -74,17 +69,25 @@ export const removeBitMovinSavedPositionByIdAndEventId = async (
   customerId: number,
   id: string,
   eventId: string,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> =>
-  savePosition(customerId, { eventId, id, position: '0:00' }, cb);
+  savePosition(
+    customerId,
+    { eventId, id, position: '0:00' },
+    isProductionEnv,
+    cb,
+  );
 
 export const getListOfWatchedVideos = async (
   customerId: number,
+  isProductionEnv: boolean,
 ): Promise<Array<string>> => {
   try {
-    const { data } = await axiosClient.get<GetTVDataResponse>('/user/tv', {
-      params: { customerId },
-    });
+    const { data } = await getListOfWatchedVideosReq(
+      customerId,
+      isProductionEnv,
+    );
     const { watchStatus } = data.data.attributes.tv;
 
     return Object.entries(watchStatus).flatMap(entry => {

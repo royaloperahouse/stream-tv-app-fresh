@@ -1,17 +1,24 @@
 import { logError } from '@utils/loger';
-import { axiosClient } from 'services/apiClient';
-import { GetMyListResponse } from 'services/types/tv/responses';
+import {
+  addToMyListReq,
+  clearMyListReq,
+  getMyListReq,
+  removeIdFromMyListReq,
+} from 'services/apiClient';
 
 export const addToMyList = async (
-  customerId: number,
+  customerId: number | null,
   item: string,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    await axiosClient.post('/user/tv/my-list', {
-      customerId,
-      eventIds: [item],
-    });
+    if (customerId === null || !item) {
+      throw new Error(
+        `Something went wrong with customerId ${customerId} etheir eventId ${item}`,
+      );
+    }
+    await addToMyListReq(customerId, item, isProductionEnv);
   } catch (error: any) {
     logError('Something went wrong with saving to MyList', error);
   } finally {
@@ -22,17 +29,18 @@ export const addToMyList = async (
 };
 
 export const removeIdFromMyList = async (
-  customerId: number,
+  customerId: number | null,
   item: string,
+  isProductionEnv: boolean,
   cb?: (...args: any[]) => void,
 ): Promise<void> => {
   try {
-    await axiosClient.delete('/user/tv/my-list', {
-      data: {
-        customerId,
-        eventIds: [item],
-      },
-    });
+    if (customerId === null || !item) {
+      throw new Error(
+        `Something went wrong with customerId ${customerId} etheir eventId ${item}`,
+      );
+    }
+    await removeIdFromMyListReq(customerId, item, isProductionEnv);
   } catch (error: any) {
     logError('Something went wrong with removing from MyList', error);
   } finally {
@@ -42,24 +50,29 @@ export const removeIdFromMyList = async (
   }
 };
 
-export const clearMyList = async (customerId: number): Promise<void> => {
+export const clearMyList = async (
+  customerId: number | null,
+  isProductionEnv: boolean,
+): Promise<void> => {
   try {
-    await axiosClient.delete('/user/tv/my-list/clear', {
-      data: { customerId },
-    });
+    if (customerId === null) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
+    }
+    await clearMyListReq(customerId, isProductionEnv);
   } catch (error: any) {
     logError('Something went wrong with clearing MyList', error);
   }
 };
 
-export const getMyList = async (customerId: number): Promise<Array<string>> => {
+export const getMyList = async (
+  customerId: number | null,
+  isProductionEnv: boolean,
+): Promise<Array<string>> => {
   try {
-    const { data } = await axiosClient.get<GetMyListResponse>(
-      '/user/tv/my-list',
-      {
-        params: { customerId },
-      },
-    );
+    if (customerId === null) {
+      throw new Error(`Something went wrong with customerId ${customerId}`);
+    }
+    const { data } = await getMyListReq(customerId, isProductionEnv);
     const { myList } = data.data.attributes;
     return myList.map(item => item.id);
   } catch (error: any) {
@@ -69,11 +82,15 @@ export const getMyList = async (customerId: number): Promise<Array<string>> => {
 };
 
 export const hasMyListItem = async (
-  customerId: number,
+  customerId: number | null,
   item: string,
+  isProductionEnv: boolean,
 ): Promise<boolean> => {
   try {
-    const myList = await getMyList(customerId);
+    if (customerId === undefined || customerId === null) {
+      throw Error(`Something went wrong with customerId ${customerId}`);
+    }
+    const myList = await getMyList(customerId, isProductionEnv);
     return myList.includes(item);
   } catch (error: any) {
     logError('Something went wrong with getting MyList', error);

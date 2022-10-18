@@ -99,7 +99,7 @@ const General: React.FC<
     performanceInfo,
     eventId,
     performanceVideoTimePosition,
-    setPerformanceVideoTimePosition,
+    setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
   } = params;
@@ -145,10 +145,12 @@ const General: React.FC<
         ref,
         clearLoadingState,
         closeModalCB = closeModal,
-      }) =>
+        dieseVideoId,
+        isProductionEnv,
+      }: any) =>
       async (error: TBMPlayerErrorObject | null, time: string) => {
         if (typeof savePositionCB === 'function') {
-          await savePositionCB({ time, videoId, eventId });
+          savePositionCB({ time, videoId, eventId, dieseVideoId, isProductionEnv });
         }
         if (error) {
           globalModalManager.openModal({
@@ -217,40 +219,34 @@ const General: React.FC<
   );
 
   const savePositionCB = useCallback(
-    async ({ time, videoId, eventId }) => {
+    async ({ time, videoId, eventId, dieseVideoId, isProductionEnv }) => {
       const floatTime = parseFloat(time);
       if (!customerId) {
         return;
       }
-      const videoDetails = await getVideoDetails({
-        queryPredicates: [Prismic.predicate.in('document.id', [videoId])],
-        isProductionEnv,
-      });
-      const dieseVideoId = videoDetails.results.map(
-        detail => detail.data.video.video_key,
-      )[0];
 
       if (isNaN(floatTime) || floatTime < minResumeTime) {
-        if (dieseVideoId) {
-          await removeBitMovinSavedPositionByIdAndEventId(
-            customerId,
-            dieseVideoId,
-            eventId,
-          );
-        }
-        setPerformanceVideoTimePosition('');
+        removeBitMovinSavedPositionByIdAndEventId(
+          customerId,
+          dieseVideoId,
+          eventId,
+          isProductionEnv,
+          () => setPerformanceVideoTimePositionCB(''),
+        );
       } else {
-        if (dieseVideoId) {
-          await savePosition(customerId, {
+        savePosition(
+          customerId,
+          {
             id: dieseVideoId,
             position: time,
             eventId,
-          });
-        }
-        setPerformanceVideoTimePosition(time);
+          },
+          isProductionEnv,
+          () => setPerformanceVideoTimePositionCB(time),
+        );
       }
     },
-    [customerId, setPerformanceVideoTimePosition, isProductionEnv],
+    [customerId, setPerformanceVideoTimePositionCB],
   );
 
   const getPerformanceVideoUrl = useCallback(
@@ -311,7 +307,9 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     eventId: videoFromPrismic.eventId,
                     clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
                     ref,
+                    isProductionEnv,
                   }),
                   guidance: vs_guidance,
                   guidanceDetails: vs_guidance_details,
@@ -330,7 +328,9 @@ const General: React.FC<
                     videoId: videoFromPrismic.videoId,
                     eventId: videoFromPrismic.eventId,
                     clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
                     ref,
+                    isProductionEnv,
                   }),
                   analytics: {
                     videoId: videoFromPrismic.videoId,
@@ -367,6 +367,8 @@ const General: React.FC<
             eventId: videoFromPrismic.eventId,
             clearLoadingState,
             ref,
+            dieseVideoId: videoFromPrismic.dieseId,
+            isProductionEnv,
           }),
           analytics: {
             videoId: videoFromPrismic.videoId,
@@ -506,8 +508,8 @@ const General: React.FC<
       return;
     }
 
-    myListAction(customerId, eventId, () => {
-      hasMyListItem(customerId, eventId)
+    myListAction(customerId, eventId, isProductionEnv, () => {
+      hasMyListItem(customerId, eventId, isProductionEnv)
         .then(isExist => {
           if (generalMountedRef.current) {
             setExistInMyList(isExist);
@@ -592,16 +594,14 @@ const General: React.FC<
 
   useEffect(
     () => {
-      if (customerId) {
-        hasMyListItem(customerId, eventId)
-          .then(isExist => setExistInMyList(isExist))
-          .finally(() => {
-            addOrRemoveBusyRef.current = false;
-          });
-      }
+      hasMyListItem(customerId, eventId, isProductionEnv)
+        .then(setExistInMyList)
+        .finally(() => {
+          addOrRemoveBusyRef.current = false;
+        });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [eventId],
+    [eventId, eventId, isProductionEnv],
   );
 
   useFocusEffect(
