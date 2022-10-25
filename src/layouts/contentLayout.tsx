@@ -34,31 +34,31 @@ const ContentLayout: React.FC<TContentLayoutProps> = () => {
     <Stack.Navigator
       screenListeners={{
         transitionStart: (...rest) => {
-          global.roh_rlog({
+          console.log({
             name: `transitionStart ${Platform.OS}`,
             value: rest,
           });
         },
         transitionEnd: (...rest) => {
-          global.roh_rlog({
+          console.log({
             name: `transitionEnd ${Platform.OS}`,
             value: rest,
           });
         },
         focus: (...rest) => {
-          global.roh_rlog({
+          console.log({
             name: `focus ${Platform.OS}`,
             value: rest,
           });
         },
         blur: (...rest) => {
-          global.roh_rlog({
+          console.log({
             name: `blur ${Platform.OS}`,
             value: rest,
           });
         },
         beforeRemove: (...rest) => {
-          global.roh_rlog({
+          console.log({
             name: `beforeRemove ${Platform.OS}`,
             value: rest,
           });
@@ -114,31 +114,31 @@ const ContentScreen: React.MemoExoticComponent<
         )}
         screenListeners={{
           drawerItemPress: (...rest) => {
-            global.roh_rlog({
+            console.log({
               name: `drawerItemPress ${Platform.OS}`,
               value: rest,
             });
           },
           focus: (...rest) => {
-            global.roh_rlog({
+            console.log({
               name: `focus ${Platform.OS}`,
               value: rest,
             });
           },
           blur: (...rest) => {
-            global.roh_rlog({
+            console.log({
               name: `blur ${Platform.OS}`,
               value: rest,
             });
           },
           beforeRemove: (...rest) => {
-            global.roh_rlog({
+            console.log({
               name: `beforeRemove ${Platform.OS}`,
               value: rest,
             });
           },
           state: (...rest) => {
-            global.roh_rlog({
+            console.log({
               name: `state ${Platform.OS}`,
               value: rest,
             });

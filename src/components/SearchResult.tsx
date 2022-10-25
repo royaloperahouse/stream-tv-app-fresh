@@ -27,6 +27,7 @@ import type { TContentScreensProps } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
+import { isTVOS } from 'configs/globalConfig';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -146,6 +147,16 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const touchableHandler = () => {
     navMenuManager.hideNavMenu();
+    if (isTVOS) {
+      setTimeout(() => {
+        navigation.navigate(contentScreenNames.eventDetails, {
+          eventId: item.id,
+          screenNameFrom,
+          sectionIndex,
+        });
+      }, 500);
+      return;
+    }
     navigation.navigate(contentScreenNames.eventDetails, {
       eventId: item.id,
       screenNameFrom,

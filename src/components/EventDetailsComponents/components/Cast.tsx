@@ -22,6 +22,9 @@ const Cast: React.FC<
       SectionsParamsContext,
     )[route.name] || {};
   const { nextSectionTitle, castList, nextScreenName, prevScreenName } = params;
+  for (let i = 0; i < 20; i++) {
+    castList.push({ ...castList[0], role: castList[0] + i });
+  }
   const goUpCB = useCallback(() => {
     navigation.replace(prevScreenName);
   }, [navigation, prevScreenName]);

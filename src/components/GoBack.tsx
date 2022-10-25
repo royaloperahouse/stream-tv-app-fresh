@@ -27,6 +27,7 @@ import type {
 } from '@configs/screensConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
+import { isTVOS } from 'configs/globalConfig';
 
 const goBackButtonWidth = scaleSize(160);
 const goBackButtonRef = createRef<
@@ -71,7 +72,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
   const [show, setShow] = useState<boolean>(true);
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const [accessible, setAccessible] = useState<boolean>(true);
-
+  const isFocused = useRef<boolean>(false);
   const navigation =
     useNavigation<
       TContentScreensProps<
@@ -170,8 +171,9 @@ const GoBack: React.FC<TGoBackProps> = () => {
   useLayoutEffect(() => {
     const cb = (event: HWEvent) => {
       if (
-        event.tag === btnRef.current?.getNode?.() &&
-        event.eventType === 'left'
+        (event.eventType === 'swipeLeft' && isFocused.current) ||
+        (event.tag === btnRef.current?.getNode?.() &&
+          event.eventType === 'left')
       ) {
         onFocusHandler();
       }
@@ -191,6 +193,12 @@ const GoBack: React.FC<TGoBackProps> = () => {
         ref={btnRef}
         style={styles.wrapperStyle}
         accessible={accessible}
+        onBlur={() => {
+          isFocused.current = false;
+        }}
+        onFocus={() => {
+          isFocused.current = true;
+        }}
         styleFocused={styles.wrapperStyleActive}>
         <View style={styles.buttonContainer}>
           <GoBackIcon width={scaleSize(40)} height={scaleSize(40)} />

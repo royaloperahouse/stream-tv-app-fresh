@@ -4,7 +4,6 @@ import React, {
   useRef,
   useLayoutEffect,
   useCallback,
-  useImperativeHandle,
   useContext,
 } from 'react';
 import {
@@ -73,7 +72,7 @@ import {
   savePosition,
 } from '@services/bitMovinPlayer';
 import RohImage from 'components/RohImage';
-import { buildInfoForBitmovin } from '@configs/globalConfig';
+import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
 import { getVideoDetails } from 'services/prismicApiClient';
 import * as Prismic from '@prismicio/client';
 
@@ -150,7 +149,13 @@ const General: React.FC<
       }: any) =>
       async (error: TBMPlayerErrorObject | null, time: string) => {
         if (typeof savePositionCB === 'function') {
-          savePositionCB({ time, videoId, eventId, dieseVideoId, isProductionEnv });
+          savePositionCB({
+            time,
+            videoId,
+            eventId,
+            dieseVideoId,
+            isProductionEnv,
+          });
         }
         if (error) {
           globalModalManager.openModal({
@@ -625,6 +630,16 @@ const General: React.FC<
       return () => {
         TVEventManager.removeEventListener(cb);
       };
+    }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isTVOS) {
+        setTimeout(() => {
+          watchNowButtonRef.current?.focusOnFirstAvalibleButton?.();
+        }, 500);
+      }
     }, []),
   );
 

@@ -18,8 +18,9 @@ const GoUp: React.FC<Props> = ({ height = 10, onFocus }) => {
     useCallback(() => {
       const cb = (event: HWEvent) => {
         if (
-          event.tag === btnRef.current?.getNode?.() &&
-          event.eventType === 'up'
+          event.eventType === 'swipeUp' ||
+          (event.tag === btnRef.current?.getNode?.() &&
+            event.eventType === 'up')
         ) {
           onFocus();
         }
