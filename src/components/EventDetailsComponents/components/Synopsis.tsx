@@ -23,6 +23,9 @@ const Synopsis: React.FC<
       SectionsParamsContext,
     )[route.name] || {};
   const { nextSectionTitle, synopsis, nextScreenName, prevScreenName } = params;
+  for (let i = 0; i < 10; i++) {
+    synopsis.push({ ...synopsis[0], key: synopsis[0].key + i });
+  }
   const goUpCB = useCallback(() => {
     navigation.replace(prevScreenName);
   }, [navigation, prevScreenName]);

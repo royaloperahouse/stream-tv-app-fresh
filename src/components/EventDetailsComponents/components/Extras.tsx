@@ -42,6 +42,7 @@ import { useAppSelector } from 'hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import { buildInfoForBitmovin } from '@configs/globalConfig';
 import { customerIdSelector } from '@services/store/auth/Selectors';
+import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
 
 const Extras: React.FC<
   TEventDetailsScreensProps<
@@ -288,6 +289,15 @@ const Extras: React.FC<
     }, []),
   );
 
+  useFocusLayoutEffect(
+    useCallback(() => {
+      setTimeout(() => {
+        Object.values(videosRefs.current)[0].current.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+      }, 500);
+    }, []),
+  );
   return (
     <View style={[styles.generalContainer]}>
       {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}

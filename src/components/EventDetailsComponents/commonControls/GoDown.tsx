@@ -21,8 +21,9 @@ const GoDown: React.FC<Props> = ({ text, onFocus }) => {
     useCallback(() => {
       const cb = (event: HWEvent) => {
         if (
-          event.tag === btnRef.current?.getNode?.() &&
-          event.eventType === 'down'
+          event.eventType === 'swipeDown' ||
+          (event.tag === btnRef.current?.getNode?.() &&
+            event.eventType === 'down')
         ) {
           onFocus();
         }

@@ -1,16 +1,5 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableHighlight,
-  findNodeHandle,
-} from 'react-native';
+import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
@@ -30,6 +19,7 @@ import {
 } from '@configs/screensConfig';
 import RohImage from '@components/RohImage';
 import { FocusManager } from 'services/focusService/focusManager';
+import { isTVOS } from 'configs/globalConfig';
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -120,6 +110,19 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
 
     const onPressHandler = () => {
       navMenuManager.hideNavMenu();
+      if (isTVOS) {
+        setTimeout(
+          () =>
+            navigation.navigate(contentScreenNames.eventDetails, {
+              eventId: event.id,
+              screenNameFrom,
+              sectionIndex,
+              selectedItemIndex,
+            }),
+          500,
+        );
+        return;
+      }
       navigation.navigate(contentScreenNames.eventDetails, {
         eventId: event.id,
         screenNameFrom,

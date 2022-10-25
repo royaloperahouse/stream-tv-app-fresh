@@ -1,4 +1,4 @@
-import { isAmazon } from '@configs/globalConfig';
+import { isAmazon, isTVOS } from '@configs/globalConfig';
 
 export const bitMovinPlayerKey = '@bitMovinPlayer';
 export const bitMovinPlayerSelectedBitrateKey =
@@ -32,6 +32,7 @@ export const playerBitratesFilter = Object.freeze({
   }),
 });
 
-export const defaultPlayerBitrateKey = isAmazon
-  ? playerBitratesFilter.high.key
-  : playerBitratesFilter.normal.key;
+export const defaultPlayerBitrateKey =
+  isAmazon || isTVOS
+    ? playerBitratesFilter.high.key
+    : playerBitratesFilter.normal.key;

@@ -258,7 +258,10 @@ const NavMenu: React.FC<TNavMenuProps> = ({
 
   const setMenuFocus = useCallback(
     (id: TRoute['navMenuScreenName']) => {
-      if (state.routeNames[state.index] !== id) {
+      if (
+        state.routeNames[state.index] !== id &&
+        !FocusManager.getFirstLounch()
+      ) {
         navigation.navigate(id);
         navMenuWidth.value = widthWithFocus;
         currenItemInFocus.current = id;
