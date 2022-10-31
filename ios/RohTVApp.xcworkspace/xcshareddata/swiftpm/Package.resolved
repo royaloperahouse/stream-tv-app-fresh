@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "player-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bitmovin/player-ios.git",
+      "state" : {
+        "revision" : "3b6513003d9c517a4265b6b6316026405fa6399d",
+        "version" : "3.28.0"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -39,3 +39,11 @@ export type TBMPlayerErrorObject = {
   errMessage: string;
   url?: string;
 };
+
+export type ROHBitmovinPlayerMethodsType = {
+  play(): void;
+  pause(): void;
+  destroy(): void;
+  seekBackwardCommand(): void;
+  seekForwardCommand(): void;
+};

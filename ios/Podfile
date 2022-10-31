@@ -3,6 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
+source 'https://github.com/bitmovin/cocoapod-specs.git'
 install! 'cocoapods', :deterministic_uuids => false
 
 target 'RohTVApp' do
@@ -46,6 +47,9 @@ target 'RohTVApp-tvOS' do
     # An abosolute path to your application root.
     :app_path => "#{Dir.pwd}/.."
   )
+  pod 'BitmovinPlayer', '3.9.2'
+  pod 'BitmovinAnalyticsCollector/Core', '2.9.2'
+  pod 'BitmovinAnalyticsCollector/BitmovinPlayer', '2.9.2'
 
   target 'RohTVApp-tvOSTests' do
     inherit! :complete
