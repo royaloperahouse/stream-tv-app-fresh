@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TVEventControl } from 'react-native';
 import WithLogo from '@components/WithLogo';
 import WithBackground from '@components/WithBackground';
 import RNBootSplash from 'react-native-bootsplash';
 import NavigationContainer from '@navigations/navigationContainer';
 import ContentLayout from '@layouts/contentLayout';
 import RohText from '@components/RohText';
-import { buildInfo } from '@configs/globalConfig';
+import { buildInfo, isTVOS } from '@configs/globalConfig';
 import { scaleSize } from '@utils/scaleSize';
 import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
 import GlobalModal from '@components/GlobalModals';
@@ -16,7 +16,15 @@ type TMainLayoutProps = {};
 
 const MainLayout: React.FC<TMainLayoutProps> = () => {
   useEffect(() => {
+    if (isTVOS) {
+      TVEventControl.enableTVMenuKey();
+    }
     FocusManager.init();
+    return () => {
+      if (isTVOS) {
+        TVEventControl.disableTVMenuKey();
+      }
+    };
   }, []);
   return (
     <WithBackground>

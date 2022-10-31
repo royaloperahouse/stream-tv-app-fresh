@@ -14,7 +14,12 @@ import IntroScreen from '@screens/introScreen';
 import LoginScreen from '@screens/loginScreen';
 import MainLayout from '@layouts/mainLayout';
 import LoginWithoutQRCodeScreen from '@screens/LoginWithoutQRCodeScreen';
-import { AppState, AppStateStatus, Platform } from 'react-native';
+import {
+  AppState,
+  AppStateStatus,
+  Platform,
+  TVEventControl,
+} from 'react-native';
 import {
   getEventListLoopStart,
   getEventListLoopStop,
@@ -23,6 +28,7 @@ import RNBootSplash from 'react-native-bootsplash';
 import { verifyDevice } from '@services/apiClient';
 import { useFeature } from 'flagged';
 import { TVEventManager } from '@services/tvRCEventListener';
+import { isTVOS } from 'configs/globalConfig';
 
 type TAppLayoutProps = {};
 const AppLayout: React.FC<TAppLayoutProps> = () => {
@@ -42,6 +48,9 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
         nextAppState === 'active' &&
         isAuthenticated
       ) {
+        if (isTVOS) {
+          TVEventControl.enableTVMenuKey();
+        }
         dispatch(getEventListLoopStart());
       }
       if (
@@ -49,6 +58,9 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
         nextAppState.match(/inactive|background/) &&
         isAuthenticated
       ) {
+        if (isTVOS) {
+          TVEventControl.disableTVMenuKey();
+        }
         dispatch(getEventListLoopStop());
       }
       appState.current = nextAppState;
@@ -95,6 +107,9 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
 
   useLayoutEffect(
     () => () => {
+      if (isTVOS) {
+        TVEventControl.disableTVMenuKey();
+      }
       TVEventManager.unmount();
     },
     [],
