@@ -1,14 +1,31 @@
-import React, { useLayoutEffect, useState, useRef, useCallback } from 'react';
+import React, {
+  useLayoutEffect,
+  useState,
+  useRef,
+  useImperativeHandle,
+} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   ViewProps,
-  Dimensions,
-  View,
+  HostComponent,
+  requireNativeComponent,
+  NativeModules,
+  findNodeHandle,
+  Platform,
+  LayoutRectangle,
 } from 'react-native';
+import type {
+  TBitmoviPlayerNativeProps,
+  ROHBitmovinPlayerMethodsType,
+} from '@services/types/bitmovinPlayer';
 import RohText from '@components/RohText';
-import GoBack from '@components/GoBack';
 import { scaleSize } from '@utils/scaleSize';
+
+let NativeBitMovinPlayer: HostComponent<TBitmoviPlayerNativeProps> =
+  requireNativeComponent('ROHBitMovinPlayer');
+
+const ROHBitmovinPlayerModule = NativeModules.NativeBitMovinPlayer;
 
 type TCallbackFunc = (data?: any) => void;
 
@@ -83,28 +100,223 @@ type TPlayerProps = {
 };
 
 const Player: React.FC<TPlayerProps> = props => {
+  const cloneProps = {
+    ...props,
+    configuration: {
+      ...props.configuration,
+    },
+    analytics: {
+      ...props.analytics,
+    },
+  };
+
+  const {
+    onEvent,
+    onClose,
+    title,
+    subtitle = '',
+    configuration,
+    analytics,
+    autoPlay = false,
+  } = cloneProps;
+  const playerRef = useRef<typeof NativeBitMovinPlayer | null>(null);
+  const controlRef = useRef<ROHBitmovinPlayerMethodsType | null>(null);
+  const playerMounted = useRef<boolean>(false);
+  const [maxHeight, setMaxHeight] = useState<number | null>(null);
+  const [layout, setLayout] = useState<LayoutRectangle | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useLayoutEffect(() => {
+    playerMounted.current = true;
+    return () => {
+      if (playerMounted?.current) {
+        playerMounted.current = false;
+      }
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const { height } = layout || {};
+
+    if (maxHeight !== null && height && !loading) {
+      setTimeout(() => {
+        setMaxHeight(height);
+      }, 300);
+    }
+
+    if (height && maxHeight === height) {
+      setLoading(true);
+    }
+  }, [maxHeight, layout, loading]);
+
+  useLayoutEffect(() => {
+    if (loading && autoPlay && Platform.OS === 'android') {
+      play();
+    }
+  }, [loading, autoPlay]);
+
+  const play = () => {
+    ROHBitmovinPlayerModule.play();
+  };
+
+  const pause = () => {
+    ROHBitmovinPlayerModule.pause();
+  };
+
+  const seekBackwardCommand = () => {
+    ROHBitmovinPlayerModule.seekBackwardCommand();
+  };
+
+  const seekForwardCommand = () => {
+    ROHBitmovinPlayerModule.seekForwardCommand();
+  };
+
+  const destroy = () => {
+    ROHBitmovinPlayerModule.destroy();
+  };
+
+  const setZoom = () => {
+    ROHBitmovinPlayerModule.setZoom(findNodeHandle(playerRef.current || null));
+  };
+
+  const setFit = () => {
+    ROHBitmovinPlayerModule.setFit(findNodeHandle(playerRef.current || null));
+  };
+
+  const seek = (time = 0) => {
+    const seekTime = parseFloat(time.toString());
+
+    if (seekTime) {
+      ROHBitmovinPlayerModule.seek(
+        findNodeHandle(playerRef.current || null),
+        seekTime,
+      );
+    }
+  };
+
+  const mute = () => {
+    ROHBitmovinPlayerModule.mute(findNodeHandle(playerRef.current || null));
+  };
+
+  const unmute = () => {
+    ROHBitmovinPlayerModule.unmute(findNodeHandle(playerRef.current || null));
+  };
+
+  const enterFullscreen = () => {
+    ROHBitmovinPlayerModule.enterFullscreen(
+      findNodeHandle(playerRef.current || null),
+    );
+  };
+
+  const exitFullscreen = () => {
+    ROHBitmovinPlayerModule.exitFullscreen(
+      findNodeHandle(playerRef.current || null),
+    );
+  };
+
+  const getCurrentTime = () =>
+    ROHBitmovinPlayerModule.getCurrentTime(
+      findNodeHandle(playerRef.current || null),
+    );
+
+  const getDuration = () =>
+    ROHBitmovinPlayerModule.getDuration(
+      findNodeHandle(playerRef.current || null),
+    );
+
+  const getVolume = () =>
+    ROHBitmovinPlayerModule.getVolume(
+      findNodeHandle(playerRef.current || null),
+    );
+
+  const setVolume = (volume = 100) => {
+    ROHBitmovinPlayerModule.setVolume(
+      findNodeHandle(playerRef.current || null),
+      volume,
+    );
+  };
+
+  const isMuted = () =>
+    ROHBitmovinPlayerModule.isMuted(findNodeHandle(playerRef.current || null));
+
+  const isPaused = () =>
+    ROHBitmovinPlayerModule.isPaused(findNodeHandle(playerRef.current || null));
+
+  const isStalled = () =>
+    ROHBitmovinPlayerModule.isStalled(
+      findNodeHandle(playerRef.current || null),
+    );
+
+  const isPlaying = () =>
+    ROHBitmovinPlayerModule.isPlaying(
+      findNodeHandle(playerRef.current || null),
+    );
+
+  useImperativeHandle(controlRef, () => ({
+    play,
+    pause,
+    seekBackwardCommand,
+    seekForwardCommand,
+    destroy,
+    setZoom,
+    setFit,
+    seek,
+    mute,
+    unmute,
+    enterFullscreen,
+    exitFullscreen,
+    getCurrentTime,
+    getDuration,
+    getVolume,
+    setVolume,
+    isMuted,
+    isPaused,
+    isStalled,
+    isPlaying,
+  }));
+
+  const setPlayer = (ref: any) => {
+    playerRef.current = ref;
+  };
 
   return (
-    <View style={styles.rootContainer}>
-      <GoBack />
-      <RohText style={styles.rootText} bold>
-        iOS bitmovin player coming soon
-      </RohText>
-    </View>
+    <SafeAreaView style={styles.defaultPlayerStyle}>
+      <NativeBitMovinPlayer
+        ref={setPlayer}
+        configuration={configuration}
+        analytics={analytics}
+        style={styles.playerLoaded}
+        autoPlay={autoPlay}
+        onPlay={event => {
+          console.log('play:', event);
+        }}
+      />
+      {configuration.url === '' && (
+        <RohText style={styles.textDescription}>Video not provided</RohText>
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  rootContainer: {
-    height: Dimensions.get('window').height,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rootText: {
-    color: 'white',
+  defaultPlayerStyle: {
+    backgroundColor: 'black',
     flex: 1,
-    textAlign: 'center',
-    fontSize: scaleSize(48),
+  },
+  playerLoaded: {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  textDescription: {
+    position: 'absolute',
+    flex: 1,
+    alignSelf: 'center',
+    top: scaleSize(180),
+    fontSize: scaleSize(80),
+    color: 'red',
   },
 });
 
