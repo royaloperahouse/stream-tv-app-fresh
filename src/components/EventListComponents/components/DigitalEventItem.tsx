@@ -205,7 +205,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
             <RohImage
               resizeMode={FastImage.resizeMode.cover}
               style={styles.image}
-              focused
               source={snapshotImageUrl}
             />
           </View>
@@ -245,7 +244,6 @@ const styles = StyleSheet.create({
   image: {
     width: scaleSize(357),
     height: scaleSize(200),
-    zIndex: 0,
   },
 });
 
