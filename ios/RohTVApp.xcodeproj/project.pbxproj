@@ -47,6 +47,8 @@
 		CEA69F3C290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */; };
 		CEA69F40290834AF00D25D41 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3F290834AF00D25D41 /* ViewController.swift */; };
 		CEA69F41290834AF00D25D41 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3F290834AF00D25D41 /* ViewController.swift */; };
+		CEA69F44291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
+		CEA69F45291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
 		EE57DEA5314790D63C074D03 /* libPods-RohTVApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA54FCF2086BA3B4678F8237 /* libPods-RohTVApp-tvOS.a */; };
 		F03E0AA5C6DB4F05868D7E76 /* GothamSSm-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC473F715C9646E4BA2A6407 /* GothamSSm-Light.otf */; };
 		F68EA08DE9AB4FBE8BBB8545 /* GothamSSm-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */; };
@@ -108,6 +110,8 @@
 		CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROHBitMovinPlayer.swift; sourceTree = "<group>"; };
 		CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ROHBitMovinPlayer.m; sourceTree = "<group>"; };
 		CEA69F3F290834AF00D25D41 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CEA69F42291A669C00D25D41 /* RCTExitApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTExitApp.h; sourceTree = "<group>"; };
+		CEA69F43291A696000D25D41 /* RCTExitApp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTExitApp.m; sourceTree = "<group>"; };
 		DCAE814AFC974243A17983F9 /* GothamSSm-BookItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BookItalic.otf"; path = "../src/assets/fonts/GothamSSm-BookItalic.otf"; sourceTree = "<group>"; };
 		E83377084EE5485B91739F28 /* GothamSSm-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Black.otf"; path = "../src/assets/fonts/GothamSSm-Black.otf"; sourceTree = "<group>"; };
 		E8891750AE2DFBD87A5BDB74 /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -181,6 +185,8 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				CEA69F42291A669C00D25D41 /* RCTExitApp.h */,
+				CEA69F43291A696000D25D41 /* RCTExitApp.m */,
 			);
 			name = RohTVApp;
 			sourceTree = "<group>";
@@ -743,6 +749,7 @@
 				CEA69F40290834AF00D25D41 /* ViewController.swift in Sources */,
 				CEA69F3B290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */,
 				CEA69F382908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */,
+				CEA69F44291A696000D25D41 /* RCTExitApp.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -755,6 +762,7 @@
 				CEA69F41290834AF00D25D41 /* ViewController.swift in Sources */,
 				CEA69F3C290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */,
 				CEA69F392908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */,
+				CEA69F45291A696000D25D41 /* RCTExitApp.m in Sources */,
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.mm in Sources */,
 			);
