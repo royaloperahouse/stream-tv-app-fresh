@@ -14,6 +14,7 @@ import {
   View,
   BackHandler,
   ScrollView,
+  TVFocusGuideView,
 } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import NavMenuItem from '@components/NavMenu/components/NavMenuItem';
@@ -36,18 +37,8 @@ import {
 } from '@configs/navMenuConfig';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
-//import { globalModalManager } from '@components/GlobalModal';
-//import { WarningOfExitModal } from '@components/GlobalModal/variants';
-import { useAppDispatch } from '@hooks/redux';
+import ExitApp from '@components/ExitApp';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import {
-  clearEventState,
-  getEventListLoopStop,
-} from '@services/store/events/Slices';
-import {
-  endLoginLoop,
-  endFullSubscriptionLoop,
-} from '@services/store/auth/Slices';
 import { useFeature } from 'flagged';
 import Animated, {
   useSharedValue,
@@ -67,6 +58,7 @@ import { useForseUpdate } from '@hooks/useForseUpdate';
 import { globalModalManager } from '@components/GlobalModals';
 import { WarningOfExitModal } from '@components/GlobalModals/variants';
 import { FocusManager } from 'services/focusService/focusManager';
+import { isTVOS } from 'configs/globalConfig';
 
 type TNavMenuProps = {
   navMenuConfig: Array<{
@@ -206,39 +198,30 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     [navMenuWidth.value],
   );
   const exitOfAppButtonRef = useRef<TouchableHighlight>(null);
-  const dispatch = useAppDispatch();
-  const exitOfApp = useCallback(
-    (isGlobalHandler?: boolean) => {
-      globalModalManager.openModal({
-        hasBackground: true,
-        hasLogo: true,
-        contentComponent: WarningOfExitModal,
-        contentProps: {
-          confirmActionHandler: () => {
-            globalModalManager.closeModal(() => {
-              dispatch(getEventListLoopStop());
-              dispatch(endFullSubscriptionLoop());
-              dispatch(endLoginLoop());
-              dispatch(clearEventState());
-              FocusManager.switchOnFirstLounch();
-              BackHandler.exitApp();
-            });
-          },
-          rejectActionHandler: () => {
-            globalModalManager.closeModal(() => {
-              if (isGlobalHandler) {
-                return;
-              }
-              exitOfAppButtonRef?.current?.setNativeProps?.({
-                hasTVPreferredFocus: true,
-              });
-            });
-          },
+  const exitOfApp = useCallback((isGlobalHandler?: boolean) => {
+    globalModalManager.openModal({
+      hasBackground: true,
+      hasLogo: true,
+      contentComponent: WarningOfExitModal,
+      contentProps: {
+        confirmActionHandler: () => {
+          globalModalManager.closeModal(() => {
+            ExitApp.exit();
+          });
         },
-      });
-    },
-    [dispatch],
-  );
+        rejectActionHandler: () => {
+          globalModalManager.closeModal(() => {
+            if (isGlobalHandler) {
+              return;
+            }
+            exitOfAppButtonRef?.current?.setNativeProps?.({
+              hasTVPreferredFocus: true,
+            });
+          });
+        },
+      },
+    });
+  }, []);
 
   const exitOfAppPressHandler = () => {
     exitOfApp();
@@ -286,7 +269,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         return true;
       }
       if (canExit) {
-        exitOfApp(true);
+        exitOfApp();
       }
       return true;
     };
@@ -387,6 +370,12 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               nextFocusDown={findNodeHandle(exitOfAppButtonRef.current)}
             />
           ))}
+          {canExit && (
+            <TVFocusGuideView
+              style={styles.exitButtonRedirection}
+              destinations={[exitOfAppButtonRef.current]}
+            />
+          )}
         </ScrollView>
       </Animated.View>
       {canExit && (
@@ -397,8 +386,12 @@ const NavMenu: React.FC<TNavMenuProps> = ({
             navMenuExitButtonAnimatedStyle,
           ]}>
           <Animated.View style={[exitButtonFocusedStyle]}>
+            <TVFocusGuideView
+              style={styles.exitButtonRedirection}
+              destinations={[buttonsRefs.current?.['Settings']?.current]}
+            />
             <ExitButton
-              animatedProps={exitButtonAnimatedProps}
+              animatedProps={isTVOS ? {} : exitButtonAnimatedProps}
               onPress={exitOfAppPressHandler}
               ref={exitOfAppButtonRef}
               underlayColor="transparent"
@@ -446,6 +439,10 @@ const styles = StyleSheet.create({
     letterSpacing: scaleSize(1),
     color: Colors.defaultTextColor,
     textTransform: 'uppercase',
+  },
+  exitButtonRedirection: {
+    flexDirection: 'row',
+    height: scaleSize(5),
   },
 });
 
