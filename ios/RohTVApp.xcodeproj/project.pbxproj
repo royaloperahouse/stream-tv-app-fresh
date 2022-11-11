@@ -22,12 +22,13 @@
 		41BF5F3596F87FEE707DDD11 /* libPods-RohTVApp-RohTVAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F21F13455730034D850CD1C /* libPods-RohTVApp-RohTVAppTests.a */; };
 		47EB63F3390701B2260096C6 /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0216F1136BF7C90703C880F /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */; };
 		67AD471C20B043AEABD325C2 /* GothamSSm-BookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DCAE814AFC974243A17983F9 /* GothamSSm-BookItalic.otf */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		842C639ABD554C33A3A4473D /* GothamSSm-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0B00252AAD0484A815B6B38 /* GothamSSm-Book.otf */; };
 		89DE40FC0B384D969CFE9824 /* GothamSSm-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */; };
 		89EAFBA5F46940A9BDA2B4F8 /* GothamSSm-XLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */; };
 		9205E18D14E545B38E719BA3 /* GothamSSm-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */; };
 		969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */; };
+		CE2113C4291D47AB00268569 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */; };
+		CE2113C5291D47AB00268569 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */; };
 		CE3737922881A998008E568E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE3737912881A998008E568E /* BootSplash.storyboard */; };
 		CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E83377084EE5485B91739F28 /* GothamSSm-Black.otf */; };
 		CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */; };
@@ -96,7 +97,6 @@
 		40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BoldItalic.otf"; path = "../src/assets/fonts/GothamSSm-BoldItalic.otf"; sourceTree = "<group>"; };
 		4F21F13455730034D850CD1C /* libPods-RohTVApp-RohTVAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-RohTVAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-XLightItalic.otf"; path = "../src/assets/fonts/GothamSSm-XLightItalic.otf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RohTVApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Medium.otf"; path = "../src/assets/fonts/GothamSSm-Medium.otf"; sourceTree = "<group>"; };
 		8DC2855AB2CCC04BED0978AE /* libPods-RohTVApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0216F1136BF7C90703C880F /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +104,8 @@
 		C0B00252AAD0484A815B6B38 /* GothamSSm-Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Book.otf"; path = "../src/assets/fonts/GothamSSm-Book.otf"; sourceTree = "<group>"; };
 		C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BlackItalic.otf"; path = "../src/assets/fonts/GothamSSm-BlackItalic.otf"; sourceTree = "<group>"; };
 		CCE9A90FED9D09047497AB6D /* Pods-RohTVApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		CE2113C2291D3F6000268569 /* RohTVApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RohTVApp.entitlements; path = RohTVApp/RohTVApp.entitlements; sourceTree = "<group>"; };
+		CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE3737912881A998008E568E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = RohTVApp/BootSplash.storyboard; sourceTree = "<group>"; };
 		CEA69F352908312F00D25D41 /* RohTVApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		CEA69F362908312F00D25D41 /* RohTVApp-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -177,9 +179,9 @@
 		13B07FAE1A68108700A75B9A /* RohTVApp */ = {
 			isa = PBXGroup;
 			children = (
+				CE2113C2291D3F6000268569 /* RohTVApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				CE3737912881A998008E568E /* BootSplash.storyboard */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -187,6 +189,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				CEA69F42291A669C00D25D41 /* RCTExitApp.h */,
 				CEA69F43291A696000D25D41 /* RCTExitApp.m */,
+				CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */,
 			);
 			name = RohTVApp;
 			sourceTree = "<group>";
@@ -430,7 +433,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3737922881A998008E568E /* BootSplash.storyboard in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				0CBFBD786C6742859F0BEC46 /* GothamSSm-Black.otf in Resources */,
 				89DE40FC0B384D969CFE9824 /* GothamSSm-BlackItalic.otf in Resources */,
@@ -440,6 +442,7 @@
 				67AD471C20B043AEABD325C2 /* GothamSSm-BookItalic.otf in Resources */,
 				F03E0AA5C6DB4F05868D7E76 /* GothamSSm-Light.otf in Resources */,
 				307E5F4F5D52471BBCE6D1BB /* GothamSSm-LightItalic.otf in Resources */,
+				CE2113C4291D47AB00268569 /* LaunchScreen.storyboard in Resources */,
 				F68EA08DE9AB4FBE8BBB8545 /* GothamSSm-Medium.otf in Resources */,
 				969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */,
 				89EAFBA5F46940A9BDA2B4F8 /* GothamSSm-XLightItalic.otf in Resources */,
@@ -458,6 +461,7 @@
 				CE3737992885C05A008E568E /* GothamSSm-BookItalic.otf in Resources */,
 				CE37379A2885C05A008E568E /* GothamSSm-Light.otf in Resources */,
 				CE37379B2885C05A008E568E /* GothamSSm-LightItalic.otf in Resources */,
+				CE2113C5291D47AB00268569 /* LaunchScreen.storyboard in Resources */,
 				CE37379C2885C05A008E568E /* GothamSSm-Medium.otf in Resources */,
 				CE37379D2885C05A008E568E /* GothamSSm-MediumItalic.otf in Resources */,
 				CE37379E2885C05A008E568E /* GothamSSm-XLightItalic.otf in Resources */,
@@ -854,7 +858,9 @@
 			baseConfigurationReference = 015BA46D04C1496C29E63456 /* Pods-RohTVApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = RohTVApp/RohTVApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z2YKRWBZA9;
 				ENABLE_BITCODE = NO;
@@ -888,7 +894,9 @@
 			baseConfigurationReference = 224D5D4AEB9A0A36B75746AA /* Pods-RohTVApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = RohTVApp/RohTVApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Z2YKRWBZA9;
 				INFOPLIST_FILE = RohTVApp/Info.plist;
@@ -916,6 +924,7 @@
 			baseConfigurationReference = CCE9A90FED9D09047497AB6D /* Pods-RohTVApp-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -954,6 +963,7 @@
 			baseConfigurationReference = 388308430DF4BE056B0CEF13 /* Pods-RohTVApp-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
