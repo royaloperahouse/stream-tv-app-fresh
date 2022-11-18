@@ -14,6 +14,7 @@ import { Colors } from '@themes/Styleguide';
 import FastImage from 'react-native-fast-image';
 import LoadingSpinner from '@components/LoadingSpinner';
 import RohImage from 'components/RohImage';
+import { isTVOS } from 'configs/globalConfig';
 
 type Props = {
   focusCallback?: (pressingHandler?: () => void) => void;
@@ -103,11 +104,22 @@ const ExtrasVideoButton = forwardRef<any, Props>(
           }
         }}
         onFocus={() => {
-          if (isMounted.current) {
-            setFocused(true);
-          }
-          if (typeof focusCallback === 'function') {
-            focusCallback(pressingHandler);
+          if (isTVOS) {
+            setTimeout(() => {
+              if (isMounted.current) {
+                setFocused(true);
+              }
+              if (typeof focusCallback === 'function') {
+                focusCallback(pressingHandler);
+              }
+            }, 0);
+          } else {
+            if (isMounted.current) {
+              setFocused(true);
+            }
+            if (typeof focusCallback === 'function') {
+              focusCallback(pressingHandler);
+            }
           }
         }}
         onPress={pressingHandler}>

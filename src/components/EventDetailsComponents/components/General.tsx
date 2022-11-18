@@ -73,8 +73,7 @@ import {
 } from '@services/bitMovinPlayer';
 import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
-import { getVideoDetails } from 'services/prismicApiClient';
-import * as Prismic from '@prismicio/client';
+import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -148,7 +147,7 @@ const General: React.FC<
         isProductionEnv,
       }: any) =>
       async (error: TBMPlayerErrorObject | null, time: string) => {
-        if (typeof savePositionCB === 'function') {
+        if (typeof savePositionCB === 'function' && error === null) {
           savePositionCB({
             time,
             videoId,
@@ -156,6 +155,9 @@ const General: React.FC<
             dieseVideoId,
             isProductionEnv,
           });
+        }
+        if (isTVOS) {
+          navigation.goBack();
         }
         if (error) {
           globalModalManager.openModal({
@@ -182,7 +184,7 @@ const General: React.FC<
           });
         }
       },
-    [closeModal],
+    [closeModal, navigation],
   );
 
   const openPlayer = useCallback(
@@ -200,6 +202,9 @@ const General: React.FC<
       showVideoInfo,
     }) => {
       goBackButtonuManager.hideGoBackButton();
+      if (isTVOS) {
+        navigation.push(DummyPlayerScreenName);
+      }
       globalModalManager.openModal({
         contentComponent: PlayerModal,
         contentProps: {
@@ -220,7 +225,7 @@ const General: React.FC<
         },
       });
     },
-    [],
+    [navigation],
   );
 
   const savePositionCB = useCallback(

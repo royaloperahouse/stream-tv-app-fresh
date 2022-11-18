@@ -16,6 +16,12 @@ import {
   getEventListLoopStop,
 } from 'services/store/events/Slices';
 
+import {
+  DummyPlayerScreen,
+  DummyPlayerScreenName,
+} from '@components/Player/DummyPlayerScreen';
+import { isTVOS } from 'configs/globalConfig';
+
 const Stack = createNativeStackNavigator<TEventDetailsScreensParamList>();
 
 const EventDetailsScreen: React.FC<
@@ -64,6 +70,12 @@ const EventDetailsScreen: React.FC<
               component={section.Component}
             />
           ))}
+          {isTVOS && (
+            <Stack.Screen
+              name={DummyPlayerScreenName}
+              component={DummyPlayerScreen}
+            />
+          )}
         </Stack.Navigator>
       </SectionsParamsComtextProvider>
     </View>
