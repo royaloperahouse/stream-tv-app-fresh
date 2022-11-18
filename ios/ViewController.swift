@@ -14,6 +14,8 @@ final class ViewController: UIView {
   var player: Player?
   var nextCallback: Bool = false
   var heartbeat: Int = 10
+  var currentTime: Double = 0.0
+  var duration: Double = 0.0
   var analyticsCollector: BitmovinPlayerCollector? = nil
 
   let playerConfig = PlayerConfig()
@@ -23,6 +25,7 @@ final class ViewController: UIView {
 
   @objc var hasZoom: Bool = false
   @objc var autoPlay: Bool = false
+  @objc var title: String? = nil
   @objc var configuration: NSDictionary? = nil
   @objc var analytics: NSDictionary? = nil
 
@@ -35,6 +38,7 @@ final class ViewController: UIView {
   @objc var onSeek:RCTDirectEventBlock? = nil
   @objc var onForward:RCTDirectEventBlock? = nil
   @objc var onRewind:RCTDirectEventBlock? = nil
+  @objc var onDestroy:RCTDirectEventBlock? = nil
 
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -72,16 +76,17 @@ final class ViewController: UIView {
         sourceConfig.thumbnailTrack = thumbnailsTrack
       }
 
-      if((self.configuration!["startOffset"]) != nil) {
-        sourceConfig.options.startOffset = self.configuration!["startOffset"] as! TimeInterval
+      if((self.configuration!["offset"]) != nil) {
+        //self.configuration!["offset"] as! TimeInterval
+        sourceConfig.options.startOffset = self.configuration!["offset"] as! TimeInterval
       }
 
       if((self.configuration!["heartbeat"]) != nil) {
         heartbeat = self.configuration!["heartbeat"] as! Int
       }
 
-      if((self.configuration!["title"]) != nil) {
-        sourceConfig.title = self.configuration!["title"] as? String;
+      if(self.title != nil) {
+        sourceConfig.title = self.title;
       }
 
       if((self.configuration!["hasNextEpisode"]) != nil) {
@@ -121,8 +126,8 @@ final class ViewController: UIView {
           configAnalytics.title = self.analytics!["title"] as? String;
           configAnalytics.customerUserId = self.analytics!["userId"] as? String;
           configAnalytics.cdnProvider = self.analytics!["cdnProvider"] as? String;
-          configAnalytics.customData1 = self.analytics!["customData1"] as? String;
-          configAnalytics.customData2 = self.analytics!["customData2"] as? String;
+          configAnalytics.customData1 = self.analytics!["buildInfoForBitmovin"] as? String;
+          configAnalytics.customData2 = self.analytics!["userId"] as? String;
           configAnalytics.customData3 = self.analytics!["customData3"] as? String;
           configAnalytics.customData4 = self.analytics!["customData4"] as? String;
 
@@ -218,6 +223,7 @@ extension ViewController: PlayerListener {
   }
 
   func onReady(_ event: ReadyEvent, player: Player) {
+    duration = player.duration
     dump(event, name: "** ReadyEvent", maxDepth: maxDepth)
   }
 
@@ -226,6 +232,7 @@ extension ViewController: PlayerListener {
   }
 
   func onTimeChanged(_ event: TimeChangedEvent, player: Player) {
+    currentTime = event.currentTime
     dump(event, name: "** TimeChangedEvent", maxDepth: maxDepth)
   }
 
@@ -234,6 +241,10 @@ extension ViewController: PlayerListener {
   }
 
   func onDestroy(_ event: DestroyEvent, player: Player) {
+    if self.onDestroy != nil {
+      onDestroy!(["currentTime": currentTime, "duration": duration])
+    }
+
     dump(event, name: "** DestroyEvent", maxDepth: maxDepth)
   }
 
@@ -242,7 +253,17 @@ extension ViewController: PlayerListener {
   }
 
   func onPlayerError(_ event: PlayerErrorEvent, player: Player) {
+    if self.onError != nil {
+      onError!(["code": event.code.rawValue, "message": event.message])
+    }
     dump(event, name: "** PlayerErrorEvent", maxDepth: maxDepth)
+  }
+  
+  func onSourceError(_ event: SourceErrorEvent, player: Player) {
+    if self.onError != nil {
+      onError!(["code": event.code.rawValue, "message": event.message])
+    }
+    dump(event, name: "** SourceErrorEvent", maxDepth: maxDepth)
   }
 
   func onSubtitleChanged(_ event: SubtitleChangedEvent, player: Player) {

@@ -38,12 +38,12 @@ import type {
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
-import { useAppSelector } from 'hooks/redux';
+import { useAppSelector } from '@hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
-import { buildInfoForBitmovin } from '@configs/globalConfig';
+import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
 import { customerIdSelector } from '@services/store/auth/Selectors';
-import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
-
+import { useFocusLayoutEffect } from '@hooks/useFocusLayoutEffect';
+import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
 const Extras: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['extras']
@@ -104,6 +104,9 @@ const Extras: React.FC<
         if (typeof savePositionCB === 'function') {
           await savePositionCB({ time, videoId, eventId });
         }
+        if (isTVOS) {
+          navigation.goBack();
+        }
         if (error) {
           globalModalManager.openModal({
             contentComponent: ErrorModal,
@@ -129,7 +132,7 @@ const Extras: React.FC<
           });
         }
       },
-    [closeModal],
+    [closeModal, navigation],
   );
 
   const openPlayer = useCallback(
@@ -147,6 +150,9 @@ const Extras: React.FC<
       showVideoInfo,
     }) => {
       goBackButtonuManager.hideGoBackButton();
+      if (isTVOS) {
+        navigation.push(DummyPlayerScreenName);
+      }
       globalModalManager.openModal({
         contentComponent: PlayerModal,
         contentProps: {
@@ -167,7 +173,7 @@ const Extras: React.FC<
         },
       });
     },
-    [],
+    [navigation],
   );
 
   const closeModalCB = useCallback(

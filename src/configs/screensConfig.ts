@@ -150,6 +150,7 @@ export type TEventDetailsScreensParamList = {
   [eventDetailsScreenNames.synopsis]: undefined;
   [eventDetailsScreenNames.info]: undefined;
   [eventDetailsScreenNames.extras]: undefined;
+  DummyPlayerScreen: undefined;
 };
 
 export type TContentScreensNamesList = keyof TContentScreensParamList;
