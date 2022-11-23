@@ -1,0 +1,20 @@
+{
+  "layers" : [
+    {
+      "filename" : "1280 X 768px_1.imagestacklayer"
+    },
+    {
+      "filename" : "1280 X 768px_2.imagestacklayer"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "canvasSize" : {
+      "width" : 400,
+      "height" : 240
+    }
+  }
+}

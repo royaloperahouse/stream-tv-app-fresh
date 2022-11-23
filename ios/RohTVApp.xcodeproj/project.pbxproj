@@ -41,6 +41,8 @@
 		CE37379C2885C05A008E568E /* GothamSSm-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */; };
 		CE37379D2885C05A008E568E /* GothamSSm-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */; };
 		CE37379E2885C05A008E568E /* GothamSSm-XLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */; };
+		CE51C10A292CE5DD00821DE0 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE51C109292CE5DD00821DE0 /* Media.xcassets */; };
+		CE51C10B292CE5DD00821DE0 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE51C109292CE5DD00821DE0 /* Media.xcassets */; };
 		CEA69F2E290827BD00D25D41 /* BitmovinPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = CEA69F2D290827BD00D25D41 /* BitmovinPlayer */; };
 		CEA69F382908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */; };
 		CEA69F392908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */; };
@@ -105,8 +107,9 @@
 		C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BlackItalic.otf"; path = "../src/assets/fonts/GothamSSm-BlackItalic.otf"; sourceTree = "<group>"; };
 		CCE9A90FED9D09047497AB6D /* Pods-RohTVApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		CE2113C2291D3F6000268569 /* RohTVApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RohTVApp.entitlements; path = RohTVApp/RohTVApp.entitlements; sourceTree = "<group>"; };
-		CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CE2113C3291D47AB00268569 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		CE3737912881A998008E568E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = RohTVApp/BootSplash.storyboard; sourceTree = "<group>"; };
+		CE51C109292CE5DD00821DE0 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		CEA69F352908312F00D25D41 /* RohTVApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		CEA69F362908312F00D25D41 /* RohTVApp-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROHBitMovinPlayer.swift; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				CE51C109292CE5DD00821DE0 /* Media.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				CEA69F42291A669C00D25D41 /* RCTExitApp.h */,
@@ -442,6 +446,7 @@
 				67AD471C20B043AEABD325C2 /* GothamSSm-BookItalic.otf in Resources */,
 				F03E0AA5C6DB4F05868D7E76 /* GothamSSm-Light.otf in Resources */,
 				307E5F4F5D52471BBCE6D1BB /* GothamSSm-LightItalic.otf in Resources */,
+				CE51C10A292CE5DD00821DE0 /* Media.xcassets in Resources */,
 				CE2113C4291D47AB00268569 /* LaunchScreen.storyboard in Resources */,
 				F68EA08DE9AB4FBE8BBB8545 /* GothamSSm-Medium.otf in Resources */,
 				969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */,
@@ -455,6 +460,7 @@
 			files = (
 				CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */,
 				CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */,
+				CE51C10B292CE5DD00821DE0 /* Media.xcassets in Resources */,
 				CE3737962885C05A008E568E /* GothamSSm-Bold.otf in Resources */,
 				CE3737972885C05A008E568E /* GothamSSm-BoldItalic.otf in Resources */,
 				CE3737982885C05A008E568E /* GothamSSm-Book.otf in Resources */,
