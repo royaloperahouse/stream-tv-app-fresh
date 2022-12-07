@@ -19,6 +19,7 @@ import {
   AppStateStatus,
   Platform,
   TVEventControl,
+  Linking,
 } from 'react-native';
 import {
   getEventListLoopStart,
@@ -41,6 +42,17 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
   );
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const hasQRCode = useFeature('hasQRCode');
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      console.log(`Cold start with url: ${url}`);
+    });
+    const listnerCB = Linking.addEventListener('url', ({ url }) => {
+      console.log(`Opened with url: ${url} ;length = ${url.split('?').length}`);
+    });
+    return () => {
+      listnerCB.remove();
+    };
+  }, []);
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (

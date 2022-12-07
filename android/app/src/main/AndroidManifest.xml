@@ -24,6 +24,12 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="rohtvapp"  android:host="events" />
+            </intent-filter>
         </activity>
         <meta-data android:name="io.sentry.dsn" android:value="https://1a830de5cb974a1dbd0ed139dd5e6d7d@o936063.ingest.sentry.io/5886190" />
         <meta-data android:name="BITMOVIN_PLAYER_LICENSE_KEY" android:value="1cb2ef33-6d56-4632-8d8b-1fdbf64b3511" />
