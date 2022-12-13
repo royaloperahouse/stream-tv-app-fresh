@@ -321,7 +321,7 @@ export const getBitMovinPosition = async (
   axiosClient.get<GetWatchStatusResponse>(ApiConfig.routes.watchStatus, {
     params: {
       customerId,
-      videoId: id,
+      videoId: id.replace(/-/g, '_'),
     },
     baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
   });
@@ -335,7 +335,7 @@ export const saveBitMovinPosition = (
     ApiConfig.routes.watchStatus,
     {
       customerId,
-      videoId: item.id,
+      videoId: item.id.replace(/_/g, '-'),
       position: item.position,
     },
     {
