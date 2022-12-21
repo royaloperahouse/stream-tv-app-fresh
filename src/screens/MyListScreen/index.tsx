@@ -25,6 +25,7 @@ import type {
 import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const MyListScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['myList']>
@@ -34,26 +35,26 @@ const MyListScreen: React.FC<
   );
   const { data: myList, ejected } = useMyList();
   const data = useSelector(digitalEventsForMyListScreenSelector(myList));
-  const { itemIndex } = FocusManager.getFocusPosition({
+  const { itemIndex = -1 } = FocusManager.getFocusPosition({
     searchingCB: FocusManager.searchingCBForList,
     eventId: route.params?.eventId || null,
     data,
     moveToMenuItem: () => {
-      navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
-        hasTVPreferredFocus: true,
-      });
+      if (ejected) {
+        navMenuNodesRefs?.[route.name]?.current?.setNativeProps({
+          hasTVPreferredFocus: true,
+        });
+      }
     },
   });
   const listRef = useRef<FlatList>(null);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
 
   useLayoutEffect(() => {
-    if (itemIndex !== -1 && ejected) {
+    if (itemIndex > -1 && ejected) {
       listRef?.current?.scrollToIndex?.({
         animated: false,
-        index: Math.floor(
-          (itemIndex === -1 ? 0 : itemIndex) / countOfItemsPeerRail,
-        ),
+        index: Math.floor(itemIndex / countOfItemsPeerRail),
       });
     }
   }, [data.length, ejected, itemIndex]);
@@ -66,7 +67,11 @@ const MyListScreen: React.FC<
       />
       <View style={styles.contentContainer}>
         <RohText style={styles.pageTitle}>{myListTitle}</RohText>
-        {ejected && data.length ? (
+        {!ejected ? (
+          <View style={styles.loadingContainer}>
+            <LoadingSpinner showSpinner={true} />
+          </View>
+        ) : data.length ? (
           <FlatList
             data={data}
             ref={listRef}
@@ -130,6 +135,11 @@ const styles = StyleSheet.create({
     width:
       Dimensions.get('window').width -
       (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

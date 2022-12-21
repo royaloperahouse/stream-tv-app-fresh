@@ -46,6 +46,7 @@ import type {
 import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
@@ -125,12 +126,14 @@ const HomePageScreen: React.FC<
       },
     });
   }
-  if (
-    !data.length ||
-    !continueWatchingListEjected ||
-    !myListEjected ||
-    !eventsLoaded
-  ) {
+  if (!continueWatchingListEjected || !myListEjected || !eventsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LoadingSpinner showSpinner={true} />
+      </View>
+    );
+  }
+  if (!data.length) {
     return null;
   }
 
@@ -229,6 +232,11 @@ const styles = StyleSheet.create({
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

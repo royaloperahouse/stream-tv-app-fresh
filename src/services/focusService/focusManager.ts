@@ -66,13 +66,19 @@ export abstract class FocusManager {
       moveToMenuItem?: () => void;
     }) => {
       sectionIndex: number;
-      itemIndex: number;
+      itemIndex: number | undefined;
     };
   }): {
     sectionIndex: number;
-    itemIndex: number;
+    itemIndex: number | undefined;
   } {
-    const focusPosition = initFocusPosition;
+    const focusPosition: {
+      sectionIndex: number;
+      itemIndex: number | undefined;
+    } = {
+      sectionIndex: initFocusPosition.sectionIndex,
+      itemIndex: undefined,
+    };
     const foundPosition = searchingCB({ ...rest, initFocusPosition });
     focusPosition.sectionIndex = foundPosition.sectionIndex;
     focusPosition.itemIndex = foundPosition.itemIndex;
@@ -172,14 +178,15 @@ export abstract class FocusManager {
     data: Array<TEventContainer>;
     moveToMenuItem?: () => void;
   }): {
-    itemIndex: number;
+    itemIndex: number | undefined;
     sectionIndex: number;
   } {
-    if (!data.length && eventId) {
+    if (!data.length) {
       moveToMenuItem();
-    }
-    if (!data.length || !eventId) {
       return { itemIndex: -1, sectionIndex: 0 };
+    }
+    if (!eventId) {
+      return { itemIndex: undefined, sectionIndex: 0 };
     }
 
     const foundIndex = data.findIndex(
