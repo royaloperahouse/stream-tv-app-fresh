@@ -109,25 +109,13 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     }, []);
 
     const onPressHandler = () => {
-      navMenuManager.hideNavMenu();
-      if (isTVOS) {
-        setTimeout(
-          () =>
-            navigation.navigate(contentScreenNames.eventDetails, {
-              eventId: event.id,
-              screenNameFrom,
-              sectionIndex,
-              selectedItemIndex,
-            }),
-          500,
-        );
-        return;
-      }
-      navigation.navigate(contentScreenNames.eventDetails, {
-        eventId: event.id,
-        screenNameFrom,
-        sectionIndex,
-        selectedItemIndex,
+      navMenuManager.hideNavMenu(() => {
+        navigation.navigate(contentScreenNames.eventDetails, {
+          eventId: event.id,
+          screenNameFrom,
+          sectionIndex,
+          selectedItemIndex,
+        });
       });
     };
     const onFocusHandler = () => {

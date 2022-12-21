@@ -146,21 +146,12 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const touchableHandler = () => {
-    navMenuManager.hideNavMenu();
-    if (isTVOS) {
-      setTimeout(() => {
-        navigation.navigate(contentScreenNames.eventDetails, {
-          eventId: item.id,
-          screenNameFrom,
-          sectionIndex,
-        });
-      }, 500);
-      return;
-    }
-    navigation.navigate(contentScreenNames.eventDetails, {
-      eventId: item.id,
-      screenNameFrom,
-      sectionIndex,
+    navMenuManager.hideNavMenu(() => {
+      navigation.navigate(contentScreenNames.eventDetails, {
+        eventId: item.id,
+        screenNameFrom,
+        sectionIndex,
+      });
     });
   };
 
