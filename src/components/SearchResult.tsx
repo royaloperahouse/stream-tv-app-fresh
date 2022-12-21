@@ -27,7 +27,6 @@ import type { TContentScreensProps } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
-import { isTVOS } from 'configs/globalConfig';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -40,10 +39,14 @@ const SearchResult: React.FC<TSearchResultProps> = ({
   const route = useRoute<TContentScreensProps<'Search'>['route']>();
   const resultListRef = useRef<FlatList>(null);
   const digitalEventDetailsLength = useRef<number>(0);
+  const selectPrevSearch = useRef<boolean>(false);
   const digitalEventDetails = useAppSelector(digitalEventDetailsSearchSelector);
   const selectedIndex = digitalEventDetails.findIndex(
     event => event.id === route.params?.eventId,
   );
+  const prevSearchWasSelcted = () => {
+    selectPrevSearch.current = true;
+  };
   useLayoutEffect(() => {
     if (
       digitalEventDetails.length &&
@@ -64,6 +67,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
     return (
       <PreviousSearchList
         onMountToSearchResultTransition={onMountToSearchResultTransition}
+        prevSearchWasSelectedCB={prevSearchWasSelcted}
       />
     );
   }
@@ -71,11 +75,12 @@ const SearchResult: React.FC<TSearchResultProps> = ({
     onUnMountAllToSearchResultTransition?.();
     digitalEventDetailsLength.current = digitalEventDetails.length;
   }
-  const { itemIndex } = FocusManager.getFocusPosition({
-    searchingCB: FocusManager.searchingCBForList,
-    eventId: route.params?.eventId || null,
-    data: digitalEventDetails,
-  });
+  const { itemIndex = selectPrevSearch.current ? 0 : -1 } =
+    FocusManager.getFocusPosition({
+      searchingCB: FocusManager.searchingCBForList,
+      eventId: route.params?.eventId || null,
+      data: digitalEventDetails,
+    });
   return (
     <FlatList
       ref={resultListRef}
@@ -146,21 +151,12 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const touchableHandler = () => {
-    navMenuManager.hideNavMenu();
-    if (isTVOS) {
-      setTimeout(() => {
-        navigation.navigate(contentScreenNames.eventDetails, {
-          eventId: item.id,
-          screenNameFrom,
-          sectionIndex,
-        });
-      }, 500);
-      return;
-    }
-    navigation.navigate(contentScreenNames.eventDetails, {
-      eventId: item.id,
-      screenNameFrom,
-      sectionIndex,
+    navMenuManager.hideNavMenu(() => {
+      navigation.navigate(contentScreenNames.eventDetails, {
+        eventId: item.id,
+        screenNameFrom,
+        sectionIndex,
+      });
     });
   };
 
@@ -287,10 +283,12 @@ const ResultHraderComponent: React.FC<TResultHeaderComponentProps> = ({
 
 type TPreviousSearchListProps = {
   onMountToSearchResultTransition?: TSearchResultProps['onMountToSearchResultTransition'];
+  prevSearchWasSelectedCB: () => void;
 };
 
 const PreviousSearchList: React.FC<TPreviousSearchListProps> = ({
   onMountToSearchResultTransition,
+  prevSearchWasSelectedCB,
 }) => {
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
@@ -335,6 +333,7 @@ const PreviousSearchList: React.FC<TPreviousSearchListProps> = ({
           canMoveUp={index !== 0}
           canMoveDown={index !== previousSearchesList.length - 1}
           onMountToSearchResultTransition={onMountToSearchResultTransition}
+          prevSearchWasSelectedCB={prevSearchWasSelectedCB}
         />
       )}
     />
@@ -347,6 +346,7 @@ type TPreviousSearchListItemComponentProps = {
   canMoveUp: boolean;
   canMoveDown: boolean;
   onMountToSearchResultTransition?: TSearchResultProps['onMountToSearchResultTransition'];
+  prevSearchWasSelectedCB: () => void;
 };
 const PreviousSearchListItemComponent: React.FC<
   TPreviousSearchListItemComponentProps
@@ -356,10 +356,12 @@ const PreviousSearchListItemComponent: React.FC<
   canMoveUp,
   canMoveDown,
   onMountToSearchResultTransition,
+  prevSearchWasSelectedCB,
 }) => {
   const dispatch = useAppDispatch();
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const onPressHandler = () => {
+    prevSearchWasSelectedCB();
     dispatch(setFullSearchQuery({ searchQuery: text }));
   };
   useLayoutEffect(() => {

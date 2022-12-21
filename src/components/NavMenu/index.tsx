@@ -49,6 +49,7 @@ import Animated, {
   useAnimatedReaction,
   useAnimatedProps,
   useDerivedValue,
+  runOnJS,
 } from 'react-native-reanimated';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
@@ -75,7 +76,7 @@ type TNavMenuProps = {
 const navMenuRef = createRef<
   Partial<{
     showNavMenu: () => void;
-    hideNavMenu: () => void;
+    hideNavMenu: (cb?: () => void) => void;
   }>
 >();
 
@@ -87,9 +88,9 @@ export const navMenuManager = Object.freeze({
       navMenuRef.current.showNavMenu();
     }
   },
-  hideNavMenu: () => {
+  hideNavMenu: (cb?: () => void) => {
     if (typeof navMenuRef.current?.hideNavMenu === 'function') {
-      navMenuRef.current.hideNavMenu();
+      navMenuRef.current.hideNavMenu(cb);
     }
   },
 });
@@ -114,6 +115,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const buttonsRefs = useRef<{
     [key: string]: React.RefObject<TouchableHighlight>;
   }>({});
+  const cbRef = useRef<(() => void) | null>(null);
   const setButtonRef = useCallback(
     (
       id: TRoute['navMenuScreenName'],
@@ -133,15 +135,29 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const navMenuWidth = useSharedValue(widthWithOutFocus);
   const navMenuExitButton = useSharedValue(0);
 
+  const wrap = useCallback((_finished: any) => {
+    if (typeof cbRef.current === 'function') {
+      cbRef.current();
+    }
+    cbRef.current = null;
+  }, []);
   const navMenuAnimatedStyle = useAnimatedStyle(() => {
     return {
-      width: withTiming(navMenuWidth.value, {
-        duration:
-          navMenuWidth.value >= widthWithOutFocus
-            ? focusAnimationDuration
-            : visibleAnimationDuration,
-        easing: Easing.ease,
-      }),
+      width: withTiming(
+        navMenuWidth.value,
+        {
+          duration:
+            navMenuWidth.value >= widthWithOutFocus
+              ? focusAnimationDuration
+              : visibleAnimationDuration,
+          easing: Easing.ease,
+        },
+        finished => {
+          if (navMenuWidth.value === widthInvisble) {
+            runOnJS(wrap)(finished);
+          }
+        },
+      ),
       marginLeft: withSpring(
         navMenuWidth.value > widthInvisble ? marginLeftStop : marginLeftStart,
       ),
@@ -153,7 +169,8 @@ const NavMenu: React.FC<TNavMenuProps> = ({
           : marginRightWithFocus,
       ),
     };
-  });
+  }, []);
+
   const navMenuExitButtonAnimatedStyle = useAnimatedStyle(() => ({
     opacity: withTiming(navMenuExitButton.value, {
       duration: focusAnimationDuration,
@@ -232,8 +249,13 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       showNavMenu: () => {
         navMenuWidth.value = widthWithOutFocus;
       },
-      hideNavMenu: () => {
-        navMenuWidth.value = widthInvisble;
+      hideNavMenu: (cb?: () => void) => {
+        if (cbRef.current === null) {
+          if (typeof cb === 'function') {
+            cbRef.current = cb;
+          }
+          navMenuWidth.value = widthInvisble;
+        }
       },
     }),
     [navMenuWidth],
@@ -342,6 +364,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       TVEventManager.removeEventListener(toggleNavMenuCB);
     };
   }, [navMenuWidth, navMenuNodesRefs]);
+
   useLayoutEffect(() => {
     if (canExit) {
       forseUpdate();

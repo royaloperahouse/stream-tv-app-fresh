@@ -507,7 +507,10 @@ const General: React.FC<
     ],
   );
 
-  const addOrRemoveItemIdFromMyListHandler = () => {
+  const addOrRemoveItemIdFromMyListHandler = (
+    _: React.RefObject<TouchableHighlight>,
+    clearLoadingState: () => void,
+  ) => {
     if (addOrRemoveBusyRef.current) {
       return;
     }
@@ -515,6 +518,8 @@ const General: React.FC<
     const myListAction = existInMyList ? removeIdFromMyList : addToMyList;
 
     if (!customerId) {
+      addOrRemoveBusyRef.current = false;
+      clearLoadingState();
       return;
     }
 
@@ -525,8 +530,10 @@ const General: React.FC<
             setExistInMyList(isExist);
           }
         })
+        .catch(console.log)
         .finally(() => {
           if (generalMountedRef.current) {
+            clearLoadingState();
             addOrRemoveBusyRef.current = false;
           }
         });
@@ -572,6 +579,7 @@ const General: React.FC<
       onPress: addOrRemoveItemIdFromMyListHandler,
       Icon: AddToMyList,
       hasTVPreferredFocus: !performanceInfo || showCountDownTimer,
+      showLoader: true,
     },
     {
       key: 'WatchTrailer',
@@ -606,12 +614,13 @@ const General: React.FC<
     () => {
       hasMyListItem(customerId, eventId, isProductionEnv)
         .then(setExistInMyList)
+        .catch(console.log)
         .finally(() => {
           addOrRemoveBusyRef.current = false;
         });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [eventId, eventId, isProductionEnv],
+    [eventId, customerId, isProductionEnv],
   );
 
   useFocusEffect(

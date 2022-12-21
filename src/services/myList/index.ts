@@ -91,7 +91,7 @@ export const hasMyListItem = async (
       throw Error(`Something went wrong with customerId ${customerId}`);
     }
     const myList = await getMyList(customerId, isProductionEnv);
-    return myList.includes(item);
+    return myList.some((eventId: string) => eventId === item);
   } catch (error: any) {
     logError('Something went wrong with getting MyList', error);
     return false;

@@ -27,6 +27,7 @@ import type {
 import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const OperaMusicScreen: React.FC<
   TContentScreensProps<
@@ -75,7 +76,16 @@ const OperaMusicScreen: React.FC<
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
     }
   }, [data]);
-  if (!data.length || !eventsLoaded) {
+
+  if (!eventsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LoadingSpinner showSpinner={true} />
+      </View>
+    );
+  }
+
+  if (!data.length) {
     return null;
   }
   return (
@@ -168,6 +178,11 @@ const styles = StyleSheet.create({
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
