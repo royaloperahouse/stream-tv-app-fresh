@@ -19,7 +19,7 @@ import {
 } from '@configs/screensConfig';
 import RohImage from '@components/RohImage';
 import { FocusManager } from 'services/focusService/focusManager';
-import { isTVOS } from 'configs/globalConfig';
+
 type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
@@ -119,24 +119,21 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       });
     };
     const onFocusHandler = () => {
-      timeoutId.current = setTimeout(() => {
-        timeoutId.current = null;
-        if (isMounted.current) {
-          setFocused(true);
-        }
-        FocusManager.switchOffFirstLounch();
-        scrollToRailItem(sectionIndex, selectedItemIndex || 0);
-        if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
-          setFirstItemFocusable(
-            firstFocusItenKey,
-            touchableRef.current?.getRef?.().current,
-          );
-        }
-        ref?.current?.setDigitalEvent(event, eventGroupTitle);
-        if (typeof onFocus === 'function') {
-          onFocus(touchableRef.current?.getRef?.().current);
-        }
-      }, 100);
+      if (isMounted.current) {
+        setFocused(true);
+      }
+      FocusManager.switchOffFirstLounch();
+      ref?.current?.setDigitalEvent(event, eventGroupTitle);
+      scrollToRailItem(sectionIndex, selectedItemIndex || 0);
+      if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
+        setFirstItemFocusable(
+          firstFocusItenKey,
+          touchableRef.current?.getRef?.().current,
+        );
+      }
+      if (typeof onFocus === 'function') {
+        onFocus(touchableRef.current?.getRef?.().current);
+      }
     };
 
     useLayoutEffect(() => {
@@ -172,11 +169,6 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveRight={canMoveRight}
         style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
-          if (timeoutId.current) {
-            clearTimeout(timeoutId.current);
-            timeoutId.current = null;
-            return;
-          }
           if (isMounted.current) {
             setFocused(false);
           }

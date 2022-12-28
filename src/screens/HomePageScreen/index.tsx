@@ -144,7 +144,7 @@ const HomePageScreen: React.FC<
         ref={navMenuScreenRedirectRef}
       />
       {
-        <View>
+        <View style={styles.contentContainer}>
           <Preview ref={previewRef} />
           <View>
             <RailSections

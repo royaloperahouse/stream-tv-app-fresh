@@ -30,6 +30,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   const mountedRef = useRef<boolean>(false);
   const [event, setEvent] = useState<TEvent | null>(null);
   const [eventGroupTitle, setEventGroupTitle] = useState<string>('');
+  const timeoutId = useRef<NodeJS.Timeout | null>(null);
   useImperativeHandle(
     ref,
     () => ({
@@ -37,10 +38,17 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
         digitalEvent: TEventContainer,
         eveGroupTitle: string = '',
       ) => {
-        if (mountedRef.current) {
-          setEvent(digitalEvent.data);
-          setEventGroupTitle(eveGroupTitle);
+        if (timeoutId.current) {
+          clearTimeout(timeoutId.current);
+          timeoutId.current = null;
         }
+        timeoutId.current = setTimeout(() => {
+          timeoutId.current = null;
+          if (mountedRef.current) {
+            setEvent(digitalEvent.data);
+            setEventGroupTitle(eveGroupTitle);
+          }
+        }, 500);
       },
     }),
     [],
@@ -100,7 +108,8 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
         <RohImage
           resizeMode={FastImage.resizeMode.cover}
           style={styles.previewImage}
-          source={snapshotImageUrl}></RohImage>
+          source={snapshotImageUrl}
+        />
       </View>
     </Animated.View>
   );
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(12),
   },
   previewImage: {
-    width: scaleSize(975),
+    width: scaleSize(1000),
     height: scaleSize(600),
     backgroundColor: Colors.defaultBlue,
     zIndex: 0,
