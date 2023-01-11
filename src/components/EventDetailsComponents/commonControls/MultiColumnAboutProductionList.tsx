@@ -19,6 +19,7 @@ import FastImage from 'react-native-fast-image';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import { ScrollView } from 'react-native-gesture-handler';
 import RohImage from 'components/RohImage';
+import { isTVOS } from 'configs/globalConfig';
 
 export enum ECellItemKey {
   'guidance' = 'guidance',
@@ -33,18 +34,20 @@ type TMultiColumnAboutProductionListProps = {
   columnHeight: number;
   columnWidth: number;
   id: string;
+  onReady?: () => void;
 };
+const noopCB = () => {};
 
 const MultiColumnAboutProductionList: React.FC<
   TMultiColumnAboutProductionListProps
 > = props => {
-  const { data, columnHeight, columnWidth } = props;
+  const { data, columnHeight, columnWidth, onReady = noopCB } = props;
   const { onLayoutHandler, splitedItems, splited } =
     useSplitingOnColumnsForSynopsis({
       columnHeight,
       itemsForSpliting: data,
     });
-
+  const callOnce = useRef<boolean>(false);
   const imageSizeCalc = (
     width: number,
     height: number,
@@ -142,6 +145,7 @@ const MultiColumnAboutProductionList: React.FC<
       <TouchableHighlightWrapper
         canMoveRight={false}
         ref={focusedComponentRef}
+        onFocus={onReady}
         hasTVPreferredFocus>
         <View style={[styles.towColumnsList, { height: columnHeight }]}>
           {splitedItems.map((column, index) =>
@@ -186,6 +190,10 @@ const MultiColumnAboutProductionList: React.FC<
             canMoveRight={index !== items.length - 1}
             hasTVPreferredFocus={index === 0}
             onFocus={() => {
+              if (!callOnce.current) {
+                callOnce.current = true;
+                onReady();
+              }
               if (
                 typeof scrollingPaginationRef.current?.setCurrentIndex ===
                 'function'

@@ -73,6 +73,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const [accessible, setAccessible] = useState<boolean>(true);
   const isFocused = useRef<boolean>(false);
+  const firstCall = useRef<boolean>(true);
   const navigation =
     useNavigation<
       TContentScreensProps<
@@ -108,7 +109,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
     useCallback(() => {
       const handleBackButtonClick = () => {
         //if (globalModalManager.isModalOpen() || !show)
-        if (!show) {
+        if (!show || !accessible) {
           return false;
         }
         if (route.params?.screenNameFrom) {
@@ -171,12 +172,25 @@ const GoBack: React.FC<TGoBackProps> = () => {
   useLayoutEffect(() => {
     const cb = (event: HWEvent) => {
       if (
+        event.tag !== btnRef.current?.getNode?.() ||
+        (isTVOS && event.eventType !== 'focus') ||
+        (!isTVOS && event.eventType !== 'left')
+      ) {
+        return;
+      }
+      if (isTVOS && firstCall.current) {
+        firstCall.current = false;
+        return;
+      }
+      onFocusHandler();
+    /* 
+    if (
         (event.eventType === 'swipeLeft' && isFocused.current) ||
         (event.tag === btnRef.current?.getNode?.() &&
           event.eventType === 'left')
       ) {
         onFocusHandler();
-      }
+      } */
     };
     TVEventManager.addEventListener(cb);
     return () => {
@@ -195,9 +209,11 @@ const GoBack: React.FC<TGoBackProps> = () => {
         accessible={accessible}
         onBlur={() => {
           isFocused.current = false;
+          console.log('blur');
         }}
         onFocus={() => {
           isFocused.current = true;
+          console.log('focus');
         }}
         styleFocused={styles.wrapperStyleActive}>
         <View style={styles.buttonContainer}>

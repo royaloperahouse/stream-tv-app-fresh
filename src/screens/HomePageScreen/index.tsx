@@ -12,6 +12,7 @@ import {
   AppState,
   AppStateStatus,
   findNodeHandle,
+  TouchableHighlight,
 } from 'react-native';
 import { useAppSelector, useAppDispatch } from '@hooks/redux';
 import {
@@ -47,6 +48,7 @@ import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { isTVOS } from 'configs/globalConfig';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
@@ -129,7 +131,11 @@ const HomePageScreen: React.FC<
   if (!continueWatchingListEjected || !myListEjected || !eventsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <LoadingSpinner showSpinner={true} />
+        <TouchableHighlight
+          hasTVPreferredFocus={isTVOS && route.params?.eventId}
+          underlayColor="transperent">
+          <LoadingSpinner showSpinner={true} />
+        </TouchableHighlight>
       </View>
     );
   }
@@ -232,6 +238,7 @@ const styles = StyleSheet.create({
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
+    height: scaleSize(370), // need to check how it will showed on android
   },
   loadingContainer: {
     flex: 1,

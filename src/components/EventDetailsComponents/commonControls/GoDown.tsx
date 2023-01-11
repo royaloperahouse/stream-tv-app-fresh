@@ -1,4 +1,10 @@
-import React, { useRef, useCallback } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+} from 'react';
 import { View, StyleSheet, HWEvent } from 'react-native';
 import Down from '@assets/svg/eventDetails/Down.svg';
 import { scaleSize } from '@utils/scaleSize';
@@ -8,48 +14,73 @@ import TouchableHighlightWrapper, {
 } from 'components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
+import { isTVOS } from 'configs/globalConfig';
 
 type Props = {
   text: string;
   onFocus: () => void;
+  accessibleDef?: boolean;
 };
 
-const GoDown: React.FC<Props> = ({ text, onFocus }) => {
-  const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
-
-  useFocusLayoutEffect(
-    useCallback(() => {
-      const cb = (event: HWEvent) => {
-        if (
-          event.eventType === 'swipeDown' ||
-          (event.tag === btnRef.current?.getNode?.() &&
-            event.eventType === 'down')
-        ) {
-          onFocus();
-        }
-      };
-      TVEventManager.addEventListener(cb);
-      return () => {
-        TVEventManager.removeEventListener(cb);
-      };
-    }, [onFocus]),
-  );
-  return (
-    <TouchableHighlightWrapper
-      ref={btnRef}
-      canMoveDown={false}
-      canMoveLeft={false}
-      canMoveRight={false}
-      canMoveUp={false}
-      underlayColor="transparent"
-      style={{ height: scaleSize(50) }}>
-      <View style={styles.container}>
-        <Down width={scaleSize(50)} height={scaleSize(50)} />
-        <RohText style={styles.text}>{text.toUpperCase()}</RohText>
-      </View>
-    </TouchableHighlightWrapper>
-  );
+export type TGoDownRef = {
+  setAccessibleOn: () => void;
+  setAccessibleOff: () => void;
 };
+const GoDown = forwardRef<TGoDownRef, Props>(
+  ({ text, onFocus, accessibleDef = true }, ref) => {
+    const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
+    const [accessible, setAccessible] = useState<boolean>(accessibleDef);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        setAccessibleOn: () => {
+          setAccessible(true);
+        },
+        setAccessibleOff: () => {
+          setAccessible(false);
+        },
+      }),
+      [],
+    );
+
+    useFocusLayoutEffect(
+      useCallback(() => {
+        const cb = (event: HWEvent) => {
+          if (
+            (isTVOS &&
+              event.eventType === 'focus' &&
+              event.tag === btnRef.current?.getNode?.()) ||
+            (event.tag === btnRef.current?.getNode?.() &&
+              event.eventType === 'down')
+          ) {
+            onFocus();
+          }
+        };
+        TVEventManager.addEventListener(cb);
+        return () => {
+          TVEventManager.removeEventListener(cb);
+        };
+      }, [onFocus]),
+    );
+    return (
+      <TouchableHighlightWrapper
+        ref={btnRef}
+        canMoveDown={false}
+        canMoveLeft={false}
+        canMoveRight={false}
+        canMoveUp={false}
+        accessible={accessible}
+        underlayColor="transparent"
+        style={{ height: scaleSize(50) }}>
+        <View style={styles.container}>
+          <Down width={scaleSize(50)} height={scaleSize(50)} />
+          <RohText style={styles.text}>{text.toUpperCase()}</RohText>
+        </View>
+      </TouchableHighlightWrapper>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

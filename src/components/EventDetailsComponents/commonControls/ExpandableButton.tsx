@@ -26,6 +26,8 @@ type Props = {
   hasTVPreferredFocus?: boolean;
   showLoader?: boolean;
   freezeButtonAfterPressing?: boolean;
+  accessible: boolean;
+  freezeAll: (frezze: boolean) => void;
 };
 
 const ExpandableButton = forwardRef<any, Props>(
@@ -39,6 +41,8 @@ const ExpandableButton = forwardRef<any, Props>(
       hasTVPreferredFocus = false,
       showLoader,
       freezeButtonAfterPressing,
+      accessible,
+      freezeAll,
     },
     ref: any,
   ) => {
@@ -52,6 +56,7 @@ const ExpandableButton = forwardRef<any, Props>(
       }
       setFreezeButton(false);
       setLoading(false);
+      freezeAll(false);
     };
 
     const pressingHandler = () => {
@@ -60,6 +65,7 @@ const ExpandableButton = forwardRef<any, Props>(
       }
       if (isMounted.current && freezeButtonAfterPressing) {
         setFreezeButton(true);
+        freezeAll(true);
       }
       if (typeof onPress === 'function') {
         onPress(
@@ -94,6 +100,7 @@ const ExpandableButton = forwardRef<any, Props>(
           canMoveLeft={!freezeButton}
           hasTVPreferredFocus={hasTVPreferredFocus}
           style={styles.button}
+          accessible={accessible}
           styleFocused={styles.buttonActive}
           onBlur={() => {
             if (typeof blurCallback === 'function') {
