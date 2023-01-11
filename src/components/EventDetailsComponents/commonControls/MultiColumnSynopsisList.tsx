@@ -17,12 +17,13 @@ type TMultiColumnSynopsisListProps = {
   columnHeight: number;
   columnWidth: number;
   id: string;
+  onReady?: () => void;
 };
-
+const noopCB = () => {};
 const MultiColumnSynopsisList: React.FC<
   TMultiColumnSynopsisListProps
 > = props => {
-  const { data, columnHeight, columnWidth } = props;
+  const { data, columnHeight, columnWidth, onReady = noopCB } = props;
   const { onLayoutHandler, splitedItems, splited } =
     useSplitingOnColumnsForSynopsis({
       columnHeight,
@@ -31,6 +32,7 @@ const MultiColumnSynopsisList: React.FC<
   const scrollingArrowPaginationRef =
     useRef<TScrollingArrowPaginationRef>(null);
   const focusedComponentRef = useRef<TTouchableHighlightWrapperRef>(null);
+  const callOnce = useRef<boolean>(false);
   if (!splited) {
     return (
       <TouchableHighlightWrapper
@@ -57,6 +59,7 @@ const MultiColumnSynopsisList: React.FC<
       <TouchableHighlightWrapper
         canMoveRight={false}
         ref={focusedComponentRef}
+        onFocus={onReady}
         hasTVPreferredFocus>
         <View>
           {splitedItems.map((column, index) =>
@@ -107,6 +110,10 @@ const MultiColumnSynopsisList: React.FC<
             hasTVPreferredFocus={index === 0}
             ref={index === 0 ? focusedComponentRef : undefined}
             onFocus={() => {
+              if (!callOnce.current) {
+                callOnce.current = true;
+                onReady();
+              }
               if (
                 typeof scrollingArrowPaginationRef.current?.setCurrentIndex ===
                 'function'

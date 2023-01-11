@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect, useContext } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
 import { useSelector } from 'react-redux';
 import { digitalEventsForBalletAndDanceSelector } from '@services/store/events/Selectors';
 import {
@@ -28,6 +28,7 @@ import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { isTVOS } from 'configs/globalConfig';
 
 const BalletDanceScreen: React.FC<
   TContentScreensProps<
@@ -81,7 +82,11 @@ const BalletDanceScreen: React.FC<
   if (!eventsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <LoadingSpinner showSpinner={true} />
+        <TouchableHighlight
+          hasTVPreferredFocus={isTVOS && route.params?.eventId}
+          underlayColor="transperent">
+          <LoadingSpinner showSpinner={true} />
+        </TouchableHighlight>
       </View>
     );
   }
@@ -179,6 +184,7 @@ const styles = StyleSheet.create({
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
+    height: scaleSize(370), // need to check how it will showed on android
   },
   loadingContainer: {
     flex: 1,

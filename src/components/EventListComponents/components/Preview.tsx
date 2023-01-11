@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 import { Colors } from '@themes/Styleguide';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import RohImage from 'components/RohImage';
+import { isTVOS } from 'configs/globalConfig';
 
 export type TPreviewRef = {
   setDigitalEvent?: (
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(12),
   },
   previewImage: {
-    width: scaleSize(1000),
+    width: scaleSize(1200),
     height: scaleSize(600),
     backgroundColor: Colors.defaultBlue,
     zIndex: 0,

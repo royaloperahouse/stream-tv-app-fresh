@@ -6,6 +6,7 @@ import TouchableHighlightWrapper, {
 } from 'components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
+import { isTVOS } from 'configs/globalConfig';
 
 type Props = {
   height?: number;
@@ -18,7 +19,9 @@ const GoUp: React.FC<Props> = ({ height = 10, onFocus }) => {
     useCallback(() => {
       const cb = (event: HWEvent) => {
         if (
-          event.eventType === 'swipeUp' ||
+          (isTVOS &&
+            event.eventType === 'focus' &&
+            event.tag === btnRef.current?.getNode?.()) ||
           (event.tag === btnRef.current?.getNode?.() &&
             event.eventType === 'up')
         ) {

@@ -55,7 +55,7 @@ import type {
   NSNavigationScreensNames,
   TEventDetailsScreensParamContextProps,
 } from '@configs/screensConfig';
-import GoDown from '../commonControls/GoDown';
+import GoDown, { TGoDownRef } from '../commonControls/GoDown';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { globalModalManager } from '@components/GlobalModals';
 import {
@@ -103,6 +103,7 @@ const General: React.FC<
   } = params;
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
+  const goDownRef = useRef<TGoDownRef>(null);
 
   const showCountDownTimer =
     publishingDate &&
@@ -127,6 +128,7 @@ const General: React.FC<
     if (typeof ref?.current?.setNativeProps === 'function') {
       ref.current.setNativeProps({
         hasTVPreferredFocus: true,
+        accessible: true,
       });
     }
     goBackButtonuManager.showGoBackButton();
@@ -557,6 +559,12 @@ const General: React.FC<
     trailerVideoInFocus.current = null;
   }, []);
 
+  const setAccessibleOnForGD = useCallback(() => {
+    goDownRef.current?.setAccessibleOn?.();
+  }, []);
+  const setAccessibleOffForGD = useCallback(() => {
+    goDownRef.current?.setAccessibleOff?.();
+  }, []);
   const goDownCB = useCallback(
     () => navigation.replace(nextScreenName),
     [navigation, nextScreenName],
@@ -690,14 +698,23 @@ const General: React.FC<
               ref={watchNowButtonRef}
               setFocusRef={() => {}}
               buttonList={actionButtonList}
+              goDownOn={setAccessibleOnForGD}
+              goDownOff={setAccessibleOffForGD}
+              backButtonOn={goBackButtonuManager.setAccessibleGoBackButton}
+              backButtonOff={goBackButtonuManager.setUnAccessibleGoBackButton}
             />
           </View>
         </View>
-        {nextSectionTitle && nextScreenName ? (
-          <View style={styles.downContainer}>
-            <GoDown text={nextSectionTitle} onFocus={goDownCB} />
-          </View>
-        ) : null}
+        <View style={styles.downContainer}>
+          {nextSectionTitle && nextScreenName ? (
+            <GoDown
+              text={nextSectionTitle}
+              onFocus={goDownCB}
+              ref={goDownRef}
+              accessibleDef={false}
+            />
+          ) : null}
+        </View>
       </View>
       <View style={styles.snapshotContainer}>
         <RohImage
@@ -729,6 +746,7 @@ const styles = StyleSheet.create({
   },
   downContainer: {
     marginBottom: scaleSize(50),
+    height: scaleSize(50),
   },
   snapshotContainer: {
     width: scaleSize(975),

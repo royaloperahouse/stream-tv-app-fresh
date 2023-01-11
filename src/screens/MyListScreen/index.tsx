@@ -1,5 +1,11 @@
 import React, { useRef, useLayoutEffect, useContext } from 'react';
-import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  TouchableHighlight,
+} from 'react-native';
 import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
 import { useMyList } from '@hooks/useMyList';
@@ -26,6 +32,7 @@ import { FocusManager } from '@services/focusService/focusManager';
 import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextProvider';
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { isTVOS } from 'configs/globalConfig';
 
 const MyListScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['myList']>
@@ -69,7 +76,11 @@ const MyListScreen: React.FC<
         <RohText style={styles.pageTitle}>{myListTitle}</RohText>
         {!ejected ? (
           <View style={styles.loadingContainer}>
-            <LoadingSpinner showSpinner={true} />
+            <TouchableHighlight
+              hasTVPreferredFocus={isTVOS && route.params?.eventId}
+              underlayColor="transperent">
+              <LoadingSpinner showSpinner={true} />
+            </TouchableHighlight>
           </View>
         ) : data.length ? (
           <FlatList

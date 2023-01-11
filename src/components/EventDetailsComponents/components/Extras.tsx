@@ -4,6 +4,7 @@ import React, {
   createRef,
   useCallback,
   useContext,
+  useState,
 } from 'react';
 import {
   View,
@@ -64,6 +65,8 @@ const Extras: React.FC<
   const videosRefs = useRef<{
     [key: string]: any;
   }>({});
+  const [showGoUpOrDownButtons, setShowGoUpOrDownButtons] =
+    useState<boolean>(false);
 
   const scrollingPaginationRef = useRef<TScrolingPaginationRef>(null);
   const extrasInfoBlockRef = useRef<TExtrasInfoBlockRef>(null);
@@ -90,6 +93,8 @@ const Extras: React.FC<
       clearLoadingState();
     }
   }, []);
+
+  const callOnce = useRef<boolean>(false);
 
   const closePlayer = useCallback(
     ({
@@ -188,6 +193,8 @@ const Extras: React.FC<
     (ref, clearLoadingState) => {
       if (!isBMPlayerShowingRef.current && extrasVideoInFocus.current) {
         isBMPlayerShowingRef.current = true;
+        callOnce.current = false;
+        setShowGoUpOrDownButtons(false);
         fetchVideoURL(extrasVideoInFocus.current.id, isProduction)
           .then(response => {
             if (!response?.data?.data?.attributes?.hlsManifestUrl) {
@@ -306,7 +313,12 @@ const Extras: React.FC<
   );
   return (
     <View style={[styles.generalContainer]}>
-      {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}
+      <View style={styles.upContainer}>
+        {(prevScreenName && !isTVOS) ||
+        (prevScreenName && isTVOS && showGoUpOrDownButtons) ? (
+          <GoUp onFocus={goUpCB} />
+        ) : null}
+      </View>
       <View style={{ flex: 1 }}>
         <View style={styles.wrapper}>
           <View style={styles.leftSideContainer}>
@@ -342,6 +354,10 @@ const Extras: React.FC<
                   onPress={pressHandler}
                   blurCallback={setExtrasrVideoBlur}
                   focusCallback={(pressingHandler?: () => void) => {
+                    if (!callOnce.current) {
+                      callOnce.current = true;
+                      setShowGoUpOrDownButtons(true);
+                    }
                     extrasVideoInFocus.current = item;
                     if (pressingHandler) {
                       extrasVideoInFocusPressing.current = { pressingHandler };
@@ -370,7 +386,10 @@ const Extras: React.FC<
         </View>
       </View>
       <View style={styles.downContainer}>
-        <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+        {(nextScreenName && !isTVOS) ||
+        (nextScreenName && isTVOS && showGoUpOrDownButtons) ? (
+          <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+        ) : null}
       </View>
       {videosInfo.length > 1 && (
         <View style={styles.paginationContainer}>
@@ -405,6 +424,10 @@ const styles = StyleSheet.create({
   },
   downContainer: {
     marginBottom: scaleSize(60),
+    height: scaleSize(50),
+  },
+  upContainer: {
+    height: scaleSize(10),
   },
   title: {
     marginTop: scaleSize(105),

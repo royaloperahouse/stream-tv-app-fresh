@@ -75,6 +75,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     Map<string, React.RefObject<TouchableHighlight>>
   >(new Map());
 
+  const preSectionIndex = useRef<number>(0);
   const setRailItemRef = useCallback(
     (
       eventId: string,
@@ -131,11 +132,23 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   );
 
   const scrollToRail = (index: number) => () => {
+    if (preSectionIndex.current === index) {
+      return;
+    }
+    preSectionIndex.current = index;
     if (
-      sectionsListRef.current &&
-      !scrollToNecessaryRail.current &&
-      !scrollToNecessaryRailItem.current
+      !sectionsListRef.current ||
+      scrollToNecessaryRail.current ||
+      scrollToNecessaryRailItem.current
     ) {
+      return;
+    }
+    if (railStyle && railStyle.height) {
+      sectionsListRef.current.scrollToOffset({
+        animated: false,
+        offset: index * railStyle.height,
+      });
+    } else {
       sectionsListRef.current.scrollToIndex({
         animated: false,
         index,
@@ -146,10 +159,17 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const initScrollToRail = () => {
     if (sectionsListRef.current) {
       scrollToNecessaryRail.current = true;
-      sectionsListRef.current.scrollToIndex({
-        animated: false,
-        index: sectionIndex,
-      });
+      if (railStyle && railStyle.height) {
+        sectionsListRef.current.scrollToOffset({
+          animated: false,
+          offset: sectionIndex * railStyle.height,
+        });
+      } else {
+        sectionsListRef.current.scrollToIndex({
+          animated: false,
+          index: sectionIndex,
+        });
+      }
     }
   };
 
@@ -230,6 +250,8 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [itemIndex],
   );
 
+  const onFocus = (currentID: string) => {};
+  const onBlur = () => {};
   useLayoutEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -369,6 +391,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   removeRailItemRefCb: removeRailItemRef,
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
+                  accessible: railItemIndexInList === 0, //need to improve for all other items than first
                 });
               }}
             />

@@ -1,4 +1,10 @@
-import React, { useContext, useCallback } from 'react';
+import React, {
+  useContext,
+  useCallback,
+  useState,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
@@ -12,6 +18,7 @@ import type {
   TEventDetailsScreensParamContextProps,
 } from '@configs/screensConfig';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
+import { isTVOS } from 'configs/globalConfig';
 
 const Creatives: React.FC<
   TEventDetailsScreensProps<
@@ -24,6 +31,9 @@ const Creatives: React.FC<
     )[route.name] || {};
   const { nextSectionTitle, creatives, nextScreenName, prevScreenName } =
     params;
+  const [showGoUpOrDownButtons, setShowGoUpOrDownButtons] =
+    useState<boolean>(false);
+  const isMounted = useRef<boolean>(false);
   const goUpCB = useCallback(() => {
     navigation.replace(prevScreenName);
   }, [navigation, prevScreenName]);
@@ -32,9 +42,25 @@ const Creatives: React.FC<
       navigation.replace(nextScreenName);
     }
   }, [navigation, nextScreenName]);
+  const onContentReady = useCallback(() => {
+    if (isMounted.current) {
+      setShowGoUpOrDownButtons(true);
+    }
+  }, []);
+  useLayoutEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
   return (
     <View style={styles.generalContainer}>
-      {prevScreenName ? <GoUp onFocus={goUpCB} /> : null}
+      <View style={styles.upContainer}>
+        {(prevScreenName && !isTVOS) ||
+        (prevScreenName && isTVOS && showGoUpOrDownButtons) ? (
+          <GoUp onFocus={goUpCB} />
+        ) : null}
+      </View>
       <View style={{ flex: 1 }}>
         <View style={styles.wrapper}>
           <View style={styles.titleContainer}>
@@ -46,12 +72,16 @@ const Creatives: React.FC<
               data={creatives}
               columnHeight={scaleSize(770)}
               columnWidth={scaleSize(387)}
+              onReady={onContentReady}
             />
           </View>
         </View>
       </View>
       <View style={styles.downContainer}>
-        <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+        {(nextScreenName && !isTVOS) ||
+        (nextScreenName && isTVOS && showGoUpOrDownButtons) ? (
+          <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
+        ) : null}
       </View>
     </View>
   );
@@ -76,6 +106,10 @@ const styles = StyleSheet.create({
   },
   downContainer: {
     marginBottom: scaleSize(50),
+    height: scaleSize(50),
+  },
+  upContainer: {
+    height: scaleSize(10),
   },
   title: {
     width: '100%',

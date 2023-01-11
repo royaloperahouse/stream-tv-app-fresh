@@ -14,18 +14,19 @@ type TMultiColumnRoleNameListProps = {
   columnHeight: number;
   columnWidth: number;
   id: string;
+  onReady?: () => void;
 };
-
+const noopCB = () => {};
 const MultiColumnRoleNameList: React.FC<
   TMultiColumnRoleNameListProps
 > = props => {
-  const { data, columnHeight, columnWidth, id } = props;
+  const { data, columnHeight, columnWidth, onReady = noopCB, id } = props;
   const { onLayoutHandler, splitedItems, splited } = useSplitingOnColumns({
     columnHeight,
     itemsForSpliting: data,
   });
   const scrpllingPaginationRef = useRef<TScrolingPaginationRef>(null);
-
+  const callOnce = useRef<boolean>(false);
   if (!splited) {
     return (
       <TouchableHighlightWrapper hasTVPreferredFocus>
@@ -45,7 +46,10 @@ const MultiColumnRoleNameList: React.FC<
   }
   if (splitedItems.length < 3) {
     return (
-      <TouchableHighlightWrapper canMoveRight={false} hasTVPreferredFocus>
+      <TouchableHighlightWrapper
+        canMoveRight={false}
+        hasTVPreferredFocus
+        onFocus={onReady}>
         <View style={[styles.towColumnsList, { height: columnHeight }]}>
           {splitedItems.map((column, index) => (
             <View style={styles.columnContainer} key={index}>
@@ -75,6 +79,10 @@ const MultiColumnRoleNameList: React.FC<
             canMoveRight={index !== items.length - 1}
             hasTVPreferredFocus={index === 0}
             onFocus={() => {
+              if (!callOnce.current) {
+                callOnce.current = true;
+                onReady();
+              }
               if (
                 typeof scrpllingPaginationRef.current?.setCurrentIndex ===
                 'function'

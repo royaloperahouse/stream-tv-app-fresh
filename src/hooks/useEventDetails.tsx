@@ -333,11 +333,12 @@ const getSynopsis = (
         }
         return acc;
       }, []);
-  const blocksOfSynopsis = synopsis.map((synops, i) => ({
-    key: i.toString(),
-    text: synops.text,
-  }));
-
+  const blocksOfSynopsis = synopsis
+    .filter(synops => synops.text !== '')
+    .map((synops, i) => ({
+      key: i.toString(),
+      text: synops.text,
+    }));
   return {
     synopsis: blocksOfSynopsis,
     isSynopsisAvailable: Boolean(blocksOfSynopsis.length),
