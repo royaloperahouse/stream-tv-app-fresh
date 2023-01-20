@@ -24,6 +24,7 @@ type DigitalEventItemProps = {
   event: TEventContainer;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
+  canMoveLeft?: boolean;
   sectionIndex: number;
   hasTVPreferredFocus?: boolean;
   canMoveRight?: boolean;
@@ -64,6 +65,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       eventGroupTitle,
       sectionIndex,
       canMoveDown = true,
+      canMoveLeft= true,
       selectedItemIndex,
       lastItem = false,
       setRailItemRefCb = () => {},
@@ -167,6 +169,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}
+        canMoveLeft={canMoveLeft}
         style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
           if (isMounted.current) {

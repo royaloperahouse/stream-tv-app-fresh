@@ -177,6 +177,7 @@ const HomePageScreen: React.FC<
                 removeRailItemRefCb,
                 hasEndlessScroll,
                 scrollToRailItem,
+                accessible,
               }) => (
                 <DigitalEventItem
                   event={item}
@@ -195,7 +196,8 @@ const HomePageScreen: React.FC<
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
                   selectedItemIndex={index}
-                  canMoveDown={(isLastRail && hasEndlessScroll) || !isLastRail}
+                  canMoveLeft={index === 0}
+                  canMoveDown={isLastRail}
                   canMoveUp={!isFirstRail}
                   setFirstItemFocusable={
                     index === 0
@@ -204,6 +206,7 @@ const HomePageScreen: React.FC<
                       : undefined
                   }
                   scrollToRailItem={scrollToRailItem}
+                  accessible={accessible}
                 />
               )}
             />
