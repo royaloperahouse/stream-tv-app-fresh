@@ -233,7 +233,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         railItemsListRef.current[currentSectionIndex] &&
         currentSectionIndex === prevSectionIndex.current
       ) {
-        setTimeout(() => setCurrentPosition([currentSectionIndex, index]), 1000);
+        setTimeout(() => setCurrentPosition([currentSectionIndex, index]), 200);
         railItemsListRef.current[currentSectionIndex]?.scrollToIndex({
           animated: true,
           index,
