@@ -22,6 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
+import { isTVOS } from "configs/globalConfig";
 
 type TRailSectionsProps = {
   containerStyle?: ViewProps['style'];
@@ -232,7 +233,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         railItemsListRef.current[currentSectionIndex] &&
         currentSectionIndex === prevSectionIndex.current
       ) {
-        setTimeout(() => setCurrentPosition([currentSectionIndex, index]), 200);
+        setTimeout(() => setCurrentPosition([currentSectionIndex, index]), 1000);
         railItemsListRef.current[currentSectionIndex]?.scrollToIndex({
           animated: true,
           index,
@@ -435,7 +436,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   removeRailItemRefCb: removeRailItemRef,
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
-                  accessible: isAccessible(railItemIndexInList, sectionItemIndex), //need to improve for all other items than first
+                  accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
                 });
               }}
             />

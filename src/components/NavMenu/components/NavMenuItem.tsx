@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useLayoutEffect } from 'react';
+import React, { useCallback, useRef, useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
@@ -30,6 +30,7 @@ type TNavMenuItemProps = {
     isLast?: boolean,
   ) => void;
   accessibleWorklet: Readonly<Animated.SharedValue<number>>;
+  isLockedWorklet: boolean;
   iconOpacityWorklet: Readonly<Animated.SharedValue<1 | 0>>;
   nextFocusDown: number | null;
 };
@@ -46,6 +47,7 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
   labelOpacityWorklet,
   setMenuItemRef,
   accessibleWorklet,
+  isLockedWorklet,
   iconOpacityWorklet,
   nextFocusDown,
 }) => {
@@ -95,12 +97,17 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
     }),
     [accessibleWorklet.value],
   );
+  const [isLocked, setIsLocked] = useState(false);
+  const lockingAnimatedProps = useAnimatedProps(() => ({ accessible: false }));
+  useLayoutEffect(() => {
+    setIsLocked(isLockedWorklet);
+  }, [isLockedWorklet]);
   useLayoutEffect(() => {
     setMenuItemRef(id, touchRef, isLastItem);
   }, [setMenuItemRef, id, isLastItem]);
   return (
     <NavMenuButtonAnimated
-      animatedProps={accessibleAnimatedProps}
+      animatedProps={isLocked ? lockingAnimatedProps : accessibleAnimatedProps}
       ref={touchRef}
       onFocus={onFocusHandler}
       nextFocusDown={

@@ -145,8 +145,7 @@ const OperaMusicScreen: React.FC<
                 lastItem={index === section.data.length - 1}
                 setRailItemRefCb={setRailItemRefCb}
                 removeRailItemRefCb={removeRailItemRefCb}
-                canMoveDown={isLastRail}
-                canMoveLeft={index === 0}
+                canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
                 setFirstItemFocusable={
                   index === 0
                     ? navMenuScreenRedirectRef.current

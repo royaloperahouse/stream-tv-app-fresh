@@ -196,8 +196,7 @@ const HomePageScreen: React.FC<
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
                   selectedItemIndex={index}
-                  canMoveLeft={index === 0}
-                  canMoveDown={isLastRail}
+                  canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
                   canMoveUp={!isFirstRail}
                   setFirstItemFocusable={
                     index === 0
