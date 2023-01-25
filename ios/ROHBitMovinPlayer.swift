@@ -17,7 +17,7 @@ class ROHBitMovinPlayer: RCTViewManager {
         resolve(a*b)
     }
 
-    override func view() -> UIView! {
+    override func view() -> ReactiveUIViewController! {
       playerView = ViewController()
       return playerView;
     }
