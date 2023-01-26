@@ -121,7 +121,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       });
     };
     const onFocusHandler = () => {
-      if (selectedItemIndex !== 0) {
+      if (selectedItemIndex && selectedItemIndex !== 0) {
         navMenuManager.lockNavMenu();
       } else {
         navMenuManager.unlockNavMenu();
