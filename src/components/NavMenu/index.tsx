@@ -4,8 +4,8 @@ import React, {
   createRef,
   useImperativeHandle,
   useLayoutEffect,
-  useContext,
-} from 'react';
+  useContext, useState
+} from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -77,6 +77,8 @@ const navMenuRef = createRef<
   Partial<{
     showNavMenu: () => void;
     hideNavMenu: (cb?: () => void) => void;
+    lockNavMenu: () => void;
+    unlockNavMenu: () => void;
   }>
 >();
 
@@ -91,6 +93,16 @@ export const navMenuManager = Object.freeze({
   hideNavMenu: (cb?: () => void) => {
     if (typeof navMenuRef.current?.hideNavMenu === 'function') {
       navMenuRef.current.hideNavMenu(cb);
+    }
+  },
+  lockNavMenu: () => {
+    if (typeof navMenuRef.current?.lockNavMenu === 'function') {
+      navMenuRef.current.lockNavMenu();
+    }
+  },
+  unlockNavMenu: () => {
+    if (typeof navMenuRef.current?.unlockNavMenu === 'function') {
+      navMenuRef.current.unlockNavMenu();
     }
   },
 });
@@ -134,6 +146,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   );
   const navMenuWidth = useSharedValue(widthWithOutFocus);
   const navMenuExitButton = useSharedValue(0);
+  const [navMenuIsLocked, setNavMenuIsLocked] = useState(false);
 
   const wrap = useCallback((_finished: any) => {
     if (typeof cbRef.current === 'function') {
@@ -257,8 +270,14 @@ const NavMenu: React.FC<TNavMenuProps> = ({
           navMenuWidth.value = widthInvisble;
         }
       },
+      lockNavMenu: () => {
+        setNavMenuIsLocked(true);
+      },
+      unlockNavMenu: () => {
+        setNavMenuIsLocked(false);
+      },
     }),
-    [navMenuWidth],
+    [navMenuWidth, navMenuIsLocked],
   );
 
   const setMenuFocus = useCallback(
@@ -390,6 +409,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               labelOpacityWorklet={labelOpacityWorklet}
               iconOpacityWorklet={iconOpacityWorklet}
               accessibleWorklet={navMenuWidth}
+              isLockedWorklet={navMenuIsLocked}
               nextFocusDown={findNodeHandle(exitOfAppButtonRef.current)}
             />
           ))}
@@ -414,7 +434,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               destinations={[buttonsRefs.current?.['Settings']?.current]}
             />
             <ExitButton
-              animatedProps={isTVOS ? {} : exitButtonAnimatedProps}
+              animatedProps={!isTVOS ? {} : exitButtonAnimatedProps}
               onPress={exitOfAppPressHandler}
               ref={exitOfAppButtonRef}
               underlayColor="transparent"

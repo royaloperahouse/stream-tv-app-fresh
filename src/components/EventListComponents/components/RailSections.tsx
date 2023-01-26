@@ -22,6 +22,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
+import { isTVOS } from "configs/globalConfig";
 
 type TRailSectionsProps = {
   containerStyle?: ViewProps['style'];
@@ -65,6 +66,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const scrollToNecessaryRail = useRef<boolean>(false);
   const scrollToNecessaryRailItem = useRef<boolean>(false);
   const prevSectionIndex = useRef<number>(-1);
+  const [currentPosition, setCurrentPosition] = useState([0, 0]);
   const railItemsListRef = useRef<{
     [key: string]: VirtualizedList<any> | null;
   }>({});
@@ -131,7 +133,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [],
   );
 
-  const scrollToRail = (index: number) => () => {
+  const scrollToRail = (index: number, itemIndex: number) => () => {
     if (preSectionIndex.current === index) {
       return;
     }
@@ -143,6 +145,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     ) {
       return;
     }
+    setTimeout(() => setCurrentPosition([index, itemIndex]), 200);
     if (railStyle && railStyle.height) {
       sectionsListRef.current.scrollToOffset({
         animated: false,
@@ -173,6 +176,47 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     }
   };
 
+  const isAccessible = (accessibleItemInSectionIndex: number, accessibleSectionForCheckIndex: number) => {
+    if (
+      accessibleSectionForCheckIndex === currentPosition[0] &&
+      accessibleItemInSectionIndex === currentPosition[1]
+    ) {
+      return true;
+    }
+
+    if (
+      currentPosition[0] === sections.length - 1 &&
+      accessibleItemInSectionIndex === 0 &&
+      accessibleSectionForCheckIndex === 0
+    ) {
+      return true;
+    }
+    if (Math.abs(accessibleSectionForCheckIndex - currentPosition[0]) > 1) {
+      return false;
+    }
+    if (
+      Math.abs(accessibleItemInSectionIndex - currentPosition[1]) === 1 &&
+      accessibleSectionForCheckIndex === currentPosition[0]
+    ) {
+      return true;
+    }
+    if (Math.abs(accessibleSectionForCheckIndex - currentPosition[0]) === 1) {
+      return true;
+    }
+
+    if (
+      Math.abs(accessibleItemInSectionIndex - currentPosition[1]) > 1 &&
+      accessibleSectionForCheckIndex === currentPosition[0]
+    ) {
+      return false;
+    }
+
+    if (accessibleItemInSectionIndex === 0) {
+      return true;
+    }
+    return false;
+  };
+
   const initScrollToRailItem = useCallback(() => {
     if (railItemsListRef.current[sectionIndex]) {
       scrollToNecessaryRailItem.current = true;
@@ -189,6 +233,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         railItemsListRef.current[currentSectionIndex] &&
         currentSectionIndex === prevSectionIndex.current
       ) {
+        setTimeout(() => setCurrentPosition([currentSectionIndex, index]), 200);
         railItemsListRef.current[currentSectionIndex]?.scrollToIndex({
           animated: true,
           index,
@@ -382,7 +427,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   index: railItemIndexInList,
                   item: railItemInList,
                   section: sectionItem,
-                  scrollToRail: scrollToRail(sectionItemIndex),
+                  scrollToRail: scrollToRail(sectionItemIndex, railItemIndexInList),
                   isFirstRail: sectionItemIndex === 0,
                   sectionIndex: sectionItemIndex,
                   railItemIndex: railItemIndexInList,
@@ -391,7 +436,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   removeRailItemRefCb: removeRailItemRef,
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
-                  accessible: railItemIndexInList === 0, //need to improve for all other items than first
+                  accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
                 });
               }}
             />
