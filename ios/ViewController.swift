@@ -9,7 +9,7 @@ import UIKit
 import BitmovinPlayer
 import BitmovinAnalyticsCollector
 
-final class ViewController: UIView {
+final class ViewController: ReactiveUIViewController {
 
   var player: Player?
   var nextCallback: Bool = false
@@ -46,6 +46,7 @@ final class ViewController: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+    super.addViewControllerAsSubview()
     print("initting!")
   }
 
