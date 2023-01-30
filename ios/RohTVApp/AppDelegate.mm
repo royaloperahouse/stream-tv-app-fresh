@@ -42,7 +42,7 @@
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
 
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"RohTVApp", nil);
+  RCTRootView *rootView = (RCTRootView *)RCTAppSetupDefaultRootView(bridge, @"RohTVApp", nil);
 
 #if !TARGET_OS_TV
   if (@available(iOS 13.0, *)) {
