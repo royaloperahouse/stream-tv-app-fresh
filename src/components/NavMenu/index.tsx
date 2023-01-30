@@ -434,7 +434,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               destinations={[buttonsRefs.current?.['Settings']?.current]}
             />
             <ExitButton
-              animatedProps={!isTVOS ? {} : exitButtonAnimatedProps}
+              animatedProps={isTVOS ? {} : exitButtonAnimatedProps}
               onPress={exitOfAppPressHandler}
               ref={exitOfAppButtonRef}
               underlayColor="transparent"

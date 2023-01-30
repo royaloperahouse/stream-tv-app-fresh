@@ -101,7 +101,7 @@ const MyListScreen: React.FC<
                   (index + 1) % countOfItemsPeerRail !== 0 &&
                   index !== data.length - 1
                 }
-                selectedItemIndex={index}
+                selectedItemIndex={index % countOfItemsPeerRail}
                 sectionIndex={index}
                 setFirstItemFocusable={
                   index === 0
