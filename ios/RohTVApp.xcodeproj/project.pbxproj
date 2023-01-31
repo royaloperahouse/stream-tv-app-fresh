@@ -81,7 +81,7 @@
 		00E356F21AD99517003FC87E /* RohTVAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RohTVAppTests.m; sourceTree = "<group>"; };
 		0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-MediumItalic.otf"; path = "../src/assets/fonts/GothamSSm-MediumItalic.otf"; sourceTree = "<group>"; };
 		015BA46D04C1496C29E63456 /* Pods-RohTVApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* RohTVApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RohTVApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Royal Opera House Stream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Royal Opera House Stream.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RohTVApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = RohTVApp/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RohTVApp/Images.xcassets; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RohTVApp/main.m; sourceTree = "<group>"; };
 		224D5D4AEB9A0A36B75746AA /* Pods-RohTVApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.release.xcconfig"; sourceTree = "<group>"; };
 		2C329346E04FD437DBF160C6 /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* RohTVApp-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RohTVApp-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* Royal Opera House Stream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Royal Opera House Stream.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* RohTVApp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RohTVApp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35CD0C5D58474245A2BE904E /* GothamSSm-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Bold.otf"; path = "../src/assets/fonts/GothamSSm-Bold.otf"; sourceTree = "<group>"; };
 		36771B2C8C43AC6099096637 /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -260,9 +260,9 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* RohTVApp.app */,
+				13B07F961A680F5B00A75B9A /* Royal Opera House Stream.app */,
 				00E356EE1AD99517003FC87E /* RohTVAppTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* RohTVApp-tvOS.app */,
+				2D02E47B1E0B4A5D006451C7 /* Royal Opera House Stream.app */,
 				2D02E4901E0B4A5D006451C7 /* RohTVApp-tvOSTests.xctest */,
 			);
 			name = Products;
@@ -327,7 +327,7 @@
 				CEA69F2D290827BD00D25D41 /* BitmovinPlayer */,
 			);
 			productName = RohTVApp;
-			productReference = 13B07F961A680F5B00A75B9A /* RohTVApp.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Royal Opera House Stream.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* RohTVApp-tvOS */ = {
@@ -349,7 +349,7 @@
 			);
 			name = "RohTVApp-tvOS";
 			productName = "RohTVApp-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* RohTVApp-tvOS.app */;
+			productReference = 2D02E47B1E0B4A5D006451C7 /* Royal Opera House Stream.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E48F1E0B4A5D006451C7 /* RohTVApp-tvOSTests */ = {
@@ -888,7 +888,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.rohtvapp;
-				PRODUCT_NAME = RohTVApp;
+				PRODUCT_NAME = "Royal Opera House Stream";
 				SWIFT_OBJC_BRIDGING_HEADER = "RohTVApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -921,7 +921,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.rohtvapp;
-				PRODUCT_NAME = RohTVApp;
+				PRODUCT_NAME = "Royal Opera House Stream";
 				SWIFT_OBJC_BRIDGING_HEADER = "RohTVApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -942,27 +942,28 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 58;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "RohTVApp-tvOS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.12;
+				MARKETING_VERSION = 2.2.14;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rohtvapp.tvapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Royal Opera House Stream";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SWIFT_OBJC_BRIDGING_HEADER = "RohTVApp-tvOS-Bridging-Header.h";
@@ -988,26 +989,27 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 58;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "RohTVApp-tvOS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.12;
+				MARKETING_VERSION = 2.2.14;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rohtvapp.tvapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Royal Opera House Stream";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SWIFT_OBJC_BRIDGING_HEADER = "RohTVApp-tvOS-Bridging-Header.h";
@@ -1131,6 +1133,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
@@ -1189,6 +1192,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
