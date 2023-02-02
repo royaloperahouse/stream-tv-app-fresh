@@ -223,6 +223,13 @@ extension ViewController: PlayerListener {
   }
 
   func onReady(_ event: ReadyEvent, player: Player) {
+    // setting english subtitles if available or first of available subtitles
+    if let englishSubtitles = player.availableSubtitles.first(where: {$0.language == "en"}) {
+      player.setSubtitle(trackIdentifier: englishSubtitles.identifier)
+    } else if player.availableSubtitles.capacity > 0 {
+      player.setSubtitle(trackIdentifier: player.availableSubtitles[0].identifier)
+    }
+
     duration = player.duration
     dump(event, name: "** ReadyEvent", maxDepth: maxDepth)
   }
