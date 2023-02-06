@@ -20,6 +20,7 @@ import {
   Platform,
   TVEventControl,
   Linking,
+  Alert,
 } from 'react-native';
 import {
   getEventListLoopStart,
@@ -43,12 +44,12 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const hasQRCode = useFeature('hasQRCode');
   useEffect(() => {
-    Linking.getInitialURL().then(url => {
-      console.log(`Cold start with url: ${url}`);
-    });
-    const listnerCB = Linking.addEventListener('url', ({ url }) => {
-      console.log(`Opened with url: ${url} ;length = ${url.split('?').length}`);
-    });
+    /**
+    In first start without fireing of link, the url will be eual null regarding tvOS.
+    Need to check it on Android
+  */
+    Linking.getInitialURL().then(url => {});
+    const listnerCB = Linking.addEventListener('url', ({ url }) => {});
     return () => {
       listnerCB.remove();
     };

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "RohTVApp-tvOS.app"
+               BuildableName = "Royal Opera House Stream.app"
                BlueprintName = "RohTVApp-tvOS"
                ReferencedContainer = "container:RohTVApp.xcodeproj">
             </BuildableReference>
@@ -41,7 +41,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "RohTVApp-tvOS.app"
+            BuildableName = "Royal Opera House Stream.app"
             BlueprintName = "RohTVApp-tvOS"
             ReferencedContainer = "container:RohTVApp.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "RohTVApp-tvOS.app"
+            BuildableName = "Royal Opera House Stream.app"
             BlueprintName = "RohTVApp-tvOS"
             ReferencedContainer = "container:RohTVApp.xcodeproj">
          </BuildableReference>
