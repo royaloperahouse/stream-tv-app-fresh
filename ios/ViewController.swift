@@ -41,7 +41,7 @@ final class ViewController: UIView {
   @objc var onDestroy:RCTDirectEventBlock? = nil
 
   required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+    super.init(coder: aDecoder)
   }
 
   override init(frame: CGRect) {
@@ -110,8 +110,9 @@ final class ViewController: UIView {
         playerConfig.playbackConfig.isAutoplayEnabled = true
       }
 
-    player = PlayerFactory.create(playerConfig: playerConfig)
-    nextCallback = false;
+      let player = PlayerFactory.create(playerConfig: playerConfig)
+      self.player = player
+      nextCallback = false
 
       if(self.analytics != nil) {
           var plistDictionary: NSDictionary?
@@ -135,22 +136,37 @@ final class ViewController: UIView {
           analyticsCollector = BitmovinAnalytics(config: configAnalytics);
 
           // Attach your player instance
-          analyticsCollector!.attachPlayer(player: player!);
+          analyticsCollector!.attachPlayer(player: player);
         // Create player view and pass the player instance to it
-        let playerView = PlayerView(player: player!, frame: self.bounds)
+        let playerView = PlayerView(player: player, frame: self.bounds)
 
         // Listen to player events
-        player?.add(listener: self)
-
-        playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        playerView.frame = self.bounds
-
-        player?.load(sourceConfig: sourceConfig)
-        // Make sure that the correct audio session category is set to allow for background playback.
-        handleAudioSessionCategorySetting()
+        player.add(listener: self)
 
         self.addSubview(playerView)
+        playerView.translatesAutoresizingMaskIntoConstraints = false
+        let pinEdgeAttrs: [NSLayoutConstraint.Attribute] = [
+          .leading, .top, .trailing, .bottom
+        ]
+        let pinEdgeConstraints = pinEdgeAttrs.map { attr -> NSLayoutConstraint in
+         return NSLayoutConstraint(
+                 item: playerView,
+                 attribute: attr,
+                 relatedBy: .equal,
+                 toItem: self,
+                 attribute: attr,
+                 multiplier: 1,
+                 constant: 0)
+        }
+        NSLayoutConstraint.activate(pinEdgeConstraints)
         self.bringSubviewToFront(playerView)
+
+        player.load(sourceConfig: sourceConfig)
+        // Make sure that the correct audio session category is set to allow for background playback.
+        handleAudioSessionCategorySetting()
+          playerView.setNeedsLayout()
+          self.setNeedsLayout()
+          self.layoutIfNeeded()
     }
   }
 
@@ -275,5 +291,9 @@ extension ViewController: PlayerListener {
 
   func onSubtitleChanged(_ event: SubtitleChangedEvent, player: Player) {
     dump(event, name: "** SubtitleChangedEvent", maxDepth: maxDepth)
+  }
+  
+  func onMuted(_ event: MutedEvent, player: Player) {
+    dump(event, name: "** MutedEvent", maxDepth: maxDepth)
   }
 }
