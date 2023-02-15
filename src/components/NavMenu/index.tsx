@@ -207,7 +207,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
 
   const exitButtonAnimatedProps = useAnimatedProps(
     () => ({
-      accessible: navMenuWidth.value > widthWithOutFocus,
+      accessible: navMenuIsLocked ? !navMenuIsLocked : navMenuWidth.value > widthWithOutFocus,
     }),
     [navMenuWidth.value],
   );
@@ -284,7 +284,8 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     (id: TRoute['navMenuScreenName']) => {
       if (
         state.routeNames[state.index] !== id &&
-        !FocusManager.getFirstLounch()
+        !FocusManager.getFirstLounch() &&
+        !navMenuIsLocked
       ) {
         navigation.navigate(id);
         navMenuWidth.value = widthWithFocus;
@@ -296,6 +297,10 @@ const NavMenu: React.FC<TNavMenuProps> = ({
 
   useLayoutEffect(() => {
     const backButtonCallback = () => {
+      if (navMenuIsLocked) {
+        return true;
+      }
+
       if (navMenuWidth.value === widthInvisble) {
         return false;
       }
@@ -318,7 +323,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', backButtonCallback);
     };
-  }, [navMenuConfig, exitOfApp, canExit, navMenuWidth]);
+  }, [navMenuConfig, exitOfApp, canExit, navMenuWidth, navMenuIsLocked]);
 
   useLayoutEffect(() => {
     setExitOfAppButtonRef(exitOfAppButtonRef);

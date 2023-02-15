@@ -19,6 +19,7 @@ import {
 } from '@configs/screensConfig';
 import RohImage from '@components/RohImage';
 import { FocusManager } from 'services/focusService/focusManager';
+import { isTVOS } from "configs/globalConfig";
 
 type DigitalEventItemProps = {
   event: TEventContainer;
@@ -122,9 +123,9 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     };
     const onFocusHandler = () => {
       if (selectedItemIndex && selectedItemIndex !== 0) {
-        navMenuManager.lockNavMenu();
+        isTVOS && navMenuManager.lockNavMenu();
       } else {
-        navMenuManager.unlockNavMenu();
+        isTVOS && navMenuManager.unlockNavMenu();
       }
       if (isMounted.current) {
         setFocused(true);
