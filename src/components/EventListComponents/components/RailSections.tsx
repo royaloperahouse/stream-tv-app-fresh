@@ -23,6 +23,7 @@ import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWra
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
 import { isTVOS } from "configs/globalConfig";
+import { navMenuManager } from "components/NavMenu";
 
 type TRailSectionsProps = {
   containerStyle?: ViewProps['style'];
@@ -269,11 +270,13 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               `${section.item.data[0].id}-${sectionIndexToScroll}`,
             )
           ) {
+            !isTVOS && navMenuManager.unlockNavMenu();
             return;
           }
           railsItemsRef.current
             .get(`${section.item.data[0].id}-${sectionIndexToScroll}`)
             ?.current?.setNativeProps({ hasTVPreferredFocus: true });
+          !isTVOS && navMenuManager.unlockNavMenu();
         }
       }, 500),
     [sections.length],
@@ -449,6 +452,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         onFocusCb={() => {
           if (mountedRef.current) {
             scrollToTop.current = true;
+            !isTVOS && navMenuManager.lockNavMenu();
             sectionsListRef.current?.scrollToOffset?.({ offset: 0 });
           }
         }}
