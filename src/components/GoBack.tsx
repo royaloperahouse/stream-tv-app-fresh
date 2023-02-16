@@ -132,7 +132,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
           handleBackButtonClick,
         );
       };
-    }, [navigation, route.params, show]),
+    }, [navigation, route.params, show, accessible]),
   );
   useImperativeHandle(
     goBackButtonRef,
@@ -183,7 +183,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
         return;
       }
       onFocusHandler();
-    /* 
+    /*
     if (
         (event.eventType === 'swipeLeft' && isFocused.current) ||
         (event.tag === btnRef.current?.getNode?.() &&
