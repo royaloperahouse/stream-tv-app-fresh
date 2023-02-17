@@ -7,6 +7,7 @@ export { default as SwitchingBetweenEnvironments } from './components/SwitchBetw
 export { default as Subscription } from './components/Subscription';
 export { default as VideoPlayerSettings } from './components/VideoPlayerSettings';
 export { default as ShowTrayEvents } from './components/ShowTrayEvents';
+export { default as LoginWithoutQRCode } from './components/LoginWithoutQRCodeScreen';
 
 export type { TAccountProps } from './components/Account';
 export type { TAppVersionProps } from './components/AppVersion';
@@ -15,3 +16,4 @@ export type { TSwitchingBetweenEnvironmentsProps } from './components/SwitchBetw
 export type { TSwitchSubscriptionMode } from './components/SwitchSubscriptionMode';
 export type { TVideoPlayerSettingsProps } from './components/VideoPlayerSettings';
 export type { TShowTrayEventsProps } from './components/ShowTrayEvents';
+export type { TLoginScreenProps } from './components/LoginWithoutQRCodeScreen';

@@ -40,11 +40,8 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
         if (response.status !== 204) {
           throw Error('Something went wrong');
         }
-        dispatch(getEventListLoopStop());
-        dispatch(endLoginLoop());
         dispatch(endFullSubscriptionLoop());
         dispatch(clearAuthState());
-        dispatch(clearEventState());
       })
       .catch(console.log);
   useLayoutEffect(() => {

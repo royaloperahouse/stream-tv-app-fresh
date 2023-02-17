@@ -6,6 +6,7 @@ import {
   DefaultTheme,
   Route,
   createNavigationContainerRef,
+  NavigationState,
 } from '@react-navigation/native';
 import type {
   TRootStackScreensParamList,
@@ -79,11 +80,50 @@ export function resetStackCacheAndNavigate(
   }
 }
 
+export function resetEventDetailsScreenFromDeepLink() {
+  if (navigationRef.isReady()) {
+    navigate('Content', {
+      screen: 'EventDetails',
+      params: {
+        eventId: 'Y7WoBhEAAOyy4Q_s',
+        screenNameFrom: 'Home',
+        sectionIndex: 0,
+        selectedItemIndex: 0,
+      },
+    });
+  }
+}
+
 export function getCurrentRoute():
   | Route<string, object | undefined>
   | undefined {
   if (navigationRef.isReady()) {
     return navigationRef.getCurrentRoute();
+  }
+}
+
+export function isNavigationReady(): boolean {
+  return navigationRef.isReady();
+}
+
+export function replace(
+  name: keyof TRootStackScreensParamList,
+  params: { [key: string]: any; screen?: TContentScreenReverseNames },
+) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(StackActions.replace(name, params));
+  }
+}
+
+export function getRootState(): Readonly<NavigationState> | undefined {
+  if (navigationRef.isReady()) {
+    return navigationRef.getRootState();
+  }
+}
+
+export function getCurrentState(): Readonly<NavigationState> | undefined {
+  if (navigationRef.isReady()) {
+    return navigationRef.getState();
   }
 }
 

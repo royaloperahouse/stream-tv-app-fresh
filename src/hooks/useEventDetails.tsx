@@ -524,8 +524,10 @@ const useGetExtras = (
   const bitrateValue = useRef<number>(
     playerBitratesFilter[defaultPlayerBitrateKey].value,
   );
-  const loading = useRef<boolean>(true);
+  const eventIdRef = useRef<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const loaded = useRef<boolean>(false);
+
   const isMounted = useRef<boolean>(false);
   const videos = get(event, 'vs_videos', []).map(({ video }) => video.id);
   const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
@@ -542,6 +544,13 @@ const useGetExtras = (
       isMounted.current = false;
     };
   }, []);
+  useEffect(() => {
+    if (isMounted.current && eventIdRef.current !== eventId) {
+      eventIdRef.current = eventId;
+      loaded.current = false;
+      setLoading(true);
+    }
+  }, [eventId]);
 
   useAsyncEffect(
     async isActive => {
@@ -559,8 +568,6 @@ const useGetExtras = (
           queryPredicates: [Prismic.Predicates.in('document.id', videos)],
           isProductionEnv: isProduction,
         });
-        loading.current = false;
-        loaded.current = true;
         const filteredResult = response.results.reduce(
           (
             acc: {
@@ -675,10 +682,13 @@ const useGetExtras = (
           );
         }
       } catch (err) {
-        loading.current = false;
-        loaded.current = true;
         if (isActive()) {
           setVideosInfo([]);
+        }
+      } finally {
+        if (isActive()) {
+          loaded.current = true;
+          setLoading(false);
         }
       }
     },
@@ -688,7 +698,7 @@ const useGetExtras = (
     videosInfo,
     performanceInfo: performanceInfo.current,
     trailerInfo: trailerInfo.current,
-    loading: loading.current,
+    loading: loading,
     loaded: loaded.current,
     performanceVideoTimePosition,
     setPerformanceVideoTimePositionCB,

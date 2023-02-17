@@ -24,6 +24,8 @@ import type {
 import { useFeature } from 'flagged';
 import NavMenu from 'components/NavMenu';
 import { TNavMenuItem } from 'services/types/models';
+import { useAppSelector } from 'hooks/redux';
+import { deviceAuthenticatedSelector } from 'services/store/auth/Selectors';
 const Drawer = createDrawerNavigator<TContentScreensParamList>();
 const Stack = createNativeStackNavigator<TRootStackScreensParamList>();
 
@@ -82,6 +84,7 @@ const ContentScreen: React.MemoExoticComponent<
     TRootStackScreenProps<NSNavigationScreensNames.RootStackScreens['content']>
   >
 > = memo(() => {
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
   const showLiveStream = useFeature('showLiveStream');
   const initialRoute = allRoutes.find(route => route.isDefault);
   const routesForRenering = (
@@ -91,6 +94,11 @@ const ContentScreen: React.MemoExoticComponent<
           screen => screen.navMenuScreenName !== contentScreenNames.liveStream,
         )
   )
+    .filter(
+      screen =>
+        isAuthenticated ||
+        screen.navMenuScreenName !== contentScreenNames.myList,
+    )
     .sort((a, b) => a.position - b.position)
     .map<TNavMenuItem>(route => ({
       navMenuScreenName: route.navMenuScreenName,

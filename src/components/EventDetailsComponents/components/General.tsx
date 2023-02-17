@@ -48,7 +48,10 @@ import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { Colors } from '@themes/Styleguide';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import { useAppSelector } from 'hooks/redux';
-import { customerIdSelector } from '@services/store/auth/Selectors';
+import {
+  customerIdSelector,
+  deviceAuthenticatedSelector,
+} from '@services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import type {
   TEventDetailsScreensProps,
@@ -74,6 +77,7 @@ import {
 import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
 import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
+import { navMenuManager } from 'components/NavMenu';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -101,6 +105,7 @@ const General: React.FC<
     videoQualityBitrate,
     videoQualityId,
   } = params;
+  const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
   const goDownRef = useRef<TGoDownRef>(null);
@@ -122,6 +127,7 @@ const General: React.FC<
   const watchNowButtonRef = useRef<TActionButtonListRef>(null);
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
   const [existInMyList, setExistInMyList] = useState<boolean>(false);
 
   const closeModal = useCallback((ref, clearLoadingState: any) => {
@@ -267,6 +273,11 @@ const General: React.FC<
       clearLoadingState?: () => void,
     ) => {
       try {
+        if (!isAuthenticated) {
+          moveToSettings();
+          navMenuManager.showNavMenu();
+          return;
+        }
         const videoFromPrismic = await promiseWait(
           getAccessToWatchVideo(
             performanceInfo,
@@ -440,6 +451,8 @@ const General: React.FC<
       performanceVideoTimePosition,
       videoQualityBitrate,
       videoQualityId,
+      isAuthenticated,
+      moveToSettings,
     ],
   );
 
@@ -513,6 +526,11 @@ const General: React.FC<
     _: React.RefObject<TouchableHighlight>,
     clearLoadingState: () => void,
   ) => {
+    if (!isAuthenticated) {
+      moveToSettings();
+      navMenuManager.showNavMenu();
+      return;
+    }
     if (addOrRemoveBusyRef.current) {
       return;
     }

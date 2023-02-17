@@ -1,28 +1,14 @@
 import React from 'react';
-import {
-  View,
-  ImageBackground,
-  StyleSheet,
-  TouchableHighlight,
-} from 'react-native';
-import { useAppDispatch } from '@hooks/redux';
+import { View, ImageBackground, StyleSheet } from 'react-native';
 import { Colors, Images } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
-import {
-  startLoginLoop,
-  switchOffIntroScreen,
-} from '@services/store/auth/Slices';
 import IntroStreamLogoSvg from '@assets/svg/IntroStreamLogo.svg';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 type TIntroScreenProps = {};
 
 const IntroScreen: React.FC<TIntroScreenProps> = () => {
-  const dispatch = useAppDispatch();
-  const getStarted = () => {
-    dispatch(switchOffIntroScreen());
-    dispatch(startLoginLoop());
-  };
   return (
     <ImageBackground
       style={styles.containerBackground}
@@ -42,13 +28,10 @@ const IntroScreen: React.FC<TIntroScreenProps> = () => {
             library of opera and ballet
           </RohText>
         </View>
-        <TouchableHighlight
-          onPress={getStarted}
-          underlayColor={styles.button.backgroundColor}
-          style={styles.button}
-          hasTVPreferredFocus>
+        <View style={styles.button}>
           <RohText style={styles.buttonText}>Get started</RohText>
-        </TouchableHighlight>
+          <LoadingSpinner showSpinner />
+        </View>
       </View>
     </ImageBackground>
   );
@@ -83,12 +66,13 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(72),
   },
   button: {
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: Colors.defaultBlue,
     width: scaleSize(445),
     height: scaleSize(84),
     marginTop: scaleSize(182),
+    flexDirection: 'row',
   },
   buttonText: {
     color: 'white',

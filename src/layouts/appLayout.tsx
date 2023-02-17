@@ -1,52 +1,83 @@
 import React, { useEffect, useRef, useLayoutEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@hooks/redux';
-import {
-  introScreenShowSelector,
-  deviceAuthenticatedSelector,
-  deviceAuthenticatedInfoLoadedSelector,
-} from '@services/store/auth/Selectors';
+import { introScreenShowSelector } from '@services/store/auth/Selectors';
 import {
   checkDeviceSuccess,
   checkDeviceError,
+  updateSubscriptionMode,
+  turnOnDeepLinkingFlow,
+  turnOffDeepLinkingFlow,
 } from '@services/store/auth/Slices';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import IntroScreen from '@screens/introScreen';
-import LoginScreen from '@screens/loginScreen';
 import MainLayout from '@layouts/mainLayout';
-import LoginWithoutQRCodeScreen from '@screens/LoginWithoutQRCodeScreen';
 import {
   AppState,
   AppStateStatus,
   Platform,
   TVEventControl,
+  Linking,
 } from 'react-native';
 import {
   getEventListLoopStart,
   getEventListLoopStop,
 } from '@services/store/events/Slices';
 import RNBootSplash from 'react-native-bootsplash';
-import { verifyDevice } from '@services/apiClient';
-import { useFeature } from 'flagged';
+import { getSubscribeInfo, verifyDevice } from '@services/apiClient';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { isTVOS } from 'configs/globalConfig';
+import formatISO from 'date-fns/formatISO';
 
 type TAppLayoutProps = {};
 const AppLayout: React.FC<TAppLayoutProps> = () => {
   const dispatch = useAppDispatch();
   const appState = useRef(AppState.currentState);
   const showIntroScreen = useAppSelector(introScreenShowSelector);
-  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
-  const deviceAuthInfoLoaded = useAppSelector(
-    deviceAuthenticatedInfoLoadedSelector,
-  );
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
-  const hasQRCode = useFeature('hasQRCode');
+  useEffect(() => {
+    const regExpPattern = /^rohtvapp:\/\/events\/([^/]+)$/g;
+    Linking.getInitialURL().then((url: string | null) => {
+      if (url === null) {
+        dispatch(turnOffDeepLinkingFlow({ isRegularFlow: true }));
+        return;
+      }
+      if ([...url.matchAll(regExpPattern)]?.[0]?.[1]) {
+        const eventId = [...url.matchAll(regExpPattern)][0][1];
+        dispatch(
+          turnOnDeepLinkingFlow({
+            eventId,
+          }),
+        );
+      } else {
+        dispatch(
+          turnOnDeepLinkingFlow({
+            eventId: null,
+          }),
+        );
+      }
+    });
+    const listnerCB = Linking.addEventListener(
+      'url',
+      ({ url }: { url: string }) => {
+        if ([...url.matchAll(regExpPattern)]?.[0]?.[1]) {
+          const eventId = [...url.matchAll(regExpPattern)][0][1];
+          dispatch(
+            turnOnDeepLinkingFlow({
+              eventId,
+            }),
+          );
+        }
+      },
+    );
+    return () => {
+      listnerCB.remove();
+    };
+  }, [dispatch]);
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (
         appState.current.match(/inactive|background/) &&
-        nextAppState === 'active' &&
-        isAuthenticated
+        nextAppState === 'active'
       ) {
         if (isTVOS) {
           TVEventControl.enableTVMenuKey();
@@ -55,8 +86,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
       }
       if (
         appState.current === 'active' &&
-        nextAppState.match(/inactive|background/) &&
-        isAuthenticated
+        nextAppState.match(/inactive|background/)
       ) {
         if (isTVOS) {
           TVEventControl.disableTVMenuKey();
@@ -71,16 +101,50 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
     );
 
     return unsubscribe.remove;
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(getEventListLoopStart());
-    }
-  }, [isAuthenticated, dispatch]);
+    verifyDevice(isProductionEnv)
+      .then(response => {
+        if (response?.data?.data?.attributes?.customerId) {
+          dispatch(checkDeviceSuccess(response.data));
+          return true;
+        } else if (response?.data?.errors?.length) {
+          const errObj = response.data.errors[0];
+          dispatch(checkDeviceError(errObj));
+          return false;
+        }
+      })
+      .then((success: boolean | undefined) => {
+        if (success) {
+          return getSubscribeInfo(isProductionEnv);
+        }
+      })
+      .then(subscriptionResponse => {
+        if (
+          subscriptionResponse &&
+          subscriptionResponse.status >= 200 &&
+          subscriptionResponse.status < 400 &&
+          subscriptionResponse?.data?.data?.attributes?.isSubscriptionActive !==
+            undefined
+        ) {
+          dispatch(
+            updateSubscriptionMode({
+              fullSubscription:
+                subscriptionResponse.data.data.attributes.isSubscriptionActive,
+              fullSubscriptionUpdateDate: formatISO(new Date()),
+            }),
+          );
+        }
+      })
+      .catch(console.log)
+      .finally(() => {
+        TVEventManager.init();
+        dispatch(getEventListLoopStart());
+      });
+  }, [dispatch, isProductionEnv]);
 
   useLayoutEffect(() => {
-    // we need to setup splashscreen for tvOS(iOS)
     if (Platform.OS === 'android') {
       RNBootSplash.getVisibilityStatus().then(status => {
         if (status !== 'hidden') {
@@ -90,39 +154,18 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
     }
   });
 
-  useEffect(() => {
-    if (!deviceAuthInfoLoaded) {
-      verifyDevice(isProductionEnv).then(response => {
-        if (response?.data?.data?.attributes?.customerId) {
-          dispatch(getEventListLoopStart());
-          dispatch(checkDeviceSuccess(response.data));
-          TVEventManager.init();
-        } else if (response?.data?.errors?.length) {
-          const errObj = response.data.errors[0];
-          dispatch(checkDeviceError(errObj));
-        }
-      });
-    }
-  }, [deviceAuthInfoLoaded, dispatch, isProductionEnv]);
-
-  useLayoutEffect(
-    () => () => {
+  useLayoutEffect(() => {
+    TVEventManager.init();
+    return () => {
       if (isTVOS) {
         TVEventControl.disableTVMenuKey();
       }
       TVEventManager.unmount();
-    },
-    [],
-  );
+    };
+  }, []);
 
-  if (
-    !deviceAuthInfoLoaded ||
-    (deviceAuthInfoLoaded && !isAuthenticated && showIntroScreen)
-  ) {
+  if (showIntroScreen) {
     return <IntroScreen />;
-  }
-  if (!isAuthenticated) {
-    return hasQRCode ? <LoginScreen /> : <LoginWithoutQRCodeScreen />;
   }
   return <MainLayout />;
 };

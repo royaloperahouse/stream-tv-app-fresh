@@ -22,25 +22,31 @@ import type {
   TContentScreensProps,
   NSNavigationScreensNames,
 } from '@configs/screensConfig';
+import { useAppSelector } from 'hooks/redux';
+import { deviceAuthenticatedSelector } from 'services/store/auth/Selectors';
 
 const settingsItemKey = 'settingsItemKey';
 
 const SettingsScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['settings']>
 > = ({ route }) => {
-  const [activeContentKey, setActiveContentKey] = useState<string>('');
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
+  const [activeContentKey, setActiveContentKey] = useState<string>(
+    route.params?.pinPage ? 'pinPage' : '',
+  );
   const activeItemRef = useRef<TTouchableHighlightWrapperRef>();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const contentFactory = (contentKey: string) => {
     if (
       !contentKey ||
-      !(contentKey in getSettingsSectionsConfig()) ||
-      typeof getSettingsSectionsConfig()[contentKey].ContentComponent !==
-        'function'
+      !(contentKey in getSettingsSectionsConfig(isAuthenticated)) ||
+      typeof getSettingsSectionsConfig(isAuthenticated)[contentKey]
+        .ContentComponent !== 'function'
     ) {
       return View;
     }
-    return getSettingsSectionsConfig()[contentKey].ContentComponent;
+    return getSettingsSectionsConfig(isAuthenticated)[contentKey]
+      .ContentComponent;
   };
   const Content = contentFactory(activeContentKey);
 
@@ -54,7 +60,7 @@ const SettingsScreen: React.FC<
         <View style={styles.navMenuContainer}>
           <RohText style={styles.pageTitle}>{settingsTitle}</RohText>
           <FlatList
-            data={getCollectionOfSettingsSections()}
+            data={getCollectionOfSettingsSections(isAuthenticated)}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
@@ -62,9 +68,13 @@ const SettingsScreen: React.FC<
                 id={item.key}
                 isFirst={index === 0}
                 isActive={item.key === activeContentKey}
+                hasTVPreferredFocus={
+                  route.params?.pinPage && item.key === 'pinPage'
+                }
                 title={item.navMenuItemTitle}
                 canMoveDown={
-                  index !== getCollectionOfSettingsSections().length - 1
+                  index !==
+                  getCollectionOfSettingsSections(isAuthenticated).length - 1
                 }
                 canMoveUp={index !== 0}
                 onFocus={touchableRef => {

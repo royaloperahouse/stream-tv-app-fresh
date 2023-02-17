@@ -485,3 +485,9 @@ export const videoToEventMapSelector =
       };
     }, {});
   };
+
+export const isEventExist = (eventId: string) => (store: TRootState) =>
+  !!(
+    eventId in store.events.allDigitalEventsDetail &&
+    store.events.allDigitalEventsDetail[eventId]?.data
+  );

@@ -209,11 +209,9 @@ const GoBack: React.FC<TGoBackProps> = () => {
         accessible={accessible}
         onBlur={() => {
           isFocused.current = false;
-          console.log('blur');
         }}
         onFocus={() => {
           isFocused.current = true;
-          console.log('focus');
         }}
         styleFocused={styles.wrapperStyleActive}>
         <View style={styles.buttonContainer}>

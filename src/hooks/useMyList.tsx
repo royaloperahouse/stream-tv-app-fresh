@@ -8,19 +8,22 @@ import { isProductionEvironmentSelector } from 'services/store/settings/Selector
 export const useMyList = (): { data: Array<string>; ejected: boolean } => {
   const customerId = useAppSelector(customerIdSelector);
 
-  const ejected = useRef<boolean>(false);
+  const ejected = useRef<boolean>(!customerId);
   const [myList, setMyList] = useState<Array<string>>([]);
   const mountedRef = useRef<boolean | undefined>(false);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   useFocusEffect(
     useCallback(() => {
       mountedRef.current = true;
-      getMyList(customerId, isProductionEnv).then(items => {
-        if (mountedRef && mountedRef.current) {
-          ejected.current = true;
-          setMyList(items);
-        }
-      });
+      if (!ejected.current) {
+        getMyList(customerId, isProductionEnv).then(items => {
+          if (mountedRef && mountedRef.current) {
+            ejected.current = true;
+            setMyList(items);
+          }
+        });
+      }
+
       return () => {
         if (mountedRef && mountedRef.current) {
           mountedRef.current = false;

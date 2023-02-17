@@ -21,7 +21,7 @@ export const useContinueWatchingList = (): {
   const [continueWatchingList, setContinueWatchingList] = useState<
     Array<string>
   >([]);
-  const ejected = useRef<boolean>(false);
+  const ejected = useRef<boolean>(!customerId);
   const mountedRef = useRef<boolean | undefined>(false);
 
   useLayoutEffect(() => {
@@ -33,7 +33,7 @@ export const useContinueWatchingList = (): {
 
   useLayoutEffect(
     () => {
-      if (customerId && eventsLoaded) {
+      if (customerId && eventsLoaded && !ejected.current) {
         getListOfWatchedVideos(customerId, isProductionEnv).then(items => {
           if (mountedRef.current) {
             ejected.current = true;
