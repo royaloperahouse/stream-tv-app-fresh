@@ -35,7 +35,7 @@ export const digitalEventsForHomePageSelector =
       title: string;
       ids: Array<string>;
     }>(store.events.eventGroups).filter(([key]) => key in homePageWhiteList);
-    const exploreAllTrays: Array<
+    const combinedExploreAllTraysAndPropositionPage: Array<
       [string, { title: string; ids: Array<string> }]
     > = [];
     for (let i = 0; i < store.events.exploreAllTrays.length; i++) {
@@ -45,7 +45,7 @@ export const digitalEventsForHomePageSelector =
       ) {
         continue;
       }
-      exploreAllTrays.push([
+      combinedExploreAllTraysAndPropositionPage.push([
         '',
         {
           title: store.events.exploreAllTrays[i].title || '',
@@ -53,9 +53,6 @@ export const digitalEventsForHomePageSelector =
         },
       ]);
     }
-    const propositionPageElements: Array<
-      [string, { title: string; ids: Array<string> }]
-    > = [];
     for (let i = 0; i < store.events.propositionPageElements.length; i++) {
       if (
         store.events.showOnlyVisisbleEvents &&
@@ -63,7 +60,23 @@ export const digitalEventsForHomePageSelector =
       ) {
         continue;
       }
-      propositionPageElements.push([
+
+      const existingTitleIndex =
+        combinedExploreAllTraysAndPropositionPage.findIndex(
+          item =>
+            item[1].title === store.events.propositionPageElements[i].title,
+        );
+
+      if (existingTitleIndex > -1) {
+        console.log();
+        const concatenatedIds = [
+          ...combinedExploreAllTraysAndPropositionPage[existingTitleIndex][1].ids,
+          ...store.events.propositionPageElements[i].ids,
+        ];
+        combinedExploreAllTraysAndPropositionPage[existingTitleIndex][1].ids = concatenatedIds.filter((item, pos) => concatenatedIds.indexOf(item) === pos);
+        continue;
+      }
+      combinedExploreAllTraysAndPropositionPage.push([
         '',
         {
           title: store.events.propositionPageElements[i].title || '',
@@ -71,8 +84,7 @@ export const digitalEventsForHomePageSelector =
         },
       ]);
     }
-    eventGroupsArray.unshift(...exploreAllTrays);
-    eventGroupsArray.unshift(...propositionPageElements);
+    eventGroupsArray.unshift(...combinedExploreAllTraysAndPropositionPage);
 
     if (eventGroupsArray.length) {
       if (store.auth.fullSubscription) {
