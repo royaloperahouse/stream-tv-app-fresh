@@ -1,4 +1,4 @@
-import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+import { PayloadAction, ActionCreatorWithPayload } from '@reduxjs/toolkit';
 import * as prismicT from '@prismicio/types';
 import {
   getEventListLoopStart,
@@ -6,7 +6,12 @@ import {
   getEventListLoopStop,
   saveSearchResultQuery,
 } from '@services/store/events/Slices';
-import { searchQuerySelector } from '@services/store/events/Selectors';
+import {
+  getEventById,
+  getEventsLoadedStatusSelector,
+  isEventExist,
+  searchQuerySelector,
+} from '@services/store/events/Selectors';
 import { Task } from 'redux-saga';
 import {
   all,
@@ -17,6 +22,7 @@ import {
   select,
   take,
   takeEvery,
+  delay,
 } from 'redux-saga/effects';
 import { logError } from '@utils/loger';
 import {
@@ -30,21 +36,42 @@ import {
   TStreamHomePageRail,
   TStreamHomePageData,
   TStreamHomePageElement,
+  contentScreenNames,
+  rootStackScreensNames,
 } from '@services/types/models';
 import { isProductionEvironmentSelector } from '../settings/Selectors';
-import { customerIdSelector } from '../auth/Selectors';
+import { customerIdSelector, introScreenShowSelector } from '../auth/Selectors';
+import {
+  switchOffIntroScreen,
+  turnOffDeepLinkingFlow,
+  turnOnDeepLinkingFlow,
+} from '../auth/Slices';
+import { globalModalManager } from '@components/GlobalModals';
+import {
+  getCurrentRoute,
+  getCurrentState,
+  getRootState,
+  isNavigationReady,
+  navigate,
+  replace,
+  resetEventDetailsScreenFromDeepLink,
+  resetStackCacheAndNavigate,
+} from 'navigations/navigationContainer';
+import { ErrorModal } from 'components/GlobalModals/variants';
+import { navMenuManager } from 'components/NavMenu';
 
 export default function* eventRootSagas() {
   yield all([
     call(getEventListLoopWatcher),
     call(saveSearchResultQueryWatcher),
+    call(deepLinkingFlowWatcher),
   ]);
 }
 
 function* getEventListLoopWatcher() {
   let task: null | Task = null;
   while (true) {
-    const action: ActionCreatorWithoutPayload<string> = yield take([
+    const action: ActionCreatorWithPayload<string> = yield take([
       getEventListLoopStart.toString(),
       getEventListLoopStop.toString(),
     ]);
@@ -68,6 +95,161 @@ function* saveSearchResultQueryWatcher() {
     saveSearchResultQuery.toString(),
     saveSearchResultQueryWorker,
   );
+}
+
+function* deepLinkingFlowWatcher() {
+  let task: null | Task = null;
+  let currentTaskName: null | string = null;
+  while (true) {
+    const action: PayloadAction<{
+      eventId: string | null;
+      isRegularFlow?: boolean;
+    }> = yield take([
+      turnOffDeepLinkingFlow.toString(),
+      turnOnDeepLinkingFlow.toString(),
+    ]);
+    if (
+      action.type === turnOffDeepLinkingFlow.toString() &&
+      !action.payload.isRegularFlow
+    ) {
+      continue;
+    }
+    if (
+      task &&
+      task.isRunning() &&
+      action.type !== turnOffDeepLinkingFlow.toString()
+    ) {
+      yield cancel(task);
+    }
+    if (task && !task.isRunning()) {
+      task = null;
+      currentTaskName = null;
+    }
+    if (
+      currentTaskName === null &&
+      action.type === turnOffDeepLinkingFlow.toString() &&
+      action.payload.isRegularFlow &&
+      (!task || !task.isRunning())
+    ) {
+      task = yield fork(regularFlowWorker);
+      currentTaskName = action.type;
+      continue;
+    }
+    if (
+      currentTaskName === null &&
+      action.type === turnOnDeepLinkingFlow.toString() &&
+      action.payload.eventId !== null &&
+      (!task || !task.isRunning())
+    ) {
+      task = yield fork(deepLinkingWorker, action);
+      currentTaskName = action.type;
+    }
+  }
+}
+
+function* regularFlowWorker(): any {
+  let eventsLoaded = yield select(getEventsLoadedStatusSelector);
+  if (eventsLoaded) {
+    yield put(switchOffIntroScreen());
+    return;
+  }
+  yield take(getEventListSuccess.toString());
+  yield put(switchOffIntroScreen());
+}
+
+function* deepLinkingWorker(
+  action: PayloadAction<{ eventId: string | null }>,
+): any {
+  const { eventId } = action.payload;
+  const eventsLoaded = yield select(getEventsLoadedStatusSelector);
+  if (eventsLoaded) {
+    yield call(openEventByDeepLink, eventId);
+  }
+
+  while (!eventsLoaded) {
+    if (!(yield select(getEventsLoadedStatusSelector))) {
+      yield delay(500);
+      continue;
+    }
+    yield call(openEventByDeepLink, eventId);
+    break;
+  }
+  yield put(turnOffDeepLinkingFlow({ isRegularFlow: false }));
+}
+
+function* openEventByDeepLink(eventId: string | null): any {
+  if (eventId && (yield select(isEventExist(eventId)))) {
+    if (globalModalManager.isModalOpen()) {
+      globalModalManager.closeModal();
+    }
+    const isIntroScreenOpen = yield select(introScreenShowSelector);
+    if (isIntroScreenOpen) {
+      yield put(switchOffIntroScreen());
+    }
+    while (true) {
+      if (!isNavigationReady()) {
+        yield delay(500);
+        continue;
+      }
+      const rootState = getRootState() ? { ...getRootState() } : null;
+
+      const isContentRoute =
+        rootState &&
+        rootState?.routeNames?.findIndex(
+          routeItem => routeItem === rootStackScreensNames.content,
+        ) === rootState?.index;
+
+      const isEventDetailsRoute =
+        isContentRoute &&
+        rootState?.routes?.[rootState?.index || 0]?.state?.routes[
+          rootState?.routes[rootState?.index || 0]?.state?.index || 0
+        ]?.name === contentScreenNames.eventDetails;
+
+      if (isEventDetailsRoute) {
+        navigate(rootStackScreensNames.content, {
+          screen: contentScreenNames.eventDetails,
+          params: {
+            eventId,
+            screenNameFrom: contentScreenNames.home,
+            sectionIndex: 0,
+            selectedItemIndex: 0,
+          },
+        });
+      } else {
+        navMenuManager.hideNavMenu(() => {
+          navigate(rootStackScreensNames.content, {
+            screen: contentScreenNames.eventDetails,
+            params: {
+              eventId,
+              screenNameFrom: contentScreenNames.home,
+              sectionIndex: 0,
+              selectedItemIndex: 0,
+            },
+          });
+        });
+      }
+      break;
+    }
+  } else {
+    yield put(switchOffIntroScreen());
+    while (true) {
+      if (!isNavigationReady()) {
+        yield delay(500);
+        continue;
+      }
+      break;
+    }
+    globalModalManager.openModal({
+      contentComponent: ErrorModal,
+      contentProps: {
+        confirmActionHandler: () => {
+          globalModalManager.closeModal();
+        },
+        title: 'Sorry, Something went wrong',
+        subtitle: 'Current event is not existing.\nPlease, try again later.',
+      },
+    });
+  }
 }
 
 function* getEventListLoopWorker(): any {

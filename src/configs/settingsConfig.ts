@@ -6,6 +6,7 @@ import {
   Subscription,
   VideoPlayerSettings,
   ShowTrayEvents,
+  LoginWithoutQRCode,
 } from '@components/SettingsComponents';
 import { store } from '@services/store';
 import type {
@@ -16,6 +17,7 @@ import type {
   TSwitchSubscriptionMode,
   TVideoPlayerSettingsProps,
   TShowTrayEventsProps,
+  TLoginScreenProps,
 } from '@components/SettingsComponents';
 export const settingsTitle = 'SETTINGS';
 
@@ -29,14 +31,15 @@ export type TSettingsSection = {
         TAppVersionProps &
         TSwitchingBetweenEnvironmentsProps &
         TSwitchSubscriptionMode &
-        TVideoPlayerSettingsProps
+        TVideoPlayerSettingsProps &
+        TLoginScreenProps
     >
   >;
 };
 
-export const getSettingsSectionsConfig: () => {
+export const getSettingsSectionsConfig: (isAuthenticated: boolean) => {
   [key: string]: TSettingsSection;
-} = () => {
+} = isAuthenticated => {
   const settingsSections: {
     [key: string]: TSettingsSection;
   } = {
@@ -45,10 +48,10 @@ export const getSettingsSectionsConfig: () => {
       navMenuItemTitle: 'ACCOUNT',
       ContentComponent: Account,
     },
-    signOut: {
-      key: 'signOut',
-      navMenuItemTitle: 'SIGN OUT',
-      ContentComponent: SignOut,
+    [isAuthenticated ? 'signOut' : 'pinPage']: {
+      key: isAuthenticated ? 'signOut' : 'pinPage',
+      navMenuItemTitle: isAuthenticated ? 'SIGN OUT' : 'PIN PAGE',
+      ContentComponent: isAuthenticated ? SignOut : LoginWithoutQRCode,
     },
     appVersion: {
       key: 'appVersion',
@@ -82,4 +85,5 @@ export const getSettingsSectionsConfig: () => {
   return settingsSections;
 };
 
-export default () => Object.values(getSettingsSectionsConfig());
+export default (isAuthenticated: boolean) =>
+  Object.values(getSettingsSectionsConfig(isAuthenticated));

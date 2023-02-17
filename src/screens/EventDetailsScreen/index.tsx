@@ -5,10 +5,11 @@ import { View, StyleSheet, Dimensions } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAppDispatch } from 'hooks/redux';
 import GoBack from '@components/GoBack';
-import type {
+import {
   TContentScreensProps,
   NSNavigationScreensNames,
   TEventDetailsScreensParamList,
+  contentScreenNames,
 } from '@configs/screensConfig';
 import { SectionsParamsComtextProvider } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import {
@@ -28,13 +29,16 @@ const EventDetailsScreen: React.FC<
   TContentScreensProps<
     NSNavigationScreensNames.ContentStackScreens['eventDetails']
   >
-> = ({ route }) => {
+> = ({ route, navigation }) => {
   const { eventId } = route.params;
   const { extrasLoading, sectionsParams, sectionsCollection } = useEventDetails(
     { eventId },
   );
   const dispatch = useAppDispatch();
   const eventDetailsScreenMounted = useRef<boolean>(false);
+  const moveToSettings = () => {
+    navigation.navigate(contentScreenNames.settings, { pinPage: true });
+  };
   useEffect(() => {
     dispatch(getEventListLoopStop());
     return () => {
@@ -61,7 +65,8 @@ const EventDetailsScreen: React.FC<
   return (
     <View style={styles.rootContainer}>
       <GoBack />
-      <SectionsParamsComtextProvider params={sectionsParams}>
+      <SectionsParamsComtextProvider
+        params={{ ...sectionsParams, moveToSettings }}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {sectionsCollection.map(section => (
             <Stack.Screen

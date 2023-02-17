@@ -79,7 +79,11 @@ export type TContentScreensParamList = {
         selectedItemIndex?: number;
       }
     | undefined;
-  [contentScreenNames.settings]: undefined;
+  [contentScreenNames.settings]:
+    | {
+        pinPage: boolean;
+      }
+    | undefined;
   [contentScreenNames.eventDetails]: {
     eventId: string;
     screenNameFrom: TContentScreenReverseNames;

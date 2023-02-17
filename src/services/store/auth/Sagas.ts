@@ -49,7 +49,6 @@ import {
 } from '@services/apiClient';
 import { logError } from '@utils/loger';
 import { TAuthResponseError } from '@services/types/authReqResp';
-import { authBreakingTime } from '@configs/globalConfig';
 import { AxiosResponse } from 'axios';
 import { bigDelay } from '@utils/bigDelay';
 import isequal from 'lodash.isequal';
@@ -108,19 +107,12 @@ function* fullSubscriptionLoopWatcher(): any {
 function* loginLoopWorker(): any {
   const delayTimeInMS = 5000; // 5 sec
   let runLoop: boolean = true;
-  let countOfLoopDuration: number = 0;
   while (runLoop) {
-    if (countOfLoopDuration >= authBreakingTime) {
-      yield put(switchOnIntroScreen());
-      break;
-    }
-    yield put(checkDeviceStart());
     try {
       const isProductionEnv = yield select(isProductionEvironmentSelector);
       const response: any = yield call(verifyDevice, isProductionEnv);
       if (response?.data?.data?.attributes?.customerId) {
         runLoop = false;
-        yield put(getEventListLoopStart());
         yield put(checkDeviceSuccess(response.data));
         const subscriptionResponse = yield call(
           getSubscribeInfo,
@@ -153,7 +145,6 @@ function* loginLoopWorker(): any {
       );
     }
     yield delay(delayTimeInMS);
-    countOfLoopDuration += delayTimeInMS;
   }
 }
 

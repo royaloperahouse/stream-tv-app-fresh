@@ -12,6 +12,7 @@ interface AuthState {
   fullSubscription: boolean;
   fullSubscriptionUpdateDate: string;
   userEmail: string;
+  isDeepLinkingFlow: boolean;
 }
 
 const initialState: AuthState = {
@@ -25,6 +26,7 @@ const initialState: AuthState = {
   fullSubscription: false,
   fullSubscriptionUpdateDate: '',
   userEmail: '',
+  isDeepLinkingFlow: false,
 };
 
 const defaultPinError =
@@ -36,6 +38,20 @@ const appSlice = createSlice({
   reducers: {
     startLoginLoop: state => state,
     endLoginLoop: state => state,
+    turnOnDeepLinkingFlow: (
+      state,
+      _: PayloadAction<{ eventId: string | null }>,
+    ) => {
+      state.isDeepLinkingFlow = true;
+      return state;
+    },
+    turnOffDeepLinkingFlow: (
+      state,
+      _: PayloadAction<{ isRegularFlow?: boolean }>,
+    ) => {
+      state.isDeepLinkingFlow = false;
+      return state;
+    },
     startFullSubscriptionLoop: state => state,
     endFullSubscriptionLoop: state => state,
     switchOnIntroScreen: state => {
@@ -88,7 +104,7 @@ const appSlice = createSlice({
       state.isLoading = false;
       state.isLoaded = true;
     },
-    clearAuthState: () => ({ ...initialState }),
+    clearAuthState: () => ({ ...initialState, showIntroScreen: false }),
     toggleSubscriptionMode: state => {
       state.fullSubscription = !state.fullSubscription;
     },
@@ -122,6 +138,8 @@ export const {
   startFullSubscriptionLoop,
   endFullSubscriptionLoop,
   updateSubscriptionMode,
+  turnOffDeepLinkingFlow,
+  turnOnDeepLinkingFlow,
 } = appSlice.actions;
 
 export const { reducer, name } = appSlice;
