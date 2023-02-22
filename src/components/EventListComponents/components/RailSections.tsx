@@ -256,8 +256,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
           const sectionIndexToScroll = scrollToBottom.current
             ? sections.length - 1
             : 0;
-          scrollToBottom.current = false;
-          scrollToTop.current = false;
           const section = info.viewableItems.find(
             viewableItem =>
               viewableItem.index === sectionIndexToScroll &&
@@ -277,8 +275,10 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
             .get(`${section.item.data[0].id}-${sectionIndexToScroll}`)
             ?.current?.setNativeProps({ hasTVPreferredFocus: true });
           !isTVOS && navMenuManager.unlockNavMenu();
+          scrollToBottom.current = false;
+          scrollToTop.current = false;
         }
-      }, 500),
+      }, 0),
     [sections.length],
   );
 
@@ -448,6 +448,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       />
       <EndlessScroll
         countOfRails={sections.length}
+        accessibleProp={currentPosition[0] === sections.length - 1}
         ref={bottomEndlessScrollRef}
         onFocusCb={() => {
           if (mountedRef.current) {
@@ -466,6 +467,7 @@ export default RailSections;
 type TEndlessScrollProps = {
   onFocusCb: (e: NativeSyntheticEvent<TargetedEvent>) => void;
   countOfRails: number;
+  accessibleProp: boolean;
 };
 
 type TEndlessScrollRef = {
@@ -474,7 +476,7 @@ type TEndlessScrollRef = {
 };
 
 const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
-  ({ onFocusCb, countOfRails }, ref) => {
+  ({ onFocusCb, countOfRails, accessibleProp }, ref) => {
     const [accessible, setAccessible] = useState<boolean>(false);
     const touchableRef = useRef<TouchableHighlight>(null);
     const isMounted = useRef<boolean>(false);
@@ -503,7 +505,7 @@ const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
     return (
       <TouchableHighlight
         ref={touchableRef}
-        accessible={countOfRails > 2 && accessible}
+        accessible={countOfRails > 2 && accessible && accessibleProp}
         nextFocusRight={findNodeHandle(touchableRef.current)}
         nextFocusLeft={findNodeHandle(touchableRef.current)}
         nextFocusUp={findNodeHandle(touchableRef.current)}
