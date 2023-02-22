@@ -248,7 +248,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const viewableItemsChangeHandler = useMemo(
     () =>
       debounce((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
-        console.log(info.viewableItems);
         if (scrollToNecessaryRail.current) {
           scrollToNecessaryRail.current = false;
           return;
