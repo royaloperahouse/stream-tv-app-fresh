@@ -12,28 +12,8 @@ const IntroScreen: React.FC<TIntroScreenProps> = () => {
   return (
     <ImageBackground
       style={styles.containerBackground}
-      source={Images.introBackground}>
-      <View style={styles.container}>
-        <IntroStreamLogoSvg
-          style={styles.logo}
-          width={scaleSize(520)}
-          height={scaleSize(142)}
-        />
-        <RohText style={styles.welcome}>Welcome to ROH Stream</RohText>
-        <View style={styles.descriptionContainer}>
-          <RohText style={styles.description}>
-            Unlimited access to our rich
-          </RohText>
-          <RohText style={styles.description}>
-            library of opera and ballet
-          </RohText>
-        </View>
-        <View style={styles.button}>
-          <RohText style={styles.buttonText}>Get started</RohText>
-          <LoadingSpinner showSpinner />
-        </View>
-      </View>
-    </ImageBackground>
+      source={Images.splashScreen}
+    />
   );
 };
 
