@@ -209,9 +209,20 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     () => ({
       accessible: navMenuIsLocked ? !navMenuIsLocked : navMenuWidth.value > widthWithOutFocus,
     }),
-    [navMenuWidth.value],
+    [navMenuWidth.value, navMenuIsLocked],
   );
-
+  const appleLockedExitButtonAnimatedProps = useAnimatedProps(
+    () => ({
+      accessible: false,
+    }),
+    [],
+  );
+  const appleUnlockedExitButtonAnimatedProps = useAnimatedProps(
+    () => ({
+      accessible: true,
+    }),
+    [],
+  );
   const labelOpacityWorklet = useDerivedValue(
     () =>
       navMenuWidth.value === widthWithFocus
@@ -439,7 +450,13 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               destinations={[buttonsRefs.current?.['Settings']?.current]}
             />
             <ExitButton
-              animatedProps={isTVOS ? {} : exitButtonAnimatedProps}
+              animatedProps={
+                isTVOS
+                  ? navMenuIsLocked
+                    ? appleLockedExitButtonAnimatedProps
+                    : appleUnlockedExitButtonAnimatedProps
+                  : exitButtonAnimatedProps
+              }
               onPress={exitOfAppPressHandler}
               ref={exitOfAppButtonRef}
               underlayColor="transparent"
