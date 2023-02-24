@@ -593,6 +593,9 @@ const useGetExtras = (
                 break;
               case 'hero':
                 break;
+              case 'insight':
+                acc.performance.push(result);
+                break;
               default:
                 acc.extras.push(result);
                 break;
@@ -620,6 +623,7 @@ const useGetExtras = (
                   '',
               }
             : null;
+          console.log(filteredResult.performance);
           if (performanceInfo.current && customerId) {
             const videoPositionInfo = await getBitMovinSavedPosition(
               customerId,
