@@ -4,8 +4,9 @@ import React, {
   createRef,
   useImperativeHandle,
   useLayoutEffect,
-  useContext, useState
-} from "react";
+  useContext,
+  useState,
+} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -75,6 +76,7 @@ type TNavMenuProps = {
 
 const navMenuRef = createRef<
   Partial<{
+    unwrapNavMenu: () => void;
     showNavMenu: () => void;
     hideNavMenu: (cb?: () => void) => void;
     lockNavMenu: () => void;
@@ -85,6 +87,11 @@ const navMenuRef = createRef<
 const ExitButton = Animated.createAnimatedComponent(TouchableHighlight);
 
 export const navMenuManager = Object.freeze({
+  unwrapNavMenu: () => {
+    if (typeof navMenuRef.current?.unwrapNavMenu === 'function') {
+      navMenuRef.current.unwrapNavMenu();
+    }
+  },
   showNavMenu: () => {
     if (typeof navMenuRef.current?.showNavMenu === 'function') {
       navMenuRef.current.showNavMenu();
@@ -270,6 +277,9 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   useImperativeHandle(
     navMenuRef,
     () => ({
+      unwrapNavMenu: () => {
+        navMenuWidth.value = widthWithFocus;
+      },
       showNavMenu: () => {
         navMenuWidth.value = widthWithOutFocus;
       },

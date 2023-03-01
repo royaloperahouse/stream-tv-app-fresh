@@ -623,7 +623,6 @@ const useGetExtras = (
                   '',
               }
             : null;
-          console.log(filteredResult.performance);
           if (performanceInfo.current && customerId) {
             const videoPositionInfo = await getBitMovinSavedPosition(
               customerId,

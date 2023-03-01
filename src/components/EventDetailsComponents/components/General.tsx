@@ -275,7 +275,7 @@ const General: React.FC<
       try {
         if (!isAuthenticated) {
           moveToSettings();
-          navMenuManager.showNavMenu();
+          navMenuManager.unwrapNavMenu();
           return;
         }
         const videoFromPrismic = await promiseWait(
@@ -528,7 +528,7 @@ const General: React.FC<
   ) => {
     if (!isAuthenticated) {
       moveToSettings();
-      navMenuManager.showNavMenu();
+      navMenuManager.unwrapNavMenu();
       return;
     }
     if (addOrRemoveBusyRef.current) {
