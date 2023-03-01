@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
@@ -50,6 +50,14 @@ const SettingsScreen: React.FC<
   };
   const Content = contentFactory(activeContentKey);
 
+  const [preferredFocus, setPreferredFocus] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
+  useEffect(() => {
+    if (!isFirstLaunch) {
+      setPreferredFocus(true);
+    }
+    setIsFirstLaunch(false);
+  }, [isAuthenticated]);
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect
@@ -69,7 +77,7 @@ const SettingsScreen: React.FC<
                 isFirst={index === 0}
                 isActive={item.key === activeContentKey}
                 hasTVPreferredFocus={
-                  route.params?.pinPage && item.key === 'pinPage'
+                  (route.params?.pinPage && item.key === 'pinPage') || (index === 0 && preferredFocus)
                 }
                 title={item.navMenuItemTitle}
                 canMoveDown={
