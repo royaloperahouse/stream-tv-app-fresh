@@ -9,6 +9,7 @@ import { TGlobalModalContentProps } from '@services/types/globalModal';
 const ErrorModal: React.FC<TGlobalModalContentProps> = ({
   title = 'Error',
   subtitle = '',
+  fromDeepLink = false,
   confirmActionHandler = () => {},
 }) => {
   return (
@@ -33,7 +34,7 @@ const ErrorModal: React.FC<TGlobalModalContentProps> = ({
             onPress={confirmActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
               <RohText style={styles.primaryActionButtonText}>
-                Try again
+                {fromDeepLink ? 'Go to home page' : 'Try again'}
               </RohText>
             </View>
           </TouchableHighlightWrapper>
