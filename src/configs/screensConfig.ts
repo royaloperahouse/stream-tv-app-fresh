@@ -49,6 +49,7 @@ export type TContentScreensParamList = {
         eventId: string | null;
         sectionIndex: number;
         selectedItemIndex?: number;
+        fromErrorModal?: boolean;
       }
     | undefined;
   [contentScreenNames.operaMusic]:

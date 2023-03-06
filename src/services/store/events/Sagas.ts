@@ -244,9 +244,16 @@ function* openEventByDeepLink(eventId: string | null): any {
       contentProps: {
         confirmActionHandler: () => {
           globalModalManager.closeModal();
+          navigate(rootStackScreensNames.content, {
+            screen: contentScreenNames.home,
+            params: {
+              fromErrorModal: true,
+            },
+          });
         },
         title: 'Sorry, Something went wrong',
         subtitle: 'Current event is not existing.\nPlease, try again later.',
+        fromDeepLink: true,
       },
     });
   }

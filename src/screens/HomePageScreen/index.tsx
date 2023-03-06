@@ -57,6 +57,7 @@ const HomePageScreen: React.FC<
   const { navMenuNodesRefs } = useContext<TNavMenuNodesRefsContextValue>(
     NavMenuNodesRefsContext,
   );
+  const fromErrorModal = route?.params?.fromErrorModal;
   const appState = useRef(AppState.currentState);
   let focusPosition: {
     sectionIndex: number;
@@ -184,8 +185,9 @@ const HomePageScreen: React.FC<
                   ref={previewRef}
                   screenNameFrom={route.name}
                   hasTVPreferredFocus={
-                    sectionIndex === focusPosition.sectionIndex &&
-                    index === focusPosition.itemIndex
+                    (sectionIndex === focusPosition.sectionIndex &&
+                      index === focusPosition.itemIndex) ||
+                    (fromErrorModal && sectionIndex === 0 && index === 0)
                   }
                   canMoveRight={index !== section.data.length - 1}
                   onFocus={scrollToRail}
