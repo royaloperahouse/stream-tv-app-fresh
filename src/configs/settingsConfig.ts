@@ -50,7 +50,7 @@ export const getSettingsSectionsConfig: (isAuthenticated: boolean) => {
     },
     [isAuthenticated ? 'signOut' : 'pinPage']: {
       key: isAuthenticated ? 'signOut' : 'pinPage',
-      navMenuItemTitle: isAuthenticated ? 'SIGN OUT' : 'PIN PAGE',
+      navMenuItemTitle: isAuthenticated ? 'SIGN OUT' : 'TV APP SET-UP',
       ContentComponent: isAuthenticated ? SignOut : LoginWithoutQRCode,
     },
     appVersion: {

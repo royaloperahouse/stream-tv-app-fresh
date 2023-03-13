@@ -251,8 +251,8 @@ function* openEventByDeepLink(eventId: string | null): any {
             },
           });
         },
-        title: 'Sorry, Something went wrong',
-        subtitle: 'Current event is not existing.\nPlease, try again later.',
+        title: 'Performance no longer available',
+        subtitle: 'Sorry, the performance you are looking for is no longer available.\nPlease return to the Explore page.',
         fromDeepLink: true,
       },
     });
