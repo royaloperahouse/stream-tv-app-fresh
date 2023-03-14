@@ -69,6 +69,9 @@ export const getSettingsSectionsConfig: (isAuthenticated: boolean) => {
       ContentComponent: VideoPlayerSettings,
     },
   };
+  if (!isAuthenticated) {
+    delete settingsSections.account;
+  }
   if (store.getState().auth.userEmail.includes('roh.org.uk')) {
     settingsSections.switchingBetweenEnv = {
       key: 'switchingBetweenEnv',
