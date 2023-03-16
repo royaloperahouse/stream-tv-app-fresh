@@ -27,6 +27,7 @@
     "flagged": "^2.0.5",
     "fuse.js": "^6.6.2",
     "html-entities": "^2.3.3",
+    "iso-639-1": "^2.1.15",
     "lodash.debounce": "^4.0.8",
     "lodash.difference": "^4.5.0",
     "lodash.get": "^4.4.2",

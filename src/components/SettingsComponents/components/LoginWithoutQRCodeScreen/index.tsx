@@ -31,7 +31,7 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <RohText style={styles.header}>To set up your Royal Opera House Stream TV app</RohText>
+        <RohText style={styles.header}>to set-up your Royal Opera House Stream TV app</RohText>
         <View style={styles.websiteContainer}>
           <RohText style={styles.regular}>1. Go to www.roh.org.uk/pin on a computer, tablet or mobile</RohText>
           <RohText style={styles.regular}>2. Enter the code below:</RohText>
@@ -39,7 +39,10 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
         <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>
         <View style={styles.websiteContainer}>
           <RohText style={styles.regular}>3. Click 'Activate TV'</RohText>
-          <RohText style={styles.regular}>4. Your TV app should now show our library of ballets and operas for you to enjoy</RohText>
+          <View style={{flex: 1, flexDirection: 'row', maxWidth: '90%'}}>
+            <RohText style={styles.regular}>4. </RohText>
+            <RohText style={styles.regular}>Your TV app should now show our library of ballets and operas for you to enjoy</RohText>
+          </View>
           <RohText style={styles.regular}>{deviceAuthenticatedError}</RohText>
         </View>
       </View>
@@ -55,9 +58,10 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(60),
   },
   innerContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 2,
-    marginBottom: scaleSize(60)
+    marginBottom: scaleSize(60),
+    marginLeft: scaleSize(75)
   },
   websiteContainer: {
     marginTop: scaleSize(0),
@@ -66,9 +70,9 @@ const styles = StyleSheet.create({
   header: {
     color: 'white',
     textTransform: 'uppercase',
-    fontSize: scaleSize(54),
-    textAlign: 'center',
-    marginBottom: scaleSize(60),
+    fontSize: scaleSize(52),
+    textAlign: 'left',
+    marginBottom: scaleSize(30),
   },
   blue: {
     color: Colors.defaultBlue,
@@ -77,8 +81,8 @@ const styles = StyleSheet.create({
   },
   regular: {
     color: 'white',
-    fontSize: scaleSize(32),
-    marginBottom: scaleSize(15),
+    fontSize: scaleSize(28),
+    marginBottom: scaleSize(40),
   },
   addressContainer: {
     flexDirection: 'row',
@@ -92,10 +96,11 @@ const styles = StyleSheet.create({
   pin: {
     color: 'white',
     textTransform: 'uppercase',
-    fontSize: scaleSize(120),
-    alignItems: 'center',
+    fontSize: scaleSize(90),
+    alignItems: 'flex-start',
     paddingRight: scaleSize(100),
-    marginBottom: scaleSize(15),
+    marginBottom: scaleSize(40),
+    marginLeft: scaleSize(30),
   },
 });
 
