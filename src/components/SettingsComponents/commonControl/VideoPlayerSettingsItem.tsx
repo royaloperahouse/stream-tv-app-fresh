@@ -63,10 +63,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subtitleItemContainer: {
-    marginHorizontal: scaleSize(20),
-    paddingHorizontal: scaleSize(20),
     height: scaleSize(80),
-    paddingLeft: scaleSize(40),
+    paddingRight: scaleSize(40),
   },
   text: {
     color: 'white',

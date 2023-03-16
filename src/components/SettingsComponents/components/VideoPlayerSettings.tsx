@@ -76,7 +76,7 @@ const VideoPlayerSettings: React.FC<TVideoPlayerSettingsProps> = ({
       <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
-          <RohText style={styles.titleText}>Video Quality Settings</RohText>
+          <RohText style={styles.titleText}>VIDEO QUALITY SETTINGS</RohText>
         </View>
         <View style={styles.actionButtonsContainer}>
           <View style={styles.actionButtonContainer}>
@@ -87,7 +87,7 @@ const VideoPlayerSettings: React.FC<TVideoPlayerSettingsProps> = ({
               renderItem={({ item, index }) => (
                 <VideoPlayerSettingsItem
                   ref={index === 0 ? buttonRef : undefined}
-                  text={item.title}
+                  text={item.title.toUpperCase()}
                   currentIndex={index}
                   itemsLength={Object.values(playerBitratesFilter).length}
                   isActive={selectedId === item.key}
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: scaleSize(42),
-    marginLeft: scaleSize(80),
     width: scaleSize(700),
   },
   titleContainer: {
@@ -151,11 +150,12 @@ const styles = StyleSheet.create({
   actionButtonContentContainer: {
     minWidth: scaleSize(358),
     minHeight: scaleSize(80),
-    paddingHorizontal: scaleSize(25),
+    paddingRight: scaleSize(25),
     paddingVertical: scaleSize(25),
   },
   actionButtonsContainer: {
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
   },
   actionButtonText: {
     fontSize: scaleSize(24),
