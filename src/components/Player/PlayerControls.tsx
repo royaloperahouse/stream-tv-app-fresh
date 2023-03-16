@@ -18,12 +18,12 @@ import {
 } from 'react-native';
 import { Colors, PlayerIcons } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
+import ISO6391 from 'iso-639-1';
 
 import ControlButton from './ControlButton';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import RohText from '@components/RohText';
 import SubtitlesItem from './SubtitlesItem';
-import ArrowDropdown from '@assets/svg/player/ArrowDropdownForPlayer.svg';
 import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
@@ -787,6 +787,18 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     };
   }, [showList, hideSubtitles]);
 
+  // Moving off label to the end of the list and setting friendly name for subtitles labels
+  if (subtitleList.length) {
+    const offLabelIndex = subtitleList.findIndex(i => i && i.label === 'off');
+    subtitleList.push(subtitleList.splice(offLabelIndex, 1)[0]);
+    subtitleList.forEach(i => {
+      const friendlyName = ISO6391.getName(i.label);
+      if (friendlyName) {
+        i.label = friendlyName;
+      }
+    });
+  }
+
   return (
     <SafeAreaView style={styles.subtitlesContainer}>
       <Animated.View
@@ -824,17 +836,10 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
                   onPress={() => onPressHandler(item.id)}
                   currentIndex={index}
                   itemsLength={subtitleList.length}
-                  text={
-                    item.label === 'off'
-                      ? `Subtitles ${item.label}`
-                      : item.label
-                  }
+                  text={item.label === 'off' ? 'Off' : item.label}
                 />
               )}
             />
-            <View style={styles.dropDownArrow}>
-              <ArrowDropdown width={scaleSize(50)} height={scaleSize(50)} />
-            </View>
           </View>
         )}
       </Animated.View>

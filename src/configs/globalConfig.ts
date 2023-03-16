@@ -9,7 +9,7 @@ export const SentryDSN =
 
 export const buildInfo = `Build version: ${getVersion()}; build number: ${getBuildNumber()}. Only for dev mode; Is it a tv? ${
   Platform.isTV
-}; Monufacture: ${getManufacturerSync()};`;
+}; Manufacture: ${getManufacturerSync()};`;
 export const buildInfoForBitmovin = `Build version: ${getVersion()}; build number: ${getBuildNumber()}.`;
 export const authBreakingTime = 1000 * 60 * 25; // 25 min
 

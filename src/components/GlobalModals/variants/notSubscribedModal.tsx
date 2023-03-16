@@ -16,12 +16,12 @@ const NotSubscribedModal: React.FC<TNonSubscribedModeAlertProps> = ({
       <View style={styles.contentContainer}>
         <View style={styles.header}>
           <RohText style={styles.headerText}>
-            get Unlimited access to our rich library of opera and ballet
+            Get incredible performances wherever you are
           </RohText>
         </View>
         <View style={styles.subHeader}>
           <RohText style={styles.subHeaderText}>
-            To join ROH Stream, please go to Royal Opera House website.
+            Go to the Royal Opera House Website to subscribe.
           </RohText>
         </View>
         <View>
@@ -34,7 +34,7 @@ const NotSubscribedModal: React.FC<TNonSubscribedModeAlertProps> = ({
             canMoveUp={false}
             onPress={confirmActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
-              <RohText style={styles.primaryActionButtonText}>Go back</RohText>
+              <RohText style={styles.primaryActionButtonText}>Explore Stream</RohText>
             </View>
           </TouchableHighlightWrapper>
         </View>

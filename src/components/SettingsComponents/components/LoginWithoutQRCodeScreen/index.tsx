@@ -31,18 +31,18 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <RohText style={styles.header}>Follow these steps on your</RohText>
-        <RohText style={styles.header}>Computer, tablet or mobile</RohText>
+        <RohText style={styles.header}>to set-up your Royal Opera House Stream TV app</RohText>
         <View style={styles.websiteContainer}>
-          <View style={styles.addressContainer}>
-            <RohText style={styles.regular}>Go to: </RohText>
-            <RohText style={styles.address}>WWW.ROH.ORG.UK/PIN</RohText>
+          <RohText style={styles.regular}>1. Go to www.roh.org.uk/pin on a computer, tablet or mobile</RohText>
+          <RohText style={styles.regular}>2. Enter the code below:</RohText>
+        </View>
+        <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>
+        <View style={styles.websiteContainer}>
+          <RohText style={styles.regular}>3. Click 'Activate TV'</RohText>
+          <View style={{flex: 1, flexDirection: 'row', maxWidth: '90%'}}>
+            <RohText style={styles.regular}>4. </RohText>
+            <RohText style={styles.regular}>Your TV app should now show our library of ballets and operas for you to enjoy</RohText>
           </View>
-          <RohText style={styles.regular}>
-            Then enter the activation code when prompted
-          </RohText>
-
-          <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>
           <RohText style={styles.regular}>{deviceAuthenticatedError}</RohText>
         </View>
       </View>
@@ -54,20 +54,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginTop: scaleSize(60),
   },
   innerContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 2,
+    marginBottom: scaleSize(60),
+    marginLeft: scaleSize(75)
   },
   websiteContainer: {
-    marginTop: scaleSize(60),
-    alignItems: 'center',
+    marginTop: scaleSize(0),
+    alignItems: 'flex-start',
   },
   header: {
     color: 'white',
     textTransform: 'uppercase',
-    fontSize: scaleSize(54),
+    fontSize: scaleSize(52),
+    textAlign: 'left',
+    marginBottom: scaleSize(30),
   },
   blue: {
     color: Colors.defaultBlue,
@@ -76,12 +81,12 @@ const styles = StyleSheet.create({
   },
   regular: {
     color: 'white',
-    fontSize: scaleSize(32),
+    fontSize: scaleSize(28),
+    marginBottom: scaleSize(40),
   },
   addressContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginBottom: scaleSize(20),
   },
   address: {
     color: 'white',
@@ -91,7 +96,11 @@ const styles = StyleSheet.create({
   pin: {
     color: 'white',
     textTransform: 'uppercase',
-    fontSize: scaleSize(120),
+    fontSize: scaleSize(90),
+    alignItems: 'flex-start',
+    paddingRight: scaleSize(100),
+    marginBottom: scaleSize(40),
+    marginLeft: scaleSize(30),
   },
 });
 
