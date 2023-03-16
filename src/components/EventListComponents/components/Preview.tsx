@@ -84,6 +84,9 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   }, [event]);
   useLayoutEffect(() => {
     mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
   if (!event) {
     return null;
