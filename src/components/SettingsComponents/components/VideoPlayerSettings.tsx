@@ -21,6 +21,7 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import { isTVOS } from "configs/globalConfig";
 
 export type TVideoPlayerSettingsProps = {
   listItemGetNode?: () => number;
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: scaleSize(42),
     width: scaleSize(700),
+    marginLeft: isTVOS ? scaleSize(24) : 0,
   },
   titleContainer: {
     marginBottom: scaleSize(34),

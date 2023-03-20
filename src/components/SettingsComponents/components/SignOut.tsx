@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: scaleSize(42),
-    marginLeft: scaleSize(80),
+    marginLeft: scaleSize(24),
     width: scaleSize(700),
   },
   titleContainer: {
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     paddingVertical: scaleSize(25),
   },
   actionButtonsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   actionButtonText: {
     fontSize: scaleSize(24),
