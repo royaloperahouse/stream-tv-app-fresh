@@ -151,7 +151,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
     },
     [navMenuConfig.length, setNavMenuNodesRefs],
   );
-  const navMenuWidth = useSharedValue(widthWithOutFocus);
+  const navMenuWidth = useSharedValue(widthWithFocus);
   const navMenuExitButton = useSharedValue(0);
   const [navMenuIsLocked, setNavMenuIsLocked] = useState(false);
 
@@ -311,6 +311,13 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         navigation.navigate(id);
         navMenuWidth.value = widthWithFocus;
         currenItemInFocus.current = id;
+      }
+
+      if (FocusManager.getFirstLounch()) {
+        navigation.navigate('Search');
+        navigation.navigate('Home');
+        navMenuWidth.value = widthWithOutFocus;
+        currenItemInFocus.current = 'Home';
       }
     },
     [state.routeNames, state.index, navigation, navMenuWidth],
