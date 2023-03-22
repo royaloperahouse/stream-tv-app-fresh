@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
   description: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(24),
-    textTransform: 'uppercase',
     lineHeight: scaleSize(32),
   },
   participant_details: {
