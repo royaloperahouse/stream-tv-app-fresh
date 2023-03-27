@@ -24,6 +24,7 @@ import type {
 } from '@configs/screensConfig';
 import { useAppSelector } from 'hooks/redux';
 import { deviceAuthenticatedSelector } from 'services/store/auth/Selectors';
+import { navMenuManager } from "components/NavMenu";
 
 const settingsItemKey = 'settingsItemKey';
 
@@ -34,6 +35,11 @@ const SettingsScreen: React.FC<
   const [activeContentKey, setActiveContentKey] = useState<string>(
     route.params?.pinPage ? 'pinPage' : '',
   );
+
+  if (activeContentKey === 'pinPage') {
+    navMenuManager.unlockNavMenu();
+  }
+
   const activeItemRef = useRef<TTouchableHighlightWrapperRef>();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const contentFactory = (contentKey: string) => {
