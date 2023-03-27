@@ -112,6 +112,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     }, []);
 
     const onPressHandler = () => {
+      navMenuManager.lockNavMenu();
       navMenuManager.hideNavMenu(() => {
         navigation.navigate(contentScreenNames.eventDetails, {
           eventId: event.id,
@@ -119,6 +120,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
           sectionIndex,
           selectedItemIndex,
         });
+        navMenuManager.unlockNavMenu();
       });
     };
     const onFocusHandler = () => {
