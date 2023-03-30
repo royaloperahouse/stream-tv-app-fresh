@@ -42,6 +42,7 @@ const CountDown: React.FC<TCountDownProps> = ({
 export default CountDown;
 const styles = StyleSheet.create({
   countDownBlockContainer: {
+    width: scaleSize(400),
     marginTop: scaleSize(30),
   },
   titleText: {
@@ -52,12 +53,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   countDownContainer: {
+    paddingRight: scaleSize(45),
     flexDirection: 'row',
     height: scaleSize(70),
     marginTop: scaleSize(8),
   },
   countDownNumberCellContainer: {
-    height: scaleSize(70),
+    height: scaleSize(40),
+    width: scaleSize(75),
   },
   countDownCellNumber: {
     fontSize: scaleSize(38),
@@ -77,8 +80,10 @@ const styles = StyleSheet.create({
   },
   doubleDotText: {
     fontSize: scaleSize(38),
-    lineHeight: scaleSize(44),
+    lineHeight: scaleSize(40),
     letterSpacing: scaleSize(1),
+    marginBottom: scaleSize(25),
+    marginHorizontal: scaleSize(10),
     color: Colors.defaultTextColor,
   },
 });
