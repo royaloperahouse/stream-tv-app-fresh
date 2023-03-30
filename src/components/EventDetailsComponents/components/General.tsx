@@ -296,7 +296,7 @@ const General: React.FC<
 
         const manifestInfo = await fetchVideoURL(
           videoFromPrismic.videoId,
-          isProductionEnv,
+          isProductionEnv, // set to false if on staging
         );
         if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
           throw new Error('Something went wrong');

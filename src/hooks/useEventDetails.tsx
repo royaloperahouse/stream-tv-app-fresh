@@ -625,7 +625,7 @@ const useGetExtras = (
                   '',
               }
             : null;
-          if (performanceInfo.current && customerId) {
+          if (performanceInfo.current && customerId && !performanceInfo.current?.startDate) {
             const videoPositionInfo = await getBitMovinSavedPosition(
               customerId,
               performanceInfo.current.dieseId,
