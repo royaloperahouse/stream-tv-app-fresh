@@ -118,6 +118,7 @@ export type TVSTitle = {
 
 export type TVSVideo = {
   video: {
+    data: any;
     id: string;
     link_type: string;
     isBroken: boolean;

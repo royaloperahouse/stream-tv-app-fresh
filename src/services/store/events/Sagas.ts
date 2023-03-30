@@ -265,8 +265,7 @@ function* getEventListLoopWorker(): any {
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
-        yield call(getDigitalEventDetails, { isProductionEnv });
-
+        yield call(getDigitalEventDetails, { isProductionEnv, queryOptions: { fetchLinks: 'digital_event_video.video'} });
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -357,7 +356,7 @@ function eventPromiseFill(
     [];
   for (let i = from; i <= to; i++) {
     allPromises.push(
-      getDigitalEventDetails({ queryOptions: { page: i }, isProductionEnv }),
+      getDigitalEventDetails({ queryOptions: { page: i, fetchLinks: 'digital_event_video.video' }, isProductionEnv }),
     );
   }
   return Promise.allSettled(allPromises);

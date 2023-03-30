@@ -495,7 +495,7 @@ const useGetExtras = (
   eventId: string,
 ): {
   videosInfo: Array<TExtrasVideo>;
-  performanceInfo: { eventId: string; videoId: string; title?: string } | null;
+  performanceInfo: { eventId: string; videoId: string; title?: string, startDate?: string } | null;
   trailerInfo: { eventId: string; videoId: string; title?: string } | null;
   loading: boolean;
   loaded: boolean;
@@ -515,6 +515,7 @@ const useGetExtras = (
     videoId: string;
     dieseId: string;
     title?: string;
+    startDate: string;
   } | null>(null);
   const trailerInfo = useRef<{
     eventId: string;
@@ -618,6 +619,7 @@ const useGetExtras = (
                 eventId,
                 videoId: filteredResult.performance[0].id,
                 dieseId: filteredResult.performance[0].data.video.video_key,
+                startDate: filteredResult.performance[0].data.start_time,
                 title:
                   filteredResult.performance[0].data?.video_title[0]?.text ||
                   '',
