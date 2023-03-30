@@ -111,11 +111,11 @@ const General: React.FC<
   const goDownRef = useRef<TGoDownRef>(null);
 
   const showCountDownTimer =
-    publishingDate &&
+    performanceInfo.startDate &&
     isFocused &&
     !closeCountDown &&
-    isValid(new Date(publishingDate)) &&
-    isAfter(new Date(publishingDate), new Date());
+    isValid(new Date(performanceInfo.startDate)) &&
+    isAfter(new Date(performanceInfo.startDate), new Date());
   const performanceVideoInFocus = useRef<
     { pressingHandler: () => void } | null | undefined
   >(null);
@@ -705,7 +705,7 @@ const General: React.FC<
           </OverflowingContainer>
           {showCountDownTimer ? (
             <CountDown
-              publishingDate={publishingDate}
+              publishingDate={performanceInfo.startDate}
               finishCB={() => {
                 setCloseCountDown(true);
               }}
