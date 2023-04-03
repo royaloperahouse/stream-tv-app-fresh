@@ -10,8 +10,8 @@ import {
   getEventById,
   getEventsLoadedStatusSelector,
   isEventExist,
-  searchQuerySelector,
-} from '@services/store/events/Selectors';
+  searchQuerySelector, videoToEventMapSelector
+} from "@services/store/events/Selectors";
 import { Task } from 'redux-saga';
 import {
   all,
@@ -108,6 +108,14 @@ function* deepLinkingFlowWatcher() {
       turnOffDeepLinkingFlow.toString(),
       turnOnDeepLinkingFlow.toString(),
     ]);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    if (action.payload.eventId) {
+      action.payload.eventId = getPrismicEventIdByDieseId([
+        action.payload.eventId,
+      ])[action.payload.eventId];
+    }
     if (
       action.type === turnOffDeepLinkingFlow.toString() &&
       !action.payload.isRegularFlow
@@ -163,6 +171,7 @@ function* deepLinkingWorker(
   const { eventId } = action.payload;
   const eventsLoaded = yield select(getEventsLoadedStatusSelector);
   if (eventsLoaded) {
+    console.log('bibus2');
     yield call(openEventByDeepLink, eventId);
   }
 
@@ -171,6 +180,7 @@ function* deepLinkingWorker(
       yield delay(500);
       continue;
     }
+    console.log('bibus1');
     yield call(openEventByDeepLink, eventId);
     break;
   }
@@ -178,6 +188,10 @@ function* deepLinkingWorker(
 }
 
 function* openEventByDeepLink(eventId: string | null): any {
+  // const getEventByDieseId = yield select(videoToEventMapSelector);
+  // const prismicEventId = getEventByDieseId([eventId])[eventId];
+  // console.log(prismicEventId);
+  // console.log('bibus');
   if (eventId && (yield select(isEventExist(eventId)))) {
     if (globalModalManager.isModalOpen()) {
       globalModalManager.closeModal();
