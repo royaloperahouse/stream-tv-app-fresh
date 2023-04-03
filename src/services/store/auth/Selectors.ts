@@ -18,6 +18,9 @@ export const subscribedModeSelector = (store: TRootState) =>
 export const subscribedModeUpdateDateSelector = (store: TRootState) =>
   store.auth.fullSubscriptionUpdateDate;
 
+export const countryCodeSelector = (store: TRootState) =>
+  store.auth.countryCode;
+
 export const needSubscribedModeInfoUpdateSelector = (store: TRootState) =>
   !store.auth.fullSubscription ||
   !isValid(new Date(store.auth.fullSubscriptionUpdateDate)) ||

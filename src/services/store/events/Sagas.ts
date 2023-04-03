@@ -40,7 +40,11 @@ import {
   rootStackScreensNames,
 } from '@services/types/models';
 import { isProductionEvironmentSelector } from '../settings/Selectors';
-import { customerIdSelector, introScreenShowSelector } from '../auth/Selectors';
+import {
+  countryCodeSelector,
+  customerIdSelector,
+  introScreenShowSelector,
+} from '../auth/Selectors';
 import {
   switchOffIntroScreen,
   turnOffDeepLinkingFlow,
@@ -59,6 +63,7 @@ import {
 } from 'navigations/navigationContainer';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import { navMenuManager } from 'components/NavMenu';
+import { isVideoAvailableByLocation } from "utils/checkVideoAvailAbilityByCountryCode";
 
 export default function* eventRootSagas() {
   yield all([
@@ -321,7 +326,24 @@ function* getEventListLoopWorker(): any {
       } catch (err: any) {
         logError('something went wrong with PrismicisedRails request', err);
       }
-      const resultForDigitalEventsDetailUpdate = groupDigitalEvents(result);
+      const countryCode = yield select(countryCodeSelector);
+      const filtered = result.filter((prismicDocument) => {
+        const digitalEventVideos = prismicDocument.data.vs_videos;
+        return digitalEventVideos.some(digitalEventVideo => {
+          if (!digitalEventVideo?.video?.data?.video) {
+            return true;
+          }
+          if (digitalEventVideo.video.data.video.asset_type === 'live') {
+            return isVideoAvailableByLocation(
+              digitalEventVideo.video.data.video,
+              countryCode,
+            );
+          }
+          return true;
+        });
+      });
+
+      const resultForDigitalEventsDetailUpdate = groupDigitalEvents(filtered);
       yield put(
         getEventListSuccess({
           digitalEventDetailsList: {
