@@ -30,10 +30,13 @@ const EventDetailsScreen: React.FC<
     NSNavigationScreensNames.ContentStackScreens['eventDetails']
   >
 > = ({ route, navigation }) => {
-  const { eventId } = route.params;
+  const { eventId, queryParams } = route.params;
   const { extrasLoading, sectionsParams, sectionsCollection } = useEventDetails(
     { eventId },
   );
+  if (sectionsParams.General) {
+    sectionsParams.General.playTrailer = !!queryParams?.playTrailer;
+  }
   const dispatch = useAppDispatch();
   const eventDetailsScreenMounted = useRef<boolean>(false);
   const moveToSettings = () => {
