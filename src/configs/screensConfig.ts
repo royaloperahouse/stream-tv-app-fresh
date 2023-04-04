@@ -90,6 +90,9 @@ export type TContentScreensParamList = {
     screenNameFrom: TContentScreenReverseNames;
     sectionIndex: number;
     selectedItemIndex?: number;
+    queryParams?: {
+      playTrailer?: boolean;
+    };
   };
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
@@ -112,6 +115,7 @@ export type TEventDetailsScreensParamContextProps = {
     setPerformanceVideoTimePositionCB: (tyme: string) => void;
     videoQualityBitrate: number;
     videoQualityId: 'high' | 'medium' | 'normal';
+    playTrailer?: boolean;
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;

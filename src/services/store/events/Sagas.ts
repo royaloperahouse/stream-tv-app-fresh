@@ -11,6 +11,7 @@ import {
   getEventsLoadedStatusSelector,
   isEventExist,
   searchQuerySelector,
+  videoToEventMapSelector,
 } from '@services/store/events/Selectors';
 import { Task } from 'redux-saga';
 import {
@@ -103,11 +104,30 @@ function* deepLinkingFlowWatcher() {
   while (true) {
     const action: PayloadAction<{
       eventId: string | null;
+      queryParams?: {
+        playTrailer?: boolean;
+      };
       isRegularFlow?: boolean;
     }> = yield take([
       turnOffDeepLinkingFlow.toString(),
       turnOnDeepLinkingFlow.toString(),
     ]);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    if (action.payload.eventId) {
+      let dieseEventId;
+      let queryParams;
+      if (action.payload.eventId.includes('?')) {
+        [dieseEventId, queryParams] = action.payload.eventId.split('?');
+        queryParams = new URLSearchParams(queryParams).entries();
+        action.payload.eventId = dieseEventId;
+        action.payload.queryParams = Object.fromEntries(queryParams);
+      }
+      action.payload.eventId = getPrismicEventIdByDieseId([
+        action.payload.eventId,
+      ])[action.payload.eventId];
+    }
     if (
       action.type === turnOffDeepLinkingFlow.toString() &&
       !action.payload.isRegularFlow
@@ -158,12 +178,15 @@ function* regularFlowWorker(): any {
 }
 
 function* deepLinkingWorker(
-  action: PayloadAction<{ eventId: string | null }>,
+  action: PayloadAction<{
+    eventId: string | null;
+    queryParams?: { playTrailer?: boolean };
+  }>,
 ): any {
-  const { eventId } = action.payload;
+  const { eventId, queryParams } = action.payload;
   const eventsLoaded = yield select(getEventsLoadedStatusSelector);
   if (eventsLoaded) {
-    yield call(openEventByDeepLink, eventId);
+    yield call(openEventByDeepLink, eventId, queryParams);
   }
 
   while (!eventsLoaded) {
@@ -177,7 +200,12 @@ function* deepLinkingWorker(
   yield put(turnOffDeepLinkingFlow({ isRegularFlow: false }));
 }
 
-function* openEventByDeepLink(eventId: string | null): any {
+function* openEventByDeepLink(
+  eventId: string | null,
+  queryParams?: {
+    playTrailer?: boolean;
+  },
+): any {
   if (eventId && (yield select(isEventExist(eventId)))) {
     if (globalModalManager.isModalOpen()) {
       globalModalManager.closeModal();
@@ -213,6 +241,7 @@ function* openEventByDeepLink(eventId: string | null): any {
             screenNameFrom: contentScreenNames.home,
             sectionIndex: 0,
             selectedItemIndex: 0,
+            queryParams,
           },
         });
       } else {
@@ -224,6 +253,7 @@ function* openEventByDeepLink(eventId: string | null): any {
               screenNameFrom: contentScreenNames.home,
               sectionIndex: 0,
               selectedItemIndex: 0,
+              queryParams,
             },
           });
         });

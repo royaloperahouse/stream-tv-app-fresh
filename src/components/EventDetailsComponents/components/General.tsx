@@ -105,6 +105,7 @@ const General: React.FC<
     videoQualityBitrate,
     videoQualityId,
   } = params;
+
   const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
@@ -124,6 +125,7 @@ const General: React.FC<
   >(null);
   const generalMountedRef = useRef<boolean | undefined>(false);
   const addOrRemoveBusyRef = useRef<boolean>(true);
+  const playTrailer = useRef<boolean>(params.playTrailer)
   const watchNowButtonRef = useRef<TActionButtonListRef>(null);
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
@@ -682,6 +684,11 @@ const General: React.FC<
       }
     }, []),
   );
+
+  if (playTrailer.current) {
+    playTrailer.current = false;
+    getTrailerVideoUrl();
+  }
 
   return (
     <View style={styles.generalContainer}>
