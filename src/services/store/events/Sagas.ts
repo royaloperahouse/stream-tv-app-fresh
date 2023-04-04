@@ -10,8 +10,9 @@ import {
   getEventById,
   getEventsLoadedStatusSelector,
   isEventExist,
-  searchQuerySelector, videoToEventMapSelector
-} from "@services/store/events/Selectors";
+  searchQuerySelector,
+  videoToEventMapSelector,
+} from '@services/store/events/Selectors';
 import { Task } from 'redux-saga';
 import {
   all,
@@ -103,6 +104,9 @@ function* deepLinkingFlowWatcher() {
   while (true) {
     const action: PayloadAction<{
       eventId: string | null;
+      queryParams?: {
+        playTrailer?: boolean;
+      };
       isRegularFlow?: boolean;
     }> = yield take([
       turnOffDeepLinkingFlow.toString(),
@@ -112,6 +116,14 @@ function* deepLinkingFlowWatcher() {
       dieseVideoIds: string[],
     ) => Record<string, string> = yield select(videoToEventMapSelector);
     if (action.payload.eventId) {
+      let dieseEventId;
+      let queryParams;
+      if (action.payload.eventId.includes('?')) {
+        [dieseEventId, queryParams] = action.payload.eventId.split('?');
+        queryParams = new URLSearchParams(queryParams).entries();
+        action.payload.eventId = dieseEventId;
+        action.payload.queryParams = Object.fromEntries(queryParams);
+      }
       action.payload.eventId = getPrismicEventIdByDieseId([
         action.payload.eventId,
       ])[action.payload.eventId];
@@ -166,13 +178,15 @@ function* regularFlowWorker(): any {
 }
 
 function* deepLinkingWorker(
-  action: PayloadAction<{ eventId: string | null }>,
+  action: PayloadAction<{
+    eventId: string | null;
+    queryParams?: { playTrailer?: boolean };
+  }>,
 ): any {
-  const { eventId } = action.payload;
+  const { eventId, queryParams } = action.payload;
   const eventsLoaded = yield select(getEventsLoadedStatusSelector);
   if (eventsLoaded) {
-    console.log('bibus2');
-    yield call(openEventByDeepLink, eventId);
+    yield call(openEventByDeepLink, eventId, queryParams);
   }
 
   while (!eventsLoaded) {
@@ -180,18 +194,18 @@ function* deepLinkingWorker(
       yield delay(500);
       continue;
     }
-    console.log('bibus1');
     yield call(openEventByDeepLink, eventId);
     break;
   }
   yield put(turnOffDeepLinkingFlow({ isRegularFlow: false }));
 }
 
-function* openEventByDeepLink(eventId: string | null): any {
-  // const getEventByDieseId = yield select(videoToEventMapSelector);
-  // const prismicEventId = getEventByDieseId([eventId])[eventId];
-  // console.log(prismicEventId);
-  // console.log('bibus');
+function* openEventByDeepLink(
+  eventId: string | null,
+  queryParams?: {
+    playTrailer?: boolean;
+  },
+): any {
   if (eventId && (yield select(isEventExist(eventId)))) {
     if (globalModalManager.isModalOpen()) {
       globalModalManager.closeModal();
@@ -227,6 +241,7 @@ function* openEventByDeepLink(eventId: string | null): any {
             screenNameFrom: contentScreenNames.home,
             sectionIndex: 0,
             selectedItemIndex: 0,
+            queryParams,
           },
         });
       } else {
@@ -238,6 +253,7 @@ function* openEventByDeepLink(eventId: string | null): any {
               screenNameFrom: contentScreenNames.home,
               sectionIndex: 0,
               selectedItemIndex: 0,
+              queryParams,
             },
           });
         });
