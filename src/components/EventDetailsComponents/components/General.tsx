@@ -700,7 +700,7 @@ const General: React.FC<
             <RohText style={styles.title} numberOfLines={2}>
               {title?.toUpperCase?.() || ''}
             </RohText>
-            <RohText style={styles.description}>{shortDescription}</RohText>
+            <RohText style={styles.description} numberOfLines={isTVOS ? undefined : 3}>{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
             ) : null}
@@ -799,6 +799,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: scaleSize(22),
     marginTop: scaleSize(12),
+    overflow: 'hidden',
   },
   info: {
     color: 'white',
