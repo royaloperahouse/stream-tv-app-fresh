@@ -696,11 +696,11 @@ const General: React.FC<
         <View style={styles.descriptionContainer}>
           <OverflowingContainer
             fixedHeight
-            contentMaxVisibleHeight={scaleSize(368)}>
+            contentMaxVisibleHeight={scaleSize(400)}>
             <RohText style={styles.title} numberOfLines={2}>
               {title?.toUpperCase?.() || ''}
             </RohText>
-            <RohText style={styles.description}>{shortDescription}</RohText>
+            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
             ) : null}
@@ -799,6 +799,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: scaleSize(22),
     marginTop: scaleSize(12),
+    overflow: 'hidden',
   },
   info: {
     color: 'white',
@@ -809,7 +810,7 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     width: '100%',
     height: scaleSize(272),
-    marginTop: scaleSize(50),
+    marginTop: scaleSize(40),
   },
   guidanceContainer: {},
   guidanceSubTitle: {

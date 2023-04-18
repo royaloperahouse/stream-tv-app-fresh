@@ -1,32 +1,25 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-import {
-  eventDetailsSectionsConfig,
-  TEventDetailsSectionItem,
-} from '@navigations/eventDetailsRoutes';
-import { useAppSelector } from '@hooks/redux';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { eventDetailsSectionsConfig, TEventDetailsSectionItem } from "@navigations/eventDetailsRoutes";
+import { useAppSelector } from "@hooks/redux";
 import type {
+  TDieseActitvityCreatives,
   TDieseActivityCast,
   TEvent,
-  TDieseActitvityCreatives,
-  TVSSynops,
   TExtrasVideo,
-} from '@services/types/models';
-import { getEventById } from '@services/store/events/Selectors';
-import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
-import { ECellItemKey } from '@components/EventDetailsComponents/commonControls/MultiColumnAboutProductionList';
-import { getVideoDetails } from '@services/prismicApiClient';
-import * as Prismic from '@prismicio/client';
-import { PrismicDocument } from '@prismicio/types';
-import get from 'lodash.get';
-import type { TEventDetailsScreensParamContextProps } from '@configs/screensConfig';
-import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
-import useAsyncEffect from 'use-async-effect';
-import {
-  playerBitratesFilter,
-  defaultPlayerBitrateKey,
-} from '@configs/bitMovinPlayerConfig';
-import { getSelectedBitrateId } from '@services/bitMovinPlayer';
-import { customerIdSelector } from 'services/store/auth/Selectors';
+  TVSSynops
+} from "@services/types/models";
+import { getEventById } from "@services/store/events/Selectors";
+import { isProductionEvironmentSelector } from "services/store/settings/Selectors";
+import { ECellItemKey } from "@components/EventDetailsComponents/commonControls/MultiColumnAboutProductionList";
+import { getVideoDetails } from "@services/prismicApiClient";
+import * as Prismic from "@prismicio/client";
+import { PrismicDocument } from "@prismicio/types";
+import get from "lodash.get";
+import type { TEventDetailsScreensParamContextProps } from "@configs/screensConfig";
+import { getBitMovinSavedPosition, getSelectedBitrateId } from "@services/bitMovinPlayer";
+import useAsyncEffect from "use-async-effect";
+import { defaultPlayerBitrateKey, playerBitratesFilter } from "@configs/bitMovinPlayerConfig";
+import { customerIdSelector } from "services/store/auth/Selectors";
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -51,7 +44,11 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
   const { synopsis, isSynopsisAvailable } = getSynopsis(event);
   const { aboutProduction, isAboutProductionAvailable } =
     getAboutProduction(event);
-
+  aboutProduction.push({
+    content: shortDescription,
+    type: ECellItemKey.description,
+    key: 'description',
+  });
   const {
     videosInfo,
     loading,

@@ -53,6 +53,7 @@ const AboutProduction: React.FC<
       isMounted.current = false;
     };
   }, []);
+  console.log(aboutProduction);
   return (
     <View style={styles.generalContainer}>
       <View style={styles.upContainer}>
