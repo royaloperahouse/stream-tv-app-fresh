@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.content.Context;
 
 import android.view.View;
-import android.util.Log;
 import com.bitmovin.player.PlayerView;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
