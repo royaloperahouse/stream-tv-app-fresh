@@ -495,7 +495,14 @@ const useGetExtras = (
   eventId: string,
 ): {
   videosInfo: Array<TExtrasVideo>;
-  performanceInfo: { eventId: string; videoId: string; title?: string, startDate?: string } | null;
+  performanceInfo: {
+    eventId: string;
+    videoId: string;
+    title?: string;
+    startDate?: string;
+    endDate?: string;
+    isLive?: boolean;
+  } | null;
   trailerInfo: { eventId: string; videoId: string; title?: string } | null;
   loading: boolean;
   loaded: boolean;
@@ -516,6 +523,8 @@ const useGetExtras = (
     dieseId: string;
     title?: string;
     startDate: string;
+    endDate?: string;
+    isLiveStream: boolean;
   } | null>(null);
   const trailerInfo = useRef<{
     eventId: string;
@@ -620,6 +629,8 @@ const useGetExtras = (
                 videoId: filteredResult.performance[0].id,
                 dieseId: filteredResult.performance[0].data.video.video_key,
                 startDate: filteredResult.performance[0].data.start_time,
+                endDate: filteredResult.performance[0].data.end_time,
+                isLiveStream: filteredResult.performance[0].data.video.asset_type === 'live',
                 title:
                   filteredResult.performance[0].data?.video_title[0]?.text ||
                   '',

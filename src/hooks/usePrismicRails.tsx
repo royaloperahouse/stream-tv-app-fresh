@@ -13,7 +13,7 @@ export const usePrismicRails = () => {
         setLoading(true);
         const response = await getPrismicisedRails();
         // setData(response)
-        console.log(JSON.stringify(response?.results));
+        // console.log(JSON.stringify(response?.results));
       } catch (err) {
         // setError(err)
         console.log(err);

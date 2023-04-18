@@ -30,6 +30,7 @@ import { scaleSize } from '@utils/scaleSize';
 import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
+import { setIn } from "timm";
 
 const NativeBitMovinPlayer: HostComponent<TBitmoviPlayerNativeProps> =
   requireNativeComponent('ROHBitMovinPlayer');
@@ -121,6 +122,7 @@ export type TPlayerProps = {
   style?: ViewProps['style'];
   onEvent?: (event: any) => void;
   onError?: (event: any) => void;
+  isLiveStream?: boolean;
   title: string;
   videoQualityBitrate: number;
   subtitle?: string;
@@ -173,7 +175,11 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     guidanceDetails,
     videoQualityBitrate,
     showVideoInfo,
+    isLiveStream,
+    endDate,
+    startDate,
   } = cloneProps;
+
   const playerRef = useRef<typeof NativeBitMovinPlayer | null>(null);
   const controlRef = useRef<TPlayerControlsRef | null>(null);
   const playerError = useRef<TBMPlayerErrorObject | null>(null);
@@ -183,6 +189,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const [loaded, setLoaded] = useState(false);
   const [duration, setDuration] = useState(0.0);
   const [subtitleCue, setSubtitleCue] = useState('');
+  const durationInSecs = useRef<number>(0);
 
   const appState = useRef(AppState.currentState);
   useEffect(() => {
@@ -203,8 +210,63 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     return unsubscribe.remove;
   }, []);
 
+  useEffect(() => {
+    const durationInterval = setInterval(() => {
+      if (durationInSecs.current > 0) {
+        durationInSecs.current = durationInSecs.current + 1;
+        setDuration(() => durationInSecs.current);
+      }
+    }, 1000);
+
+    return () => clearInterval(durationInterval);
+  }, []);
+
   const onReady: TCallbackFunc = useCallback(data => {
     const payload: TOnReadyPayload = data.nativeEvent;
+    if (isLiveStream && payload) {
+      const timezoneOffset = new Date().getTimezoneOffset();
+      if (startDate && endDate) {
+        const endDateMs = new Date(
+          parseInt(endDate.slice(0, 4), 10),
+          parseInt(endDate.slice(5, 7), 10) - 1,
+          parseInt(endDate.slice(8, 10), 10),
+          parseInt(endDate.slice(11, 13), 10) - timezoneOffset / 60,
+          parseInt(endDate.slice(14, 16), 10),
+          parseInt(endDate.slice(17, 19), 10),
+          0,
+        ).getTime();
+        const startDateMs = new Date(
+          parseInt(startDate.slice(0, 4), 10),
+          parseInt(startDate.slice(5, 7), 10) - 1,
+          parseInt(startDate.slice(8, 10), 10),
+          parseInt(startDate.slice(11, 13), 10) - timezoneOffset / 60,
+          parseInt(startDate.slice(14, 16), 10),
+          parseInt(startDate.slice(17, 19), 10),
+          0,
+        ).getTime();
+        payload.duration = (((endDateMs - startDateMs) / 1000)).toString();
+      }
+
+      if (startDate && !endDate) {
+        const startDateMs = new Date(
+          parseInt(startDate.slice(0, 4), 10),
+          parseInt(startDate.slice(5, 7), 10) - 1,
+          parseInt(startDate.slice(8, 10), 10),
+          parseInt(startDate.slice(11, 13), 10) - timezoneOffset / 60,
+          parseInt(startDate.slice(14, 16), 10),
+          parseInt(startDate.slice(17, 19), 10),
+          0,
+        ).getTime();
+        payload.duration = ((new Date().getTime() - startDateMs) / 1000).toString();
+
+        if (+payload.duration > 60 * 60 * 24) {
+          payload.duration = ((60 * 60 * 24) - 1).toString();
+        }
+      }
+
+      durationInSecs.current = parseInt(payload.duration, 10);
+    }
+
     const initDuration = parseFloat(payload?.duration);
     if (
       Array.isArray(payload?.subtitles) &&
@@ -259,6 +321,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       parseFloat(floatTime.toFixed()) >= parseFloat(floatDuration.toFixed())
     ) {
       ROHBitmovinPlayerModule.pause(findNodeHandle(playerRef.current));
+      if (isLiveStream) {
+        ROHBitmovinPlayerModule.timeShift(findNodeHandle(playerRef.current), 0);
+      }
       ROHBitmovinPlayerModule.seek(findNodeHandle(playerRef.current), 0.0);
       if (typeof controlRef.current?.controlFadeOut === 'function') {
         controlRef.current.controlFadeOut();
@@ -315,6 +380,13 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       eventEmitter.addListener('onSeeked', (event: any) =>
         onSeeked({ nativeEvent: event }),
       );
+      eventEmitter.addListener('onTimeShift', () => {
+        console.log('time shift');
+      });
+      eventEmitter.addListener('onTimeShifted', event => {
+        console.log('time shifted');
+        onSeeked({ nativeEvent: event });
+      });
       eventEmitter.addListener('onDestroy', (event: TOnDestoyPayload) => {
         const initDuration = parseFloat(event?.duration);
         const floatTime = parseFloat(event?.time);
@@ -358,6 +430,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         eventEmitter.removeAllListeners('onTimeChanged');
         eventEmitter.removeAllListeners('onSeek');
         eventEmitter.removeAllListeners('onSeeked');
+        eventEmitter.removeAllListeners('onTimeShifted');
         eventEmitter.removeAllListeners('onForward');
         eventEmitter.removeAllListeners('onRewind');
         eventEmitter.removeAllListeners('onPlaybackFinished');
@@ -437,6 +510,14 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const seekTo = useCallback((time: number) => {
+    console.log('bibus');
+    if (isLiveStream) {
+      const timeShiftValue = time - durationInSecs.current;
+      ROHBitmovinPlayerModule.timeShift(
+        findNodeHandle(playerRef.current),
+        timeShiftValue,
+      );
+    }
     ROHBitmovinPlayerModule.seek(findNodeHandle(playerRef.current), time);
   }, []);
 
@@ -554,6 +635,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         calculateTimeForSeeking={calculateTimeForSeeking}
         seekTo={seekTo}
         videoInfo={videoInfo}
+        isLiveStream={isLiveStream}
       />
     </SafeAreaView>
   );

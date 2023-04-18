@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import CountDownComponent from 'react-native-countdown-component';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 type TCountDownProps = {
-  publishingDate: string;
+  publishingDate: Date;
   finishCB?: () => void;
 };
 
@@ -22,7 +22,7 @@ const CountDown: React.FC<TCountDownProps> = ({
       <View style={styles.countDownContainer}>
         <CountDownComponent
           showSeparator
-          until={differenceInSeconds(new Date(publishingDate), new Date())}
+          until={differenceInSeconds(publishingDate, new Date())}
           timeLabels={{ d: 'DAYS', h: 'HRS', m: 'MINS', s: 'SECS' }}
           digitStyle={styles.countDownNumberCellContainer}
           digitTxtStyle={styles.countDownCellNumber}

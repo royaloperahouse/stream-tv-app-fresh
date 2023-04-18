@@ -113,6 +113,8 @@ public class PlayerContainerView extends RelativeLayout {
         player.on(PlayerEvent.Playing.class, this::onPlay);
         player.on(PlayerEvent.Paused.class, this::onPause);
         player.on(PlayerEvent.Seek.class, this::onSeek);
+        player.on(PlayerEvent.TimeShifted.class, this::onTimeShifted);
+        player.on(PlayerEvent.TimeShift.class, this::onTimeShift);
         player.on(PlayerEvent.TimeChanged.class, this::onTimeChanged);
         player.on(PlayerEvent.Destroy.class, this::onDestroy);
         player.on(PlayerEvent.Seeked.class, this::onSeeked);
@@ -374,6 +376,38 @@ public class PlayerContainerView extends RelativeLayout {
             reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit("onSeeked", map);
+        } catch (Exception e) {
+            Log.e("ReactNative", "Caught Exception: " + e.getMessage());
+        }
+    }
+
+    private void onTimeShift(PlayerEvent.TimeShift event) {
+        WritableMap map = Arguments.createMap();
+        stoppedTime = Double.valueOf(player.getCurrentTime());
+        map.putString("message", "time shift");
+        map.putString("time", String.valueOf(stoppedTime));
+        map.putString("duration", String.valueOf(duration));
+        ReactContext reactContext = (ReactContext)context;
+        try {
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onTimeShift", map);
+        } catch (Exception e) {
+            Log.e("ReactNative", "Caught Exception: " + e.getMessage());
+        }
+    }
+
+    private void onTimeShifted(PlayerEvent.TimeShifted event) {
+        WritableMap map = Arguments.createMap();
+        stoppedTime = Double.valueOf(player.getCurrentTime());
+        map.putString("message", "time shifted");
+        map.putString("time", String.valueOf(stoppedTime));
+        map.putString("duration", String.valueOf(duration));
+        ReactContext reactContext = (ReactContext)context;
+        try {
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onTimeShifted", map);
         } catch (Exception e) {
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
