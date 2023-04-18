@@ -26,6 +26,7 @@ export enum ECellItemKey {
   'genres' = 'genres',
   'sponsor' = 'sponsor',
   'language' = 'language',
+  'description' = 'description',
   'run_time' = 'run_time',
 }
 
