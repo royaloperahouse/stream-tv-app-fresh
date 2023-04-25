@@ -28,7 +28,7 @@ type TUseEventDetails = (obj: { eventId: string }) => {
 };
 
 export const useEventDetails: TUseEventDetails = ({ eventId }) => {
-  const { event } = useAppSelector(getEventById(eventId));
+  const { event } = useAppSelector(getEventById(eventId)); //ZEZjyBQAAMFmsoNu
   const sectionsParams: Partial<TEventDetailsScreensParamContextProps> = {};
   const isProduction = useAppSelector(isProductionEvironmentSelector);
   const {

@@ -109,6 +109,8 @@ const BalletDanceScreen: React.FC<
             railStyle={styles.railStyle}
             sectionIndex={0}
             sections={data}
+            sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
+            sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.sectionIndex + 1 : 5}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
             renderHeader={section => (
               <DigitalEventSectionHeader>
@@ -154,7 +156,9 @@ const BalletDanceScreen: React.FC<
                     : undefined
                 }
                 scrollToRailItem={scrollToRailItem}
-                accessible={accessible}
+                accessible={
+                  (sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex) ? true : accessible}
               />
             )}
           />

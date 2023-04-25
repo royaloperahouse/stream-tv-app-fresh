@@ -108,6 +108,8 @@ const OperaMusicScreen: React.FC<
             sectionIndex={0}
             railStyle={styles.railStyle}
             sections={data}
+            sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
+            sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.sectionIndex + 1 : 5}
             sectionKeyExtractor={item => item.sectionIndex?.toString()}
             renderHeader={section => (
               <DigitalEventSectionHeader>
@@ -153,7 +155,9 @@ const OperaMusicScreen: React.FC<
                     : undefined
                 }
                 scrollToRailItem={scrollToRailItem}
-                accessible={accessible}
+                accessible={
+                  (sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex) ? true : accessible}
               />
             )}
           />

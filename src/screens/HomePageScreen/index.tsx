@@ -143,7 +143,7 @@ const HomePageScreen: React.FC<
   if (!data.length) {
     return null;
   }
-
+  console.log();
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect
@@ -161,6 +161,8 @@ const HomePageScreen: React.FC<
               railStyle={styles.railStyle}
               sections={data}
               sectionKeyExtractor={item => item.sectionIndex?.toString()}
+              sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
+              sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.itemIndex + 1 : 5}
               renderHeader={section => (
                 <DigitalEventSectionHeader>
                   {section.title}
@@ -207,7 +209,9 @@ const HomePageScreen: React.FC<
                       : undefined
                   }
                   scrollToRailItem={scrollToRailItem}
-                  accessible={accessible}
+                  accessible={
+                  (sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex) ? true : accessible}
                 />
               )}
             />
