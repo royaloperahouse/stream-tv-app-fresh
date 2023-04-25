@@ -700,7 +700,7 @@ const General: React.FC<
             <RohText style={styles.title} numberOfLines={2}>
               {title?.toUpperCase?.() || ''}
             </RohText>
-            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}{shortDescription}</RohText>
+            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
             ) : null}
