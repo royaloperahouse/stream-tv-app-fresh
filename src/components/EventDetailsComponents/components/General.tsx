@@ -624,7 +624,7 @@ const General: React.FC<
       return false;
     }
     if (!trailerInfo && item.key === 'WatchTrailer') {
-      return false;
+      return true;
     }
     return true;
   });
@@ -695,12 +695,12 @@ const General: React.FC<
       <View style={styles.contentContainer}>
         <View style={styles.descriptionContainer}>
           <OverflowingContainer
-            fixedHeight
-            contentMaxVisibleHeight={scaleSize(400)}>
+            fixedHeight={false}
+            contentMaxVisibleHeight={scaleSize(460)}>
             <RohText style={styles.title} numberOfLines={2}>
               {title?.toUpperCase?.() || ''}
             </RohText>
-            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
+            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
             ) : null}
