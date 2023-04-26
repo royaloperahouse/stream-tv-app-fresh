@@ -623,7 +623,7 @@ const General: React.FC<
     if ((!performanceInfo || showCountDownTimer) && item.key === 'WatchNow') {
       return false;
     }
-    if (!trailerInfo && item.key === 'WatchTrailer') {
+    if (trailerInfo && item.key === 'WatchTrailer') {
       return true;
     }
     return true;

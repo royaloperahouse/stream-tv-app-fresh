@@ -135,9 +135,9 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   );
 
   const scrollToRail = (index: number, itemIndex: number) => () => {
-    if (preSectionIndex.current === index) {
-      return;
-    }
+    // if (preSectionIndex.current === index) {
+    //   return;
+    // }
     preSectionIndex.current = index;
     if (
       !sectionsListRef.current ||

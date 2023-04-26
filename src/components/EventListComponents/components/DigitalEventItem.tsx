@@ -84,6 +84,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
+    const [shouldScroll, setShouldScroll] = useState(false);
     const timeoutId = useRef<NodeJS.Timeout | null>(null);
     const snapshotImageUrl: string = get(
       event.data,
@@ -145,7 +146,11 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         onFocus(touchableRef.current?.getRef?.().current);
       }
     };
-
+    useLayoutEffect(() => {
+      if (typeof onFocus === 'function' && shouldScroll) {
+        onFocus(sectionIndex, selectedItemIndex);
+      }
+    }, [shouldScroll]);
     useLayoutEffect(() => {
       if (
         sectionIndex === 0 &&
@@ -170,6 +175,9 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setRailItemRefCb,
       removeRailItemRefCb,
     ]);
+    if (hasTVPreferredFocus && !shouldScroll && !isTVOS) {
+      setTimeout(() => setShouldScroll(true), 4500);
+    }
     return (
       <TouchableHighlightWrapper
         ref={touchableRef}
