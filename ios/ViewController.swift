@@ -32,7 +32,7 @@ final class ViewController: UIView {
   @objc var onReady:RCTDirectEventBlock? = nil
   @objc var onAirPlay:RCTDirectEventBlock? = nil
   @objc var onPlay:RCTDirectEventBlock? = nil
-  @objc var onPause:RCTDirectEventBlock? = nil
+  @objc var onPaused:RCTDirectEventBlock? = nil
   @objc var onEvent:RCTDirectEventBlock? = nil
   @objc var onError:RCTDirectEventBlock? = nil
   @objc var onSeek:RCTDirectEventBlock? = nil
@@ -235,6 +235,10 @@ extension ViewController: PlayerListener {
   }
 
   func onPaused(_ event: PausedEvent, player: Player) {
+    if self.onPaused != nil {
+      onPaused!(["currentTime": currentTime, "duration": duration])
+    }
+
     dump(event, name: "** PausedEvent", maxDepth: maxDepth)
   }
 
