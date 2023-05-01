@@ -1,4 +1,4 @@
-import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
@@ -146,7 +146,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         onFocus(touchableRef.current?.getRef?.().current);
       }
     };
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (typeof onFocus === 'function' && shouldScroll) {
         onFocus(sectionIndex, selectedItemIndex);
       }
@@ -175,8 +175,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setRailItemRefCb,
       removeRailItemRefCb,
     ]);
-    if (hasTVPreferredFocus && !shouldScroll && !isTVOS) {
-      setTimeout(() => setShouldScroll(true), 4500);
+    if (hasTVPreferredFocus && !shouldScroll && !isTVOS && focused) {
+      setShouldScroll(true);
     }
     return (
       <TouchableHighlightWrapper

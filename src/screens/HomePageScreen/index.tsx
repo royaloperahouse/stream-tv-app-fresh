@@ -3,8 +3,8 @@ import React, {
   useLayoutEffect,
   useCallback,
   useEffect,
-  useContext,
-} from 'react';
+  useContext, useState
+} from "react";
 import {
   View,
   StyleSheet,
@@ -59,6 +59,7 @@ const HomePageScreen: React.FC<
   );
   const fromErrorModal = route?.params?.fromErrorModal;
   const appState = useRef(AppState.currentState);
+  const numsOfRender = useRef(0);
   let focusPosition: {
     sectionIndex: number;
     itemIndex: number;
@@ -143,7 +144,8 @@ const HomePageScreen: React.FC<
   if (!data.length) {
     return null;
   }
-  console.log();
+
+  numsOfRender.current++;
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect
@@ -188,7 +190,8 @@ const HomePageScreen: React.FC<
                   screenNameFrom={route.name}
                   hasTVPreferredFocus={
                     (sectionIndex === focusPosition.sectionIndex &&
-                      index === focusPosition.itemIndex) ||
+                      index === focusPosition.itemIndex &&
+                      numsOfRender.current > 1) ||
                     (fromErrorModal && sectionIndex === 0 && index === 0)
                   }
                   canMoveRight={index !== section.data.length - 1}
