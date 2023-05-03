@@ -103,11 +103,12 @@ const HomePageScreen: React.FC<
   useLayoutEffect(() => {
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
-      data.length
+      data.length &&
+      numsOfRender.current < 2
     ) {
       previewRef.current?.setDigitalEvent(data[0]?.data[0]);
     }
-  }, [data]);
+  }, [data, numsOfRender]);
 
   useLayoutEffect(() => {
     dispatch(startFullSubscriptionLoop());

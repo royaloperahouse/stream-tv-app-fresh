@@ -51,7 +51,7 @@ const OperaMusicScreen: React.FC<
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
-
+  const numsOfRender = useRef(0);
   if (eventsLoaded) {
     focusPosition = FocusManager.getFocusPosition({
       eventId: route.params?.eventId || null,
@@ -71,7 +71,8 @@ const OperaMusicScreen: React.FC<
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
       data.length &&
-      !runningOnceRef.current
+      !runningOnceRef.current &&
+      numsOfRender.current < 2
     ) {
       runningOnceRef.current = true;
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
@@ -93,6 +94,7 @@ const OperaMusicScreen: React.FC<
   if (!data.length) {
     return null;
   }
+  numsOfRender.current++;
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect
@@ -135,7 +137,8 @@ const OperaMusicScreen: React.FC<
                 event={item}
                 hasTVPreferredFocus={
                   sectionIndex === focusPosition.sectionIndex &&
-                  index === focusPosition.itemIndex
+                  index === focusPosition.itemIndex &&
+                  numsOfRender.current > 1
                 }
                 ref={previewRef}
                 onFocus={scrollToRail}

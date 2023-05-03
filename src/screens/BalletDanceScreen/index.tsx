@@ -40,7 +40,7 @@ const BalletDanceScreen: React.FC<
   );
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
-
+  const numsOfRender = useRef(0);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   let focusPosition: {
     sectionIndex: number;
@@ -72,7 +72,8 @@ const BalletDanceScreen: React.FC<
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
       data.length &&
-      !runningOnceRef.current
+      !runningOnceRef.current &&
+      numsOfRender.current < 2
     ) {
       runningOnceRef.current = true;
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
@@ -94,6 +95,7 @@ const BalletDanceScreen: React.FC<
   if (!data.length) {
     return null;
   }
+  numsOfRender.current++;
   return (
     <View style={styles.root}>
       <NavMenuScreenRedirect
@@ -138,7 +140,8 @@ const BalletDanceScreen: React.FC<
                 canMoveUp={!isFirstRail}
                 hasTVPreferredFocus={
                   sectionIndex === focusPosition.sectionIndex &&
-                  index === focusPosition.itemIndex
+                  index === focusPosition.itemIndex &&
+                  numsOfRender.current > 1
                 }
                 canMoveRight={index !== section.data.length - 1}
                 onFocus={scrollToRail}
