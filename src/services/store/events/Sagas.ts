@@ -28,6 +28,7 @@ import {
 import { logError } from '@utils/loger';
 import {
   getDigitalEventDetails,
+  getVideoDetails,
   getPrismicisedRails,
 } from '@services/prismicApiClient';
 import { addItemToPrevSearchList } from '@services/previousSearch';
@@ -60,6 +61,8 @@ import {
 } from 'navigations/navigationContainer';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import { navMenuManager } from 'components/NavMenu';
+import { PrismicDocument } from "@prismicio/types";
+import { transformVideoDetails } from "utils/transformVideoDetails";
 
 export default function* eventRootSagas() {
   yield all([
@@ -291,12 +294,11 @@ function* openEventByDeepLink(
 
 function* getEventListLoopWorker(): any {
   while (true) {
-    const result = [];
+    const result: any[] = [];
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
         yield call(getDigitalEventDetails, { isProductionEnv });
-
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -328,6 +330,38 @@ function* getEventListLoopWorker(): any {
       logError('something went wrong with prismic request', err);
     }
     if (result.length) {
+      const digitalEventVideosResponse: prismicT.Query<prismicT.PrismicDocument> =
+        yield call(getVideoDetails, { isProductionEnv });
+      if (digitalEventVideosResponse.total_pages !== digitalEventVideosResponse.page) {
+        const allVideosPageRequestResult: Array<
+          PromiseSettledResult<prismicT.Query<prismicT.PrismicDocument>>
+        > = yield call(
+          videoPromiseFill,
+          digitalEventVideosResponse.page + 1,
+          digitalEventVideosResponse.total_pages,
+          isProductionEnv,
+        );
+        digitalEventVideosResponse.results.push(
+          ...allVideosPageRequestResult.reduce<Array<any>>(
+            (
+              acc,
+              pageRequestsResult: PromiseSettledResult<
+                prismicT.Query<prismicT.PrismicDocument>
+              >,
+            ) => {
+              if (pageRequestsResult.status === 'fulfilled') {
+                acc.push(...pageRequestsResult.value.results);
+              }
+              return acc;
+            },
+            [],
+          ),
+        );
+      }
+      const transformedVideos = digitalEventVideosResponse.results.map(
+        transformVideoDetails,
+      );
+      result.push(...transformedVideos);
       let prismicisedRails: {
         exploreAllTrays: Array<TStreamHomePageRail>;
         operaAndMusicTopTrays: Array<TStreamHomePageRail>;
@@ -388,6 +422,20 @@ function eventPromiseFill(
   for (let i = from; i <= to; i++) {
     allPromises.push(
       getDigitalEventDetails({ queryOptions: { page: i }, isProductionEnv }),
+    );
+  }
+  return Promise.allSettled(allPromises);
+}
+
+function videoPromiseFill(
+  from: number,
+  to: number,
+  isProductionEnv: boolean,
+): Promise<PromiseSettledResult<prismicT.Query<prismicT.PrismicDocument>>[]> {
+  const allPromises: Array<Promise<prismicT.Query<prismicT.PrismicDocument>>> = [];
+  for (let i = from; i <= to; i++) {
+    allPromises.push(
+      getVideoDetails({ queryOptions: {page: i }, isProductionEnv }),
     );
   }
   return Promise.allSettled(allPromises);
@@ -508,7 +556,8 @@ function filterPrismicisedRail(
         slice.slice_type === 'events_tray' &&
         slice.items.some(
           item =>
-            item?.element.type === 'digital_event_details' &&
+            (item?.element.type === 'digital_event_details' ||
+              item.element.type === 'digital_event_video') &&
             item?.element.isBroken !== true,
         ),
     )
@@ -518,7 +567,8 @@ function filterPrismicisedRail(
       ids: Array.from(
         slice.items.reduce((acc: any, item) => {
           if (
-            item?.element.type === 'digital_event_details' &&
+            (item?.element.type === 'digital_event_details' ||
+              item.element.type === 'digital_event_video') &&
             item?.element.isBroken !== true
           ) {
             acc.add(item.element.id);
