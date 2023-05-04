@@ -57,7 +57,7 @@ const VideoPlayerSettingsItem = forwardRef<any, Props>((props, ref) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: '100%',
+    width: '90%',
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
   subtitleItemContainer: {
     height: scaleSize(80),
     paddingRight: scaleSize(40),
+    paddingLeft: scaleSize(24),
   },
   text: {
     color: 'white',
