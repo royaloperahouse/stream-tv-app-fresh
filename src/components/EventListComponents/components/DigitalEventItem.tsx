@@ -114,6 +114,18 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
 
     const onPressHandler = () => {
       navMenuManager.lockNavMenu();
+      if (event.type === 'digital_event_video') {
+        navMenuManager.hideNavMenu(() => {
+          navigation.navigate(contentScreenNames.eventVideo, {
+            videoId: event.id,
+            screenNameFrom,
+            sectionIndex,
+            selectedItemIndex,
+          });
+        });
+        navMenuManager.unlockNavMenu();
+        return;
+      }
       navMenuManager.hideNavMenu(() => {
         navigation.navigate(contentScreenNames.eventDetails, {
           eventId: event.id,

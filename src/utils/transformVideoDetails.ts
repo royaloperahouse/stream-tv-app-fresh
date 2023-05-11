@@ -1,4 +1,7 @@
 export function transformVideoDetails(videoDetails) {
+  if (videoDetails.data.video) {
+    videoDetails.data.video.isBroken = false;
+  }
   return {
     id: videoDetails.id,
     type: 'digital_event_video',
@@ -6,7 +9,7 @@ export function transformVideoDetails(videoDetails) {
     slugs: videoDetails.slugs,
     data: {
       vs_title: videoDetails.data.video_title,
-      vs_videos: [videoDetails.data.video],
+      vs_videos: [{ video: videoDetails.data.video }],
       vs_carousel_description: videoDetails.data.video_title,
       vs_short_description: videoDetails.data.video_title,
       vs_description: videoDetails.data.video_title,

@@ -446,6 +446,7 @@ function groupDigitalEvents(digitalEventsDetail: Array<any>): any {
     (acc, digitalEventDetail) => {
       acc.allDigitalEventsDetail[digitalEventDetail.id] = {
         id: digitalEventDetail.id,
+        type: digitalEventDetail.type,
         last_publication_date: digitalEventDetail.last_publication_date,
         data: {
           ...digitalEventDetail.data,

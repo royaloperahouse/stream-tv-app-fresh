@@ -11,6 +11,7 @@ export const contentScreenNames = Object.freeze({
   myList: 'MyList',
   settings: 'Settings',
   eventDetails: 'EventDetails',
+  eventVideo: 'EventVideo',
   exit: 'Exit',
   liveStream: 'LiveStream',
 });
@@ -71,6 +72,7 @@ export type TNavMenuItem = Omit<TRoute, 'ScreenComponent' | 'initialParams'>;
 
 export type TEventContainer = {
   id: string;
+  type: string;
   last_publication_date: string;
   data: TEvent;
 };
