@@ -135,6 +135,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   );
 
   const scrollToRail = (index: number, itemIndex: number) => () => {
+    // TODO remove comments and add TVOS statement
     // if (preSectionIndex.current === index) {
     //   return;
     // }
@@ -439,6 +440,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   removeRailItemRefCb: removeRailItemRef,
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
+                  // TODO make accessible for TVOS
                   accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
                 });
               }}
