@@ -96,6 +96,7 @@ export type TContentScreensParamList = {
   };
   [contentScreenNames.eventVideo]: {
     videoId: string;
+    eventId: string;
     screenNameFrom: TContentScreenReverseNames;
     sectionIndex: number;
     selectedItemIndex?: number;

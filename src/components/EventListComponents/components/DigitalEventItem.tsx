@@ -118,6 +118,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         navMenuManager.hideNavMenu(() => {
           navigation.navigate(contentScreenNames.eventVideo, {
             videoId: event.id,
+            eventId: event.id,
             screenNameFrom,
             sectionIndex,
             selectedItemIndex,

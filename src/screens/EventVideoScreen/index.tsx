@@ -1,42 +1,60 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Dimensions, StyleSheet, View } from 'react-native';
-
-import GoBack, { goBackButtonuManager } from "components/GoBack";
-import { SectionsParamsComtextProvider } from 'components/EventDetailsComponents/commonControls/SectionsParamsContext';
-import {
-  DummyPlayerScreen,
-  DummyPlayerScreenName,
-} from 'components/Player/DummyPlayerScreen';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Dimensions, StyleSheet, TouchableHighlight, View } from 'react-native';
+import GoBack, { goBackButtonuManager } from 'components/GoBack';
 import LoadingSpinner from 'components/LoadingSpinner';
-
-import { useAppDispatch } from 'hooks/redux';
+import { useAppDispatch, useAppSelector } from 'hooks/redux';
 import {
   getEventListLoopStart,
   getEventListLoopStop,
 } from 'services/store/events/Slices';
-
-import { isTVOS } from 'configs/globalConfig';
+import { buildInfoForBitmovin, isTVOS } from 'configs/globalConfig';
 import {
   contentScreenNames,
   NSNavigationScreensNames,
   TContentScreensProps,
 } from 'configs/screensConfig';
-import RohText from "components/RohText";
-import { OverflowingContainer } from "components/OverflowingContainer";
-import { scaleSize } from "utils/scaleSize";
-import CountDown from "components/EventDetailsComponents/commonControls/CountDown";
+import RohText from 'components/RohText';
+import { OverflowingContainer } from 'components/OverflowingContainer';
+import { scaleSize } from 'utils/scaleSize';
 import ActionButtonList, {
-  TActionButtonListRef
-} from "components/EventDetailsComponents/commonControls/ActionButtonList";
-import GoDown from "components/EventDetailsComponents/commonControls/GoDown";
-import RohImage from "components/RohImage";
-import FastImage from "react-native-fast-image";
-import { Colors } from "themes/Styleguide";
-import { useEventVideo } from 'hooks/useEventVideo'
-import { getVideoDetails } from "services/prismicApiClient";
-import * as Prismic from "@prismicio/client";
-import Watch from "assets/svg/eventDetails/Watch.svg";
-import { useFocusEffect } from "@react-navigation/native";
+  TActionButtonListRef,
+} from 'components/EventDetailsComponents/commonControls/ActionButtonList';
+import RohImage from 'components/RohImage';
+import FastImage from 'react-native-fast-image';
+import { Colors } from 'themes/Styleguide';
+import { getVideoDetails } from 'services/prismicApiClient';
+import * as Prismic from '@prismicio/client';
+import Watch from 'assets/svg/eventDetails/Watch.svg';
+import { useFocusEffect } from '@react-navigation/native';
+import {
+  customerIdSelector,
+  deviceAuthenticatedSelector,
+} from 'services/store/auth/Selectors';
+import { TBMPlayerErrorObject } from 'services/types/bitmovinPlayer';
+import { globalModalManager } from 'components/GlobalModals';
+import {
+  ErrorModal,
+  NotSubscribedModal,
+  PlayerModal,
+  RentalStateStatusModal,
+} from 'components/GlobalModals/variants';
+import { navMenuManager } from 'components/NavMenu';
+import { promiseWait } from 'utils/promiseWait';
+import { fetchVideoURL, getAccessToWatchVideo } from 'services/apiClient';
+import { playerBitratesFilter } from 'configs/bitMovinPlayerConfig';
+import {
+  NonSubscribedStatusError,
+  NotRentedItemError,
+  UnableToCheckRentalStatusError,
+} from 'utils/customErrors';
+import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
+import { getSelectedBitrateId } from 'services/bitMovinPlayer';
 
 const EventVideoScreen: React.FC<
   TContentScreensProps<
@@ -48,23 +66,36 @@ const EventVideoScreen: React.FC<
   const dispatch = useAppDispatch();
   const watchNowButtonRef = useRef<TActionButtonListRef>(null);
   const eventDetailsScreenMounted = useRef<boolean>(false);
-  const moveToSettings = () => {
-    navigation.navigate(contentScreenNames.settings, { pinPage: true });
-  };
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
+  const customerId = useAppSelector(customerIdSelector);
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+  const performanceVideoInFocus = useRef<
+    { pressingHandler: () => void } | null | undefined
+  >(null);
 
-  const actionButtonList = [
-    {
-      key: 'WatchNow',
-      text: 'Watch now',
-      hasTVPreferredFocus: true,
-      onPress: () => console.log('press'),
-      onFocus: () => console.log('focus'),
-      onBlur: () => console.log('blur'),
-      Icon: Watch,
-      showLoader: true,
-      freezeButtonAfterPressing: true,
+  const setPerformanceVideoInFocus = useCallback(
+    (pressingHandler: () => void) => {
+      performanceVideoInFocus.current = { pressingHandler };
     },
-  ];
+    [],
+  );
+
+  const setPerformanceVideoBlur = useCallback(() => {
+    performanceVideoInFocus.current = null;
+  }, []);
+
+  const closeModal = useCallback((ref: any, clearLoadingState: any) => {
+    if (typeof ref?.current?.setNativeProps === 'function') {
+      ref.current.setNativeProps({
+        hasTVPreferredFocus: true,
+        accessible: true,
+      });
+    }
+    goBackButtonuManager.showGoBackButton();
+    if (typeof clearLoadingState === 'function') {
+      clearLoadingState();
+    }
+  }, []);
 
   useEffect(() => {
     const fetch = async () => {
@@ -72,10 +103,17 @@ const EventVideoScreen: React.FC<
         queryPredicates: [Prismic.predicate.in('document.id', [videoId])],
         isProductionEnv: true,
       });
-      setVideoDetails(response.results[0].data);
+      const videoQualityId = await getSelectedBitrateId();
+      const videoQualityBitrate: number =
+        playerBitratesFilter[videoQualityId].value;
+      setVideoDetails({
+        ...response.results[0].data,
+        videoQualityId,
+        videoQualityBitrate,
+      });
     };
     fetch();
-  }, []);
+  }, [videoId]);
 
   useEffect(() => {
     dispatch(getEventListLoopStop());
@@ -103,6 +141,206 @@ const EventVideoScreen: React.FC<
     }, []),
   );
 
+  const closePlayer = useCallback(
+    ({ ref, clearLoadingState, closeModalCB = closeModal }: any) =>
+      async (error: TBMPlayerErrorObject | null) => {
+        if (isTVOS) {
+          navigation.goBack();
+        }
+        if (error) {
+          globalModalManager.openModal({
+            contentComponent: ErrorModal,
+            contentProps: {
+              confirmActionHandler: () => {
+                globalModalManager.closeModal(() => {
+                  if (typeof closeModalCB === 'function') {
+                    closeModalCB(ref, clearLoadingState);
+                  }
+                });
+              },
+              title: 'Player Error',
+              subtitle: `Something went wrong.\n${error.errCode}: ${
+                error.errMessage
+              }\n${error.url || ''}`,
+            },
+          });
+        } else {
+          globalModalManager.closeModal(() => {
+            if (typeof closeModalCB === 'function') {
+              closeModalCB(ref, clearLoadingState);
+            }
+          });
+        }
+      },
+    [closeModal, navigation],
+  );
+
+  const openPlayer = useCallback(
+    ({
+      url,
+      poster = '',
+      offset = '0.0',
+      title: playerTitle = '',
+      subtitle = '',
+      onClose = () => {},
+      analytics = {},
+      guidance = '',
+      guidanceDetails = [],
+      videoQualityBitrate = -1,
+      showVideoInfo,
+    }) => {
+      goBackButtonuManager.hideGoBackButton();
+      globalModalManager.openModal({
+        contentComponent: PlayerModal,
+        contentProps: {
+          autoPlay: true,
+          configuration: {
+            url,
+            poster,
+            offset,
+          },
+          title: playerTitle,
+          subtitle,
+          onClose,
+          analytics,
+          guidance,
+          guidanceDetails,
+          videoQualityBitrate,
+          showVideoInfo,
+        },
+      });
+    },
+    [],
+  );
+
+  const getPerformanceVideoUrl = useCallback(
+    async (
+      ref?: React.RefObject<TouchableHighlight>,
+      clearLoadingState?: () => void,
+    ) => {
+      const moveToSettings = () => {
+        navigation.navigate(contentScreenNames.settings, { pinPage: true });
+      };
+      try {
+        if (!isAuthenticated) {
+          moveToSettings();
+          navMenuManager.unwrapNavMenu();
+          return;
+        }
+        const performanceInfo = {
+          videoId,
+          eventId: '',
+          title: videoDetails.video_title[0].text,
+        };
+        const videoFromPrismic = await promiseWait(
+          getAccessToWatchVideo(
+            performanceInfo,
+            isProductionEnv,
+            customerId,
+            () => {
+              globalModalManager.openModal({
+                contentComponent: RentalStateStatusModal,
+                contentProps: {
+                  title:
+                    performanceInfo.title ||
+                    videoDetails.video_title[0].text ||
+                    '',
+                },
+              });
+            },
+          ),
+        );
+
+        const manifestInfo = await fetchVideoURL(
+          videoFromPrismic.videoId,
+          isProductionEnv,
+        );
+        if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
+          throw new Error('Something went wrong');
+        }
+        const videoTitle =
+          videoFromPrismic.title || videoDetails.video_title[0].text || '';
+
+        openPlayer({
+          url: manifestInfo.data.data.attributes.hlsManifestUrl,
+          poster:
+            'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+          title: videoTitle,
+          onClose: closePlayer({
+            clearLoadingState,
+            ref,
+          }),
+          analytics: {
+            videoId: videoFromPrismic.videoId,
+            title: videoTitle,
+            buildInfoForBitmovin,
+            customData3: videoDetails.videoQualityId,
+            userId: customerId ? String(customerId) : null,
+          },
+          guidance: '',
+          guidanceDetails: undefined,
+          videoQualityBitrate: videoDetails.videoQualityBitrate,
+          showVideoInfo: !isProductionEnv,
+        });
+      } catch (err: any) {
+        globalModalManager.openModal({
+          contentComponent:
+            err instanceof NonSubscribedStatusError
+              ? NotSubscribedModal
+              : ErrorModal,
+          contentProps: {
+            confirmActionHandler: () => {
+              globalModalManager.closeModal(() => {
+                closeModal(ref, clearLoadingState);
+              });
+            },
+            title:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? err.message
+                : 'Player Error',
+            subtitle:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? undefined
+                : err.message,
+          },
+        });
+      } finally {
+        if (typeof clearLoadingState === 'function') {
+          clearLoadingState();
+        }
+      }
+    },
+    [
+      videoId,
+      closeModal,
+      closePlayer,
+      customerId,
+      isProductionEnv,
+      openPlayer,
+      videoDetails,
+      isAuthenticated,
+      navigation,
+    ],
+  );
+
+  const actionButtonList = [
+    {
+      key: 'WatchNow',
+      text: 'Watch now',
+      hasTVPreferredFocus: true,
+      onPress: getPerformanceVideoUrl,
+      onFocus: setPerformanceVideoInFocus,
+      onBlur: setPerformanceVideoBlur,
+      Icon: Watch,
+      showLoader: true,
+      freezeButtonAfterPressing: true,
+    },
+  ];
+
   if (!videoDetails) {
     return (
       <View style={styles.loadingContainer}>
@@ -111,7 +349,6 @@ const EventVideoScreen: React.FC<
     );
   }
 
-  console.log(JSON.stringify(videoDetails, null, 4));
   return (
     <View style={styles.rootContainer}>
       <GoBack />
@@ -129,11 +366,24 @@ const EventVideoScreen: React.FC<
                   {videoDetails.short_description[0].text}
                 </RohText>
               ) : null}
+              {videoDetails.extra_video_type ? (
+                <RohText style={styles.tags}>
+                  {videoDetails.extra_video_type}
+                </RohText>
+              ) : null}
+              {videoDetails.extra_video_tags.length
+                ? videoDetails.extra_video_tags.map(
+                    (item: { tag: string }, index: number) => (
+                      <RohText key={index} style={styles.tags}>
+                        {item.tag}
+                      </RohText>
+                    ),
+                  )
+                : null}
             </OverflowingContainer>
             <View style={styles.buttonsContainer}>
               <ActionButtonList
                 ref={watchNowButtonRef}
-                setFocusRef={() => {}}
                 buttonList={actionButtonList}
                 goDownOn={() => {}}
                 goDownOff={() => {}}
@@ -209,13 +459,19 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   description: {
-    color: 'white',
+    color: Colors.defaultTextColor,
+    fontSize: scaleSize(22),
+    marginTop: scaleSize(12),
+    overflow: 'hidden',
+  },
+  tags: {
+    color: Colors.tVMidGrey,
     fontSize: scaleSize(22),
     marginTop: scaleSize(12),
     overflow: 'hidden',
   },
   info: {
-    color: 'white',
+    color: Colors.defaultTextColor,
     fontSize: scaleSize(20),
     textTransform: 'uppercase',
     marginTop: scaleSize(24),

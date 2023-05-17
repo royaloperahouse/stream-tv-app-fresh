@@ -26,7 +26,7 @@ import SettingsInActiveIcon from '@assets/svg/navIcons/Settings.svg';
 import SettingsActiveIcon from '@assets/svg/navIcons/SettingsActive.svg';
 import { TRoutes, TRoute } from '@services/types/models';
 import { contentScreenNames } from '@configs/screensConfig';
-import EventVideoScreen from "screens/EventVideoScreen";
+import EventVideoScreen from 'screens/EventVideoScreen';
 
 //import { isTVOS } from '@configs/globalConfig';
 
@@ -126,7 +126,7 @@ export const additionalRoutesWithoutNavMenuNavigation: {
     navMenuTitle: undefined,
     isDefault: false,
     position: 9,
-    initialParams: { videoId: '' },
+    initialParams: { videoId: '', eventId: '' },
   },
   exit: {
     navMenuScreenName: contentScreenNames.exit,
