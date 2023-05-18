@@ -482,7 +482,6 @@ export const videoToEventMapSelector =
       }
 
       const { activity_id: dieseId } = eventDetail.data.diese_activity;
-
       const dieseVideoIdIndex = dieseVideoIdPrefixes.findIndex(
         id => id && id === dieseId.toString(),
       );
@@ -498,8 +497,11 @@ export const videoToEventMapSelector =
     }, {});
   };
 
-export const isEventExist = (eventId: string) => (store: TRootState) =>
-  !!(
+export const isEventExist = (eventId: string) => (store: TRootState) => {
+  console.log(eventId in store.events.allDigitalEventsDetail, 'event in store');
+  console.log(!!store.events.allDigitalEventsDetail[eventId]?.data, 'has data');
+  return !!(
     eventId in store.events.allDigitalEventsDetail &&
     store.events.allDigitalEventsDetail[eventId]?.data
   );
+};

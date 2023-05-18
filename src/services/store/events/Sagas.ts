@@ -7,7 +7,6 @@ import {
   saveSearchResultQuery,
 } from '@services/store/events/Slices';
 import {
-  getEventById,
   getEventsLoadedStatusSelector,
   isEventExist,
   searchQuerySelector,
@@ -50,14 +49,9 @@ import {
 } from '../auth/Slices';
 import { globalModalManager } from '@components/GlobalModals';
 import {
-  getCurrentRoute,
-  getCurrentState,
   getRootState,
   isNavigationReady,
   navigate,
-  replace,
-  resetEventDetailsScreenFromDeepLink,
-  resetStackCacheAndNavigate,
 } from 'navigations/navigationContainer';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import { navMenuManager } from 'components/NavMenu';
@@ -115,9 +109,7 @@ function* deepLinkingFlowWatcher() {
       turnOffDeepLinkingFlow.toString(),
       turnOnDeepLinkingFlow.toString(),
     ]);
-    const getPrismicEventIdByDieseId: (
-      dieseVideoIds: string[],
-    ) => Record<string, string> = yield select(videoToEventMapSelector);
+
     if (action.payload.eventId) {
       let dieseEventId;
       let queryParams;
@@ -127,9 +119,6 @@ function* deepLinkingFlowWatcher() {
         action.payload.eventId = dieseEventId;
         action.payload.queryParams = Object.fromEntries(queryParams);
       }
-      action.payload.eventId = getPrismicEventIdByDieseId([
-        action.payload.eventId,
-      ])[action.payload.eventId];
     }
     if (
       action.type === turnOffDeepLinkingFlow.toString() &&
@@ -164,6 +153,7 @@ function* deepLinkingFlowWatcher() {
       action.payload.eventId !== null &&
       (!task || !task.isRunning())
     ) {
+      console.log(action.payload);
       task = yield fork(deepLinkingWorker, action);
       currentTaskName = action.type;
     }
@@ -188,8 +178,13 @@ function* deepLinkingWorker(
 ): any {
   const { eventId, queryParams } = action.payload;
   const eventsLoaded = yield select(getEventsLoadedStatusSelector);
+
   if (eventsLoaded) {
-    yield call(openEventByDeepLink, eventId, queryParams);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    const prismicId = getPrismicEventIdByDieseId([eventId!])[eventId!];
+    yield call(openEventByDeepLink, prismicId, queryParams);
   }
 
   while (!eventsLoaded) {
@@ -197,7 +192,11 @@ function* deepLinkingWorker(
       yield delay(500);
       continue;
     }
-    yield call(openEventByDeepLink, eventId);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    const prismicId = getPrismicEventIdByDieseId([eventId!])[eventId!];
+    yield call(openEventByDeepLink, prismicId, queryParams);
     break;
   }
   yield put(turnOffDeepLinkingFlow({ isRegularFlow: false }));
@@ -285,7 +284,8 @@ function* openEventByDeepLink(
           });
         },
         title: 'Performance no longer available',
-        subtitle: 'Sorry, the performance you are looking for is no longer available.\nPlease return to the Explore page.',
+        subtitle:
+          'Sorry, the performance you are looking for is no longer available.\nPlease return to the Explore page.',
         fromDeepLink: true,
       },
     });

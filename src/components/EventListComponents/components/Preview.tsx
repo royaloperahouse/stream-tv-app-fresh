@@ -110,7 +110,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
 
       <View style={styles.snapshotContainer}>
         <RohImage
-          resizeMode={FastImage.resizeMode.cover}
+          resizeMode={FastImage.resizeMode.contain}
           style={styles.previewImage}
           source={snapshotImageUrl}
         />
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(12),
   },
   previewImage: {
-    width: scaleSize(1200),
+    width: scaleSize(1065),
     height: scaleSize(600),
     backgroundColor: Colors.defaultBlue,
     zIndex: 0,

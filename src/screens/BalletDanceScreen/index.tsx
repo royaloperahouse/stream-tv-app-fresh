@@ -40,7 +40,7 @@ const BalletDanceScreen: React.FC<
   );
   const previewRef = useRef<TPreviewRef | null>(null);
   const runningOnceRef = useRef<boolean>(false);
-
+  const numsOfRender = useRef(0);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   let focusPosition: {
     sectionIndex: number;
@@ -68,18 +68,25 @@ const BalletDanceScreen: React.FC<
     });
   }
 
+  const isLoading = useRef<boolean>(
+    isTVOS ? false : focusPosition.sectionIndex !== -1,
+  );
   useLayoutEffect(() => {
     if (
       typeof previewRef.current?.setDigitalEvent === 'function' &&
       data.length &&
-      !runningOnceRef.current
+      !runningOnceRef.current &&
+      numsOfRender.current < 2
     ) {
       runningOnceRef.current = true;
       previewRef.current.setDigitalEvent(data[0]?.data[0]);
     }
   }, [data]);
 
-  if (!eventsLoaded) {
+  if (isTVOS) {
+    numsOfRender.current++;
+  }
+  if (!eventsLoaded || (isTVOS && focusPosition.itemIndex !== -1 && numsOfRender.current < 2)) {
     return (
       <View style={styles.loadingContainer}>
         <TouchableHighlight
@@ -94,77 +101,101 @@ const BalletDanceScreen: React.FC<
   if (!data.length) {
     return null;
   }
+
+  if (!isTVOS) {
+    numsOfRender.current++;
+  }
+
+  if (!isTVOS && numsOfRender.current > 1) {
+    isLoading.current = false;
+  }
+
   return (
-    <View style={styles.root}>
-      <NavMenuScreenRedirect
-        screenName={route.name}
-        ref={navMenuScreenRedirectRef}
-      />
-      <View style={styles.contentContainer}>
-        <Preview ref={previewRef} />
-        <View>
-          <RailSections
-            containerStyle={styles.railContainerStyle}
-            headerContainerStyle={styles.railHeaderContainerStyle}
-            railStyle={styles.railStyle}
-            sectionIndex={0}
-            sections={data}
-            sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
-            sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.sectionIndex + 1 : 5}
-            sectionKeyExtractor={item => item.sectionIndex?.toString()}
-            renderHeader={section => (
-              <DigitalEventSectionHeader>
-                {section.title}
-              </DigitalEventSectionHeader>
-            )}
-            renderItem={({
-              item,
-              section,
-              index,
-              scrollToRail,
-              sectionIndex,
-              isFirstRail,
-              isLastRail,
-              setRailItemRefCb,
-              removeRailItemRefCb,
-              hasEndlessScroll,
-              scrollToRailItem,
-              accessible,
-            }) => (
-              <DigitalEventItem
-                screenNameFrom={route.name}
-                event={item}
-                ref={previewRef}
-                canMoveUp={!isFirstRail}
-                hasTVPreferredFocus={
-                  sectionIndex === focusPosition.sectionIndex &&
-                  index === focusPosition.itemIndex
-                }
-                canMoveRight={index !== section.data.length - 1}
-                onFocus={scrollToRail}
-                eventGroupTitle={section.title}
-                sectionIndex={sectionIndex}
-                selectedItemIndex={index}
-                lastItem={index === section.data.length - 1}
-                setRailItemRefCb={setRailItemRefCb}
-                removeRailItemRefCb={removeRailItemRefCb}
-                canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
-                setFirstItemFocusable={
-                  index === 0
-                    ? navMenuScreenRedirectRef.current
+    <>
+      {isLoading.current ? (
+        <View style={styles.androidLoadingContainer}>
+          <TouchableHighlight
+            hasTVPreferredFocus={isTVOS && route.params?.eventId}
+            underlayColor="transperent">
+            <LoadingSpinner showSpinner={true} />
+          </TouchableHighlight>
+        </View>
+      ) : null}
+      <View style={isLoading.current ? styles.hidden : styles.root}>
+        <NavMenuScreenRedirect
+          screenName={route.name}
+          ref={navMenuScreenRedirectRef}
+        />
+        <View style={styles.contentContainer}>
+          <Preview ref={previewRef} />
+          <View>
+            <RailSections
+              containerStyle={styles.railContainerStyle}
+              headerContainerStyle={styles.railHeaderContainerStyle}
+              sectionIndex={0}
+              railStyle={styles.railStyle}
+              sections={data}
+              sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
+              sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.sectionIndex + 1 : 5}
+              sectionKeyExtractor={item => item.sectionIndex?.toString()}
+              renderHeader={section => (
+                <DigitalEventSectionHeader>
+                  {section.title}
+                </DigitalEventSectionHeader>
+              )}
+              renderItem={({
+                item,
+                section,
+                index,
+                sectionIndex,
+                isFirstRail,
+                isLastRail,
+                scrollToRail,
+                setRailItemRefCb,
+                removeRailItemRefCb,
+                hasEndlessScroll,
+                scrollToRailItem,
+                accessible,
+              }) => (
+                <DigitalEventItem
+                  screenNameFrom={route.name}
+                  event={item}
+                  hasTVPreferredFocus={
+                    sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex &&
+                    numsOfRender.current > 1
+                  }
+                  ref={previewRef}
+                  onFocus={scrollToRail}
+                  canMoveUp={!isFirstRail}
+                  canMoveRight={index !== section.data.length - 1}
+                  eventGroupTitle={section.title}
+                  sectionIndex={sectionIndex}
+                  selectedItemIndex={index}
+                  lastItem={index === section.data.length - 1}
+                  setRailItemRefCb={setRailItemRefCb}
+                  removeRailItemRefCb={removeRailItemRefCb}
+                  canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
+                  setFirstItemFocusable={
+                    index === 0
+                      ? navMenuScreenRedirectRef.current
                         ?.setDefaultRedirectFromNavMenu
-                    : undefined
-                }
-                scrollToRailItem={scrollToRailItem}
-                accessible={
-                  (sectionIndex === focusPosition.sectionIndex &&
-                    index === focusPosition.itemIndex) ? true : accessible}
-              />
-            )}
-          />
+                      : undefined
+                  }
+                  scrollToRailItem={scrollToRailItem}
+                  accessible={
+                    sectionIndex === focusPosition.sectionIndex &&
+                    index === focusPosition.itemIndex
+                      ? true
+                      : accessible
+                  }
+                />
+              )}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -194,6 +225,16 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hidden: {
+    zIndex: -1000,
+  },
+  androidLoadingContainer: {
+    flex: 1,
+    width: '90%',
+    paddingTop: Dimensions.get('window').height / 2 - 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
