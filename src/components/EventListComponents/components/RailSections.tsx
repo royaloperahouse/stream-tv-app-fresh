@@ -6,6 +6,7 @@ import React, {
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
+  useEffect,
 } from 'react';
 import {
   View,
@@ -135,10 +136,10 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   );
 
   const scrollToRail = (index: number, itemIndex: number) => () => {
-    // TODO remove comments and add TVOS statement
-    // if (preSectionIndex.current === index) {
-    //   return;
-    // }
+    // TODO while not on the first card lock navmenu for a bit
+    if (preSectionIndex.current === index && isTVOS) {
+      return;
+    }
     preSectionIndex.current = index;
     if (
       !sectionsListRef.current ||
@@ -150,12 +151,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     setTimeout(() => setCurrentPosition([index, itemIndex]), 200);
     if (railStyle && railStyle.height) {
       sectionsListRef.current.scrollToOffset({
-        animated: false,
+        animated: isTVOS,
         offset: index * railStyle.height,
       });
     } else {
       sectionsListRef.current.scrollToIndex({
-        animated: false,
+        animated: isTVOS,
         index,
       });
     }
@@ -178,6 +179,15 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     }
   };
 
+  useEffect(() => {
+    if (currentPosition[1] !== 0) {
+      navMenuManager.lockNavMenu();
+    }
+
+    if (currentPosition[1] === 0) {
+      navMenuManager.unlockNavMenu();
+    }
+  }, [currentPosition]);
   const isAccessible = (accessibleItemInSectionIndex: number, accessibleSectionForCheckIndex: number) => {
     if (
       accessibleSectionForCheckIndex === currentPosition[0] &&
@@ -441,7 +451,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
                   // TODO make accessible for TVOS
-                  accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
+                  accessible: true, //isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
                 });
               }}
             />
