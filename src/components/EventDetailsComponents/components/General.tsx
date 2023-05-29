@@ -78,6 +78,8 @@ import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
 import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
 import { navMenuManager } from 'components/NavMenu';
+import { navigate } from 'navigations/navigationContainer';
+import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -417,6 +419,13 @@ const General: React.FC<
             confirmActionHandler: () => {
               globalModalManager.closeModal(() => {
                 closeModal(ref, clearLoadingState);
+              });
+              navMenuManager.showNavMenu();
+              navigate(rootStackScreensNames.content, {
+                screen: contentScreenNames.home,
+                params: {
+                  fromErrorModal: true,
+                },
               });
             },
             title:
