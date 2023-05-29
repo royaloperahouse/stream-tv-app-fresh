@@ -141,7 +141,12 @@ const HomePageScreen: React.FC<
   if (FocusManager.getFirstLounch()) {
     isLoading.current = false;
   }
-  if (!continueWatchingListEjected || !myListEjected || !eventsLoaded || (isTVOS && numsOfRender.current < 3)) {
+  if (
+    !continueWatchingListEjected ||
+    !myListEjected ||
+    !eventsLoaded ||
+    (!FocusManager.getFirstLounch() && isTVOS && numsOfRender.current < 3)
+  ) {
     return (
       <View style={styles.loadingContainer}>
         <TouchableHighlight
@@ -168,7 +173,7 @@ const HomePageScreen: React.FC<
     isLoading.current = false;
   }
 
-  console.log(isLoading);
+  console.log(isLoading, 'isLoading');
   return (
     <>
       {isLoading.current ? (
