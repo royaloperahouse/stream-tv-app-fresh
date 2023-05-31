@@ -366,20 +366,21 @@ const EventVideoScreen: React.FC<
                   {videoDetails.short_description[0].text}
                 </RohText>
               ) : null}
-              {videoDetails.extra_video_type ? (
-                <RohText style={styles.tags}>
-                  {videoDetails.extra_video_type}
-                </RohText>
-              ) : null}
-              {videoDetails.extra_video_tags.length
-                ? videoDetails.extra_video_tags.map(
-                    (item: { tag: string }, index: number) => (
-                      <RohText key={index} style={styles.tags}>
-                        {item.tag}
-                      </RohText>
-                    ),
-                  )
-                : null}
+              {/* TODO add tags after designs completed */}
+              {/*{videoDetails.extra_video_type ? (*/}
+              {/*  <RohText style={styles.tags}>*/}
+              {/*    {videoDetails.extra_video_type}*/}
+              {/*  </RohText>*/}
+              {/*) : null}*/}
+              {/*{videoDetails.extra_video_tags.length*/}
+              {/*  ? videoDetails.extra_video_tags.map(*/}
+              {/*      (item: { tag: string }, index: number) => (*/}
+              {/*        <RohText key={index} style={styles.tags}>*/}
+              {/*          {item.tag}*/}
+              {/*        </RohText>*/}
+              {/*      ),*/}
+              {/*    )*/}
+              {/*  : null}*/}
             </OverflowingContainer>
             <View style={styles.buttonsContainer}>
               <ActionButtonList
