@@ -94,6 +94,13 @@ export type TContentScreensParamList = {
       playTrailer?: boolean;
     };
   };
+  [contentScreenNames.eventVideo]: {
+    videoId: string;
+    eventId: string;
+    screenNameFrom: TContentScreenReverseNames;
+    sectionIndex: number;
+    selectedItemIndex?: number;
+  }
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
 };
@@ -196,5 +203,6 @@ export declare namespace NSNavigationScreensNames {
       | typeof contentScreenNames.eventDetails
       | typeof contentScreenNames.exit
       | typeof contentScreenNames.liveStream
+      | typeof contentScreenNames.eventVideo
     > {}
 }

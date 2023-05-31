@@ -1,25 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { eventDetailsSectionsConfig, TEventDetailsSectionItem } from "@navigations/eventDetailsRoutes";
-import { useAppSelector } from "@hooks/redux";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  eventDetailsSectionsConfig,
+  TEventDetailsSectionItem,
+} from '@navigations/eventDetailsRoutes';
+import { useAppSelector } from '@hooks/redux';
 import type {
   TDieseActitvityCreatives,
   TDieseActivityCast,
   TEvent,
   TExtrasVideo,
-  TVSSynops
-} from "@services/types/models";
-import { getEventById } from "@services/store/events/Selectors";
-import { isProductionEvironmentSelector } from "services/store/settings/Selectors";
-import { ECellItemKey } from "@components/EventDetailsComponents/commonControls/MultiColumnAboutProductionList";
-import { getVideoDetails } from "@services/prismicApiClient";
-import * as Prismic from "@prismicio/client";
-import { PrismicDocument } from "@prismicio/types";
-import get from "lodash.get";
-import type { TEventDetailsScreensParamContextProps } from "@configs/screensConfig";
-import { getBitMovinSavedPosition, getSelectedBitrateId } from "@services/bitMovinPlayer";
-import useAsyncEffect from "use-async-effect";
-import { defaultPlayerBitrateKey, playerBitratesFilter } from "@configs/bitMovinPlayerConfig";
-import { customerIdSelector } from "services/store/auth/Selectors";
+  TVSSynops,
+} from '@services/types/models';
+import { getEventById } from '@services/store/events/Selectors';
+import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
+import { ECellItemKey } from '@components/EventDetailsComponents/commonControls/MultiColumnAboutProductionList';
+import { getVideoDetails } from '@services/prismicApiClient';
+import * as Prismic from '@prismicio/client';
+import { PrismicDocument } from '@prismicio/types';
+import get from 'lodash.get';
+import type { TEventDetailsScreensParamContextProps } from '@configs/screensConfig';
+import {
+  getBitMovinSavedPosition,
+  getSelectedBitrateId,
+} from '@services/bitMovinPlayer';
+import useAsyncEffect from 'use-async-effect';
+import {
+  defaultPlayerBitrateKey,
+  playerBitratesFilter,
+} from '@configs/bitMovinPlayerConfig';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -562,7 +571,7 @@ const useGetExtras = (
         bitrateValue.current = videoQualityBitrate;
         videoQualityIdRef.current = videoQualityId;
         const response = await getVideoDetails({
-          queryPredicates: [Prismic.Predicates.in('document.id', videos)],
+          queryPredicates: [Prismic.predicate.in('document.id', videos)],
           isProductionEnv: isProduction,
         });
         const filteredResult = response.results.reduce(

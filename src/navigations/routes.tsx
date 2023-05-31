@@ -26,6 +26,7 @@ import SettingsInActiveIcon from '@assets/svg/navIcons/Settings.svg';
 import SettingsActiveIcon from '@assets/svg/navIcons/SettingsActive.svg';
 import { TRoutes, TRoute } from '@services/types/models';
 import { contentScreenNames } from '@configs/screensConfig';
+import EventVideoScreen from 'screens/EventVideoScreen';
 
 //import { isTVOS } from '@configs/globalConfig';
 
@@ -104,6 +105,7 @@ export const routes: TRoutes = [
 
 export const additionalRoutesWithoutNavMenuNavigation: {
   eventDetails: TRoute;
+  eventVideo: TRoute;
   exit: TRoute;
 } = {
   eventDetails: {
@@ -116,6 +118,16 @@ export const additionalRoutesWithoutNavMenuNavigation: {
     position: 8,
     initialParams: { eventId: '' },
   },
+  eventVideo: {
+    navMenuScreenName: contentScreenNames.eventVideo,
+    ScreenComponent: EventVideoScreen,
+    SvgIconActiveComponent: undefined,
+    SvgIconInActiveComponent: undefined,
+    navMenuTitle: undefined,
+    isDefault: false,
+    position: 9,
+    initialParams: { videoId: '', eventId: '' },
+  },
   exit: {
     navMenuScreenName: contentScreenNames.exit,
     ScreenComponent: ExitScreen,
@@ -123,7 +135,7 @@ export const additionalRoutesWithoutNavMenuNavigation: {
     SvgIconInActiveComponent: undefined,
     navMenuTitle: undefined,
     isDefault: false,
-    position: 9,
+    position: 10,
     initialParams: undefined,
   },
 };

@@ -127,7 +127,7 @@ const General: React.FC<
   >(null);
   const generalMountedRef = useRef<boolean | undefined>(false);
   const addOrRemoveBusyRef = useRef<boolean>(true);
-  const playTrailer = useRef<boolean>(params.playTrailer)
+  const playTrailer = useRef<boolean>(params.playTrailer);
   const watchNowButtonRef = useRef<TActionButtonListRef>(null);
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
