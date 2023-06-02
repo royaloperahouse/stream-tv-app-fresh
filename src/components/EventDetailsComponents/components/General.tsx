@@ -706,9 +706,11 @@ const General: React.FC<
           <OverflowingContainer
             fixedHeight={false}
             contentMaxVisibleHeight={scaleSize(460)}>
-            <RohText style={styles.title} numberOfLines={2}>
-              {title?.toUpperCase?.() || ''}
-            </RohText>
+            <View style={styles.titleContainer}>
+              <RohText style={styles.title} numberOfLines={4}>
+                {title?.toUpperCase?.() + ' ' + title?.toUpperCase?.() || ''}
+              </RohText>
+            </View>
             <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
@@ -774,7 +776,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(230),
+    marginTop: scaleSize(140),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },
@@ -795,7 +797,6 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: scaleSize(48),
-    marginTop: scaleSize(24),
     marginBottom: scaleSize(24),
     textTransform: 'uppercase',
   },
@@ -825,6 +826,10 @@ const styles = StyleSheet.create({
   guidanceSubTitle: {
     fontSize: scaleSize(26),
     color: Colors.defaultTextColor,
+  },
+  titleContainer: {
+    justifyContent: 'flex-end',
+    minHeight: 300,
   },
 });
 

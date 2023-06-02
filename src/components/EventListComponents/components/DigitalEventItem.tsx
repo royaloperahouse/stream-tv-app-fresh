@@ -88,7 +88,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const timeoutId = useRef<NodeJS.Timeout | null>(null);
     const snapshotImageUrl: string = get(
       event.data,
-      ['vs_event_image', 'wide_event_image', 'url'],
+      ['vs_event_image', 'tv_app_rail_thumbnail', 'url'],
       '',
     );
     const eventTitle: string =

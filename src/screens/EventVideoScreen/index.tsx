@@ -358,7 +358,7 @@ const EventVideoScreen: React.FC<
             <OverflowingContainer
               fixedHeight={false}
               contentMaxVisibleHeight={scaleSize(460)}>
-              <RohText style={styles.title} numberOfLines={2}>
+              <RohText style={styles.title}>
                 {videoDetails.video_title[0].text.toUpperCase() || ''}
               </RohText>
               {videoDetails.short_description.length ? (
