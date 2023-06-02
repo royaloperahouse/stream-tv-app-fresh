@@ -68,7 +68,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
       ).replace(/(<([^>]+)>)/gi, '');
   const snapshotImageUrl: string = get(
     event,
-    ['vs_event_image', 'wide_event_image', 'url'],
+    ['vs_event_image', 'tv_app_preview_image_selected', 'url'],
     '',
   );
 
@@ -110,7 +110,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
 
       <View style={styles.snapshotContainer}>
         <RohImage
-          resizeMode={FastImage.resizeMode.contain}
+          resizeMode={FastImage.resizeMode.cover}
           style={styles.previewImage}
           source={snapshotImageUrl}
         />
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(12),
   },
   previewImage: {
-    width: scaleSize(1065),
+    width: scaleSize(1200),
     height: scaleSize(600),
     backgroundColor: Colors.defaultBlue,
     zIndex: 0,

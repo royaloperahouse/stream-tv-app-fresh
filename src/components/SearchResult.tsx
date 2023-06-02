@@ -179,7 +179,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
 
   const imgUrl: string = get(
     item.data,
-    ['vs_event_image', 'wide_event_image', 'url'],
+    ['vs_event_image', 'tv_app_preview_image_selected', 'url'],
     '',
   );
   const toggleFocus = () => setIsFocused(prevState => !prevState);

@@ -207,7 +207,7 @@ const getGeneralInfo = (
 
   const snapshotImageUrl: string = get(
     event,
-    ['vs_event_image', 'high_event_image', 'url'],
+    ['vs_event_image', 'tv_app_preview_image', 'url'],
     '',
   );
   const vs_guidance: string = get(event, 'vs_guidance', '');
