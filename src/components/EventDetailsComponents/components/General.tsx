@@ -108,6 +108,8 @@ const General: React.FC<
     videoQualityId,
   } = params;
 
+  console.log(title?.toUpperCase() || '');
+  console.log(shortDescription);
   const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
@@ -707,8 +709,8 @@ const General: React.FC<
             fixedHeight={false}
             contentMaxVisibleHeight={scaleSize(460)}>
             <View style={styles.titleContainer}>
-              <RohText style={styles.title} numberOfLines={4}>
-                {title?.toUpperCase?.() + ' ' + title?.toUpperCase?.() || ''}
+              <RohText style={styles.title} numberOfLines={isTVOS ? 4 : 3}>
+                {title?.toUpperCase() || ''}
               </RohText>
             </View>
             <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
@@ -776,7 +778,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(140),
+    marginTop: scaleSize(isTVOS ? 140 : 230),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },
@@ -827,10 +829,12 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     color: Colors.defaultTextColor,
   },
-  titleContainer: {
-    justifyContent: 'flex-end',
-    minHeight: 300,
-  },
+  titleContainer: isTVOS
+    ? {
+        justifyContent: 'flex-end',
+        minHeight: 300,
+      }
+    : {},
 });
 
 export default General;
