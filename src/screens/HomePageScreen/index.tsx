@@ -49,6 +49,7 @@ import { NavMenuNodesRefsContext } from '@components/NavMenu/components/ContextP
 import type { TNavMenuNodesRefsContextValue } from '@components/NavMenu/components/ContextProvider';
 import LoadingSpinner from '@components/LoadingSpinner';
 import { isTVOS } from 'configs/globalConfig';
+import { deviceAuthenticatedSelector } from 'services/store/auth/Selectors';
 
 const HomePageScreen: React.FC<
   TContentScreensProps<NSNavigationScreensNames.ContentStackScreens['home']>
@@ -138,9 +139,14 @@ const HomePageScreen: React.FC<
   }
 
   const isLoading = useRef<boolean>(!isTVOS);
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
   if (FocusManager.getFirstLounch()) {
     isLoading.current = false;
   }
+  console.log(!continueWatchingListEjected, 'continue');
+  console.log(!myListEjected, 'my list');
+  console.log(!eventsLoaded, 'events');
+  console.log((!FocusManager.getFirstLounch() && isTVOS && numsOfRender.current < 3), 'tvos');
   if (
     !continueWatchingListEjected ||
     !myListEjected ||
