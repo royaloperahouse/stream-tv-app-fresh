@@ -143,15 +143,12 @@ const HomePageScreen: React.FC<
   if (FocusManager.getFirstLounch()) {
     isLoading.current = false;
   }
-  console.log(!continueWatchingListEjected, 'continue');
-  console.log(!myListEjected, 'my list');
-  console.log(!eventsLoaded, 'events');
-  console.log((!FocusManager.getFirstLounch() && isTVOS && numsOfRender.current < 3), 'tvos');
+
   if (
     !continueWatchingListEjected ||
     !myListEjected ||
     !eventsLoaded ||
-    (!FocusManager.getFirstLounch() && isTVOS && numsOfRender.current < 3)
+    (!FocusManager.getFirstLounch() && isTVOS && numsOfRender.current < 3 && isAuthenticated)
   ) {
     return (
       <View style={styles.loadingContainer}>
