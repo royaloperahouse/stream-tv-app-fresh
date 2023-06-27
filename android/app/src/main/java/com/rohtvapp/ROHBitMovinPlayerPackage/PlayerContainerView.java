@@ -1,6 +1,7 @@
 package com.rohtvapp.ROHBitMovinPlayerPackage;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Choreographer;
@@ -90,13 +91,15 @@ public class PlayerContainerView extends RelativeLayout {
         audioCodecPriority.add("mp4a.a5");
         audioCodecPriority.add("mp4a.40");
 
+        boolean shouldEnableTunneledPlayback = this.isTargettedDevice();
+
         PlaybackConfig playbackConfig = new PlaybackConfig(
             false,
             false,
             true,
             videoCodecPriority,
             audioCodecPriority,
-            false,
+            shouldEnableTunneledPlayback,
             SeekMode.Exact,
             null,
             MediaFilter.Strict,
@@ -151,6 +154,10 @@ public class PlayerContainerView extends RelativeLayout {
 
     public PlayerView getPlayerView() {
         return playerView;
+    }
+
+    private boolean isTargettedDevice() {
+        return Build.MANUFACTURER.startsWith("Google") || Build.MANUFACTURER.startsWith("Amazon");
     }
 
     private void onPlay(PlayerEvent event) {
