@@ -71,6 +71,8 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     ['vs_event_image', 'tv_app_preview_image_selected', 'url'],
     '',
   );
+  const duration = get(event, ['vs_running_time_summary']);
+  const extraVideoType = get(event, ['extra_video_type']);
 
   useLayoutEffect(() => {
     fadeAnimation.setValue(0);
@@ -104,7 +106,9 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
           <RohText style={styles.pageTitle}>{eventGroupTitle}</RohText>
           <RohText style={styles.title}>{eventTitle}</RohText>
           {/* <RohText style={styles.ellipsis}>{event.captionText}</RohText> */}
+          {extraVideoType ? <RohText style={styles.description}>{extraVideoType.toUpperCase()}</RohText> : null}
           <RohText style={styles.description}>{shortDescription}</RohText>
+          <RohText style={styles.description}>{duration}</RohText>
         </OverflowingContainer>
       </View>
 

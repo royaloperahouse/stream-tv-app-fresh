@@ -348,7 +348,7 @@ const EventVideoScreen: React.FC<
       </View>
     );
   }
-
+  console.log(JSON.stringify(videoDetails.video.duration,null, 4));
   return (
     <View style={styles.rootContainer}>
       <GoBack />
@@ -361,26 +361,21 @@ const EventVideoScreen: React.FC<
               <RohText style={styles.title}>
                 {videoDetails.video_title[0].text.toUpperCase() || ''}
               </RohText>
+              {videoDetails.extra_video_type ? (
+                <RohText style={styles.tags}>
+                  {videoDetails.extra_video_type.toUpperCase()}
+                </RohText>
+              ) : null}
               {videoDetails.short_description.length ? (
                 <RohText style={styles.description}>
                   {videoDetails.short_description[0].text}
                 </RohText>
               ) : null}
-              {/* TODO add tags after designs completed */}
-              {/*{videoDetails.extra_video_type ? (*/}
-              {/*  <RohText style={styles.tags}>*/}
-              {/*    {videoDetails.extra_video_type}*/}
-              {/*  </RohText>*/}
-              {/*) : null}*/}
-              {/*{videoDetails.extra_video_tags.length*/}
-              {/*  ? videoDetails.extra_video_tags.map(*/}
-              {/*      (item: { tag: string }, index: number) => (*/}
-              {/*        <RohText key={index} style={styles.tags}>*/}
-              {/*          {item.tag}*/}
-              {/*        </RohText>*/}
-              {/*      ),*/}
-              {/*    )*/}
-              {/*  : null}*/}
+              {videoDetails.video.duration ? (
+                <RohText style={styles.tags}>
+                  {`${Math.floor(videoDetails.video.duration / 60)} minutes`}
+                </RohText>
+              ) : null}
             </OverflowingContainer>
             <View style={styles.buttonsContainer}>
               <ActionButtonList
@@ -462,11 +457,11 @@ const styles = StyleSheet.create({
   description: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
-    marginTop: scaleSize(12),
+    marginTop: scaleSize(24),
     overflow: 'hidden',
   },
   tags: {
-    color: Colors.tVMidGrey,
+    color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
     marginTop: scaleSize(12),
     overflow: 'hidden',
