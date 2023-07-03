@@ -348,7 +348,7 @@ const EventVideoScreen: React.FC<
       </View>
     );
   }
-  console.log(JSON.stringify(videoDetails.video.duration,null, 4));
+
   return (
     <View style={styles.rootContainer}>
       <GoBack />

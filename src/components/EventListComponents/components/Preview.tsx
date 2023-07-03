@@ -15,6 +15,7 @@ import { Colors } from '@themes/Styleguide';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import RohImage from 'components/RohImage';
 import { isTVOS } from 'configs/globalConfig';
+import { formatDate } from 'utils/formatDate';
 
 export type TPreviewRef = {
   setDigitalEvent?: (
@@ -72,6 +73,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     '',
   );
   const duration = get(event, ['vs_running_time_summary']);
+  const availableFrom = get(event, ['vs_availability_date']);
   const extraVideoType = get(event, ['extra_video_type']);
 
   useLayoutEffect(() => {
@@ -106,9 +108,19 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
           <RohText style={styles.pageTitle}>{eventGroupTitle}</RohText>
           <RohText style={styles.title}>{eventTitle}</RohText>
           {/* <RohText style={styles.ellipsis}>{event.captionText}</RohText> */}
-          {extraVideoType ? <RohText style={styles.description}>{extraVideoType.toUpperCase()}</RohText> : null}
+          {extraVideoType ? (
+            <RohText style={styles.description}>
+              {extraVideoType.toUpperCase()}
+            </RohText>
+          ) : null}
           <RohText style={styles.description}>{shortDescription}</RohText>
-          <RohText style={styles.description}>{duration}</RohText>
+          {availableFrom ? (
+            <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formatDate(
+              new Date(availableFrom),
+            ).toUpperCase()}`}</RohText>
+          ) : (
+            <RohText style={styles.description}>{duration}</RohText>
+          )}
         </OverflowingContainer>
       </View>
 
@@ -157,6 +169,11 @@ const styles = StyleSheet.create({
   description: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
+    marginTop: scaleSize(12),
+  },
+  availableFrom: {
+    color: Colors.defaultTextColor,
+    fontSize: scaleSize(26),
     marginTop: scaleSize(12),
   },
   previewImage: {
