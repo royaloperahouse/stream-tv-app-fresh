@@ -100,6 +100,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         /(<([^>]+)>)/gi,
         '',
       );
+    const availableFrom = get(event.data, ['vs_availability_date']);
+    const duration = get(event.data, ['vs_running_time_summary']);
 
     useLayoutEffect(() => {
       isMounted.current = true;
@@ -122,6 +124,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
             screenNameFrom,
             sectionIndex,
             selectedItemIndex,
+            availableFrom: availableFrom ? availableFrom : null,
           });
         });
         navMenuManager.unlockNavMenu();
@@ -133,6 +136,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
           screenNameFrom,
           sectionIndex,
           selectedItemIndex,
+          availableFrom: availableFrom ? availableFrom : null,
+          duration,
         });
         navMenuManager.unlockNavMenu();
       });

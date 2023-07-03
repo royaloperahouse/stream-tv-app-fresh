@@ -87,6 +87,8 @@ export type TContentScreensParamList = {
     | undefined;
   [contentScreenNames.eventDetails]: {
     eventId: string;
+    availableFrom: string | null;
+    duration: string | null;
     screenNameFrom: TContentScreenReverseNames;
     sectionIndex: number;
     selectedItemIndex?: number;
@@ -100,6 +102,7 @@ export type TContentScreensParamList = {
     screenNameFrom: TContentScreenReverseNames;
     sectionIndex: number;
     selectedItemIndex?: number;
+    availableFrom: string | null;
   }
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
@@ -107,6 +110,8 @@ export type TContentScreensParamList = {
 
 export type TEventDetailsScreensParamContextProps = {
   [eventDetailsScreenNames.general]: {
+    duration: any;
+    availableFrom: string | null;
     nextSectionTitle?: string;
     publishingDate: string;
     title: string;

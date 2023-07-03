@@ -80,6 +80,7 @@ import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
 import { navMenuManager } from 'components/NavMenu';
 import { navigate } from 'navigations/navigationContainer';
 import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
+import { formatDate } from 'utils/formatDate';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -92,6 +93,8 @@ const General: React.FC<
     )[route.name] || {};
   const {
     publishingDate,
+    availableFrom,
+    duration,
     title,
     shortDescription,
     snapshotImageUrl,
@@ -107,9 +110,6 @@ const General: React.FC<
     videoQualityBitrate,
     videoQualityId,
   } = params;
-
-  console.log(title?.toUpperCase() || '');
-  console.log(shortDescription);
   const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
@@ -631,6 +631,9 @@ const General: React.FC<
       Icon: Trailer,
     },
   ].filter(item => {
+    if (!!availableFrom && item.key === 'WatchNow') {
+      return false;
+    }
     if ((!performanceInfo || showCountDownTimer) && item.key === 'WatchNow') {
       return false;
     }
@@ -707,7 +710,7 @@ const General: React.FC<
         <View style={styles.descriptionContainer}>
           <OverflowingContainer
             fixedHeight={false}
-            contentMaxVisibleHeight={scaleSize(460)}>
+            contentMaxVisibleHeight={scaleSize(1000)}>
             <View style={styles.titleContainer}>
               <RohText style={styles.title} numberOfLines={isTVOS ? 4 : 3}>
                 {title?.toUpperCase() || ''}
@@ -721,6 +724,14 @@ const General: React.FC<
               <RohText style={styles.description}>
                 {vs_guidance_details}
               </RohText>
+            ) : null}
+            {availableFrom ? (
+              <RohText style={styles.description}>
+                {`AVAILABLE FROM ${formatDate(new Date(availableFrom)).toUpperCase()}`}
+              </RohText>
+            ) : null}
+            {!availableFrom && !!duration ? (
+              <RohText style={styles.description}>{duration}</RohText>
             ) : null}
           </OverflowingContainer>
           {showCountDownTimer ? (
@@ -778,7 +789,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(isTVOS ? 140 : 230),
+    marginTop: scaleSize(isTVOS ? 120 : 230),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },
