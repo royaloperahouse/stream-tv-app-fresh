@@ -7715,10 +7715,10 @@ react-native-url-polyfill@^1.3.0:
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"
 
-"react-native@npm:react-native-tvos@6.10.5":
-  version "0.68.2-7"
-  resolved "https://registry.yarnpkg.com/react-native-tvos/-/react-native-tvos-0.68.2-7.tgz#5ea09e2fa7e8f123c6a2aacea107ef0d55501f11"
-  integrity sha512-8p/bGLv/QlkKaxu32sKFN7X/N1jnvvVZp7vQFlH/gQ6wyWW1VHLGIv1Xq51qWiOMEGsdGXjgdzr+zdgvQomJ/Q==
+"react-native@npm:react-native-tvos@0.68.2":
+  version "0.68.2-0"
+  resolved "https://registry.yarnpkg.com/react-native-tvos/-/react-native-tvos-0.68.2-0.tgz#79674c141e9110fe639dd5ffaad77c0c3a3ac3e1"
+  integrity sha512-ZLSP3VP88SHRflnDuOjy7qD6ha7Bp1VeLZdM6Xvij9+w2z3xTvRXVgsogsMaSZlAQYqmN/2MIL3lY/tSHe8d8Q==
   dependencies:
     "@jest/create-cache-key-function" "^27.0.1"
     "@react-native-community/cli" "^7.0.3"
