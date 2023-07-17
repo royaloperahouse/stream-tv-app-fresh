@@ -135,7 +135,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
         <View style={{ flex: 1 }}>
           <FlatList
             style={{
-              flex: 1,
+              flex: 0,
             }}
             data={keyboardData}
             keyExtractor={({ text }) => text}
