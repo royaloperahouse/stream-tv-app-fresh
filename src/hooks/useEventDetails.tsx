@@ -535,6 +535,7 @@ const useGetExtras = (
   const loaded = useRef<boolean>(false);
 
   const isMounted = useRef<boolean>(false);
+  console.log(JSON.stringify(event, null, 4));
   const videos = get(event, 'vs_videos', []).map(({ video }) => video.id);
   const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
     defaultPlayerBitrateKey,
@@ -574,6 +575,7 @@ const useGetExtras = (
           queryPredicates: [Prismic.predicate.in('document.id', videos)],
           isProductionEnv: isProduction,
         });
+        // TODO check how to improve filter to add insights into both extras and performances
         const filteredResult = response.results.reduce(
           (
             acc: {
@@ -600,7 +602,15 @@ const useGetExtras = (
               case 'hero':
                 break;
               case 'insight':
-                acc.performance.push(result);
+                if (
+                  response.results.find(
+                    item => item.data.video.video_type === 'performance',
+                  )
+                ) {
+                  acc.extras.push(result);
+                } else {
+                  acc.performance.push(result);
+                }
                 break;
               default:
                 acc.extras.push(result);
