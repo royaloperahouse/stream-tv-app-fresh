@@ -70,7 +70,7 @@ export const getMyList = async (
 ): Promise<Array<string>> => {
   try {
     if (customerId === null) {
-      throw new Error(`Something went wrong with customerId ${customerId}`);
+      return [];
     }
     const { data } = await getMyListReq(customerId, isProductionEnv);
     const { myList } = data.data.attributes;
@@ -88,7 +88,7 @@ export const hasMyListItem = async (
 ): Promise<boolean> => {
   try {
     if (customerId === undefined || customerId === null) {
-      throw Error(`Something went wrong with customerId ${customerId}`);
+      return false;
     }
     const myList = await getMyList(customerId, isProductionEnv);
     return myList.some((eventId: string) => eventId === item);
