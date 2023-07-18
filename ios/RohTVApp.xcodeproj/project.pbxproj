@@ -412,7 +412,7 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */,
+				CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1323,7 +1323,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */ = {
+		CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bitmovin/player-ios.git";
 			requirement = {
@@ -1336,7 +1336,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		CEA69F2D290827BD00D25D41 /* BitmovinPlayer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */;
+			package = CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */;
 			productName = BitmovinPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
