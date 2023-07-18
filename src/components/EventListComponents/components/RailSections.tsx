@@ -151,12 +151,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     setTimeout(() => setCurrentPosition([index, itemIndex]), 200);
     if (railStyle && railStyle.height) {
       sectionsListRef.current.scrollToOffset({
-        animated: isTVOS,
+        animated: true,
         offset: index * railStyle.height,
       });
     } else {
       sectionsListRef.current.scrollToIndex({
-        animated: isTVOS,
+        animated: true,
         index,
       });
     }

@@ -25,7 +25,7 @@ export const getPrevSearchList = async (
 ): Promise<Array<string>> => {
   try {
     if (customerId === null || customerId === undefined) {
-      throw new Error(`Something went wrong with customerId ${customerId}`);
+      return [];
     }
     const { data } = await getPreviousSearchList(customerId, isProductionEnv);
     const { searchHistory } = data.data.attributes;
