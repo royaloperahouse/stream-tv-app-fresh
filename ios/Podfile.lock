@@ -569,12 +569,12 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   BitmovinAnalyticsCollector: 772af708cdcffced698cf42e5ca94d38566c4041
   BitmovinPlayer: 8708fc071172163fa8ac76b5dc1ac51574544f32
-  boost: a7c83b31436843459a1961bfd74b96033dc77234
+  boost: 0ed1b9a58a27b2f7885dc9f279bc3b341f44512b
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
   FBLazyVector: c02eab6431122883bbcac0481bb2147bec4270e1
   FBReactNativeSpec: d30bc04cd7214271c6a2792525edac0dfffd6174
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
-  glog: bac6d5aa2990176cc22d0432fb3e28805d580aeb
+  glog: a2ded9bf28f0cb2fce90ad21eb419299a500ff6c
   hermes-engine: 47dc3205428409d784a2e3db57c1d279a00070e8
   libevent: a6d75fcd7be07cbc5070300ea8dbc8d55dfab88e
   libwebp: f62cb61d0a484ba548448a4bd52aabf150ff6eef
