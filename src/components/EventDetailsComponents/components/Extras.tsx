@@ -22,13 +22,13 @@ import ExtrasInfoBlock, {
   TExtrasInfoBlockRef,
 } from '../commonControls/ExtrasInfoBlock';
 import ExtrasVideoButton from '@components/EventDetailsComponents/commonControls/ExtrasVideoButton';
-import { fetchVideoURL } from '@services/apiClient';
+import { fetchVideoURL, getAccessToWatchVideo } from '@services/apiClient';
 import { goBackButtonuManager } from '@components/GoBack';
 import ScrollingPagination, {
   TScrolingPaginationRef,
 } from '@components/ScrollingPagination';
 import { globalModalManager } from '@components/GlobalModals';
-import { ErrorModal, PlayerModal } from '@components/GlobalModals/variants';
+import { ErrorModal, NotSubscribedModal, PlayerModal, RentalStateStatusModal } from '@components/GlobalModals/variants';
 import { useFocusEffect } from '@react-navigation/native';
 import { TVEventManager } from '@services/tvRCEventListener';
 import type {
@@ -42,9 +42,14 @@ import { TBMPlayerErrorObject } from '@services/types/bitmovinPlayer';
 import { useAppSelector } from '@hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
 import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
-import { customerIdSelector } from '@services/store/auth/Selectors';
+import { customerIdSelector, deviceAuthenticatedSelector } from '@services/store/auth/Selectors';
 import { useFocusLayoutEffect } from '@hooks/useFocusLayoutEffect';
 import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
+import { promiseWait } from 'utils/promiseWait';
+import { NonSubscribedStatusError, NotRentedItemError, UnableToCheckRentalStatusError } from 'utils/customErrors';
+import { navMenuManager } from 'components/NavMenu';
+import { navigate } from 'navigations/navigationContainer';
+import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
 const Extras: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['extras']
@@ -62,6 +67,7 @@ const Extras: React.FC<
     videoQualityBitrate,
     videoQualityId,
   } = params;
+  const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const videosRefs = useRef<{
     [key: string]: any;
   }>({});
@@ -81,6 +87,7 @@ const Extras: React.FC<
     pressingHandler: () => void;
   } | null>(null);
 
+  const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
   const customerId = useAppSelector(customerIdSelector);
   const closeModal = useCallback((ref, clearLoadingState: any) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
@@ -190,63 +197,127 @@ const Extras: React.FC<
   );
 
   const pressHandler = useCallback(
-    (ref, clearLoadingState) => {
-      if (!isBMPlayerShowingRef.current && extrasVideoInFocus.current) {
-        isBMPlayerShowingRef.current = true;
-        callOnce.current = false;
-        setShowGoUpOrDownButtons(false);
-        fetchVideoURL(extrasVideoInFocus.current.id, isProduction)
-          .then(response => {
-            if (!response?.data?.data?.attributes?.hlsManifestUrl) {
-              throw new Error('Something went wrong');
-            }
-            const videoTitle = extrasVideoInFocus.current.title;
-
-            const subtitle = extrasVideoInFocus.current.participant_details;
-            openPlayer({
-              url: response.data.data.attributes.hlsManifestUrl,
-              poster:
-                'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-              title: videoTitle,
-              subtitle,
-              analytics: {
-                videoId: extrasVideoInFocus.current.id,
-                title: videoTitle,
-                buildInfoForBitmovin,
-                customData3: videoQualityId,
-                userId: customerId ? String(customerId) : null,
-              },
-              onClose: closePlayer({
-                eventId,
-                clearLoadingState,
-                ref,
-                closeModalCB,
-              }),
-              videoQualityBitrate,
-              showVideoInfo: !isProduction,
-            });
-          })
-          .catch(err => {
-            globalModalManager.openModal({
-              contentComponent: ErrorModal,
-              contentProps: {
-                confirmActionHandler: () => {
-                  globalModalManager.closeModal(() => {
-                    closeModalCB(ref, clearLoadingState);
-                  });
+    async (ref, clearLoadingState) => {
+      try {
+        if (!isAuthenticated) {
+          moveToSettings();
+          navMenuManager.unwrapNavMenu();
+          return;
+        }
+        await promiseWait(
+          getAccessToWatchVideo(
+            {
+              videoId: extrasVideoInFocus.current.videoId,
+              eventId,
+              title: extrasVideoInFocus.current.title || '',
+            },
+            isProduction,
+            customerId,
+            () => {
+              globalModalManager.openModal({
+                contentComponent: RentalStateStatusModal,
+                contentProps: {
+                  title: extrasVideoInFocus.current.title || '',
                 },
-                title: 'Player Error',
-                subtitle: err.message,
-              },
+              });
+            },
+          ),
+        );
+
+        if (!isBMPlayerShowingRef.current && extrasVideoInFocus.current) {
+          isBMPlayerShowingRef.current = true;
+          callOnce.current = false;
+          setShowGoUpOrDownButtons(false);
+          fetchVideoURL(extrasVideoInFocus.current.id, isProduction)
+            .then(response => {
+              if (!response?.data?.data?.attributes?.hlsManifestUrl) {
+                throw new Error('Something went wrong');
+              }
+              const videoTitle = extrasVideoInFocus.current.title;
+
+              const subtitle = extrasVideoInFocus.current.participant_details;
+              openPlayer({
+                url: response.data.data.attributes.hlsManifestUrl,
+                poster:
+                  'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+                title: videoTitle,
+                subtitle,
+                analytics: {
+                  videoId: extrasVideoInFocus.current.id,
+                  title: videoTitle,
+                  buildInfoForBitmovin,
+                  customData3: videoQualityId,
+                  userId: customerId ? String(customerId) : null,
+                },
+                onClose: closePlayer({
+                  eventId,
+                  clearLoadingState,
+                  ref,
+                  closeModalCB,
+                }),
+                videoQualityBitrate,
+                showVideoInfo: !isProduction,
+              });
+            })
+            .catch(err => {
+              globalModalManager.openModal({
+                contentComponent: ErrorModal,
+                contentProps: {
+                  confirmActionHandler: () => {
+                    globalModalManager.closeModal(() => {
+                      closeModalCB(ref, clearLoadingState);
+                    });
+                  },
+                  title: 'Player Error',
+                  subtitle: err.message,
+                },
+              });
+            })
+            .finally(() => {
+              if (typeof clearLoadingState === 'function') {
+                clearLoadingState();
+              }
             });
-          })
-          .finally(() => {
-            if (typeof clearLoadingState === 'function') {
-              clearLoadingState();
-            }
-          });
-      } else {
-        clearLoadingState();
+        } else {
+          clearLoadingState();
+        }
+      } catch (err) {
+        globalModalManager.openModal({
+          contentComponent:
+            err instanceof NonSubscribedStatusError
+              ? NotSubscribedModal
+              : ErrorModal,
+          contentProps: {
+            confirmActionHandler: () => {
+              globalModalManager.closeModal(() => {
+                closeModal(ref, clearLoadingState);
+              });
+              navMenuManager.showNavMenu();
+              navigate(rootStackScreensNames.content, {
+                screen: contentScreenNames.home,
+                params: {
+                  fromErrorModal: true,
+                },
+              });
+            },
+            title:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? err.message
+                : 'Player Error',
+            subtitle:
+              err instanceof NonSubscribedStatusError ||
+              err instanceof NotRentedItemError ||
+              err instanceof UnableToCheckRentalStatusError
+                ? undefined
+                : err.message,
+          },
+        });
+      } finally {
+        if (typeof clearLoadingState === 'function') {
+          clearLoadingState();
+        }
       }
     },
     [
