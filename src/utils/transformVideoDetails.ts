@@ -53,7 +53,7 @@ export function transformVideoDetails(videoDetails) {
       }
     }
   }
-  console.log(vs_running_time_summary);
+
   return {
     id: videoDetails.id,
     type: 'digital_event_video',

@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   elementContainer: {
     paddingBottom: scaleSize(32),
-    paddingTop: '20%',
+    paddingTop: '10%',
     width: scaleSize(740),
   },
   elementContainerAbsolute: {
