@@ -55,6 +55,7 @@ import {
 } from 'utils/customErrors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 import { getSelectedBitrateId } from 'services/bitMovinPlayer';
+import transformVideoDuration from 'utils/transformVideoDuration';
 
 const EventVideoScreen: React.FC<
   TContentScreensProps<
@@ -373,7 +374,7 @@ const EventVideoScreen: React.FC<
               ) : null}
               {videoDetails.video.duration ? (
                 <RohText style={styles.tags}>
-                  {`${Math.floor(videoDetails.video.duration / 60)} minutes`}
+                  {`${transformVideoDuration(videoDetails.video.duration)}`}
                 </RohText>
               ) : null}
             </OverflowingContainer>
