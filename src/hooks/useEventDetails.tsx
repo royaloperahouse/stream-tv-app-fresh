@@ -535,7 +535,6 @@ const useGetExtras = (
   const loaded = useRef<boolean>(false);
 
   const isMounted = useRef<boolean>(false);
-  console.log(JSON.stringify(event, null, 4));
   const videos = get(event, 'vs_videos', []).map(({ video }) => video.id);
   const videoQualityIdRef = useRef<'high' | 'medium' | 'normal'>(
     defaultPlayerBitrateKey,

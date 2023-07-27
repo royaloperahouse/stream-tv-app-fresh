@@ -1,3 +1,5 @@
+import transformVideoDuration from 'utils/transformVideoDuration';
+
 export function transformVideoDetails(videoDetails) {
   if (videoDetails.data.video) {
     videoDetails.data.video.isBroken = false;
@@ -11,21 +13,10 @@ export function transformVideoDetails(videoDetails) {
       : videoDetails.data.preview_image.tray.url,
   };
 
-  let vs_running_time_summary = null;
-  let minutes = videoDetails.data.video
-    ? Math.floor(videoDetails.data.video.duration / 60)
-    : 0;
-  let hours = 0;
-  vs_running_time_summary = `${minutes} minutes`;
-  if (minutes > 60) {
-    hours = Math.floor(minutes / 60);
-    minutes = minutes - hours * 60;
-    if (hours === 1) {
-      vs_running_time_summary = `${hours} hour and ${minutes} minutes`;
-    } else {
-      vs_running_time_summary = `${hours} hours and ${minutes} minutes`;
-    }
-  }
+  const vs_running_time_summary = transformVideoDuration(
+    videoDetails.data.video ? videoDetails.data.video.duration : 0,
+  );
+
   return {
     id: videoDetails.id,
     type: 'digital_event_video',
