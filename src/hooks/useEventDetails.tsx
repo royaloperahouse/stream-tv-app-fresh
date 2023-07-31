@@ -1,15 +1,15 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   eventDetailsSectionsConfig,
   TEventDetailsSectionItem,
 } from '@navigations/eventDetailsRoutes';
 import { useAppSelector } from '@hooks/redux';
 import type {
+  TDieseActitvityCreatives,
   TDieseActivityCast,
   TEvent,
-  TDieseActitvityCreatives,
-  TVSSynops,
   TExtrasVideo,
+  TVSSynops,
 } from '@services/types/models';
 import { getEventById } from '@services/store/events/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
@@ -19,13 +19,15 @@ import * as Prismic from '@prismicio/client';
 import { PrismicDocument } from '@prismicio/types';
 import get from 'lodash.get';
 import type { TEventDetailsScreensParamContextProps } from '@configs/screensConfig';
-import { getBitMovinSavedPosition } from '@services/bitMovinPlayer';
+import {
+  getBitMovinSavedPosition,
+  getSelectedBitrateId,
+} from '@services/bitMovinPlayer';
 import useAsyncEffect from 'use-async-effect';
 import {
-  playerBitratesFilter,
   defaultPlayerBitrateKey,
+  playerBitratesFilter,
 } from '@configs/bitMovinPlayerConfig';
-import { getSelectedBitrateId } from '@services/bitMovinPlayer';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
@@ -35,7 +37,7 @@ type TUseEventDetails = (obj: { eventId: string }) => {
 };
 
 export const useEventDetails: TUseEventDetails = ({ eventId }) => {
-  const { event } = useAppSelector(getEventById(eventId));
+  const { event } = useAppSelector(getEventById(eventId)); //ZEZjyBQAAMFmsoNu
   const sectionsParams: Partial<TEventDetailsScreensParamContextProps> = {};
   const isProduction = useAppSelector(isProductionEvironmentSelector);
   const {
@@ -51,7 +53,11 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
   const { synopsis, isSynopsisAvailable } = getSynopsis(event);
   const { aboutProduction, isAboutProductionAvailable } =
     getAboutProduction(event);
-
+  aboutProduction.push({
+    content: shortDescription,
+    type: ECellItemKey.description,
+    key: 'description',
+  });
   const {
     videosInfo,
     loading,
@@ -201,7 +207,7 @@ const getGeneralInfo = (
 
   const snapshotImageUrl: string = get(
     event,
-    ['vs_event_image', 'high_event_image', 'url'],
+    ['vs_event_image', 'tv_app_preview_image', 'url'],
     '',
   );
   const vs_guidance: string = get(event, 'vs_guidance', '');
@@ -575,9 +581,10 @@ const useGetExtras = (
         bitrateValue.current = videoQualityBitrate;
         videoQualityIdRef.current = videoQualityId;
         const response = await getVideoDetails({
-          queryPredicates: [Prismic.Predicates.in('document.id', videos)],
+          queryPredicates: [Prismic.predicate.in('document.id', videos)],
           isProductionEnv: isProduction,
         });
+        // TODO check how to improve filter to add insights into both extras and performances
         const filteredResult = response.results.reduce(
           (
             acc: {
@@ -604,7 +611,15 @@ const useGetExtras = (
               case 'hero':
                 break;
               case 'insight':
-                acc.performance.push(result);
+                if (
+                  response.results.find(
+                    item => item.data.video.video_type === 'performance',
+                  )
+                ) {
+                  acc.extras.push(result);
+                } else {
+                  acc.performance.push(result);
+                }
                 break;
               default:
                 acc.extras.push(result);

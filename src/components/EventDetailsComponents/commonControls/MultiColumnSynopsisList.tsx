@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
   },
   elementContainer: {
     paddingBottom: scaleSize(32),
+    paddingTop: '10%',
     width: scaleSize(740),
   },
   elementContainerAbsolute: {
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   synopsis: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(28),
-    lineHeight: scaleSize(38),
+    lineHeight: scaleSize(34),
   },
 });
 

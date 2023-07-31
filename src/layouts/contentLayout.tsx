@@ -148,7 +148,7 @@ const ContentScreen: React.MemoExoticComponent<
           state: (...rest) => {
             console.log({
               name: `state ${Platform.OS}`,
-              value: rest,
+              value: rest[0].data,
             });
           },
         }}

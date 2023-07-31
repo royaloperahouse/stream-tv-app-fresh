@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, BackHandler } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
 import TouchableHighlightWrapper from '@components/TouchableHighlightWrapper';
@@ -11,6 +11,25 @@ type TNonSubscribedModeAlertProps = TDefaultGlobalModalContentProps & {};
 const NotSubscribedModal: React.FC<TNonSubscribedModeAlertProps> = ({
   confirmActionHandler = () => {},
 }) => {
+  const [relaunchFlag, setRelaunchFlag] = useState(true);
+  useEffect(() => {
+    const handleBackButtonClick = () => {
+      confirmActionHandler();
+      return true;
+    };
+    setTimeout(() => {
+      if (relaunchFlag) {
+        setRelaunchFlag(false);
+      }
+    }, 500);
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, [relaunchFlag]);
   return (
     <View style={styles.root}>
       <View style={styles.contentContainer}>

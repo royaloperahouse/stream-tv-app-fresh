@@ -123,7 +123,7 @@ export abstract class FocusManager {
     ) {
       return { sectionIndex: -1, itemIndex: -1 };
     }
-    return initFocusPosition;
+
     if (
       data[sectionIndex] !== undefined &&
       data[sectionIndex].data[itemIndex] !== undefined &&

@@ -4,16 +4,12 @@ import { TEventContainer } from '@services/types/models';
 import { myListTitle } from '@configs/myListConfig';
 import {
   homePageWhiteList,
-  operaAndMusicWhiteList,
-  balletAndDanceWhiteList,
   currentRentalsRailTitle,
   availableToRentRailTitle,
   liveStreamWhiteList,
 } from '@configs/eventListScreensConfig';
-import get from 'lodash.get';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
 import difference from 'lodash.difference';
-import includes from 'lodash.includes';
 import type { TRootState } from '../index';
 
 export const digitalEventDetailsSearchSelector = (
@@ -133,7 +129,6 @@ export const digitalEventsForHomePageSelector =
       }
       return acc;
     }, []);
-
     return { data: eventSections, eventsLoaded: store.events.eventsLoaded };
   };
 
@@ -152,13 +147,6 @@ export const digitalEventsForMyListScreenSelector =
   };
 
 export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
-  const eventGroupsArray = Object.entries<{
-    title: string;
-    ids: Array<string>;
-  }>(store.events.eventGroups).filter(
-    ([key]) => key in balletAndDanceWhiteList,
-  );
-
   const balletAndDanceTopTrays: Array<{
     sectionIndex: number;
     title: string;
@@ -196,54 +184,6 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
     title: '',
     data: [],
   };
-  const eventSections = Array.from(
-    new Set(
-      eventGroupsArray.reduce<Array<string>>((acc, [_, groupInfo]) => {
-        acc.push(...groupInfo.ids);
-        return acc;
-      }, []),
-    ),
-  ).reduce<{
-    [key: string]: {
-      sectionIndex: number;
-      title: string;
-      data: Array<TEventContainer>;
-    };
-  }>((acc, id) => {
-    const event = store.events.allDigitalEventsDetail[id];
-    const subtags: Array<{ tag: string }> = get(event.data, 'vs_subtags', []);
-    if (!subtags.length) {
-      eventsWithoutSubtags.data.push(store.events.allDigitalEventsDetail[id]);
-      return acc;
-    }
-    for (let i = 0; i < subtags.length; i++) {
-      const subtag = subtags[i].tag;
-
-      if (!subtag) {
-        const isIncludes = includes(
-          eventsWithoutSubtags.data,
-          store.events.allDigitalEventsDetail[id],
-        );
-        if (!isIncludes) {
-          eventsWithoutSubtags.data.push(
-            store.events.allDigitalEventsDetail[id],
-          );
-        }
-        continue;
-      }
-
-      if (subtag in acc) {
-        acc[subtag].data.push(store.events.allDigitalEventsDetail[id]);
-      } else {
-        acc[subtag] = {
-          sectionIndex: sectionIndex++,
-          title: subtag,
-          data: [store.events.allDigitalEventsDetail[id]],
-        };
-      }
-    }
-    return acc;
-  }, {});
 
   const balletAndDanceBottomTrays: Array<{
     sectionIndex: number;
@@ -277,27 +217,8 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
     });
   }
 
-  if (!eventsWithoutSubtags.data.length) {
-    return {
-      data: [
-        ...balletAndDanceTopTrays,
-        ...Object.values(eventSections),
-        ...balletAndDanceBottomTrays,
-      ],
-      eventsLoaded: store.events.eventsLoaded,
-    };
-  }
-  const sections = Object.values(eventSections).map(eventSection => ({
-    ...eventSection,
-    sectionIndex: ++eventSection.sectionIndex,
-  }));
   return {
-    data: [
-      ...balletAndDanceTopTrays,
-      eventsWithoutSubtags,
-      ...sections,
-      ...balletAndDanceBottomTrays,
-    ],
+    data: [...balletAndDanceTopTrays, ...balletAndDanceBottomTrays],
     eventsLoaded: store.events.eventsLoaded,
   };
 };
@@ -412,11 +333,6 @@ export const digitalEventsForLiveStreamSelector = (store: TRootState) => {
 };
 
 export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
-  const eventGroupsArray = Object.entries<{
-    title: string;
-    ids: Array<string>;
-  }>(store.events.eventGroups).filter(([key]) => key in operaAndMusicWhiteList);
-
   const operaAndMusicTopTrays: Array<{
     sectionIndex: number;
     title: string;
@@ -454,55 +370,6 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
     title: '',
     data: [],
   };
-  const eventSections = Array.from(
-    new Set(
-      eventGroupsArray.reduce<Array<string>>((acc, [_, groupInfo]) => {
-        acc.push(...groupInfo.ids);
-        return acc;
-      }, []),
-    ),
-  ).reduce<{
-    [key: string]: {
-      sectionIndex: number;
-      title: string;
-      data: Array<TEventContainer>;
-    };
-  }>((acc, id) => {
-    const event = store.events.allDigitalEventsDetail[id];
-    const subtags: Array<{ tag: string }> = get(event.data, 'vs_subtags', []);
-    if (!subtags.length) {
-      eventsWithoutSubtags.data.push(store.events.allDigitalEventsDetail[id]);
-      return acc;
-    }
-    for (let i = 0; i < subtags.length; i++) {
-      const subtag = subtags[i].tag;
-
-      if (!subtag) {
-        const isIncludes = includes(
-          eventsWithoutSubtags.data,
-          store.events.allDigitalEventsDetail[id],
-        );
-
-        if (!isIncludes) {
-          eventsWithoutSubtags.data.push(
-            store.events.allDigitalEventsDetail[id],
-          );
-        }
-        continue;
-      }
-
-      if (subtag in acc) {
-        acc[subtag].data.push(store.events.allDigitalEventsDetail[id]);
-      } else {
-        acc[subtag] = {
-          sectionIndex: sectionIndex++,
-          title: subtag,
-          data: [store.events.allDigitalEventsDetail[id]],
-        };
-      }
-    }
-    return acc;
-  }, {});
 
   const operaAndMusicBottomTrays: Array<{
     sectionIndex: number;
@@ -535,27 +402,8 @@ export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {
       sectionIndex: ++j,
     });
   }
-  if (!eventsWithoutSubtags.data.length) {
-    return {
-      data: [
-        ...operaAndMusicTopTrays,
-        ...Object.values(eventSections),
-        ...operaAndMusicBottomTrays,
-      ],
-      eventsLoaded: store.events.eventsLoaded,
-    };
-  }
-  const sections = Object.values(eventSections).map(eventSection => ({
-    ...eventSection,
-    sectionIndex: ++eventSection.sectionIndex,
-  }));
   return {
-    data: [
-      ...operaAndMusicTopTrays,
-      eventsWithoutSubtags,
-      ...sections,
-      ...operaAndMusicBottomTrays,
-    ],
+    data: [...operaAndMusicTopTrays, ...operaAndMusicBottomTrays],
     eventsLoaded: store.events.eventsLoaded,
   };
 };
@@ -592,7 +440,6 @@ export const videoToEventMapSelector =
       }
 
       const { activity_id: dieseId } = eventDetail.data.diese_activity;
-
       const dieseVideoIdIndex = dieseVideoIdPrefixes.findIndex(
         id => id && id === dieseId.toString(),
       );
@@ -608,8 +455,11 @@ export const videoToEventMapSelector =
     }, {});
   };
 
-export const isEventExist = (eventId: string) => (store: TRootState) =>
-  !!(
+export const isEventExist = (eventId: string) => (store: TRootState) => {
+  console.log(eventId in store.events.allDigitalEventsDetail, 'event in store');
+  console.log(!!store.events.allDigitalEventsDetail[eventId]?.data, 'has data');
+  return !!(
     eventId in store.events.allDigitalEventsDetail &&
     store.events.allDigitalEventsDetail[eventId]?.data
   );
+};

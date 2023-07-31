@@ -4,11 +4,13 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
 source 'https://github.com/bitmovin/cocoapod-specs.git'
-install! 'cocoapods', :deterministic_uuids => false
+prepare_react_native_project!
+
+production = ENV["PRODUCTION"] == "1"
 
 target 'RohTVApp' do
 
-  platform :ios, '12.0'
+  platform :ios, '13.0'
 
   config = use_native_modules!
 
@@ -17,11 +19,13 @@ target 'RohTVApp' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => flags[:hermes_enabled],
+    # Hermes is now enabled by default. Disable by setting this flag to false.
+    # Upcoming versions of React Native may rely on get_default_flags(), but
+    # we make it explicit here to aid in the React Native upgrade process.
+    :hermes_enabled => true,
     :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Dir.pwd}/.."
   )
 
   target 'RohTVAppTests' do
@@ -32,7 +36,7 @@ end
 
 target 'RohTVApp-tvOS' do
 
-  platform :tvos, '12.0'
+  platform :tvos, '13.0'
 
   config = use_native_modules!
 
@@ -42,9 +46,9 @@ target 'RohTVApp-tvOS' do
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes not yet available on tvOS
-    :hermes_enabled => false,
+    :hermes_enabled => true,
     :fabric_enabled => flags[:fabric_enabled],
-    # An abosolute path to your application root.
+    # An absolute path to your application root.
     :app_path => "#{Dir.pwd}/.."
   )
   pod 'BitmovinPlayer', '3.9.2'
@@ -58,6 +62,11 @@ target 'RohTVApp-tvOS' do
 end
 
 post_install do |installer|
-  react_native_post_install(installer)
+  react_native_post_install(
+    installer,
+    # Set `mac_catalyst_enabled` to `true` in order to apply patches
+    # necessary for Mac Catalyst builds
+    :mac_catalyst_enabled => false
+  )
   __apply_Xcode_12_5_M1_post_install_workaround(installer)
 end

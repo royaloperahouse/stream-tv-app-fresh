@@ -53,6 +53,7 @@ const AboutProduction: React.FC<
       isMounted.current = false;
     };
   }, []);
+
   return (
     <View style={styles.generalContainer}>
       <View style={styles.upContainer}>
@@ -67,8 +68,8 @@ const AboutProduction: React.FC<
           <View style={styles.aboutTheProductionContainer}>
             <MultiColumnAboutProductionList
               id={prevScreenName}
-              data={aboutProduction}
-              columnWidth={scaleSize(740)}
+              data={aboutProduction.filter((item: any) => item.content)}
+              columnWidth={scaleSize(isTVOS ? 740 : 600)}
               columnHeight={scaleSize(770)}
               onReady={onContentReady}
             />

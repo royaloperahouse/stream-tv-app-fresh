@@ -26,6 +26,7 @@ export enum ECellItemKey {
   'genres' = 'genres',
   'sponsor' = 'sponsor',
   'language' = 'language',
+  'description' = 'description',
   'run_time' = 'run_time',
 }
 
@@ -85,7 +86,7 @@ const MultiColumnAboutProductionList: React.FC<
                     imageSizeCalc(
                       item.content.img.width,
                       item.content.img.height,
-                      columnWidth,
+                      columnWidth / 2,
                     ),
                   ]}
                   source={item.content.img.url}></RohImage>
@@ -283,6 +284,7 @@ const styles = StyleSheet.create({
   image: {
     zIndex: 0,
     marginTop: scaleSize(10),
+    marginBottom: scaleSize(20),
   },
 });
 

@@ -7,10 +7,10 @@ import {
   saveSearchResultQuery,
 } from '@services/store/events/Slices';
 import {
-  getEventById,
   getEventsLoadedStatusSelector,
   isEventExist,
   searchQuerySelector,
+  videoToEventMapSelector,
 } from '@services/store/events/Selectors';
 import { Task } from 'redux-saga';
 import {
@@ -27,6 +27,7 @@ import {
 import { logError } from '@utils/loger';
 import {
   getDigitalEventDetails,
+  getVideoDetails,
   getPrismicisedRails,
 } from '@services/prismicApiClient';
 import { addItemToPrevSearchList } from '@services/previousSearch';
@@ -52,18 +53,15 @@ import {
 } from '../auth/Slices';
 import { globalModalManager } from '@components/GlobalModals';
 import {
-  getCurrentRoute,
-  getCurrentState,
   getRootState,
   isNavigationReady,
   navigate,
-  replace,
-  resetEventDetailsScreenFromDeepLink,
-  resetStackCacheAndNavigate,
 } from 'navigations/navigationContainer';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import { navMenuManager } from 'components/NavMenu';
 import { isVideoAvailableByLocation } from "utils/checkVideoAvailAbilityByCountryCode";
+import { PrismicDocument } from "@prismicio/types";
+import { transformVideoDetails } from "utils/transformVideoDetails";
 
 export default function* eventRootSagas() {
   yield all([
@@ -108,11 +106,25 @@ function* deepLinkingFlowWatcher() {
   while (true) {
     const action: PayloadAction<{
       eventId: string | null;
+      queryParams?: {
+        playTrailer?: boolean;
+      };
       isRegularFlow?: boolean;
     }> = yield take([
       turnOffDeepLinkingFlow.toString(),
       turnOnDeepLinkingFlow.toString(),
     ]);
+
+    if (action.payload.eventId) {
+      let dieseEventId;
+      let queryParams;
+      if (action.payload.eventId.includes('?')) {
+        [dieseEventId, queryParams] = action.payload.eventId.split('?');
+        queryParams = new URLSearchParams(queryParams).entries();
+        action.payload.eventId = dieseEventId;
+        action.payload.queryParams = Object.fromEntries(queryParams);
+      }
+    }
     if (
       action.type === turnOffDeepLinkingFlow.toString() &&
       !action.payload.isRegularFlow
@@ -146,6 +158,7 @@ function* deepLinkingFlowWatcher() {
       action.payload.eventId !== null &&
       (!task || !task.isRunning())
     ) {
+      console.log(action.payload);
       task = yield fork(deepLinkingWorker, action);
       currentTaskName = action.type;
     }
@@ -163,12 +176,20 @@ function* regularFlowWorker(): any {
 }
 
 function* deepLinkingWorker(
-  action: PayloadAction<{ eventId: string | null }>,
+  action: PayloadAction<{
+    eventId: string | null;
+    queryParams?: { playTrailer?: boolean };
+  }>,
 ): any {
-  const { eventId } = action.payload;
+  const { eventId, queryParams } = action.payload;
   const eventsLoaded = yield select(getEventsLoadedStatusSelector);
+
   if (eventsLoaded) {
-    yield call(openEventByDeepLink, eventId);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    const prismicId = getPrismicEventIdByDieseId([eventId!])[eventId!];
+    yield call(openEventByDeepLink, prismicId, queryParams);
   }
 
   while (!eventsLoaded) {
@@ -176,13 +197,22 @@ function* deepLinkingWorker(
       yield delay(500);
       continue;
     }
-    yield call(openEventByDeepLink, eventId);
+    const getPrismicEventIdByDieseId: (
+      dieseVideoIds: string[],
+    ) => Record<string, string> = yield select(videoToEventMapSelector);
+    const prismicId = getPrismicEventIdByDieseId([eventId!])[eventId!];
+    yield call(openEventByDeepLink, prismicId, queryParams);
     break;
   }
   yield put(turnOffDeepLinkingFlow({ isRegularFlow: false }));
 }
 
-function* openEventByDeepLink(eventId: string | null): any {
+function* openEventByDeepLink(
+  eventId: string | null,
+  queryParams?: {
+    playTrailer?: boolean;
+  },
+): any {
   if (eventId && (yield select(isEventExist(eventId)))) {
     if (globalModalManager.isModalOpen()) {
       globalModalManager.closeModal();
@@ -218,6 +248,7 @@ function* openEventByDeepLink(eventId: string | null): any {
             screenNameFrom: contentScreenNames.home,
             sectionIndex: 0,
             selectedItemIndex: 0,
+            queryParams,
           },
         });
       } else {
@@ -229,6 +260,7 @@ function* openEventByDeepLink(eventId: string | null): any {
               screenNameFrom: contentScreenNames.home,
               sectionIndex: 0,
               selectedItemIndex: 0,
+              queryParams,
             },
           });
         });
@@ -257,7 +289,8 @@ function* openEventByDeepLink(eventId: string | null): any {
           });
         },
         title: 'Performance no longer available',
-        subtitle: 'Sorry, the performance you are looking for is no longer available.\nPlease return to the Explore page.',
+        subtitle:
+          'Sorry, the performance you are looking for is no longer available.\nPlease return to the Explore page.',
         fromDeepLink: true,
       },
     });
@@ -266,7 +299,7 @@ function* openEventByDeepLink(eventId: string | null): any {
 
 function* getEventListLoopWorker(): any {
   while (true) {
-    const result = [];
+    const result: any[] = [];
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
@@ -302,6 +335,38 @@ function* getEventListLoopWorker(): any {
       logError('something went wrong with prismic request', err);
     }
     if (result.length) {
+      const digitalEventVideosResponse: prismicT.Query<prismicT.PrismicDocument> =
+        yield call(getVideoDetails, { isProductionEnv });
+      if (digitalEventVideosResponse.total_pages !== digitalEventVideosResponse.page) {
+        const allVideosPageRequestResult: Array<
+          PromiseSettledResult<prismicT.Query<prismicT.PrismicDocument>>
+        > = yield call(
+          videoPromiseFill,
+          digitalEventVideosResponse.page + 1,
+          digitalEventVideosResponse.total_pages,
+          isProductionEnv,
+        );
+        digitalEventVideosResponse.results.push(
+          ...allVideosPageRequestResult.reduce<Array<any>>(
+            (
+              acc,
+              pageRequestsResult: PromiseSettledResult<
+                prismicT.Query<prismicT.PrismicDocument>
+              >,
+            ) => {
+              if (pageRequestsResult.status === 'fulfilled') {
+                acc.push(...pageRequestsResult.value.results);
+              }
+              return acc;
+            },
+            [],
+          ),
+        );
+      }
+      const transformedVideos = digitalEventVideosResponse.results.map(
+        transformVideoDetails,
+      );
+      result.push(...transformedVideos);
       let prismicisedRails: {
         exploreAllTrays: Array<TStreamHomePageRail>;
         operaAndMusicTopTrays: Array<TStreamHomePageRail>;
@@ -384,11 +449,26 @@ function eventPromiseFill(
   return Promise.allSettled(allPromises);
 }
 
+function videoPromiseFill(
+  from: number,
+  to: number,
+  isProductionEnv: boolean,
+): Promise<PromiseSettledResult<prismicT.Query<prismicT.PrismicDocument>>[]> {
+  const allPromises: Array<Promise<prismicT.Query<prismicT.PrismicDocument>>> = [];
+  for (let i = from; i <= to; i++) {
+    allPromises.push(
+      getVideoDetails({ queryOptions: {page: i }, isProductionEnv }),
+    );
+  }
+  return Promise.allSettled(allPromises);
+}
+
 function groupDigitalEvents(digitalEventsDetail: Array<any>): any {
   return digitalEventsDetail.reduce<any>(
     (acc, digitalEventDetail) => {
       acc.allDigitalEventsDetail[digitalEventDetail.id] = {
         id: digitalEventDetail.id,
+        type: digitalEventDetail.type,
         last_publication_date: digitalEventDetail.last_publication_date,
         data: {
           ...digitalEventDetail.data,
@@ -499,7 +579,8 @@ function filterPrismicisedRail(
         slice.slice_type === 'events_tray' &&
         slice.items.some(
           item =>
-            item?.element.type === 'digital_event_details' &&
+            (item?.element.type === 'digital_event_details' ||
+              item.element.type === 'digital_event_video') &&
             item?.element.isBroken !== true,
         ),
     )
@@ -509,7 +590,8 @@ function filterPrismicisedRail(
       ids: Array.from(
         slice.items.reduce((acc: any, item) => {
           if (
-            item?.element.type === 'digital_event_details' &&
+            (item?.element.type === 'digital_event_details' ||
+              item.element.type === 'digital_event_video') &&
             item?.element.isBroken !== true
           ) {
             acc.add(item.element.id);

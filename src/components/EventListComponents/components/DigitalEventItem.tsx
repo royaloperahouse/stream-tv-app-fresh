@@ -1,4 +1,4 @@
-import React, { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
@@ -84,10 +84,11 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     const touchableRef = useRef<TTouchableHighlightWrapperRef>();
     const isMounted = useRef(false);
     const [focused, setFocused] = useState(false);
+    const [shouldScroll, setShouldScroll] = useState(false);
     const timeoutId = useRef<NodeJS.Timeout | null>(null);
     const snapshotImageUrl: string = get(
       event.data,
-      ['vs_event_image', 'wide_event_image', 'url'],
+      ['vs_event_image', 'tv_app_rail_thumbnail', 'url'],
       '',
     );
     const eventTitle: string =
@@ -99,6 +100,8 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         /(<([^>]+)>)/gi,
         '',
       );
+    const availableFrom = get(event.data, ['vs_availability_date']);
+    const duration = get(event.data, ['vs_running_time_summary']);
 
     useLayoutEffect(() => {
       isMounted.current = true;
@@ -113,12 +116,28 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
 
     const onPressHandler = () => {
       navMenuManager.lockNavMenu();
+      if (event.type === 'digital_event_video') {
+        navMenuManager.hideNavMenu(() => {
+          navigation.navigate(contentScreenNames.eventVideo, {
+            videoId: event.id,
+            eventId: event.id,
+            screenNameFrom,
+            sectionIndex,
+            selectedItemIndex,
+            availableFrom: availableFrom ? availableFrom : null,
+          });
+        });
+        navMenuManager.unlockNavMenu();
+        return;
+      }
       navMenuManager.hideNavMenu(() => {
         navigation.navigate(contentScreenNames.eventDetails, {
           eventId: event.id,
           screenNameFrom,
           sectionIndex,
           selectedItemIndex,
+          availableFrom: availableFrom ? availableFrom : null,
+          duration,
         });
         navMenuManager.unlockNavMenu();
       });
@@ -145,7 +164,11 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         onFocus(touchableRef.current?.getRef?.().current);
       }
     };
-
+    useEffect(() => {
+      if (typeof onFocus === 'function' && shouldScroll) {
+        onFocus(sectionIndex, selectedItemIndex);
+      }
+    }, [shouldScroll]);
     useLayoutEffect(() => {
       if (
         sectionIndex === 0 &&
@@ -170,6 +193,9 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setRailItemRefCb,
       removeRailItemRefCb,
     ]);
+    if (hasTVPreferredFocus && !shouldScroll && !isTVOS && focused) {
+      setShouldScroll(true);
+    }
     return (
       <TouchableHighlightWrapper
         ref={touchableRef}

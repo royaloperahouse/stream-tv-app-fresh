@@ -78,6 +78,9 @@ import RohImage from 'components/RohImage';
 import { buildInfoForBitmovin, isTVOS } from '@configs/globalConfig';
 import { DummyPlayerScreenName } from '@components/Player/DummyPlayerScreen';
 import { navMenuManager } from 'components/NavMenu';
+import { navigate } from 'navigations/navigationContainer';
+import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
+import { formatDate } from 'utils/formatDate';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -90,6 +93,8 @@ const General: React.FC<
     )[route.name] || {};
   const {
     publishingDate,
+    availableFrom,
+    duration,
     title,
     shortDescription,
     snapshotImageUrl,
@@ -136,6 +141,7 @@ const General: React.FC<
   >(null);
   const generalMountedRef = useRef<boolean | undefined>(false);
   const addOrRemoveBusyRef = useRef<boolean>(true);
+  const playTrailer = useRef<boolean>(params.playTrailer);
   const watchNowButtonRef = useRef<TActionButtonListRef>(null);
   const customerId = useAppSelector(customerIdSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
@@ -446,6 +452,13 @@ const General: React.FC<
               globalModalManager.closeModal(() => {
                 closeModal(ref, clearLoadingState);
               });
+              navMenuManager.showNavMenu();
+              navigate(rootStackScreensNames.content, {
+                screen: contentScreenNames.home,
+                params: {
+                  fromErrorModal: true,
+                },
+              });
             },
             title:
               err instanceof NonSubscribedStatusError ||
@@ -648,6 +661,9 @@ const General: React.FC<
       Icon: Trailer,
     },
   ].filter(item => {
+    if (!!availableFrom && item.key === 'WatchNow') {
+      return false;
+    }
     if ((!performanceInfo || showCountDownTimer) && item.key === 'WatchNow') {
       return false;
     }
@@ -713,17 +729,24 @@ const General: React.FC<
     }, []),
   );
 
+  if (playTrailer.current) {
+    playTrailer.current = false;
+    getTrailerVideoUrl();
+  }
+
   return (
     <View style={styles.generalContainer}>
       <View style={styles.contentContainer}>
         <View style={styles.descriptionContainer}>
           <OverflowingContainer
-            fixedHeight
-            contentMaxVisibleHeight={scaleSize(368)}>
-            <RohText style={styles.title} numberOfLines={2}>
-              {title?.toUpperCase?.() || ''}
-            </RohText>
-            <RohText style={styles.description}>{shortDescription}</RohText>
+            fixedHeight={false}
+            contentMaxVisibleHeight={scaleSize(1000)}>
+            <View style={styles.titleContainer}>
+              <RohText style={styles.title} numberOfLines={isTVOS ? 4 : 3}>
+                {title?.toUpperCase() || ''}
+              </RohText>
+            </View>
+            <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
             {vs_guidance ? (
               <RohText style={styles.description}>{vs_guidance}</RohText>
             ) : null}
@@ -731,6 +754,14 @@ const General: React.FC<
               <RohText style={styles.description}>
                 {vs_guidance_details}
               </RohText>
+            ) : null}
+            {availableFrom ? (
+              <RohText style={styles.description}>
+                {`AVAILABLE FROM ${formatDate(new Date(availableFrom)).toUpperCase()}`}
+              </RohText>
+            ) : null}
+            {!availableFrom && !!duration ? (
+              <RohText style={styles.description}>{duration}</RohText>
             ) : null}
           </OverflowingContainer>
           {showCountDownTimer ? (
@@ -788,7 +819,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(230),
+    marginTop: scaleSize(isTVOS ? 120 : 230),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },
@@ -809,7 +840,6 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: scaleSize(48),
-    marginTop: scaleSize(24),
     marginBottom: scaleSize(24),
     textTransform: 'uppercase',
   },
@@ -822,6 +852,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: scaleSize(22),
     marginTop: scaleSize(12),
+    overflow: 'hidden',
   },
   info: {
     color: 'white',
@@ -832,13 +863,19 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     width: '100%',
     height: scaleSize(272),
-    marginTop: scaleSize(50),
+    marginTop: scaleSize(40),
   },
   guidanceContainer: {},
   guidanceSubTitle: {
     fontSize: scaleSize(26),
     color: Colors.defaultTextColor,
   },
+  titleContainer: isTVOS
+    ? {
+        justifyContent: 'flex-end',
+        minHeight: 300,
+      }
+    : {},
 });
 
 export default General;

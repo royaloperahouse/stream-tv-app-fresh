@@ -37,6 +37,7 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
           <RohText style={styles.regular}>2. Enter the code below:</RohText>
         </View>
         <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>
+        {/* TODO find a way to remove blink of Pin not found after log out */}
         <View style={styles.websiteContainer}>
           <RohText style={styles.regular}>3. Click 'Activate TV'</RohText>
           <View style={{flex: 1, flexDirection: 'row', maxWidth: '90%'}}>

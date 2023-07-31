@@ -87,16 +87,31 @@ export type TContentScreensParamList = {
     | undefined;
   [contentScreenNames.eventDetails]: {
     eventId: string;
+    availableFrom: string | null;
+    duration: string | null;
     screenNameFrom: TContentScreenReverseNames;
     sectionIndex: number;
     selectedItemIndex?: number;
+    queryParams?: {
+      playTrailer?: boolean;
+    };
   };
+  [contentScreenNames.eventVideo]: {
+    videoId: string;
+    eventId: string;
+    screenNameFrom: TContentScreenReverseNames;
+    sectionIndex: number;
+    selectedItemIndex?: number;
+    availableFrom: string | null;
+  }
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
 };
 
 export type TEventDetailsScreensParamContextProps = {
   [eventDetailsScreenNames.general]: {
+    duration: any;
+    availableFrom: string | null;
     nextSectionTitle?: string;
     publishingDate: string;
     title: string;
@@ -112,6 +127,7 @@ export type TEventDetailsScreensParamContextProps = {
     setPerformanceVideoTimePositionCB: (tyme: string) => void;
     videoQualityBitrate: number;
     videoQualityId: 'high' | 'medium' | 'normal';
+    playTrailer?: boolean;
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;
@@ -192,5 +208,6 @@ export declare namespace NSNavigationScreensNames {
       | typeof contentScreenNames.eventDetails
       | typeof contentScreenNames.exit
       | typeof contentScreenNames.liveStream
+      | typeof contentScreenNames.eventVideo
     > {}
 }

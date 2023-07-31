@@ -47,7 +47,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
     {
       rows = 6,
       cols = 6,
-      cellWidth = scaleSize(81),
+      cellWidth = scaleSize(82),
       cellHeight = scaleSize(81),
       onMountForNavMenuTransition,
       onMountToSearchKeybordTransition,
@@ -135,7 +135,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
         <View style={{ flex: 1 }}>
           <FlatList
             style={{
-              flex: 1,
+              flex: 0,
             }}
             data={keyboardData}
             keyExtractor={({ text }) => text}
@@ -156,7 +156,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
                 text={item.text}
                 canMoveDown={index <= cols * (rows - 1)}
                 onPress={addLetterToSearch}
-                style={{ width: cellWidth, height: cellHeight }}
+                style={{ width: cellWidth, height: cellHeight, paddingTop: scaleSize(10) }}
               />
             )}
           />

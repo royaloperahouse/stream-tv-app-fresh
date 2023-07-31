@@ -27,6 +27,7 @@ import type { TContentScreensProps } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
+import Placeholder from '@assets/image-placeholder-landscape.svg';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -150,16 +151,30 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
     useNavigation<TContentScreensProps<'Search'>['navigation']>();
   const [isFocused, setIsFocused] = useState(false);
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
+  const availableFrom = get(item.data, ['vs_availability_date']);
   const touchableHandler = () => {
+    if (item.type === 'digital_event_video') {
+      navMenuManager.hideNavMenu(() => {
+        navigation.navigate(contentScreenNames.eventVideo, {
+          videoId: item.id,
+          eventId: item.id,
+          screenNameFrom,
+          sectionIndex,
+          availableFrom: availableFrom ? availableFrom : null,
+        });
+      });
+      return;
+    }
     navMenuManager.hideNavMenu(() => {
       navigation.navigate(contentScreenNames.eventDetails, {
         eventId: item.id,
         screenNameFrom,
         sectionIndex,
+        availableFrom: availableFrom ? availableFrom : null,
+        duration: item.data.vs_running_time_summary,
       });
     });
   };
-
   const title: string =
     get(item.data, ['vs_title', '0', 'text'], '').replace(
       /(<([^>]+)>)/gi,
@@ -179,7 +194,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
 
   const imgUrl: string = get(
     item.data,
-    ['vs_event_image', 'wide_event_image', 'url'],
+    ['vs_event_image', 'tv_app_rail_thumbnail', 'url'],
     '',
   );
   const toggleFocus = () => setIsFocused(prevState => !prevState);
@@ -231,11 +246,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
             resizeMode={FastImage.resizeMode.cover}
           />
         ) : (
-          <Image
-            source={require('@assets/default_background.png')}
-            style={styles.imageStyle}
-            resizeMode="cover"
-          />
+          <Placeholder width={scaleSize(358)} height={scaleSize(200)} />
         )}
       </TouchableHighlightWrapper>
       <View
