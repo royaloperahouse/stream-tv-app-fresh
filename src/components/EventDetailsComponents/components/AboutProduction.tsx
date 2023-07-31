@@ -68,7 +68,7 @@ const AboutProduction: React.FC<
           <View style={styles.aboutTheProductionContainer}>
             <MultiColumnAboutProductionList
               id={prevScreenName}
-              data={aboutProduction}
+              data={aboutProduction.filter((item: any) => item.content)}
               columnWidth={scaleSize(isTVOS ? 740 : 600)}
               columnHeight={scaleSize(770)}
               onReady={onContentReady}

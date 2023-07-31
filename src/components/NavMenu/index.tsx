@@ -326,6 +326,14 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   useLayoutEffect(() => {
     const backButtonCallback = () => {
       if (navMenuIsLocked) {
+        navMenuManager.unlockNavMenu();
+        buttonsRefs?.current[
+          currenItemInFocus.current
+        ]?.current?.setNativeProps?.({
+          hasTVPreferredFocus: true,
+        });
+
+        navMenuWidth.value = widthWithFocus;
         return true;
       }
 
