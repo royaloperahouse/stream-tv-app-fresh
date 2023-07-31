@@ -412,7 +412,7 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */,
+				CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -1000,7 +1000,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 88;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1014,7 +1014,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.26;
+				MARKETING_VERSION = 3.0.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1047,7 +1047,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 88;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1060,7 +1060,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.26;
+				MARKETING_VERSION = 3.0.27;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1323,7 +1323,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */ = {
+		CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bitmovin/player-ios.git";
 			requirement = {
@@ -1336,7 +1336,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		CEA69F2D290827BD00D25D41 /* BitmovinPlayer */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios" */;
+			package = CEA69F2C290827BD00D25D41 /* XCRemoteSwiftPackageReference "player-ios.git" */;
 			productName = BitmovinPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
