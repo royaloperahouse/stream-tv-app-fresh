@@ -47,6 +47,7 @@ type TPlayerControlsProps = {
   ) => number;
   seekTo: (time: number) => void;
   videoInfo?: string;
+  isLiveStream?: boolean;
 };
 
 export type TPlayerControlsRef = {
@@ -76,6 +77,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       calculateTimeForSeeking,
       seekTo,
       videoInfo,
+      isLiveStream,
     } = props;
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
     const activeAnimation = useRef<Animated.Value>(
@@ -259,11 +261,17 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   (seekOperation.current === ESeekOperations.rewind ||
                     seekQueueuBusy.current === false)
                 ) {
+                  console.log('rwd if');
                   seekQueueuBusy.current = true;
                   countOfRewindClicks.current++;
                   seekOperation.current = ESeekOperations.rewind;
                   break;
                 }
+                console.log(eve.tag === centralControlsRef.current?.getRwdNode(), 'rwd node');
+                console.log(eve.tag === centralControlsRef.current?.getFwdNode(), 'fwd node');
+                console.log(seekUpdatingOnDevice.current === false, 'seek updating device === false');
+                console.log(seekOperation.current, 'seek operation');
+                console.log(seekQueueuBusy.current, 'seek queue');
                 break;
               }
               case 'fastForward': {
@@ -322,6 +330,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekOperation.current === ESeekOperations.fastForward
                 ) {
                   seekUpdatingOnDevice.current = true;
+                  console.log(1);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -348,6 +357,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekOperation.current === ESeekOperations.rewind
                 ) {
                   seekUpdatingOnDevice.current = true;
+                  console.log('here');
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -355,6 +365,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       : 1,
                     seekOperation.current,
                   );
+                  console.log(timeForSeeking);
                   if (timeForSeeking === -1) {
                     countOfRewindClicks.current = 0;
                     seekUpdatingOnDevice.current = false;
@@ -375,6 +386,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
+                  console.log(3);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -388,7 +400,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                     seekQueueuBusy.current = false;
                     break;
                   }
-
                   startPointForSeek.current = timeForSeeking;
                   progressBarRef.current?.setCurrentTime(timeForSeeking);
                   debouncedSeekToo(timeForSeeking);
@@ -402,6 +413,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
+                  console.log(4);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -569,7 +581,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               </RohText>
             )}
           </View>
-          <ProgressBar duration={duration} ref={progressBarRef} />
+          <ProgressBar duration={duration} isLiveStream={isLiveStream} ref={progressBarRef} />
           <View style={styles.controlContainer}>
             <CentralControls
               onPausePress={onPausePress}
@@ -618,10 +630,10 @@ export default PlayerControls;
 type TProgressBarRef = {
   setCurrentTime?: (time: number) => void;
 };
-type TProgressBarProps = { duration: number };
+type TProgressBarProps = { duration: number, isLiveStream?: boolean };
 
 const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
-  ({ duration }, ref) => {
+  ({ duration, isLiveStream }, ref) => {
     const [currentTime, setCurrentTime] = useState<number>(0.0);
     const progressBarMountedRef = useRef<boolean>(false);
     useImperativeHandle(
@@ -646,9 +658,12 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
     }, []);
     return (
       <View style={styles.progressContainer}>
-        <RohText style={styles.currentTime}>
-          {getTimeFormat(currentTime)}
-        </RohText>
+        <View>
+          <RohText style={styles.currentTime}>
+            {getTimeFormat(currentTime)}
+          </RohText>
+          {isLiveStream && <RohText style={styles.liveLabel}>LIVE</RohText>}
+        </View>
         <View style={styles.progressBar}>
           <View
             style={[
@@ -1025,6 +1040,17 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(24),
     textTransform: 'uppercase',
     color: Colors.defaultTextColor,
+  },
+  liveLabel: {
+    backgroundColor: 'red',
+    color: 'white',
+    borderRadius: 15,
+    textAlign: 'center',
+    fontSize: scaleSize(24),
+    width: scaleSize(85),
+    position: 'absolute',
+    top: 20,
+    left: 5,
   },
   duration: {
     fontSize: scaleSize(24),

@@ -13,6 +13,7 @@ interface AuthState {
   fullSubscriptionUpdateDate: string;
   userEmail: string;
   isDeepLinkingFlow: boolean;
+  countryCode: string;
 }
 
 const initialState: AuthState = {
@@ -27,6 +28,7 @@ const initialState: AuthState = {
   fullSubscriptionUpdateDate: '',
   userEmail: '',
   isDeepLinkingFlow: false,
+  countryCode: '',
 };
 
 const defaultPinError =
@@ -71,6 +73,7 @@ const appSlice = createSlice({
             customerId: AuthState['customerId'];
             deviceId: AuthState['devicePin'];
             email: AuthState['userEmail'];
+            countryCode: AuthState['countryCode'];
           };
         };
       }>,
@@ -84,6 +87,7 @@ const appSlice = createSlice({
       state.errorString = '';
       state.userEmail = payload.data.attributes.email;
       state.isLoaded = true;
+      state.countryCode = payload.data.attributes.countryCode;
     },
     checkDeviceError: (
       state,

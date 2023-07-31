@@ -41,7 +41,11 @@ import {
   rootStackScreensNames,
 } from '@services/types/models';
 import { isProductionEvironmentSelector } from '../settings/Selectors';
-import { customerIdSelector, introScreenShowSelector } from '../auth/Selectors';
+import {
+  countryCodeSelector,
+  customerIdSelector,
+  introScreenShowSelector,
+} from '../auth/Selectors';
 import {
   switchOffIntroScreen,
   turnOffDeepLinkingFlow,
@@ -55,6 +59,7 @@ import {
 } from 'navigations/navigationContainer';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import { navMenuManager } from 'components/NavMenu';
+import { isVideoAvailableByLocation } from "utils/checkVideoAvailAbilityByCountryCode";
 import { PrismicDocument } from "@prismicio/types";
 import { transformVideoDetails } from "utils/transformVideoDetails";
 
@@ -298,7 +303,7 @@ function* getEventListLoopWorker(): any {
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
-        yield call(getDigitalEventDetails, { isProductionEnv });
+        yield call(getDigitalEventDetails, { isProductionEnv, queryOptions: { fetchLinks: 'digital_event_video.video'} });
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -386,7 +391,24 @@ function* getEventListLoopWorker(): any {
       } catch (err: any) {
         logError('something went wrong with PrismicisedRails request', err);
       }
-      const resultForDigitalEventsDetailUpdate = groupDigitalEvents(result);
+      const countryCode = yield select(countryCodeSelector);
+      const filtered = result.filter((prismicDocument) => {
+        const digitalEventVideos = prismicDocument.data.vs_videos;
+        return digitalEventVideos.some(digitalEventVideo => {
+          if (!digitalEventVideo?.video?.data?.video) {
+            return true;
+          }
+          if (digitalEventVideo.video.data.video.asset_type === 'live') {
+            return isVideoAvailableByLocation(
+              digitalEventVideo.video.data.video,
+              countryCode,
+            );
+          }
+          return true;
+        });
+      });
+
+      const resultForDigitalEventsDetailUpdate = groupDigitalEvents(filtered);
       yield put(
         getEventListSuccess({
           digitalEventDetailsList: {
@@ -421,7 +443,7 @@ function eventPromiseFill(
     [];
   for (let i = from; i <= to; i++) {
     allPromises.push(
-      getDigitalEventDetails({ queryOptions: { page: i }, isProductionEnv }),
+      getDigitalEventDetails({ queryOptions: { page: i, fetchLinks: 'digital_event_video.video' }, isProductionEnv }),
     );
   }
   return Promise.allSettled(allPromises);

@@ -6,6 +6,7 @@ import {
   homePageWhiteList,
   currentRentalsRailTitle,
   availableToRentRailTitle,
+  liveStreamWhiteList,
 } from '@configs/eventListScreensConfig';
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
 import difference from 'lodash.difference';
@@ -220,6 +221,115 @@ export const digitalEventsForBalletAndDanceSelector = (store: TRootState) => {
     data: [...balletAndDanceTopTrays, ...balletAndDanceBottomTrays],
     eventsLoaded: store.events.eventsLoaded,
   };
+};
+
+export const digitalEventsForLiveStreamSelector = (store: TRootState) => {
+  const eventGroupsArray = Object.entries<{
+    title: string;
+    ids: Array<string>;
+  }>(store.events.eventGroups).filter(([key]) => key in homePageWhiteList);
+  const combinedExploreAllTraysAndPropositionPage: Array<
+    [string, { title: string; ids: Array<string> }]
+  > = [];
+  for (let i = 0; i < store.events.exploreAllTrays.length; i++) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.exploreAllTrays[i].isVisible === false
+    ) {
+      continue;
+    }
+    combinedExploreAllTraysAndPropositionPage.push([
+      '',
+      {
+        title: store.events.exploreAllTrays[i].title || '',
+        ids: store.events.exploreAllTrays[i].ids,
+      },
+    ]);
+  }
+  for (let i = 0; i < store.events.propositionPageElements.length; i++) {
+    if (
+      store.events.showOnlyVisisbleEvents &&
+      store.events.propositionPageElements[i].isVisible === false
+    ) {
+      continue;
+    }
+
+    const existingTitleIndex =
+      combinedExploreAllTraysAndPropositionPage.findIndex(
+        item => item[1].title === store.events.propositionPageElements[i].title,
+      );
+
+    if (existingTitleIndex > -1) {
+      console.log();
+      const concatenatedIds = [
+        ...combinedExploreAllTraysAndPropositionPage[existingTitleIndex][1].ids,
+        ...store.events.propositionPageElements[i].ids,
+      ];
+      combinedExploreAllTraysAndPropositionPage[existingTitleIndex][1].ids =
+        concatenatedIds.filter(
+          (item, pos) => concatenatedIds.indexOf(item) === pos,
+        );
+      continue;
+    }
+    combinedExploreAllTraysAndPropositionPage.push([
+      '',
+      {
+        title: store.events.propositionPageElements[i].title || '',
+        ids: store.events.propositionPageElements[i].ids,
+      },
+    ]);
+  }
+  eventGroupsArray.unshift(...combinedExploreAllTraysAndPropositionPage);
+
+  if (eventGroupsArray.length) {
+    if (store.auth.fullSubscription) {
+      eventGroupsArray.unshift([
+        '',
+        { title: currentRentalsRailTitle, ids: store.events.ppvEventsIds },
+      ]);
+      eventGroupsArray.unshift([
+        '',
+        {
+          title: availableToRentRailTitle,
+          ids: difference(
+            store.events.availablePPVEventsIds,
+            store.events.ppvEventsIds,
+          ),
+        },
+      ]);
+    }
+  }
+
+  const eventSections = eventGroupsArray.reduce<
+    Array<{
+      sectionIndex: number;
+      title: string;
+      data: Array<TEventContainer>;
+    }>
+  >((acc, [_, groupInfo], index) => {
+    const rail = {
+      sectionIndex: index,
+      title: groupInfo.title,
+      data: groupInfo.ids.reduce<Array<TEventContainer>>((accEvents, id) => {
+        if (id in store.events.allDigitalEventsDetail) {
+          if (
+            store.events.allDigitalEventsDetail[id].data.vs_videos.some(
+              item => item?.video?.data?.video?.asset_type === 'live',
+            )
+          ) {
+            accEvents.push(store.events.allDigitalEventsDetail[id]);
+          }
+        }
+        return accEvents;
+      }, []),
+    };
+    if (rail.data.length) {
+      acc.push(rail);
+    }
+    return acc;
+  }, []);
+
+  return { data: eventSections, eventsLoaded: store.events.eventsLoaded };
 };
 
 export const digitalEventsForOperaAndMusicSelector = (store: TRootState) => {

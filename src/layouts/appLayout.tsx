@@ -107,6 +107,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
     verifyDevice(isProductionEnv)
       .then(response => {
         if (response?.data?.data?.attributes?.customerId) {
+          response.data.data.attributes.countryCode = response.headers['x-country-code'];
           dispatch(checkDeviceSuccess(response.data));
           return true;
         } else if (response?.data?.errors?.length) {

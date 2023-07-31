@@ -114,13 +114,25 @@ const General: React.FC<
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
   const goDownRef = useRef<TGoDownRef>(null);
-
+  const timezoneOffset = new Date().getTimezoneOffset();
+  const startDateReactNative = performanceInfo.startDate
+    ? new Date(
+        parseInt(performanceInfo.startDate.slice(0, 4), 10),
+        parseInt(performanceInfo.startDate.slice(5, 7), 10) - 1,
+        parseInt(performanceInfo.startDate.slice(8, 10), 10),
+        parseInt(performanceInfo.startDate.slice(11, 13), 10) -
+          timezoneOffset / 60,
+        parseInt(performanceInfo.startDate.slice(14, 16), 10),
+        parseInt(performanceInfo.startDate.slice(17, 19), 10),
+        0,
+      )
+    : 0;
   const showCountDownTimer =
-    publishingDate &&
+    performanceInfo.startDate &&
     isFocused &&
     !closeCountDown &&
-    isValid(new Date(publishingDate)) &&
-    isAfter(new Date(publishingDate), new Date());
+    isValid(new Date(startDateReactNative)) &&
+    isAfter(new Date(startDateReactNative), new Date());
   const performanceVideoInFocus = useRef<
     { pressingHandler: () => void } | null | undefined
   >(null);
@@ -214,6 +226,9 @@ const General: React.FC<
       guidanceDetails = [],
       videoQualityBitrate = -1,
       showVideoInfo,
+      startDate,
+      endDate,
+      isLiveStream,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       if (isTVOS) {
@@ -236,6 +251,9 @@ const General: React.FC<
           guidanceDetails,
           videoQualityBitrate,
           showVideoInfo,
+          isLiveStream,
+          startDate,
+          endDate,
         },
       });
     },
@@ -302,7 +320,7 @@ const General: React.FC<
 
         const manifestInfo = await fetchVideoURL(
           videoFromPrismic.videoId,
-          isProductionEnv,
+          isProductionEnv, // set to false if on staging
         );
         if (!manifestInfo?.data?.data?.attributes?.hlsManifestUrl) {
           throw new Error('Something went wrong');
@@ -312,7 +330,10 @@ const General: React.FC<
         if (performanceVideoTimePosition) {
           const fromTime = new Date(0);
           const intPosition = parseInt(performanceVideoTimePosition);
-          const rolledBackPos = intPosition - resumeRollbackTime;
+          let rolledBackPos = intPosition - resumeRollbackTime;
+          if (performanceInfo.startDate && !performanceInfo.endDate) {
+            rolledBackPos = 0;
+          }
           fromTime.setSeconds(intPosition);
           globalModalManager.openModal({
             contentComponent: СontinueWatchingModal,
@@ -320,6 +341,9 @@ const General: React.FC<
               confirmActionHandler: () => {
                 openPlayer({
                   url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  isLiveStream: performanceInfo.isLiveStream,
+                  startDate: performanceInfo.startDate,
+                  endDate: performanceInfo.endDate,
                   poster:
                     'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
                   offset: rolledBackPos.toString(),
@@ -349,6 +373,9 @@ const General: React.FC<
               rejectActionHandler: () => {
                 openPlayer({
                   url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  isLiveStream: performanceInfo.isLiveStream,
+                  startDate: performanceInfo.startDate,
+                  endDate: performanceInfo.endDate,
                   poster:
                     'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
                   title: videoTitle,
@@ -387,6 +414,9 @@ const General: React.FC<
         }
         openPlayer({
           url: manifestInfo.data.data.attributes.hlsManifestUrl,
+          isLiveStream: performanceInfo.isLiveStream,
+          startDate: performanceInfo.startDate,
+          endDate: performanceInfo.endDate,
           poster:
             'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
           title: videoTitle,
@@ -736,7 +766,7 @@ const General: React.FC<
           </OverflowingContainer>
           {showCountDownTimer ? (
             <CountDown
-              publishingDate={publishingDate}
+              publishingDate={startDateReactNative}
               finishCB={() => {
                 setCloseCountDown(true);
               }}

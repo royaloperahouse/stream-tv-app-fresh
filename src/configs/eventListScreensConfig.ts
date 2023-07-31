@@ -7,6 +7,11 @@ export const operaAndMusicWhiteList = Object.freeze({
   [operaAndMusic]: operaAndMusic,
 });
 
+export const liveStreamWhiteList = Object.freeze({
+  [operaAndMusic]: operaAndMusic,
+  [balletAndDance]: balletAndDance,
+});
+
 export const balletAndDanceWhiteList = Object.freeze({
   [balletAndDance]: balletAndDance,
 });

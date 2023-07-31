@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.content.Context;
 
 import android.view.View;
-
 import com.bitmovin.player.PlayerView;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -69,13 +68,22 @@ public class ROHBitMovinPlayerModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void seek(int tag, double time) {
     View playerContainerView = getCurrentActivity().findViewById(tag);
-
     if (playerContainerView instanceof PlayerContainerView) {
       ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().seek(time);
     } else {
       throw new ClassCastException(String.format("Cannot seek: view with tag #%d is not a ROHBitMovinPlayer", tag));
     }
   }
+
+  @ReactMethod
+    public void timeShift(int tag, double time) {
+      View playerContainerView = getCurrentActivity().findViewById(tag);
+      if (playerContainerView instanceof PlayerContainerView) {
+        ((PlayerContainerView) playerContainerView).getPlayerView().getPlayer().timeShift(time);
+      } else {
+        throw new ClassCastException(String.format("Cannot seek: view with timeShift #%d is not a ROHBitMovinPlayer", tag));
+      }
+    }
 
   @ReactMethod
   public void getCurrentTime(int tag, Promise promise) {
