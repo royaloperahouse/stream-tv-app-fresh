@@ -303,7 +303,7 @@ function* getEventListLoopWorker(): any {
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
-        yield call(getDigitalEventDetails, { isProductionEnv, queryOptions: { fetchLinks: 'digital_event_video.video'} });
+        yield call(getDigitalEventDetails, { isProductionEnv, queryOptions: { fetchLinks: 'digital_event_video.video,digital_event_video.start_time'} });
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -397,6 +397,9 @@ function* getEventListLoopWorker(): any {
         return digitalEventVideos.some(digitalEventVideo => {
           if (!digitalEventVideo?.video?.data?.video) {
             return true;
+          }
+          if (digitalEventVideo.video.data.start_time) {
+            prismicDocument.data.start_time = digitalEventVideo.video.data.start_time;
           }
           if (digitalEventVideo.video.data.video.asset_type === 'live') {
             return isVideoAvailableByLocation(

@@ -16,6 +16,9 @@ import { OverflowingContainer } from '@components/OverflowingContainer';
 import RohImage from 'components/RohImage';
 import { isTVOS } from 'configs/globalConfig';
 import { formatDate } from 'utils/formatDate';
+import isValid from 'date-fns/isValid';
+import isAfter from 'date-fns/isAfter';
+import CountDown from 'components/EventDetailsComponents/commonControls/CountDown';
 
 export type TPreviewRef = {
   setDigitalEvent?: (
@@ -31,6 +34,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   const fadeAnimation = useRef<Animated.Value>(new Animated.Value(0)).current;
   const mountedRef = useRef<boolean>(false);
   const [event, setEvent] = useState<TEvent | null>(null);
+  const [closeCountDown, setCloseCountDown] = useState(false);
   const [eventGroupTitle, setEventGroupTitle] = useState<string>('');
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
   useImperativeHandle(
@@ -95,6 +99,25 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   if (!event) {
     return null;
   }
+
+  const timezoneOffset = new Date().getTimezoneOffset();
+  const startDateReactNative = event.start_time
+    ? new Date(
+        parseInt(event.start_time.slice(0, 4), 10),
+        parseInt(event.start_time.slice(5, 7), 10) - 1,
+        parseInt(event.start_time.slice(8, 10), 10),
+        parseInt(event.start_time.slice(11, 13), 10) - timezoneOffset / 60,
+        parseInt(event.start_time.slice(14, 16), 10),
+        parseInt(event.start_time.slice(17, 19), 10),
+        0,
+      )
+    : 0;
+
+  const showCountDownTimer =
+    event.start_time &&
+    !closeCountDown &&
+    isValid(new Date(startDateReactNative)) &&
+    isAfter(new Date(startDateReactNative), new Date());
   return (
     <Animated.View
       style={[styles.previewContainer, { opacity: fadeAnimation }]}>
@@ -114,7 +137,13 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
             </RohText>
           ) : null}
           <RohText style={styles.description}>{shortDescription}</RohText>
-          {availableFrom ? (
+          {showCountDownTimer ?
+            <CountDown
+              publishingDate={startDateReactNative}
+              finishCB={() => {
+                setCloseCountDown(true);
+              }}
+            /> : availableFrom ? (
             <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formatDate(
               new Date(availableFrom),
             ).toUpperCase()}`}</RohText>

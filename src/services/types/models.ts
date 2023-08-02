@@ -110,6 +110,7 @@ export type TEvent = {
   vs_short_description: Array<TVSDescription>;
   vs_synopsis: Array<TVSSynops>;
   vs_sponsors: Array<TVSSponsor>;
+  start_time?: string;
 };
 
 export type TVSTitle = {
