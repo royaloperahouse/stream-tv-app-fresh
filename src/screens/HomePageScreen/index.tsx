@@ -176,7 +176,6 @@ const HomePageScreen: React.FC<
     isLoading.current = false;
   }
 
-  console.log(isLoading, 'isLoading');
   return (
     <>
       {isLoading.current ? (
