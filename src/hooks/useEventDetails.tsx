@@ -717,10 +717,8 @@ const useGetExtras = (
           setVideosInfo([]);
         }
       } finally {
-        if (isActive()) {
-          loaded.current = true;
-          setLoading(false);
-        }
+        loaded.current = true;
+        setLoading(false);
       }
     },
     [isProduction, videos, eventId],

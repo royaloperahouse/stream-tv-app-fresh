@@ -27,6 +27,7 @@ import SubtitlesItem from './SubtitlesItem';
 import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
+import { isTVOS } from 'configs/globalConfig';
 
 type TPlayerControlsProps = {
   duration: number;
@@ -47,6 +48,8 @@ type TPlayerControlsProps = {
   ) => number;
   seekTo: (time: number) => void;
   videoInfo?: string;
+  guidance?: string;
+  guidanceDetails?: string;
   isLiveStream?: boolean;
 };
 
@@ -77,6 +80,8 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       calculateTimeForSeeking,
       seekTo,
       videoInfo,
+      guidance,
+      guidanceDetails,
       isLiveStream,
     } = props;
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
@@ -147,7 +152,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
             startPointForSeek.current = time;
             progressBarRef.current?.setCurrentTime(time);
           } else if (timeForSeeking !== -1) {
-            progressBarRef.current?.setCurrentTime(timeForSeeking);
+            // progressBarRef.current?.setCurrentTime(timeForSeeking);
           }
         },
         setPlay: (play: boolean) => {
@@ -241,7 +246,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           if (eve?.eventType === 'blur' || eve?.eventType === 'focus') {
             return;
           }
-          if (eve?.eventKeyAction === 1) {
+          if (eve?.eventKeyAction === 1 || isTVOS) {
             switch (eve.eventType) {
               case 'select': {
                 if (
@@ -261,17 +266,11 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   (seekOperation.current === ESeekOperations.rewind ||
                     seekQueueuBusy.current === false)
                 ) {
-                  console.log('rwd if');
                   seekQueueuBusy.current = true;
                   countOfRewindClicks.current++;
                   seekOperation.current = ESeekOperations.rewind;
                   break;
                 }
-                console.log(eve.tag === centralControlsRef.current?.getRwdNode(), 'rwd node');
-                console.log(eve.tag === centralControlsRef.current?.getFwdNode(), 'fwd node');
-                console.log(seekUpdatingOnDevice.current === false, 'seek updating device === false');
-                console.log(seekOperation.current, 'seek operation');
-                console.log(seekQueueuBusy.current, 'seek queue');
                 break;
               }
               case 'fastForward': {
@@ -305,7 +304,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
             }
           }
 
-          if (eve?.eventKeyAction === 1) {
+          if (eve?.eventKeyAction === 1 || isTVOS) {
             switch (eve.eventType) {
               case 'select': {
                 // <---fast forward logic--->
@@ -330,7 +329,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekOperation.current === ESeekOperations.fastForward
                 ) {
                   seekUpdatingOnDevice.current = true;
-                  console.log(1);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -357,7 +355,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   seekOperation.current === ESeekOperations.rewind
                 ) {
                   seekUpdatingOnDevice.current = true;
-                  console.log('here');
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -365,7 +362,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                       : 1,
                     seekOperation.current,
                   );
-                  console.log(timeForSeeking);
                   if (timeForSeeking === -1) {
                     countOfRewindClicks.current = 0;
                     seekUpdatingOnDevice.current = false;
@@ -386,7 +382,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
-                  console.log(3);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -413,7 +408,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                   // <---fast forward logic--->
 
                   seekUpdatingOnDevice.current = true;
-                  console.log(4);
                   const timeForSeeking: number = calculateTimeForSeeking(
                     startPointForSeek.current,
                     fastForwardClickStack.current > 5
@@ -446,7 +440,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
                 break;
             }
           }
-          if (eve?.eventKeyAction === 1) {
+          if (eve?.eventKeyAction === 1 || isTVOS) {
             Animated.timing(activeAnimation, {
               toValue: 1,
               useNativeDriver: true,
@@ -565,6 +559,27 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               </View>
             )}
           </View>
+          {guidance ? (
+            <View style={styles.guidanceContainer}>
+              <RohText
+                style={styles.guidanceTitle}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                guidance
+              </RohText>
+              <RohText
+                style={styles.guidanceSubTitle}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {guidance}
+              </RohText>
+              {guidanceDetails ? (
+                <RohText style={styles.guidanceSubTitle}>
+                  {guidanceDetails}
+                </RohText>
+              ) : null}
+            </View>
+          ) : null}
           <View style={styles.titleContainer}>
             <RohText
               style={styles.title}
@@ -1113,6 +1128,22 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(16),
     marginBottom: scaleSize(12),
     alignItems: 'center',
+  },
+  guidanceContainer: {
+    position: 'absolute',
+    backgroundColor: 'black',
+    opacity: 0.7,
+    top: scaleSize(130),
+    left: 0,
+  },
+  guidanceTitle: {
+    fontSize: scaleSize(26),
+    textTransform: 'uppercase',
+    color: Colors.defaultTextColor,
+  },
+  guidanceSubTitle: {
+    fontSize: scaleSize(26),
+    color: Colors.defaultTextColor,
   },
   subtitleCueContainer: {
     position: 'absolute',

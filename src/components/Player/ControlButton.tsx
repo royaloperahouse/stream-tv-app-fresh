@@ -41,7 +41,7 @@ const ControlButton = forwardRef<any, Props>((props, ref) => {
     nextFocusDown,
     nextFocusUp,
     nextFocusLeft,
-    nextFocusRight
+    nextFocusRight,
   } = props;
   const onFocusHandler = () => {
     setFocus(true);
