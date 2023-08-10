@@ -43,12 +43,6 @@
 		CE51C10D292E48EA00821DE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */; };
 		CE51C10E292E48EA00821DE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */; };
 		CEA69F2E290827BD00D25D41 /* BitmovinPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = CEA69F2D290827BD00D25D41 /* BitmovinPlayer */; };
-		CEA69F382908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */; };
-		CEA69F392908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */; };
-		CEA69F3B290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */; };
-		CEA69F3C290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */; };
-		CEA69F40290834AF00D25D41 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3F290834AF00D25D41 /* ViewController.swift */; };
-		CEA69F41290834AF00D25D41 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F3F290834AF00D25D41 /* ViewController.swift */; };
 		CEA69F44291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
 		CEA69F45291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
 		E2049B88503A2D87C8698EF6 /* libPods-RohTVApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CE3B90E112408F0518A080 /* libPods-RohTVApp.a */; };
@@ -110,9 +104,6 @@
 		CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEA69F352908312F00D25D41 /* RohTVApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		CEA69F362908312F00D25D41 /* RohTVApp-tvOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RohTVApp-tvOS-Bridging-Header.h"; sourceTree = "<group>"; };
-		CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ROHBitMovinPlayer.swift; sourceTree = "<group>"; };
-		CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ROHBitMovinPlayer.m; sourceTree = "<group>"; };
-		CEA69F3F290834AF00D25D41 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CEA69F42291A669C00D25D41 /* RCTExitApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTExitApp.h; sourceTree = "<group>"; };
 		CEA69F43291A696000D25D41 /* RCTExitApp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTExitApp.m; sourceTree = "<group>"; };
 		DCAE814AFC974243A17983F9 /* GothamSSm-BookItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BookItalic.otf"; path = "../src/assets/fonts/GothamSSm-BookItalic.otf"; sourceTree = "<group>"; };
@@ -239,9 +230,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				CEA69F3F290834AF00D25D41 /* ViewController.swift */,
-				CEA69F3A290833D300D25D41 /* ROHBitMovinPlayer.m */,
-				CEA69F372908313000D25D41 /* ROHBitMovinPlayer.swift */,
 				13B07FAE1A68108700A75B9A /* RohTVApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* RohTVAppTests */,
@@ -813,9 +801,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEA69F40290834AF00D25D41 /* ViewController.swift in Sources */,
-				CEA69F3B290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */,
-				CEA69F382908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */,
 				CEA69F44291A696000D25D41 /* RCTExitApp.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
@@ -826,9 +811,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEA69F41290834AF00D25D41 /* ViewController.swift in Sources */,
-				CEA69F3C290833D300D25D41 /* ROHBitMovinPlayer.m in Sources */,
-				CEA69F392908313000D25D41 /* ROHBitMovinPlayer.swift in Sources */,
 				CEA69F45291A696000D25D41 /* RCTExitApp.m in Sources */,
 				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.mm in Sources */,
@@ -863,7 +845,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06931C340F15197CFA5BEBBE /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEVELOPMENT_TEAM = Z2YKRWBZA9;
@@ -893,7 +874,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B7104377A5D72624D810C611 /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
@@ -1081,7 +1061,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E8891750AE2DFBD87A5BDB74 /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1114,7 +1093,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3BDF8C4CCF278F944E8C6CBF /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;

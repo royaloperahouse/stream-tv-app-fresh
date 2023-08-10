@@ -1,121 +1,30 @@
-import React, {
-  useLayoutEffect,
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  CdnProvider,
+  PlayerView,
+  SourceType,
+  usePlayer,
+  VideoPlaybackQualityChangedEvent,
+} from 'bitmovin-player-react-native';
+import {
+  AppState,
+  AppStateStatus,
+  BackHandler,
   SafeAreaView,
   StyleSheet,
-  requireNativeComponent,
-  NativeModules,
-  findNodeHandle,
-  NativeEventEmitter,
-  Platform,
-  HostComponent,
-  ViewProps,
-  AppStateStatus,
-  AppState,
   View,
-  BackHandler,
+  ViewProps,
 } from 'react-native';
-import PlayerControls, { TPlayerControlsRef } from './PlayerControls';
-import {
-  TBitmoviPlayerNativeProps,
-  TBMPlayerErrorObject,
-} from '@services/types/bitmovinPlayer';
+import { TBMPlayerErrorObject } from 'services/types/bitmovinPlayer';
+import PlayerControls, {
+  TPlayerControlsRef,
+} from 'components/Player/PlayerControls';
+import RohText from 'components/RohText';
+import { scaleSize } from 'utils/scaleSize';
+import { Colors } from 'themes/Styleguide';
+import { ESeekOperations } from 'configs/bitMovinPlayerConfig';
 
-import { scaleSize } from '@utils/scaleSize';
-import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
-import RohText from '@components/RohText';
-import { Colors } from '@themes/Styleguide';
-import { setIn } from "timm";
-
-const NativeBitMovinPlayer: HostComponent<TBitmoviPlayerNativeProps> =
-  requireNativeComponent('ROHBitMovinPlayer');
-
-const ROHBitmovinPlayerModule = NativeModules.ROHBitMovinPlayerControl;
-
-const eventEmitter = new NativeEventEmitter(NativeModules.ROHBitMovinPlayer);
-
-type TCallbackFunc = (data?: any) => void;
-
-type TOnLoadPayload = {
-  message: 'load';
-  duration: string;
-};
-type TOnVideoPlaybackQualityChanged = {
-  message: 'videoPlaybackQualityChanged';
-  newVideoPlaybackQuality: {
-    id: string;
-    codec: string;
-    label: string;
-    bitrate: string;
-    frameRate: string;
-    width: string;
-    height: string;
-  };
-  oldVideoPlaybackQuality?: {
-    id: string;
-    codec: string;
-    label: string;
-    bitrate: string;
-    frameRate: string;
-    width: string;
-    height: string;
-  } | null;
-};
-
-type TOnReadyPayload = {
-  message: 'ready';
-  duration: string;
-  subtitles: Array<{ url: string; id: string; label: string }>;
-  availableVideoQualities: Array<{
-    id: string;
-    label: string;
-    bitrate: string;
-    codec: string;
-    frameRate: string;
-  }>;
-  selectedVideoQuality: {
-    id: string;
-    label: string;
-    bitrate: string;
-    codec: string;
-    frameRate: string;
-  };
-};
-
-type TOnPlayPayload = {
-  message: 'play';
-  duration: string;
-  time: string;
-};
-
-type TOnPausePayload = {
-  message: 'pause';
-  duration: string;
-  time: string;
-};
-
-type TOnTimeChangedPayload = {
-  message: 'timeChanged';
-  duration: string;
-  time: string;
-};
-
-type TOnSeekPayload = {
-  message: 'seek' | 'seeked';
-  duration: string;
-  time: string;
-};
-
-type TOnDestoyPayload = {
-  message: 'seek';
-  duration: string;
-  time: string;
-};
+const BITMOVIN_ANALYTICS_KEY = '45a0bac7-b900-4a0f-9d87-41a120744160';
 
 export type TPlayerProps = {
   autoPlay?: boolean;
@@ -129,6 +38,8 @@ export type TPlayerProps = {
   seekingTimePoint?: number;
   onClose?: (error: TBMPlayerErrorObject | null, stoppedTime: string) => void;
   showVideoInfo?: boolean;
+  startDate?: string;
+  endDate?: string;
   configuration: {
     url: string;
     poster?: string;
@@ -162,40 +73,43 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       ...props.analytics,
     },
   };
-  const {
-    onEvent,
-    onClose,
-    title,
-    subtitle = '',
-    configuration,
-    analytics,
-    autoPlay = false,
-    seekingTimePoint = 10.0,
-    guidance,
-    guidanceDetails,
-    videoQualityBitrate,
-    showVideoInfo,
-    isLiveStream,
-    endDate,
-    startDate,
-  } = cloneProps;
 
-  const playerRef = useRef<typeof NativeBitMovinPlayer | null>(null);
-  const controlRef = useRef<TPlayerControlsRef | null>(null);
-  const playerError = useRef<TBMPlayerErrorObject | null>(null);
-  const [videoInfo, setVideoInfo] = useState<string>();
-  const [playerReady, setReady] = useState(false);
-  const [continueShowingGuidance, setContinueShowingGuidance] = useState(false);
+  const { analytics, configuration } = cloneProps;
+  const player = usePlayer({
+    styleConfig: {
+      isUiEnabled: false,
+    },
+    analyticsConfig: {
+      key: BITMOVIN_ANALYTICS_KEY,
+      videoId: analytics.videoId || '',
+      customUserId: analytics.userId || '',
+      title: analytics.title || '',
+      cdnProvider: CdnProvider.BITMOVIN,
+      experimentName: analytics.experiment,
+      customData1: analytics.buildInfoForBitmovin || '',
+      customData2: analytics.userId || '',
+      customData3: analytics.customData3 || '',
+      customData4: analytics.customData4 || '',
+      customData5: analytics.customData5 || '',
+      customData6: analytics.customData6 || '',
+      customData7: analytics.customData7 || '',
+    },
+  });
+
   const [loaded, setLoaded] = useState(false);
+  const [playerReady, setPlayerReady] = useState(false);
   const [duration, setDuration] = useState(0.0);
-  const [subtitleCue, setSubtitleCue] = useState('');
+  const subtitleCue = '';
+  const [videoInfo, setVideoInfo] = useState<string>();
+
+  const controlRef = useRef<TPlayerControlsRef | null>(null);
   const durationInSecs = useRef<number>(0);
 
   const appState = useRef(AppState.currentState);
   useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (appState.current === 'active' && nextAppState === 'background') {
-        ROHBitmovinPlayerModule.pause(findNodeHandle(playerRef.current));
+        player.pause();
       }
       appState.current = nextAppState;
     };
@@ -203,12 +117,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       'change',
       _handleAppStateChange,
     );
-    setTimeout(() => {
-      setContinueShowingGuidance(false);
-    }, 7000);
 
     return unsubscribe.remove;
-  }, []);
+  }, [player]);
 
   useEffect(() => {
     const durationInterval = setInterval(() => {
@@ -221,9 +132,56 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     return () => clearInterval(durationInterval);
   }, []);
 
-  const onReady: TCallbackFunc = useCallback(data => {
-    const payload: TOnReadyPayload = data.nativeEvent;
-    if (isLiveStream && payload) {
+  const {
+    onClose,
+    title,
+    autoPlay = false,
+    subtitle = '',
+    seekingTimePoint = 10.0,
+    guidance,
+    guidanceDetails,
+    isLiveStream,
+    showVideoInfo,
+    startDate,
+    endDate,
+  } = cloneProps;
+
+  // Action section
+  const actionPlay = useCallback(() => {
+    if (!playerReady) {
+      return;
+    }
+    player.play();
+  }, [playerReady, player]);
+
+  const actionPause = useCallback(() => {
+    if (!playerReady) {
+      return;
+    }
+    player.pause();
+  }, [playerReady, player]);
+
+  const actionRestart = useCallback(() => {
+    if (!playerReady) {
+      return;
+    }
+    player.seek(0.0);
+  }, [playerReady, player]);
+
+  const actionClose = useCallback(() => {
+    if (player.isInitialized) {
+      player.destroy();
+    }
+  }, [player]);
+  // End of actions section
+
+  // Event listeners section
+  const onReady = useCallback(async () => {
+    if (autoPlay) {
+      player.play();
+    }
+    let duration = String(await player.getDuration());
+    if (isLiveStream && duration) {
       const timezoneOffset = new Date().getTimezoneOffset();
       if (startDate && endDate) {
         const endDateMs = new Date(
@@ -244,7 +202,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
           parseInt(startDate.slice(17, 19), 10),
           0,
         ).getTime();
-        payload.duration = (((endDateMs - startDateMs) / 1000)).toString();
+        duration = ((endDateMs - startDateMs) / 1000).toString();
       }
 
       if (startDate && !endDate) {
@@ -257,39 +215,74 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
           parseInt(startDate.slice(17, 19), 10),
           0,
         ).getTime();
-        payload.duration = ((new Date().getTime() - startDateMs) / 1000).toString();
+        duration = ((new Date().getTime() - startDateMs) / 1000).toString();
 
-        if (+payload.duration > 60 * 60 * 24) {
-          payload.duration = ((60 * 60 * 24) - 1).toString();
+        if (+duration > 60 * 60 * 24) {
+          duration = (60 * 60 * 24 - 1).toString();
         }
       }
 
-      durationInSecs.current = parseInt(payload.duration, 10);
+      durationInSecs.current = parseInt(duration, 10);
     }
 
-    const initDuration = parseFloat(payload?.duration);
-    if (
-      Array.isArray(payload?.subtitles) &&
-      typeof controlRef.current?.loadSubtitleList === 'function'
-    ) {
-      controlRef.current.loadSubtitleList(payload.subtitles);
-    }
+    const initDuration = parseFloat(duration);
     if (!isNaN(initDuration)) {
       setDuration(initDuration);
     }
-    setReady(true);
-    setContinueShowingGuidance(true);
-  }, []);
+    setPlayerReady(true);
+    setPlayerReady(true);
+  }, [autoPlay, endDate, isLiveStream, player, startDate]);
 
-  const onLoad: TCallbackFunc = useCallback(_ => {
-    setLoaded(true);
-  }, []);
+  const onDestroy = useCallback(() => {
+    if (typeof onClose === 'function') {
+      onClose(null, '0');
+    }
+  }, [onClose]);
 
-  const onVideoPlaybackQualityChanged: TCallbackFunc = useCallback(
-    (event: TOnVideoPlaybackQualityChanged) => {
-      if (event.newVideoPlaybackQuality && showVideoInfo) {
+  if (configuration.url) {
+    player.load({
+      url: configuration.url,
+      type: SourceType.HLS,
+      title: title,
+    });
+    if (!loaded) {
+      setTimeout(() => setLoaded(true), 0);
+    }
+  }
+
+  const onSeeked = useCallback(async () => {
+    const currentTime = await player.getCurrentTime('relative');
+    if (isNaN(currentTime)) {
+      return;
+    }
+    if (typeof controlRef.current?.setSeekQueueFree === 'function') {
+      controlRef.current.setSeekQueueFree();
+    }
+    if (typeof controlRef.current?.setCurrentTime === 'function') {
+      controlRef.current.setCurrentTime(currentTime);
+    }
+    if (typeof controlRef.current?.seekUpdatingFinished === 'function') {
+      controlRef.current.seekUpdatingFinished();
+    }
+  }, [player]);
+
+  const onPlay = () => {
+    if (typeof controlRef.current?.setPlay === 'function') {
+      controlRef.current.setPlay(true);
+    }
+  };
+
+  const onPaused = () => {
+    if (typeof controlRef.current?.setPlay === 'function') {
+      controlRef.current.setPlay(false);
+    }
+  };
+
+  const onVideoPlaybackQualityChanged = useCallback(
+    (event: VideoPlaybackQualityChangedEvent) => {
+      if (event.newVideoQuality && showVideoInfo) {
         const { id, label, codec, bitrate, frameRate, width, height } =
-          event.newVideoPlaybackQuality;
+          event.newVideoQuality;
         setVideoInfo(
           `Current video Quality is :  Id: ${id}, label: ${label}, codec: ${codec}, bitrate: ${bitrate}, frameRate: ${frameRate}, width: ${width}, height: ${height}`,
         );
@@ -297,181 +290,29 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     },
     [showVideoInfo],
   );
-  const onPlaying: TCallbackFunc = _ => {
-    if (typeof controlRef.current?.setPlay === 'function') {
-      controlRef.current.setPlay(true);
-    }
-  };
 
-  const onPause: TCallbackFunc = _ => {
-    if (typeof controlRef.current?.setPlay === 'function') {
-      controlRef.current.setPlay(false);
-    }
-  };
-
-  const onTimeChanged: TCallbackFunc = data => {
-    const { time, duration: durationFromEvent }: TOnTimeChangedPayload =
-      data.nativeEvent;
-    const floatTime = parseFloat(time);
-    const floatDuration = parseFloat(durationFromEvent);
-    if (isNaN(floatTime) || isNaN(floatDuration)) {
+  const onTimeChanged = async () => {
+    const time = await player.getCurrentTime();
+    const durationFromEvent = await player.getDuration();
+    if (isNaN(time) || isNaN(durationFromEvent)) {
       return;
     }
-    if (
-      parseFloat(floatTime.toFixed()) >= parseFloat(floatDuration.toFixed())
-    ) {
-      ROHBitmovinPlayerModule.pause(findNodeHandle(playerRef.current));
+    if (parseFloat(time.toFixed()) >= parseFloat(durationFromEvent.toFixed())) {
+      player.pause();
       if (isLiveStream) {
-        ROHBitmovinPlayerModule.timeShift(findNodeHandle(playerRef.current), 0);
+        player.timeShift(0);
       }
-      ROHBitmovinPlayerModule.seek(findNodeHandle(playerRef.current), 0.0);
+      player.seek(0.0);
       if (typeof controlRef.current?.controlFadeOut === 'function') {
         controlRef.current.controlFadeOut();
       }
       return;
     }
     if (typeof controlRef.current?.setCurrentTime === 'function') {
-      controlRef.current.setCurrentTime(floatTime);
+      controlRef.current.setCurrentTime(time);
     }
   };
-
-  const onSeeked: TCallbackFunc = data => {
-    const { time }: TOnSeekPayload = data.nativeEvent;
-    const floatTime = parseFloat(time);
-    if (isNaN(floatTime)) {
-      return;
-    }
-    if (typeof controlRef.current?.setSeekQueueFree === 'function') {
-      controlRef.current.setSeekQueueFree();
-    }
-    if (typeof controlRef.current?.setCurrentTime === 'function') {
-      controlRef.current.setCurrentTime(floatTime);
-    }
-    if (typeof controlRef.current?.seekUpdatingFinished === 'function') {
-      controlRef.current.seekUpdatingFinished();
-    }
-  };
-
-  const setPlayer = (ref: any) => {
-    playerRef.current = ref;
-  };
-  const onPlaybackFinished = () => {};
-
-  useLayoutEffect(() => {
-    if (Platform.OS === 'android') {
-      eventEmitter.addListener('onEvent', (event: any) => {
-        if (typeof onEvent === 'function') {
-          onEvent({ nativeEvent: event });
-        }
-      });
-      eventEmitter.addListener('onReady', (event: any) => {
-        onReady({ nativeEvent: event });
-      });
-      eventEmitter.addListener('onPlay', (event: any) =>
-        onPlaying({ nativeEvent: event }),
-      );
-      eventEmitter.addListener('onPause', (event: any) =>
-        onPause({ nativeEvent: event }),
-      );
-      eventEmitter.addListener('onTimeChanged', (event: any) =>
-        onTimeChanged({ nativeEvent: event }),
-      );
-      eventEmitter.addListener('onSeek', () => {});
-      eventEmitter.addListener('onSeeked', (event: any) =>
-        onSeeked({ nativeEvent: event }),
-      );
-      eventEmitter.addListener('onTimeShift', () => {
-        console.log('time shift');
-      });
-      eventEmitter.addListener('onTimeShifted', event => {
-        console.log('time shifted');
-        onSeeked({ nativeEvent: event });
-      });
-      eventEmitter.addListener('onDestroy', (event: TOnDestoyPayload) => {
-        const initDuration = parseFloat(event?.duration);
-        const floatTime = parseFloat(event?.time);
-        const stoppedTimePoint =
-          isNaN(floatTime) || isNaN(initDuration) || floatTime === initDuration
-            ? '0.0'
-            : floatTime;
-        if (typeof onClose === 'function') {
-          onClose(playerError.current, stoppedTimePoint.toString());
-        }
-      });
-      eventEmitter.addListener('onPlaybackFinished', () => {
-        onPlaybackFinished();
-      });
-      eventEmitter.addListener('onError', event => {
-        playerError.current = {
-          errCode: event.errCode,
-          errMessage: event.errMessage,
-          url: configuration.url,
-        };
-        ROHBitmovinPlayerModule.destroy(findNodeHandle(playerRef.current));
-      });
-      eventEmitter.addListener('onSubtitleChanged', () => {});
-      eventEmitter.addListener('onLoad', onLoad);
-      eventEmitter.addListener('onCueEnter', (event: any) => {
-        setSubtitleCue(event.cueText);
-      });
-      eventEmitter.addListener('onCueExit', (_event: any) => {
-        setSubtitleCue('');
-      });
-      eventEmitter.addListener(
-        'onVideoPlaybackQualityChanged',
-        onVideoPlaybackQualityChanged,
-      );
-    }
-    return () => {
-      if (Platform.OS === 'android') {
-        eventEmitter.removeAllListeners('onEvent');
-        eventEmitter.removeAllListeners('onPlay');
-        eventEmitter.removeAllListeners('onPause');
-        eventEmitter.removeAllListeners('onTimeChanged');
-        eventEmitter.removeAllListeners('onSeek');
-        eventEmitter.removeAllListeners('onSeeked');
-        eventEmitter.removeAllListeners('onTimeShifted');
-        eventEmitter.removeAllListeners('onForward');
-        eventEmitter.removeAllListeners('onRewind');
-        eventEmitter.removeAllListeners('onPlaybackFinished');
-        eventEmitter.removeAllListeners('onDestroy');
-        eventEmitter.removeAllListeners('onReady');
-        eventEmitter.removeAllListeners('onError');
-        eventEmitter.removeAllListeners('onSubtitleChanged');
-        eventEmitter.removeAllListeners('onLoad');
-        eventEmitter.removeAllListeners('onCueEnter');
-        eventEmitter.removeAllListeners('onCueExit');
-        eventEmitter.removeAllListeners('onVideoPlaybackQualityChanged');
-      }
-    };
-  }, [
-    onEvent,
-    onClose,
-    onReady,
-    configuration.url,
-    onLoad,
-    onVideoPlaybackQualityChanged,
-  ]);
-
-  const getCurrentTime = useCallback(
-    () =>
-      ROHBitmovinPlayerModule.getCurrentTime(findNodeHandle(playerRef.current)),
-    [],
-  );
-
-  const actionPlay = useCallback(() => {
-    if (!playerReady) {
-      return;
-    }
-    ROHBitmovinPlayerModule.play(findNodeHandle(playerRef.current));
-  }, [playerReady]);
-
-  const actionPause = useCallback(() => {
-    if (!playerReady) {
-      return;
-    }
-    ROHBitmovinPlayerModule.pause(findNodeHandle(playerRef.current));
-  }, [playerReady]);
+  // End of event listeners section
 
   const calculateTimeForSeeking = useCallback(
     (
@@ -509,50 +350,41 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     [playerReady, seekingTimePoint, duration],
   );
 
-  const seekTo = useCallback((time: number) => {
-    console.log('bibus');
-    if (isLiveStream) {
-      const timeShiftValue = time - durationInSecs.current;
-      ROHBitmovinPlayerModule.timeShift(
-        findNodeHandle(playerRef.current),
-        timeShiftValue,
-      );
-    }
-    ROHBitmovinPlayerModule.seek(findNodeHandle(playerRef.current), time);
-  }, []);
-
-  const actionRestart = useCallback(() => {
-    if (!playerReady) {
-      return;
-    }
-    ROHBitmovinPlayerModule.restart(findNodeHandle(playerRef.current));
-  }, [playerReady]);
-
-  const actionDestroy = useCallback(() => {
-    if (!playerReady) {
-      return;
-    }
-    ROHBitmovinPlayerModule.destroy(findNodeHandle(playerRef.current));
-  }, [playerReady]);
-
-  const actionClose = useCallback(() => {
-    actionPause();
-    actionDestroy();
-  }, [actionPause, actionDestroy]);
+  const seekTo = useCallback(
+    (time: number) => {
+      if (isLiveStream) {
+        const timeShiftValue = time - durationInSecs.current;
+        player.timeShift(timeShiftValue);
+      }
+      player.seek(time);
+    },
+    [isLiveStream, player],
+  );
 
   const setSubtitle = useCallback(
     (trackID: string) =>
-      ROHBitmovinPlayerModule.setSubtitle(
-        findNodeHandle(playerRef.current),
-        trackID === 'bitmovin-off' ? null : trackID,
-      ),
-    [],
+      player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID),
+    [player],
   );
+
+  useEffect(() => {
+    const handleBackButtonClick = () => {
+      actionClose();
+      return true;
+    };
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, [actionClose]);
 
   const renderGuidanceText = (showTitle = true) => {
     return (
       <View style={[styles.overlayContainer]}>
-        {Boolean(guidance) ? (
+        {guidance ? (
           <View style={styles.guidanceContainer}>
             <RohText
               style={styles.guidanceTitle}
@@ -566,7 +398,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
               ellipsizeMode="tail">
               {guidance}
             </RohText>
-            {Boolean(guidanceDetails) ? (
+            {guidanceDetails ? (
               <RohText style={styles.guidanceSubTitle}>
                 {guidanceDetails}
               </RohText>
@@ -587,41 +419,33 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     );
   };
 
-  useEffect(() => {
-    const handleBackButtonClick = () => {
-      actionClose();
-      return true;
-    };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
-  }, [actionClose]);
-
   return (
     <SafeAreaView style={styles.defaultPlayerStyle}>
-      <NativeBitMovinPlayer
-        ref={setPlayer}
-        configuration={configuration}
-        analytics={analytics}
-        initBitrate={videoQualityBitrate}
+      <PlayerView
         style={loaded ? styles.playerLoaded : {}}
-        autoPlay={autoPlay}
+        player={player}
+        onReady={onReady}
+        onDestroy={onDestroy}
+        onSeeked={onSeeked}
+        onVideoPlaybackQualityChanged={onVideoPlaybackQualityChanged}
+        onTimeChanged={onTimeChanged}
+        onPlay={onPlay}
+        onPaused={onPaused}
       />
+
       {!playerReady && (
         <SafeAreaView style={styles.overlayOuter}>
           {renderGuidanceText()}
         </SafeAreaView>
       )}
 
-      {continueShowingGuidance && renderGuidanceText(false)}
+      {/*{continueShowingGuidance && renderGuidanceText(false)}*/}
 
       <PlayerControls
         ref={controlRef}
         title={title}
+        guidance={guidance}
+        guidanceDetails={guidanceDetails}
         subtitle={subtitle}
         duration={duration}
         playerLoaded={playerReady}
