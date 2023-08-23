@@ -168,11 +168,25 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     player.seek(0.0);
   }, [playerReady, player]);
 
-  const actionClose = useCallback(() => {
+  const actionClose = useCallback(async () => {
     if (player.isInitialized) {
+      if (typeof onClose === 'function') {
+        onClose(null, (await player.getCurrentTime()).toFixed(1));
+      }
       player.destroy();
     }
-  }, [player]);
+  }, [player, onClose]);
+
+  const seekTo = useCallback(
+    (time: number) => {
+      if (isLiveStream) {
+        const timeShiftValue = time - durationInSecs.current;
+        player.timeShift(timeShiftValue);
+      }
+      player.seek(time);
+    },
+    [isLiveStream, player],
+  );
   // End of actions section
 
   // Event listeners section
@@ -229,15 +243,19 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     if (!isNaN(initDuration)) {
       setDuration(initDuration);
     }
-    setPlayerReady(true);
-    setPlayerReady(true);
-  }, [autoPlay, endDate, isLiveStream, player, startDate]);
-
-  const onDestroy = useCallback(() => {
-    if (typeof onClose === 'function') {
-      onClose(null, '0');
+    if (cloneProps.configuration.offset) {
+      seekTo(Number(cloneProps.configuration.offset));
     }
-  }, [onClose]);
+    setPlayerReady(true);
+  }, [
+    autoPlay,
+    player,
+    isLiveStream,
+    cloneProps.configuration.offset,
+    startDate,
+    endDate,
+    seekTo,
+  ]);
 
   if (configuration.url) {
     player.load({
@@ -350,17 +368,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     [playerReady, seekingTimePoint, duration],
   );
 
-  const seekTo = useCallback(
-    (time: number) => {
-      if (isLiveStream) {
-        const timeShiftValue = time - durationInSecs.current;
-        player.timeShift(timeShiftValue);
-      }
-      player.seek(time);
-    },
-    [isLiveStream, player],
-  );
-
   const setSubtitle = useCallback(
     (trackID: string) =>
       player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID),
@@ -425,7 +432,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         style={loaded ? styles.playerLoaded : {}}
         player={player}
         onReady={onReady}
-        onDestroy={onDestroy}
         onSeeked={onSeeked}
         onVideoPlaybackQualityChanged={onVideoPlaybackQualityChanged}
         onTimeChanged={onTimeChanged}

@@ -118,6 +118,26 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     !closeCountDown &&
     isValid(new Date(startDateReactNative)) &&
     isAfter(new Date(startDateReactNative), new Date());
+
+  let formattedDate: string;
+
+  if (isTVOS && availableFrom) {
+    formattedDate = formatDate(new Date(availableFrom));
+  } else if (availableFrom) {
+    formattedDate = formatDate(
+      new Date(
+        parseInt(availableFrom.slice(0, 4), 10),
+        parseInt(availableFrom.slice(5, 7), 10) - 1,
+        parseInt(availableFrom.slice(8, 10), 10),
+        parseInt(availableFrom.slice(11, 13), 10) -
+        timezoneOffset / 60,
+        parseInt(availableFrom.slice(14, 16), 10),
+        parseInt(availableFrom.slice(17, 19), 10),
+        0,
+      ),
+    );
+  }
+
   return (
     <Animated.View
       style={[styles.previewContainer, { opacity: fadeAnimation }]}>
@@ -144,9 +164,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
                 setCloseCountDown(true);
               }}
             /> : availableFrom ? (
-            <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formatDate(
-              new Date(availableFrom),
-            ).toUpperCase()}`}</RohText>
+            <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formattedDate.toUpperCase()}`}</RohText>
           ) : (
             <RohText style={styles.description}>{duration}</RohText>
           )}
