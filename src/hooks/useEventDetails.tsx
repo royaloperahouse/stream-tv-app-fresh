@@ -601,6 +601,7 @@ const useGetExtras = (
             if (!result?.data?.video?.video_type) {
               return acc;
             }
+            console.log(result.data.video);
             switch (result.data.video.video_type) {
               case 'performance':
                 acc.performance.push(result);
@@ -611,6 +612,7 @@ const useGetExtras = (
               case 'hero':
                 break;
               case 'insight':
+              case 'corps':
                 if (
                   response.results.find(
                     item => item.data.video.video_type === 'performance',
