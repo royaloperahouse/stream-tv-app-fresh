@@ -37,7 +37,7 @@ const App: React.FC<TAppProps> = () => {
         features={{
           hasOpera: false,
           canExit: true,
-          showLiveStream: true,
+          showLiveStream: false,
           hasQRCode: false,
         }}>
         <AppLayout />
