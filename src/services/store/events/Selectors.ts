@@ -11,6 +11,8 @@ import {
 import { continueWatchingRailTitle } from '@configs/bitMovinPlayerConfig';
 import difference from 'lodash.difference';
 import type { TRootState } from '../index';
+import { select } from 'redux-saga/effects';
+import { subscribedModeSelector } from 'services/store/auth/Selectors';
 
 export const digitalEventDetailsSearchSelector = (
   store: TRootState,
@@ -35,11 +37,15 @@ export const digitalEventsForHomePageSelector =
     const combinedExploreAllTraysAndPropositionPage: Array<
       [string, { title: string; ids: Array<string> }]
     > = [];
+    const isSubscribed = store.auth.fullSubscription;
     for (let i = 0; i < store.events.exploreAllTrays.length; i++) {
       if (
         store.events.showOnlyVisisbleEvents &&
         store.events.exploreAllTrays[i].isVisible === false
       ) {
+        continue;
+      }
+      if (!isSubscribed) {
         continue;
       }
       combinedExploreAllTraysAndPropositionPage.push([
@@ -55,6 +61,9 @@ export const digitalEventsForHomePageSelector =
         store.events.showOnlyVisisbleEvents &&
         store.events.propositionPageElements[i].isVisible === false
       ) {
+        continue;
+      }
+      if (isSubscribed) {
         continue;
       }
 
