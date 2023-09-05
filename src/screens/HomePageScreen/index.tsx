@@ -232,7 +232,8 @@ const HomePageScreen: React.FC<
                       (sectionIndex === focusPosition.sectionIndex &&
                         index === focusPosition.itemIndex &&
                         numsOfRender.current > 1) ||
-                      (fromErrorModal && sectionIndex === 0 && index === 0)
+                      (fromErrorModal && sectionIndex === 0 && index === 0) ||
+                      (FocusManager.getFirstLounch() && index === 0 && sectionIndex === 0)
                     }
                     canMoveRight={index !== section.data.length - 1}
                     onFocus={scrollToRail}
