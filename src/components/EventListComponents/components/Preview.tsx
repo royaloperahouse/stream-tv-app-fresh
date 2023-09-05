@@ -114,28 +114,25 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     : 0;
 
   const showCountDownTimer =
-    event.start_time &&
+    !!event.start_time &&
     !closeCountDown &&
     isValid(new Date(startDateReactNative)) &&
     isAfter(new Date(startDateReactNative), new Date());
 
   let formattedDate: string;
+  let availableFromReactNative = new Date(0);
 
-  if (isTVOS && availableFrom) {
-    formattedDate = formatDate(new Date(availableFrom));
-  } else if (availableFrom) {
-    formattedDate = formatDate(
-      new Date(
-        parseInt(availableFrom.slice(0, 4), 10),
-        parseInt(availableFrom.slice(5, 7), 10) - 1,
-        parseInt(availableFrom.slice(8, 10), 10),
-        parseInt(availableFrom.slice(11, 13), 10) -
-        timezoneOffset / 60,
-        parseInt(availableFrom.slice(14, 16), 10),
-        parseInt(availableFrom.slice(17, 19), 10),
-        0,
-      ),
+  if (availableFrom) {
+    availableFromReactNative = new Date(
+      parseInt(availableFrom.slice(0, 4), 10),
+      parseInt(availableFrom.slice(5, 7), 10) - 1,
+      parseInt(availableFrom.slice(8, 10), 10),
+      parseInt(availableFrom.slice(11, 13), 10) - timezoneOffset / 60,
+      parseInt(availableFrom.slice(14, 16), 10),
+      parseInt(availableFrom.slice(17, 19), 10),
+      0,
     );
+    formattedDate = formatDate(new Date(availableFromReactNative));
   }
 
   return (
@@ -163,7 +160,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
               finishCB={() => {
                 setCloseCountDown(true);
               }}
-            /> : availableFrom ? (
+            /> : isAfter(availableFromReactNative, new Date()) ? (
             <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formattedDate.toUpperCase()}`}</RohText>
           ) : (
             <RohText style={styles.description}>{duration}</RohText>

@@ -147,24 +147,23 @@ const General: React.FC<
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
   const isAuthenticated = useAppSelector(deviceAuthenticatedSelector);
   const [existInMyList, setExistInMyList] = useState<boolean>(false);
-  let formattedDate: string;
 
-  if (isTVOS && availableFrom) {
-    formattedDate = formatDate(new Date(availableFrom));
-  } else if (availableFrom) {
-    formattedDate = formatDate(
-      new Date(
-        parseInt(availableFrom.slice(0, 4), 10),
-        parseInt(availableFrom.slice(5, 7), 10) - 1,
-        parseInt(availableFrom.slice(8, 10), 10),
-        parseInt(availableFrom.slice(11, 13), 10) -
-        timezoneOffset / 60,
-        parseInt(availableFrom.slice(14, 16), 10),
-        parseInt(availableFrom.slice(17, 19), 10),
-        0,
-      ),
+  let formattedDate: string;
+  let availableFromReactNative = new Date(0);
+
+  if (availableFrom) {
+    availableFromReactNative = new Date(
+      parseInt(availableFrom.slice(0, 4), 10),
+      parseInt(availableFrom.slice(5, 7), 10) - 1,
+      parseInt(availableFrom.slice(8, 10), 10),
+      parseInt(availableFrom.slice(11, 13), 10) - timezoneOffset / 60,
+      parseInt(availableFrom.slice(14, 16), 10),
+      parseInt(availableFrom.slice(17, 19), 10),
+      0,
     );
+    formattedDate = formatDate(new Date(availableFromReactNative));
   }
+
   const closeModal = useCallback((ref, clearLoadingState: any) => {
     if (typeof ref?.current?.setNativeProps === 'function') {
       ref.current.setNativeProps({
@@ -664,7 +663,7 @@ const General: React.FC<
       text: (existInMyList ? 'Remove from' : 'Add to') + ' my list',
       onPress: addOrRemoveItemIdFromMyListHandler,
       Icon: AddToMyList,
-      hasTVPreferredFocus: !performanceInfo || showCountDownTimer,
+      hasTVPreferredFocus: !performanceInfo || showCountDownTimer || isAfter(availableFromReactNative, new Date()),
       showLoader: true,
     },
     {
@@ -772,7 +771,7 @@ const General: React.FC<
                 {vs_guidance_details}
               </RohText>
             ) : null}
-            {availableFrom ? (
+            {isAfter(availableFromReactNative, new Date()) ? (
               <RohText style={styles.description}>
                 {`AVAILABLE FROM ${formattedDate.toUpperCase()}`}
               </RohText>
