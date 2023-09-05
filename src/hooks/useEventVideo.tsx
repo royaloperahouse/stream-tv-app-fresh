@@ -1,10 +1,10 @@
-import { getVideoDetails } from "services/prismicApiClient";
-import * as Prismic from "@prismicio/client";
-import useAsyncEffect from "use-async-effect";
-import { useState } from "react";
+import { getVideoDetails } from 'services/prismicApiClient';
+import * as Prismic from '@prismicio/client';
+import useAsyncEffect from 'use-async-effect';
+import { useState } from 'react';
 
 export const useEventVideo = (videoId) => {
-  const result = {}
+  const result = {};
   const [loading, setLoading] = useState(true);
   useAsyncEffect(async () => {
     if (loading) {
@@ -14,7 +14,6 @@ export const useEventVideo = (videoId) => {
       });
 
       result.response = response.results[0].data;
-      console.log(result.response);
       setLoading(false);
     }
   }, [loading]);

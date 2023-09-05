@@ -601,7 +601,6 @@ const useGetExtras = (
             if (!result?.data?.video?.video_type) {
               return acc;
             }
-            console.log(result.data.video);
             switch (result.data.video.video_type) {
               case 'performance':
                 acc.performance.push(result);
