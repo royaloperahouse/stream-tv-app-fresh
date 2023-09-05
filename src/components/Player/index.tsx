@@ -429,7 +429,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   return (
     <SafeAreaView style={styles.defaultPlayerStyle}>
       <PlayerView
-        style={loaded ? styles.playerLoaded : {}}
+        style={playerReady ? styles.playerLoaded : {}}
         player={player}
         onReady={onReady}
         onSeeked={onSeeked}
