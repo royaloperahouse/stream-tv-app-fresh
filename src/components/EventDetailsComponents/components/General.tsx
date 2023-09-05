@@ -677,7 +677,10 @@ const General: React.FC<
       Icon: Trailer,
     },
   ].filter(item => {
-    if (!!availableFrom && item.key === 'WatchNow') {
+    if (
+      isAfter(availableFromReactNative, new Date()) &&
+      item.key === 'WatchNow'
+    ) {
       return false;
     }
     if ((!performanceInfo || showCountDownTimer) && item.key === 'WatchNow') {
