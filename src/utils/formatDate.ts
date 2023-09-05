@@ -1,5 +1,5 @@
 export function formatDate(date: Date) {
-  const day = date.getDay();
+  const day = date.toString().split(' ')[2];
   const year = date.getFullYear();
 
   let month = '';
