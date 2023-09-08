@@ -350,6 +350,8 @@ const EventVideoScreen: React.FC<
     );
   }
 
+  const isComingSoon = videoDetails.video_card_label === 'Coming soon';
+
   return (
     <View style={styles.rootContainer}>
       <GoBack />
@@ -372,22 +374,28 @@ const EventVideoScreen: React.FC<
                   {videoDetails.short_description[0].text}
                 </RohText>
               ) : null}
-              {videoDetails.video.duration ? (
+              {isComingSoon ? (
+                <RohText style={styles.tags}>COMING SOON</RohText>
+              ) : videoDetails.video.duration ? (
                 <RohText style={styles.tags}>
                   {`${transformVideoDuration(videoDetails.video.duration)}`}
                 </RohText>
               ) : null}
             </OverflowingContainer>
-            <View style={styles.buttonsContainer}>
-              <ActionButtonList
-                ref={watchNowButtonRef}
-                buttonList={actionButtonList}
-                goDownOn={() => {}}
-                goDownOff={() => {}}
-                backButtonOn={goBackButtonuManager.setAccessibleGoBackButton}
-                backButtonOff={goBackButtonuManager.setUnAccessibleGoBackButton}
-              />
-            </View>
+            {!isComingSoon ? (
+              <View style={styles.buttonsContainer}>
+                <ActionButtonList
+                  ref={watchNowButtonRef}
+                  buttonList={actionButtonList}
+                  goDownOn={() => {}}
+                  goDownOff={() => {}}
+                  backButtonOn={goBackButtonuManager.setAccessibleGoBackButton}
+                  backButtonOff={
+                    goBackButtonuManager.setUnAccessibleGoBackButton
+                  }
+                />
+              </View>
+            ) : null}
           </View>
         </View>
         <View style={styles.snapshotContainer}>

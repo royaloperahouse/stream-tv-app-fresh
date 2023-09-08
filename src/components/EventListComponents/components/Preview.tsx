@@ -134,7 +134,9 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     );
     formattedDate = formatDate(new Date(availableFromReactNative));
   }
-
+  const isComingSoon = event.vs_labels
+    ? event.vs_labels.some(label => label.tag === 'Available soon')
+    : false;
   return (
     <Animated.View
       style={[styles.previewContainer, { opacity: fadeAnimation }]}>
@@ -161,7 +163,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
                 setCloseCountDown(true);
               }}
             /> : isAfter(availableFromReactNative, new Date()) ? (
-            <RohText style={styles.availableFrom}>{`AVAILABLE FROM ${formattedDate.toUpperCase()}`}</RohText>
+            <RohText style={styles.availableFrom}>{`AVAILABLE ${isComingSoon ? 'SOON' : 'FROM' + formattedDate.toUpperCase()}`}</RohText>
           ) : (
             <RohText style={styles.description}>{duration}</RohText>
           )}
