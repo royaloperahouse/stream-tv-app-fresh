@@ -29,7 +29,7 @@ const RohImage: FC<TRohImageProps> = ({
     };
   }, []);
 
-  if (isError) {
+  if (isError || !source) {
     return isPortrait ? (
       <PlaceholderPortrait width={style.width} height={style.height} />
     ) : (
