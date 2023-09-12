@@ -115,7 +115,7 @@ const General: React.FC<
   const [closeCountDown, setCloseCountDown] = useState(false);
   const goDownRef = useRef<TGoDownRef>(null);
   const timezoneOffset = new Date().getTimezoneOffset();
-  const startDateReactNative = performanceInfo.startDate
+  const startDateReactNative = performanceInfo ? performanceInfo.startDate
     ? new Date(
         parseInt(performanceInfo.startDate.slice(0, 4), 10),
         parseInt(performanceInfo.startDate.slice(5, 7), 10) - 1,
@@ -126,13 +126,14 @@ const General: React.FC<
         parseInt(performanceInfo.startDate.slice(17, 19), 10),
         0,
       )
-    : 0;
+    : 0 : 0;
   const showCountDownTimer =
+    performanceInfo ?
     performanceInfo.startDate &&
     isFocused &&
     !closeCountDown &&
     isValid(new Date(startDateReactNative)) &&
-    isAfter(new Date(startDateReactNative), new Date());
+    isAfter(new Date(startDateReactNative), new Date()) : false;
   const performanceVideoInFocus = useRef<
     { pressingHandler: () => void } | null | undefined
   >(null);

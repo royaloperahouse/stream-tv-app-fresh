@@ -376,13 +376,13 @@ const EventVideoScreen: React.FC<
               ) : null}
               {isComingSoon ? (
                 <RohText style={styles.tags}>COMING SOON</RohText>
-              ) : videoDetails.video.duration ? (
+              ) : videoDetails ? null : videoDetails.video.duration ? (
                 <RohText style={styles.tags}>
                   {`${transformVideoDuration(videoDetails.video.duration)}`}
                 </RohText>
               ) : null}
             </OverflowingContainer>
-            {!isComingSoon ? (
+            {!isComingSoon && videoDetails.video ? (
               <View style={styles.buttonsContainer}>
                 <ActionButtonList
                   ref={watchNowButtonRef}
