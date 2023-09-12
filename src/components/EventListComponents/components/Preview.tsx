@@ -37,6 +37,8 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
   const [closeCountDown, setCloseCountDown] = useState(false);
   const [eventGroupTitle, setEventGroupTitle] = useState<string>('');
   const timeoutId = useRef<NodeJS.Timeout | null>(null);
+
+  const [isComingSoon, setIsComingSoon] = useState(false);
   useImperativeHandle(
     ref,
     () => ({
@@ -134,9 +136,17 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
     );
     formattedDate = formatDate(new Date(availableFromReactNative));
   }
-  const isComingSoon = event.vs_labels
-    ? event.vs_labels.some(label => label.tag === 'Available soon')
-    : false;
+  if (
+    event.vs_labels &&
+    event?.vs_labels.some(label => label.tag === 'Available soon') &&
+    !isComingSoon &&
+    !availableFrom
+  ) {
+    setIsComingSoon(true);
+  }
+  if ((!event.vs_labels || availableFrom) && isComingSoon) {
+    setIsComingSoon(false);
+  }
   return (
     <Animated.View
       style={[styles.previewContainer, { opacity: fadeAnimation }]}>
@@ -162,8 +172,8 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
               finishCB={() => {
                 setCloseCountDown(true);
               }}
-            /> : isAfter(availableFromReactNative, new Date()) ? (
-            <RohText style={styles.availableFrom}>{`AVAILABLE ${isComingSoon ? 'SOON' : 'FROM' + formattedDate.toUpperCase()}`}</RohText>
+            /> : isAfter(availableFromReactNative, new Date()) || isComingSoon ? (
+            <RohText style={styles.availableFrom}>{`${isComingSoon ? 'COMING SOON' : 'AVAILABLE FROM ' + formattedDate.toUpperCase()}`}</RohText>
           ) : (
             <RohText style={styles.description}>{duration}</RohText>
           )}
