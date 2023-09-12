@@ -39,6 +39,10 @@ export function transformVideoDetails(videoDetails) {
         },
         tv_app_rail_thumbnail: thumbnail,
       },
+      vs_labels:
+        videoDetails.data.video_card_label === 'Coming soon'
+          ? [{ tag: 'Available soon' }]
+          : null,
     },
   };
 }
