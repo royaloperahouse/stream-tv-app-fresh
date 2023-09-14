@@ -394,6 +394,9 @@ function* getEventListLoopWorker(): any {
       const countryCode = yield select(countryCodeSelector);
       const filtered = result.filter((prismicDocument) => {
         const digitalEventVideos = prismicDocument.data.vs_videos;
+        if (prismicDocument.data.vs_event_card_label === 'Coming soon') {
+          return true;
+        }
         return digitalEventVideos.some(digitalEventVideo => {
           if (!digitalEventVideo?.video?.data?.video) {
             return true;
@@ -410,8 +413,8 @@ function* getEventListLoopWorker(): any {
           return true;
         });
       });
-
       const resultForDigitalEventsDetailUpdate = groupDigitalEvents(filtered);
+      console.log();
       yield put(
         getEventListSuccess({
           digitalEventDetailsList: {
