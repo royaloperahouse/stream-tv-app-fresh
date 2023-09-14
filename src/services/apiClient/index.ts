@@ -71,7 +71,7 @@ export const fetchVideoURL = (id: string, isProductionEnv: boolean) =>
       id,
     },
     auth: ApiConfig.auth,
-    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.upgradeEnv,
+    baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
   });
 
 export const pinUnlink = (isProductionEnv: boolean) =>
