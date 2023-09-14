@@ -196,44 +196,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     let duration = String(await player.getDuration());
     if (isLiveStream && duration) {
-      const timezoneOffset = new Date().getTimezoneOffset();
-      if (startDate && endDate) {
-        const endDateMs = new Date(
-          parseInt(endDate.slice(0, 4), 10),
-          parseInt(endDate.slice(5, 7), 10) - 1,
-          parseInt(endDate.slice(8, 10), 10),
-          parseInt(endDate.slice(11, 13), 10) - timezoneOffset / 60,
-          parseInt(endDate.slice(14, 16), 10),
-          parseInt(endDate.slice(17, 19), 10),
-          0,
-        ).getTime();
-        const startDateMs = new Date(
-          parseInt(startDate.slice(0, 4), 10),
-          parseInt(startDate.slice(5, 7), 10) - 1,
-          parseInt(startDate.slice(8, 10), 10),
-          parseInt(startDate.slice(11, 13), 10) - timezoneOffset / 60,
-          parseInt(startDate.slice(14, 16), 10),
-          parseInt(startDate.slice(17, 19), 10),
-          0,
-        ).getTime();
-        duration = ((endDateMs - startDateMs) / 1000).toString();
-      }
+      duration = (await player.getMaxTimeShift()).toFixed(0);
 
-      if (startDate && !endDate) {
-        const startDateMs = new Date(
-          parseInt(startDate.slice(0, 4), 10),
-          parseInt(startDate.slice(5, 7), 10) - 1,
-          parseInt(startDate.slice(8, 10), 10),
-          parseInt(startDate.slice(11, 13), 10) - timezoneOffset / 60,
-          parseInt(startDate.slice(14, 16), 10),
-          parseInt(startDate.slice(17, 19), 10),
-          0,
-        ).getTime();
-        duration = ((new Date().getTime() - startDateMs) / 1000).toString();
-
-        if (+duration > 60 * 60 * 24) {
-          duration = (60 * 60 * 24 - 1).toString();
-        }
+      if (+duration > 60 * 60 * 24) {
+        duration = (60 * 60 * 24 - 1).toString();
       }
 
       durationInSecs.current = parseInt(duration, 10);
