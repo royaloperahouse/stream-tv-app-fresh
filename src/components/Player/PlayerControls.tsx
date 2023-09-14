@@ -664,9 +664,21 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
       [],
     );
     const getTimeFormat = (time: number = 0): string => {
-      let date = new Date(0);
-      date.setSeconds(time);
-      return date.toISOString().substr(11, 8);
+      let formattedString = '00:00:00';
+      if (time > 0) {
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time - hours * 3600) / 60);
+        const seconds = time - hours * 3600 - minutes * 60;
+        const stringMinutes = minutes > 10 ? `${minutes}` : `0${minutes}`;
+        const stringSeconds =
+          seconds > 10 ? `${seconds.toFixed(0)}` : `0${seconds.toFixed(0)}`;
+        formattedString = `${hours}:${stringMinutes}:${stringSeconds}`;
+        if (hours < 1) {
+          formattedString =
+            `${stringMinutes}:${stringSeconds}`;
+        }
+      }
+      return formattedString;
     };
     useLayoutEffect(() => {
       progressBarMountedRef.current = true;
