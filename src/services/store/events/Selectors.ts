@@ -22,7 +22,8 @@ export const digitalEventDetailsSearchSelector = (
     detailEventsSearchOptions,
   )
     .search<any>(`${store.events.searchQueryString}`)
-    .map(({ item }) => item);
+    .map(({ item }) => item)
+    .filter(item => item.type !== 'digital_event_video');
 
 export const searchQuerySelector = (store: TRootState) =>
   store.events.searchQueryString;
