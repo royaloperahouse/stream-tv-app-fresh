@@ -86,7 +86,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
     } = props;
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
     const activeAnimation = useRef<Animated.Value>(
-      new Animated.Value(0),
+      new Animated.Value(1),
     ).current;
     const isPlayingRef = useRef<boolean>(false);
     const controlMountedRef = useRef<boolean>(false);
@@ -215,7 +215,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
 
     useLayoutEffect(() => {
       if (autoPlay && playerLoaded) {
-        activeAnimation.setValue(1);
+        activeAnimation.setValue(0);
         controlPanelVisibleRef.current = true;
         Animated.timing(activeAnimation, {
           toValue: 0,
@@ -228,7 +228,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         });
       }
       if (!autoPlay && playerLoaded) {
-        activeAnimation.setValue(1);
+        activeAnimation.setValue(0);
         controlPanelVisibleRef.current = true;
       }
     }, [autoPlay && playerLoaded]);

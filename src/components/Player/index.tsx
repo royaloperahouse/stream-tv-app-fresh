@@ -445,6 +445,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+    backgroundColor: 'black',
+    zIndex: 100,
   },
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -460,7 +462,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     opacity: 0.7,
     top: scaleSize(130),
-    left: 0,
+    left: 90,
   },
   guidanceTitle: {
     fontSize: scaleSize(26),
@@ -473,6 +475,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
+    paddingLeft: 100,
   },
   title: {
     fontSize: scaleSize(72),
