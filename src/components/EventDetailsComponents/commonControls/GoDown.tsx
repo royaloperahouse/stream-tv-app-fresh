@@ -44,25 +44,23 @@ const GoDown = forwardRef<TGoDownRef, Props>(
       [],
     );
 
-    useFocusLayoutEffect(
-      useCallback(() => {
-        const cb = (event: HWEvent) => {
-          if (
-            (isTVOS &&
-              event.eventType === 'focus' &&
-              event.tag === btnRef.current?.getNode?.()) ||
-            (event.tag === btnRef.current?.getNode?.() &&
-              event.eventType === 'down')
-          ) {
-            onFocus();
-          }
-        };
-        TVEventManager.addEventListener(cb);
-        return () => {
-          TVEventManager.removeEventListener(cb);
-        };
-      }, [onFocus]),
-    );
+    useFocusLayoutEffect(() => {
+      const cb = (event: HWEvent) => {
+        if (
+          (isTVOS &&
+            event.eventType === 'focus' &&
+            event.tag === btnRef.current?.getNode?.()) ||
+          (event.tag === btnRef.current?.getNode?.() &&
+            event.eventType === 'down')
+        ) {
+          onFocus();
+        }
+      };
+      TVEventManager.addEventListener(cb);
+      return () => {
+        TVEventManager.removeEventListener(cb);
+      };
+    });
     return (
       <TouchableHighlightWrapper
         ref={btnRef}
