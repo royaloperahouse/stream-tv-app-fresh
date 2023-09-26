@@ -366,7 +366,7 @@ const General: React.FC<
                   offset: rolledBackPos.toString(),
                   title: videoTitle,
                   analytics: {
-                    videoId: videoFromPrismic.videoId,
+                    videoId: videoFromPrismic.dieseId.replace('_', '-'),
                     title: videoTitle,
                     buildInfoForBitmovin,
                     customData3: videoQualityId,
@@ -406,7 +406,7 @@ const General: React.FC<
                     isProductionEnv,
                   }),
                   analytics: {
-                    videoId: videoFromPrismic.videoId,
+                    videoId: videoFromPrismic.dieseId.replace('_', '-'),
                     title: videoTitle,
                     buildInfoForBitmovin,
                     customData3: videoQualityId,
@@ -447,7 +447,7 @@ const General: React.FC<
             isProductionEnv,
           }),
           analytics: {
-            videoId: videoFromPrismic.videoId,
+            videoId: videoFromPrismic.dieseId.replace('_', '-'),
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoQualityId,
@@ -541,7 +541,7 @@ const General: React.FC<
             ref,
           }),
           analytics: {
-            videoId: trailerInfo.videoId,
+            videoId: trailerInfo.dieseVideoId.replace('_', '-'),
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoQualityId,

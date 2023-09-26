@@ -47,6 +47,7 @@ export type TExtrasVideo = {
   participant_details: string;
   id: string;
   lastPublicationDate: string;
+  dieseVideoId?: string,
 };
 
 export type TRoutes = Array<TRoute>;

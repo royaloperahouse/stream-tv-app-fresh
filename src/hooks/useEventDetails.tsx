@@ -536,6 +536,7 @@ const useGetExtras = (
     eventId: string;
     videoId: string;
     title?: string;
+    dieseVideoId: string;
   } | null>(null);
   const bitrateValue = useRef<number>(
     playerBitratesFilter[defaultPlayerBitrateKey].value,
@@ -637,6 +638,7 @@ const useGetExtras = (
                 videoId: filteredResult.trailer[0].id,
                 title:
                   filteredResult.trailer[0].data?.video_title[0]?.text || '',
+                dieseVideoId: filteredResult.trailer[0].data.video.video_key,
               }
             : null;
           performanceInfo.current = filteredResult.performance.length
@@ -709,6 +711,7 @@ const useGetExtras = (
                 '',
               ),
               id: item.id,
+              dieseVideoId: item.data.video.video_key,
               lastPublicationDate: item.last_publication_date,
             })),
           );

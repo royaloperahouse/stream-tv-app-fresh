@@ -243,7 +243,7 @@ const Extras: React.FC<
                 title: videoTitle,
                 subtitle,
                 analytics: {
-                  videoId: extrasVideoInFocus.current.id,
+                  videoId: extrasVideoInFocus.current.dieseVideoId.replace('_', '-'),
                   title: videoTitle,
                   buildInfoForBitmovin,
                   customData3: videoQualityId,
