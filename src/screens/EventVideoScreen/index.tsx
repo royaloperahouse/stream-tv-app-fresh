@@ -272,7 +272,7 @@ const EventVideoScreen: React.FC<
             ref,
           }),
           analytics: {
-            videoId: videoFromPrismic.dieseVideoId.replace('_', '-'),
+            videoId: videoDetails.video.video_key.replace('_', '-'),
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoDetails.videoQualityId,
