@@ -4,3 +4,4 @@ export { default as Creatives } from './components/Creatives';
 export { default as Synopsis } from './components/Synopsis';
 export { default as AboutProduction } from './components/AboutProduction';
 export { default as Extras } from './components/Extras';
+export { default as Shop } from './components/Shop';

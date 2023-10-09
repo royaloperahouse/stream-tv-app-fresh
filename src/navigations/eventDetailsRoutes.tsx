@@ -8,6 +8,7 @@ import {
   Synopsis,
   AboutProduction,
   Extras,
+  Shop,
 } from '@components/EventDetailsComponents/';
 
 export type TEventDetailsSectionItem = {
@@ -53,5 +54,11 @@ export const eventDetailsSectionsConfig: {
     currentSectionTitle: 'EXTRAS & MORE',
     Component: Extras,
     position: 6,
+  },
+  shop: {
+    key: 'Shop',
+    currentSectionTitle: 'SHOP & MORE',
+    Component: Shop,
+    position: 7,
   },
 };

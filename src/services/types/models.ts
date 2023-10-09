@@ -23,6 +23,7 @@ export const eventDetailsScreenNames = Object.freeze({
   synopsis: 'Synopsis',
   info: 'Info',
   extras: 'Extras',
+  shop: 'Shop',
 });
 
 export type TContentStackScreensNames = typeof contentScreenNames;
@@ -112,6 +113,7 @@ export type TEvent = {
   vs_synopsis: Array<TVSSynops>;
   vs_sponsors: Array<TVSSponsor>;
   start_time?: string;
+  tv_app_cross_sell_document?: any;
 };
 
 export type TVSTitle = {
