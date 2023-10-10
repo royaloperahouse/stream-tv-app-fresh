@@ -262,7 +262,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
             if (isGlobalHandler) {
               return;
             }
-            exitOfAppButtonRef?.current?.setNativeProps?.({
+            buttonsRefs?.current['Home']?.current?.setNativeProps?.({
               hasTVPreferredFocus: true,
             });
           });
@@ -318,6 +318,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         navigation.navigate('Home');
         navMenuWidth.value = widthWithOutFocus;
         currenItemInFocus.current = 'Home';
+        return;
       }
     },
     [state.routeNames, state.index, navigation, navMenuWidth],

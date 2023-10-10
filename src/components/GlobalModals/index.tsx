@@ -69,26 +69,30 @@ const GlobalModal: React.FC<TGlobalModalProps> = () => {
         if (!mounted.current) {
           return;
         }
-        fadeAnimation.setValue(1);
-        Animated.timing(fadeAnimation, {
-          toValue: 0,
-          duration: fadeDuration,
-          useNativeDriver: true,
-        }).start(({ finished }) => {
-          if (!mounted.current) {
-            return;
-          }
-          if (!finished) {
-            fadeAnimation.setValue(0);
-          }
-          if (typeof cb === 'function') {
-            cb();
-          }
-          if (!mounted.current) {
-            return;
-          }
-          setOpen(null);
-        });
+        fadeAnimation.setValue(0);
+        // Animated.timing(fadeAnimation, {
+        //   toValue: 0,
+        //   duration: fadeDuration,
+        //   useNativeDriver: true,
+        // }).start(({ finished }) => {
+        //   if (!mounted.current) {
+        //     return;
+        //   }
+        //   if (!finished) {
+        //     fadeAnimation.setValue(1);
+        //   }
+        //   if (typeof cb === 'function') {
+        //     cb();
+        //   }
+        //   if (!mounted.current) {
+        //     return;
+        //   }
+        //   setOpen(null);
+        // });
+        if (typeof cb === 'function') {
+          cb();
+        }
+        setOpen(null);
       },
       isModalOpen: () => open !== null,
     }),
