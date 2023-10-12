@@ -352,6 +352,7 @@ const General: React.FC<
             rolledBackPos = 0;
           }
           fromTime.setSeconds(intPosition);
+          goBackButtonuManager.hideGoBackButton();
           globalModalManager.openModal({
             contentComponent: СontinueWatchingModal,
             contentProps: {
