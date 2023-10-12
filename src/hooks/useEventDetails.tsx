@@ -514,7 +514,7 @@ const getShop = (event: TEvent) => {
       isShopAvailable: false,
     };
   }
-  console.log(event.tv_app_cross_sell_document);
+
   const shop = {
     title: event.tv_app_cross_sell_document.data?.title,
     body: event.tv_app_cross_sell_document.data?.body[0].text,

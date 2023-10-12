@@ -68,9 +68,11 @@ const Shop: React.FC<
             <TouchableHighlight style={styles.descriptionContainer} onFocus={onContentReady}>
               <View style={styles.titleContainer}>
                 <RohText style={styles.title}>{shop.title}</RohText>
-                <RohText style={styles.description}>{shop.body}</RohText>
                 <RohText style={styles.description}>{shop.standfirst}</RohText>
-                <RohImage source={shop.image.url} style={{width: 500, height: 500, marginTop: 25}}/>
+                <RohText style={styles.description}>{shop.body}</RohText>
+                <RohText style={styles.linkDescription}>Scan the code to buy or visit:</RohText>
+                <RohText style={styles.link}>{shop.imageLink}</RohText>
+                <RohImage source={shop.image.url} style={{width: scaleSize(300), height: scaleSize(300), marginTop: 25}}/>
               </View>
             </TouchableHighlight>
             <RohImage
@@ -130,13 +132,24 @@ const styles = StyleSheet.create({
   titleContainer: {
     flex: 1,
     justifyContent: 'center',
-    width: '100%',
+    width: '90%',
   },
   description: {
     color: 'white',
-    fontSize: scaleSize(22),
+    fontSize: scaleSize(24),
     marginTop: scaleSize(12),
     overflow: 'hidden',
+  },
+  linkDescription: {
+    color: 'white',
+    fontSize: scaleSize(30),
+    marginTop: scaleSize(25),
+    overflow: 'hidden',
+  },
+  link: {
+    fontSize: scaleSize(30),
+    overflow: 'hidden',
+    color: Colors.defaultBlue,
   },
   info: {
     color: 'white',
