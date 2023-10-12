@@ -303,7 +303,20 @@ function* getEventListLoopWorker(): any {
     const isProductionEnv = yield select(isProductionEvironmentSelector);
     try {
       const initialResponse: prismicT.Query<prismicT.PrismicDocument> =
-        yield call(getDigitalEventDetails, { isProductionEnv, queryOptions: { fetchLinks: 'digital_event_video.video,digital_event_video.start_time'} });
+        yield call(getDigitalEventDetails, {
+          isProductionEnv,
+          queryOptions: {
+            fetchLinks:
+              'digital_event_video.video,' +
+              'digital_event_video.start_time,' +
+              'tv_app_cross-sell.title,' +
+              'tv_app_cross-sell.standfirst,' +
+              'tv_app_cross-sell.body,' +
+              'tv_app_cross-sell.image,' +
+              'tv_app_cross-sell.product_image,' +
+              'tv_app_cross-sell.image_link',
+          },
+        });
       result.push(...initialResponse.results);
       if (initialResponse.total_pages !== initialResponse.page) {
         const allPagesRequestsResult: Array<
@@ -394,6 +407,9 @@ function* getEventListLoopWorker(): any {
       const countryCode = yield select(countryCodeSelector);
       const filtered = result.filter((prismicDocument) => {
         const digitalEventVideos = prismicDocument.data.vs_videos;
+        if (!prismicDocument.data.tv_app_cross_sell_document?.data) {
+          delete prismicDocument.data.tv_app_cross_sell_document;
+        }
         if (prismicDocument.data.vs_event_card_label === 'Coming soon') {
           return true;
         }
@@ -449,7 +465,21 @@ function eventPromiseFill(
     [];
   for (let i = from; i <= to; i++) {
     allPromises.push(
-      getDigitalEventDetails({ queryOptions: { page: i, fetchLinks: 'digital_event_video.video' }, isProductionEnv }),
+      getDigitalEventDetails({
+        queryOptions: {
+          page: i,
+          fetchLinks:
+            'digital_event_video.video,' +
+            'digital_event_video.start_time,' +
+            'tv_app_cross-sell.title,' +
+            'tv_app_cross-sell.standfirst,' +
+            'tv_app_cross-sell.body,' +
+            'tv_app_cross-sell.image,' +
+            'tv_app_cross-sell.product_image,' +
+            'tv_app_cross-sell.image_link',
+        },
+        isProductionEnv,
+      }),
     );
   }
   return Promise.allSettled(allPromises);
