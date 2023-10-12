@@ -53,6 +53,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
   const { synopsis, isSynopsisAvailable } = getSynopsis(event);
   const { aboutProduction, isAboutProductionAvailable } =
     getAboutProduction(event);
+  const { shop, isShopAvailable } = getShop(event);
   aboutProduction.push({
     content: shortDescription,
     type: ECellItemKey.description,
@@ -87,6 +88,9 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
         }
         case 'Extras': {
           return Boolean(videosInfo.length);
+        }
+        case 'Shop': {
+          return isShopAvailable;
         }
         default:
           return true;
@@ -144,6 +148,14 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           eventId,
           videoQualityBitrate,
           videoQualityId,
+        };
+        break;
+      }
+      case 'Shop': {
+        params = {
+          eventId,
+          shop,
+          snapshotImageUrl,
         };
         break;
       }
@@ -492,6 +504,28 @@ const getAboutProduction = (
   return {
     aboutProduction,
     isAboutProductionAvailable: Boolean(aboutProduction.length),
+  };
+};
+
+const getShop = (event: TEvent) => {
+  if (!event.tv_app_cross_sell_document) {
+    return {
+      shop: undefined,
+      isShopAvailable: false,
+    };
+  }
+
+  const shop = {
+    title: event.tv_app_cross_sell_document.data?.title,
+    body: event.tv_app_cross_sell_document.data?.body[0].text,
+    image: event.tv_app_cross_sell_document.data?.image,
+    standfirst: event.tv_app_cross_sell_document.data?.standfirst,
+    productImage: event.tv_app_cross_sell_document.data?.product_image,
+    imageLink: event.tv_app_cross_sell_document.data?.image_link,
+  };
+  return {
+    shop,
+    isShopAvailable: Boolean(shop),
   };
 };
 

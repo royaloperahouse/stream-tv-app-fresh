@@ -103,7 +103,7 @@ export type TContentScreensParamList = {
     sectionIndex: number;
     selectedItemIndex?: number;
     availableFrom: string | null;
-  }
+  };
   [contentScreenNames.exit]: undefined;
   [contentScreenNames.liveStream]: undefined;
 };
@@ -162,6 +162,18 @@ export type TEventDetailsScreensParamContextProps = {
     videoQualityBitrate: number;
     videoQualityId: 'high' | 'medium' | 'normal';
   };
+  [eventDetailsScreenNames.shop]: {
+    nextSectionTitle?: string;
+    shop: {
+      title: string;
+      body: string;
+      image: any;
+      standfirst: string;
+    };
+    eventId: string;
+    nextScreenName?: TEventDetailsScreenReverseNames;
+    prevScreenName: TEventDetailsScreenReverseNames;
+  };
 };
 
 export type TEventDetailsScreensParamList = {
@@ -171,6 +183,7 @@ export type TEventDetailsScreensParamList = {
   [eventDetailsScreenNames.synopsis]: undefined;
   [eventDetailsScreenNames.info]: undefined;
   [eventDetailsScreenNames.extras]: undefined;
+  [eventDetailsScreenNames.shop]: undefined;
   DummyPlayerScreen: undefined;
 };
 
