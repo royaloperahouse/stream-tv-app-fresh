@@ -28,6 +28,7 @@ import type {
 import { TVEventManager } from '@services/tvRCEventListener';
 import { useFocusLayoutEffect } from 'hooks/useFocusLayoutEffect';
 import { isTVOS } from 'configs/globalConfig';
+import { globalModalManager } from 'components/GlobalModals';
 
 const goBackButtonWidth = scaleSize(160);
 const goBackButtonRef = createRef<
@@ -109,7 +110,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
     useCallback(() => {
       const handleBackButtonClick = () => {
         //if (globalModalManager.isModalOpen() || !show)
-        if (!show || !accessible) {
+        if (!show || !accessible || globalModalManager.isModalOpen()) {
           return false;
         }
         if (route.params?.screenNameFrom) {
