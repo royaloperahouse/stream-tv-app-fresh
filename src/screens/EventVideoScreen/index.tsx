@@ -272,7 +272,7 @@ const EventVideoScreen: React.FC<
             ref,
           }),
           analytics: {
-            videoId: videoDetails.video.video_key.replace('_', '-'),
+            videoId: videoDetails.video.video_key ? videoDetails.video.video_key.replace('_', '-') : '',
             title: videoTitle,
             buildInfoForBitmovin,
             customData3: videoDetails.videoQualityId,
@@ -284,6 +284,7 @@ const EventVideoScreen: React.FC<
           showVideoInfo: !isProductionEnv,
         });
       } catch (err: any) {
+        console.log(err);
         globalModalManager.openModal({
           contentComponent:
             err instanceof NonSubscribedStatusError
