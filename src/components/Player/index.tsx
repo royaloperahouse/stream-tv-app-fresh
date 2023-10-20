@@ -6,19 +6,9 @@ import {
   usePlayer,
   VideoPlaybackQualityChangedEvent,
 } from 'bitmovin-player-react-native';
-import {
-  AppState,
-  AppStateStatus,
-  BackHandler,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  ViewProps,
-} from 'react-native';
+import { AppState, AppStateStatus, BackHandler, SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
 import { TBMPlayerErrorObject } from 'services/types/bitmovinPlayer';
-import PlayerControls, {
-  TPlayerControlsRef,
-} from 'components/Player/PlayerControls';
+import PlayerControls, { TPlayerControlsRef } from 'components/Player/PlayerControls';
 import RohText from 'components/RohText';
 import { scaleSize } from 'utils/scaleSize';
 import { Colors } from 'themes/Styleguide';
@@ -121,16 +111,16 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     return unsubscribe.remove;
   }, [player]);
 
-  useEffect(() => {
-    const durationInterval = setInterval(() => {
-      if (durationInSecs.current > 0) {
-        durationInSecs.current = durationInSecs.current + 1;
-        setDuration(() => durationInSecs.current);
-      }
-    }, 1000);
-
-    return () => clearInterval(durationInterval);
-  }, []);
+  // useEffect(() => {
+  //   const durationInterval = setInterval(() => {
+  //     if (durationInSecs.current > 0) {
+  //       durationInSecs.current = durationInSecs.current + 1;
+  //       setDuration(() => durationInSecs.current);
+  //     }
+  //   }, 1000);
+  //
+  //   return () => clearInterval(durationInterval);
+  // }, []);
 
   const {
     onClose,
@@ -178,9 +168,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }, [player, onClose]);
 
   const seekTo = useCallback(
-    (time: number) => {
+    async (time: number) => {
       if (isLiveStream) {
-        const timeShiftValue = time - durationInSecs.current;
+        const timeShiftValue = 0 - time;
         player.timeShift(timeShiftValue);
       }
       player.seek(time);
@@ -196,8 +186,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     let duration = String(await player.getDuration());
     if (isLiveStream && duration) {
-      duration = (await player.getMaxTimeShift()).toFixed(0);
-
+      duration = Math.abs(await player.getMaxTimeShift()).toFixed(0);
+      player.timeShift(0);
       if (+duration > 60 * 60 * 24) {
         duration = (60 * 60 * 24 - 1).toString();
       }
@@ -209,7 +199,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     if (!isNaN(initDuration)) {
       setDuration(initDuration);
     }
-    if (cloneProps.configuration.offset) {
+    if (cloneProps.configuration.offset && !isLiveStream) {
       seekTo(Number(cloneProps.configuration.offset));
     }
     setPlayerReady(true);
@@ -235,7 +225,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   const onSeeked = useCallback(async () => {
-    const currentTime = await player.getCurrentTime('relative');
+    const currentTime = isLiveStream ? Math.abs(await player.getTimeShift()) : await player.getCurrentTime('relative');
     if (isNaN(currentTime)) {
       return;
     }
@@ -276,7 +266,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const onTimeChanged = async () => {
-    const time = await player.getCurrentTime();
+    const time = isLiveStream ? Math.abs(await player.getTimeShift()) : await player.getCurrentTime();
     const durationFromEvent = await player.getDuration();
     if (isNaN(time) || isNaN(durationFromEvent)) {
       return;
@@ -294,6 +284,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     if (typeof controlRef.current?.setCurrentTime === 'function') {
       controlRef.current.setCurrentTime(time);
+    } else if (isLiveStream && typeof controlRef.current?.setCurrentTime === 'function') {
+      const timeShift = await player.getTimeShift();
+      controlRef.current?.setCurrentTime(Math.abs(timeShift));
     }
   };
   // End of event listeners section
@@ -306,6 +299,28 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     ) => {
       if (!playerReady) {
         return -1;
+      }
+      if (isLiveStream) {
+        const seekingDuration = countOfSeekingIteration * seekingTimePoint;
+        switch (seekOp) {
+          case ESeekOperations.fastForward: {
+            if (startTime < 10) {
+              return 0;
+            }
+            console.log({
+              seekingDuration,
+              startTime,
+            });
+            return startTime - seekingDuration;
+          }
+          case ESeekOperations.rewind: {
+            if (startTime > duration) {
+              return duration;
+            }
+            return seekingDuration + startTime;
+          }
+        }
+        return;
       }
       const seekingDuration = countOfSeekingIteration * seekingTimePoint;
       switch (seekOp) {
@@ -401,6 +416,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onSeeked={onSeeked}
         onVideoPlaybackQualityChanged={onVideoPlaybackQualityChanged}
         onTimeChanged={onTimeChanged}
+        onTimeShifted={onSeeked}
         onPlay={onPlay}
         onPaused={onPaused}
       />

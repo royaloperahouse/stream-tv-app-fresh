@@ -664,14 +664,14 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
       [],
     );
     const getTimeFormat = (time: number = 0): string => {
-      let formattedString = '00:00:00';
+      let formattedString = '00:00';
       if (time > 0) {
         const hours = Math.floor(time / 3600);
         const minutes = Math.floor((time - hours * 3600) / 60);
         const seconds = time - hours * 3600 - minutes * 60;
         const stringMinutes = minutes > 10 ? `${minutes}` : `0${minutes}`;
         const stringSeconds =
-          seconds > 10 ? `${seconds.toFixed(0)}` : `0${seconds.toFixed(0)}`;
+          seconds > 9 ? `${seconds.toFixed(0)}` : `0${seconds.toFixed(0)}`;
         formattedString = `${hours}:${stringMinutes}:${stringSeconds}`;
         if (hours < 1) {
           formattedString =
@@ -687,25 +687,28 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
       <View style={styles.progressContainer}>
         <View>
           <RohText style={styles.currentTime}>
-            {getTimeFormat(currentTime)}
+            {isLiveStream ? '-' + getTimeFormat(currentTime) : getTimeFormat(currentTime)}
           </RohText>
-          {isLiveStream && <RohText style={styles.liveLabel}>LIVE</RohText>}
         </View>
         <View style={styles.progressBar}>
           <View
             style={[
               styles.progressBarActive,
-              { width: (currentTime / duration) * 100 + '%' },
+              { width: isLiveStream ? (100 - (currentTime / duration) * 100) + '%' : (currentTime / duration) * 100 + '%' },
             ]}
           />
           <View
             style={[
               styles.progressBarInactive,
-              { width: 100 - (currentTime / duration) * 100 + '%' },
+              { width: isLiveStream ? ((currentTime / duration) * 100 + '%') : 100 - (currentTime / duration) * 100 + '%' },
             ]}
           />
         </View>
-        <RohText style={styles.duration}>{getTimeFormat(duration)}</RohText>
+        {isLiveStream ? (
+          <RohText style={styles.liveLabel}>LIVE</RohText>
+        ) : (
+          <RohText style={styles.duration}>{getTimeFormat(duration)}</RohText>
+        )}
       </View>
     );
   },
@@ -1076,8 +1079,8 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(24),
     width: scaleSize(85),
     position: 'absolute',
-    top: 20,
-    left: 5,
+    top: 0,
+    right: -90,
   },
   duration: {
     fontSize: scaleSize(24),
