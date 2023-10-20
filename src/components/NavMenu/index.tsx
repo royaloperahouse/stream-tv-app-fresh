@@ -352,6 +352,10 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         return true;
       }
       if (canExit) {
+        if (isTVOS) {
+          ExitApp.exit();
+          return;
+        }
         exitOfApp();
       }
       return true;
