@@ -306,6 +306,7 @@ function* getEventListLoopWorker(): any {
         yield call(getDigitalEventDetails, {
           isProductionEnv,
           queryOptions: {
+            pageSize: 100,
             fetchLinks:
               'digital_event_video.video,' +
               'digital_event_video.start_time,' +
@@ -468,6 +469,7 @@ function eventPromiseFill(
       getDigitalEventDetails({
         queryOptions: {
           page: i,
+          pageSize: 100,
           fetchLinks:
             'digital_event_video.video,' +
             'digital_event_video.start_time,' +
