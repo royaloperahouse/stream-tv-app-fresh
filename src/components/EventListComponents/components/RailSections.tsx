@@ -522,7 +522,13 @@ const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
         nextFocusLeft={findNodeHandle(touchableRef.current)}
         nextFocusUp={findNodeHandle(touchableRef.current)}
         nextFocusDown={findNodeHandle(touchableRef.current)}
-        onFocus={onFocusCb}>
+        onFocus={onFocusCb}
+        style={{
+          position: 'absolute',
+          bottom: 1,
+          height: 10,
+          width: '100%',
+        }}>
         <View
           style={{
             height: 1,
