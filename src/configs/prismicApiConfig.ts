@@ -17,4 +17,4 @@ export const documentTypes: TDocumentTypeList = Object.freeze({
 });
 
 export const getRefLabelOfPublishing = (isProductionEnv: boolean) =>
-  isProductionEnv ? 'Staging' : 'Staging';
+  isProductionEnv ? 'Master Ref' : 'Staging';
