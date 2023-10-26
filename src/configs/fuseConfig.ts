@@ -1,15 +1,17 @@
 export const detailEventsSearchOptions = {
-  minMatchCharLength: 2,
+  minMatchCharLength: 1,
+  shouldSort: true,
   isCaseSensitive: false,
-  useExtendedSearch: false,
+  useExtendedSearch: true,
+  findAllMatched: true,
   keys: [
     {
       name: 'data.vs_title.text',
-      weight: 0.7,
+      weight: 0.5,
     },
     {
       name: 'data.vs_event_details.title',
-      weight: 0.5,
+      weight: 1,
     },
   ],
 };
