@@ -102,6 +102,7 @@ export type TEvent = {
     vs_background_image: TVSBackgroundImage;
   }>;
   vs_background_bottom_image: TVSBackgroundImage;
+  vs_event_card_label: string;
   vs_subtags: Array<{ tag: string }>; //example Popular opera
   vs_labels: Array<{ tag: string }>; //example Available soon
   vs_genres: Array<{ tag: string }>; //example Romance

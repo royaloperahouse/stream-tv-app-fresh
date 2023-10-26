@@ -104,7 +104,6 @@ const ActionButtonList = forwardRef<
       }
       if (indexOfFocusedItem === buttonList.length - 1) {
         timeoutIdRef.current = setTimeout(() => {
-          console.log('go down on');
           goDownOn();
           timeoutIdRef.current = null;
         }, 200);

@@ -128,6 +128,7 @@ export type TEventDetailsScreensParamContextProps = {
     videoQualityBitrate: number;
     videoQualityId: 'high' | 'medium' | 'normal';
     playTrailer?: boolean;
+    isComingSoon: boolean;
   };
   [eventDetailsScreenNames.cast]: {
     nextSectionTitle?: string;

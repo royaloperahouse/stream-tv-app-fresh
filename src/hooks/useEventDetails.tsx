@@ -47,6 +47,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     snapshotImageUrl,
     vs_guidance,
     vs_guidance_details,
+    isComingSoon,
   } = getGeneralInfo(event);
   const { castList, isCastListAvailable } = getCastList(event);
   const { creatives, isCreativesAvailable } = getCreatives(event);
@@ -115,6 +116,7 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
           setPerformanceVideoTimePositionCB,
           videoQualityBitrate,
           videoQualityId,
+          isComingSoon,
         };
         break;
       }
@@ -200,6 +202,7 @@ const getGeneralInfo = (
   snapshotImageUrl: string;
   vs_guidance: string;
   vs_guidance_details: string;
+  isComingSoon: boolean;
 } => {
   const publishingDate = get(
     event,
@@ -238,6 +241,7 @@ const getGeneralInfo = (
       },
       '',
     ) || '';
+  const isComingSoon = event.vs_event_card_label === 'Coming soon';
 
   return {
     publishingDate,
@@ -246,6 +250,7 @@ const getGeneralInfo = (
     snapshotImageUrl,
     vs_guidance,
     vs_guidance_details,
+    isComingSoon,
   };
 };
 
@@ -649,7 +654,7 @@ const useGetExtras = (
               case 'corps':
                 if (
                   response.results.find(
-                    item => item.data.video.video_type === 'performance',
+                    item => item?.data?.video?.video_type === 'performance',
                   )
                 ) {
                   acc.extras.push(result);

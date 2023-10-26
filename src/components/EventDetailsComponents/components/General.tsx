@@ -109,31 +109,34 @@ const General: React.FC<
     setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
+    isComingSoon
   } = params;
   const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
   const [closeCountDown, setCloseCountDown] = useState(false);
   const goDownRef = useRef<TGoDownRef>(null);
   const timezoneOffset = new Date().getTimezoneOffset();
-  const startDateReactNative = performanceInfo ? performanceInfo.startDate
-    ? new Date(
-        parseInt(performanceInfo.startDate.slice(0, 4), 10),
-        parseInt(performanceInfo.startDate.slice(5, 7), 10) - 1,
-        parseInt(performanceInfo.startDate.slice(8, 10), 10),
-        parseInt(performanceInfo.startDate.slice(11, 13), 10) -
-          timezoneOffset / 60,
-        parseInt(performanceInfo.startDate.slice(14, 16), 10),
-        parseInt(performanceInfo.startDate.slice(17, 19), 10),
-        0,
-      )
-    : 0 : 0;
-  const showCountDownTimer =
-    performanceInfo ?
-    performanceInfo.startDate &&
-    isFocused &&
-    !closeCountDown &&
-    isValid(new Date(startDateReactNative)) &&
-    isAfter(new Date(startDateReactNative), new Date()) : false;
+  const startDateReactNative = performanceInfo
+    ? performanceInfo.startDate
+      ? new Date(
+          parseInt(performanceInfo.startDate.slice(0, 4), 10),
+          parseInt(performanceInfo.startDate.slice(5, 7), 10) - 1,
+          parseInt(performanceInfo.startDate.slice(8, 10), 10),
+          parseInt(performanceInfo.startDate.slice(11, 13), 10) -
+            timezoneOffset / 60,
+          parseInt(performanceInfo.startDate.slice(14, 16), 10),
+          parseInt(performanceInfo.startDate.slice(17, 19), 10),
+          0,
+        )
+      : 0
+    : 0;
+  const showCountDownTimer = performanceInfo
+    ? performanceInfo.startDate &&
+      isFocused &&
+      !closeCountDown &&
+      isValid(new Date(startDateReactNative)) &&
+      isAfter(new Date(startDateReactNative), new Date())
+    : false;
   const performanceVideoInFocus = useRef<
     { pressingHandler: () => void } | null | undefined
   >(null);
@@ -685,6 +688,9 @@ const General: React.FC<
     ) {
       return false;
     }
+    if (isComingSoon && item.key === 'WatchNow') {
+      return false;
+    }
     if ((!performanceInfo || showCountDownTimer) && item.key === 'WatchNow') {
       return false;
     }
@@ -781,9 +787,10 @@ const General: React.FC<
                 {`AVAILABLE FROM ${formattedDate.toUpperCase()}`}
               </RohText>
             ) : null}
-            {!availableFrom && !!duration ? (
+            {!availableFrom && !isComingSoon && !!duration ? (
               <RohText style={styles.description}>{duration}</RohText>
             ) : null}
+            {isComingSoon ? <RohText style={styles.description}>COMING SOON</RohText> : null}
           </OverflowingContainer>
           {showCountDownTimer ? (
             <CountDown
