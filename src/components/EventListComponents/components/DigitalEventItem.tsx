@@ -153,7 +153,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       }
       FocusManager.switchOffFirstLounch();
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
-      scrollToRailItem(sectionIndex, selectedItemIndex || 0);
+      isTVOS && scrollToRailItem(sectionIndex, selectedItemIndex || 0);
       if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
         setFirstItemFocusable(
           firstFocusItenKey,
