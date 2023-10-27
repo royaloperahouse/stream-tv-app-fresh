@@ -95,7 +95,7 @@ const Extras: React.FC<
         hasTVPreferredFocus: true,
       });
     }
-    goBackButtonuManager.showGoBackButton();
+    setTimeout(() => goBackButtonuManager.showGoBackButton(), 500);
     if (typeof clearLoadingState === 'function') {
       clearLoadingState();
     }

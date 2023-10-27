@@ -92,7 +92,7 @@ const EventVideoScreen: React.FC<
         accessible: true,
       });
     }
-    goBackButtonuManager.showGoBackButton();
+    setTimeout(() => goBackButtonuManager.showGoBackButton(), 500);
     if (typeof clearLoadingState === 'function') {
       clearLoadingState();
     }
