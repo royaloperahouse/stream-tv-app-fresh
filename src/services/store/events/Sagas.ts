@@ -501,6 +501,8 @@ function videoPromiseFill(
   return Promise.allSettled(allPromises);
 }
 
+const TITLE_ARTICLES_REG_EXP = /^(la|le|les|the|il|l|das|der|die|a|l') |^l'/;
+
 function groupDigitalEvents(digitalEventsDetail: Array<any>): any {
   return digitalEventsDetail.reduce<any>(
     (acc, digitalEventDetail) => {
@@ -510,6 +512,7 @@ function groupDigitalEvents(digitalEventsDetail: Array<any>): any {
         last_publication_date: digitalEventDetail.last_publication_date,
         data: {
           ...digitalEventDetail.data,
+          filterField: digitalEventDetail.data.vs_title[0].text.toLocaleLowerCase().replace(TITLE_ARTICLES_REG_EXP, ''),
           vs_videos: digitalEventDetail.data.vs_videos.filter(
             (videoObj: TVSVideo) => videoObj?.video?.isBroken === false,
           ),

@@ -6,11 +6,7 @@ export const detailEventsSearchOptions = {
   findAllMatched: true,
   keys: [
     {
-      name: 'data.vs_title.text',
-      weight: 0.5,
-    },
-    {
-      name: 'data.vs_event_details.title',
+      name: 'data.filterField',
       weight: 1,
     },
   ],
