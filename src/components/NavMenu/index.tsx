@@ -304,9 +304,23 @@ const NavMenu: React.FC<TNavMenuProps> = ({
   const setMenuFocus = useCallback(
     (id: TRoute['navMenuScreenName']) => {
       if (
+        navMenuWidth.value !== widthWithFocus &&
+        state.routeNames[state.index] !== id
+      ) {
+        navigation.navigate(state.routeNames[state.index]);
+        currenItemInFocus.current = state.routeNames[state.index];
+        navMenuWidth.value = widthWithFocus;
+        buttonsRefs?.current[
+          currenItemInFocus.current
+        ]?.current?.setNativeProps?.({
+          hasTVPreferredFocus: true,
+        });
+      }
+      if (
         state.routeNames[state.index] !== id &&
         !FocusManager.getFirstLounch() &&
-        !navMenuIsLocked
+        !navMenuIsLocked &&
+        navMenuWidth.value === widthWithFocus
       ) {
         navigation.navigate(id);
         navMenuWidth.value = widthWithFocus;

@@ -154,7 +154,6 @@ export const NavMenuScreenRedirect = forwardRef<
           .map(([_, value]) => value);
   /*
     !can be used not only to navigate between nav menu and content screen
-  
    */
   const redirectFromContent = navMenuNodesRefs?.[screenName]?.current
     ? [navMenuNodesRefs[screenName].current]

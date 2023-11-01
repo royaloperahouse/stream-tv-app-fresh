@@ -181,11 +181,11 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
 
   useEffect(() => {
     if (currentPosition[1] !== 0) {
-      navMenuManager.lockNavMenu();
+      isTVOS && navMenuManager.lockNavMenu();
     }
 
     if (currentPosition[1] === 0) {
-      navMenuManager.unlockNavMenu();
+      isTVOS && navMenuManager.unlockNavMenu();
     }
   }, [currentPosition]);
   const isAccessible = (accessibleItemInSectionIndex: number, accessibleSectionForCheckIndex: number) => {
@@ -451,7 +451,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
                   // TODO make accessible for TVOS
-                  accessible: true, //isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true, //need to improve for all other items than first
+                  accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true,
                 });
               }}
             />
