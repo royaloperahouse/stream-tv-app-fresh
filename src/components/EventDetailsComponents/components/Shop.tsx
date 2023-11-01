@@ -65,14 +65,14 @@ const Shop: React.FC<
         </View>
         <View style={{ flex: 1 }}>
           <View style={styles.wrapper}>
-            <TouchableHighlight style={styles.descriptionContainer} onFocus={onContentReady}>
+            <TouchableHighlight style={styles.descriptionContainer} onFocus={onContentReady} hasTVPreferredFocus>
               <View style={styles.titleContainer}>
                 <RohText style={styles.title}>{shop.title}</RohText>
                 <RohText style={styles.description}>{shop.standfirst}</RohText>
                 <RohText style={styles.description}>{shop.body}</RohText>
                 <RohText style={styles.linkDescription}>Scan the code to buy or visit:</RohText>
                 <RohText style={styles.link}>{shop.imageLink}</RohText>
-                <RohImage source={shop.image.url} style={{width: scaleSize(300), height: scaleSize(300), marginTop: 25}}/>
+                <RohImage source={shop.image.url} style={{width: scaleSize(300), height: scaleSize(300), marginTop: isTVOS ? 25 : 10}}/>
               </View>
             </TouchableHighlight>
             <RohImage
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(isTVOS ? 120 : 230),
+    marginTop: scaleSize(isTVOS ? 120 : 120),
     marginRight: scaleSize(10),
     width: scaleSize(100),
   },
