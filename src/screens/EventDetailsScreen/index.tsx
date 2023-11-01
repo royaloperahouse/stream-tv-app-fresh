@@ -72,7 +72,7 @@ const EventDetailsScreen: React.FC<
       <GoBack />
       <SectionsParamsComtextProvider
         params={{ ...sectionsParams, moveToSettings }}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
           {sectionsCollection.map(section => (
             <Stack.Screen
               key={section.key}
