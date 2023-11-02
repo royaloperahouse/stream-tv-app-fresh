@@ -12,6 +12,7 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
   cancelActionHandler: cancelActionHandler = () => {},
   videoTitle,
   fromTime,
+  isLiveStream,
 }) => {
   const resumeButtonTitle = `Resume from ${fromTime}`;
   useLayoutEffect(() => {
@@ -49,7 +50,7 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
             onPress={primaryActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
               <RohText style={styles.primaryActionButtonText}>
-                {resumeButtonTitle}
+                {isLiveStream ? 'Watch Live' : resumeButtonTitle}
               </RohText>
             </View>
           </TouchableHighlightWrapper>

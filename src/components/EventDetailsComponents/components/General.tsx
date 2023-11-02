@@ -367,10 +367,14 @@ const General: React.FC<
                   endDate: performanceInfo.endDate,
                   poster:
                     'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
-                  offset: rolledBackPos.toString(),
+                  offset: performanceInfo.isLiveStream
+                    ? '0'
+                    : rolledBackPos.toString(),
                   title: videoTitle,
                   analytics: {
-                    videoId: videoFromPrismic.dieseId ? videoFromPrismic.dieseId.replace('_', '-') : '',
+                    videoId: videoFromPrismic.dieseId
+                      ? videoFromPrismic.dieseId.replace('_', '-')
+                      : '',
                     title: videoTitle,
                     buildInfoForBitmovin,
                     customData3: videoQualityId,

@@ -202,6 +202,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     if (cloneProps.configuration.offset && !isLiveStream) {
       seekTo(Number(cloneProps.configuration.offset));
     }
+    if (Number(cloneProps.configuration.offset) === 0 && isLiveStream) {
+      await player.timeShift(await player.getMaxTimeShift());
+    }
     setPlayerReady(true);
   }, [
     autoPlay,
