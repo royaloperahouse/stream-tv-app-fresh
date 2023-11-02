@@ -10,6 +10,7 @@ const ErrorModal: React.FC<TGlobalModalContentProps> = ({
   title = 'Error',
   subtitle = '',
   fromDeepLink = false,
+  fromInternetConnection = false,
   confirmActionHandler = () => {},
 }) => {
   return (
@@ -34,7 +35,7 @@ const ErrorModal: React.FC<TGlobalModalContentProps> = ({
             onPress={confirmActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
               <RohText style={styles.primaryActionButtonText}>
-                {fromDeepLink ? 'Explore' : 'Try again'}
+                {fromInternetConnection ? 'Exit' : fromDeepLink ? 'Explore' : 'Try again'}
               </RohText>
             </View>
           </TouchableHighlightWrapper>

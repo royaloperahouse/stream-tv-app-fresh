@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@hooks/redux';
 import { introScreenShowSelector } from '@services/store/auth/Selectors';
 import {
@@ -27,6 +27,10 @@ import { getSubscribeInfo, verifyDevice } from '@services/apiClient';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { isTVOS } from 'configs/globalConfig';
 import formatISO from 'date-fns/formatISO';
+import { globalModalManager } from 'components/GlobalModals';
+import { ErrorModal } from 'components/GlobalModals/variants';
+import ExitApp from 'components/ExitApp';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 type TAppLayoutProps = {};
 const AppLayout: React.FC<TAppLayoutProps> = () => {
@@ -34,6 +38,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
   const appState = useRef(AppState.currentState);
   const showIntroScreen = useAppSelector(introScreenShowSelector);
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+  const [networkAvailable, setNetworkAvailable] = useState(true);
   useEffect(() => {
     const regExpPattern = /^rohtvapp:\/\/events\/([^/]+)$/g;
     Linking.getInitialURL().then((url: string | null) => {
@@ -73,7 +78,26 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
       listnerCB.remove();
     };
   }, [dispatch]);
+  const netInfo = useNetInfo();
   useEffect(() => {
+    if (netInfo.isInternetReachable === false) {
+      setNetworkAvailable(false);
+      RNBootSplash.hide().then(() => {
+        globalModalManager.openModal({
+          contentComponent: ErrorModal,
+          contentProps: {
+            confirmActionHandler: () => {
+              globalModalManager.closeModal(() => {
+                ExitApp.exit();
+              });
+            },
+            fromInternetConnection: true,
+            title: 'Connection error',
+            subtitle: 'There is no internet connection.\nPress the button below to exit the application and check your internet connectivity.',
+          },
+        });
+      });
+    }
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (
         appState.current.match(/inactive|background/) &&
@@ -165,7 +189,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
     };
   }, []);
 
-  if (showIntroScreen) {
+  if (showIntroScreen && networkAvailable) {
     return <IntroScreen />;
   }
   return <MainLayout />;
