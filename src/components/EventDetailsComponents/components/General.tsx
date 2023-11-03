@@ -237,7 +237,7 @@ const General: React.FC<
     ({
       url,
       poster = '',
-      offset = '0.0',
+      offset,
       title: playerTitle = '',
       subtitle = '',
       onClose = () => {},
@@ -349,6 +349,7 @@ const General: React.FC<
 
         if (performanceVideoTimePosition) {
           const fromTime = new Date(0);
+          console.log('first if');
           const intPosition = parseInt(performanceVideoTimePosition);
           let rolledBackPos = intPosition - resumeRollbackTime;
           if (performanceInfo.startDate && !performanceInfo.endDate) {
@@ -399,6 +400,7 @@ const General: React.FC<
                 openPlayer({
                   url: manifestInfo.data.data.attributes.hlsManifestUrl,
                   isLiveStream: performanceInfo.isLiveStream,
+                  offset: performanceInfo.isLiveStream ? undefined : '0.0',
                   startDate: performanceInfo.startDate,
                   endDate: performanceInfo.endDate,
                   poster:
@@ -432,7 +434,89 @@ const General: React.FC<
                 });
               },
               videoTitle: videoTitle,
+              isLiveStream: performanceInfo.isLiveStream,
               fromTime: fromTime.toISOString().substr(11, 8),
+            },
+          });
+          return;
+        }
+        if (performanceInfo.isLiveStream) {
+          globalModalManager.openModal({
+            contentComponent: СontinueWatchingModal,
+            contentProps: {
+              confirmActionHandler: () => {
+                openPlayer({
+                  url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  isLiveStream: performanceInfo.isLiveStream,
+                  startDate: performanceInfo.startDate,
+                  endDate: performanceInfo.endDate,
+                  poster:
+                    'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+                  title: videoTitle,
+                  analytics: {
+                    videoId: videoFromPrismic.dieseId
+                      ? videoFromPrismic.dieseId.replace('_', '-')
+                      : '',
+                    title: videoTitle,
+                    buildInfoForBitmovin,
+                    customData3: videoQualityId,
+                    userId: customerId ? String(customerId) : null,
+                  },
+                  onClose: closePlayer({
+                    savePositionCB,
+                    videoId: videoFromPrismic.videoId,
+                    eventId: videoFromPrismic.eventId,
+                    clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
+                    ref,
+                    isProductionEnv,
+                  }),
+                  offset: '0',
+                  guidance: vs_guidance,
+                  guidanceDetails: vs_guidance_details,
+                  videoQualityBitrate,
+                  showVideoInfo: !isProductionEnv,
+                });
+              },
+              rejectActionHandler: () => {
+                openPlayer({
+                  url: manifestInfo.data.data.attributes.hlsManifestUrl,
+                  isLiveStream: performanceInfo.isLiveStream,
+                  startDate: performanceInfo.startDate,
+                  endDate: performanceInfo.endDate,
+                  poster:
+                    'https://actualites.music-opera.com/wp-content/uploads/2019/09/14OPENING-superJumbo.jpg',
+                  title: videoTitle,
+                  onClose: closePlayer({
+                    savePositionCB,
+                    videoId: videoFromPrismic.videoId,
+                    eventId: videoFromPrismic.eventId,
+                    clearLoadingState,
+                    dieseVideoId: videoFromPrismic.dieseId,
+                    ref,
+                    isProductionEnv,
+                  }),
+                  analytics: {
+                    videoId: videoFromPrismic.dieseId ? videoFromPrismic.dieseId.replace('_', '-') : '',
+                    title: videoTitle,
+                    buildInfoForBitmovin,
+                    customData3: videoQualityId,
+                    userId: customerId ? String(customerId) : null,
+                  },
+                  guidance: vs_guidance,
+                  guidanceDetails: vs_guidance_details,
+                  videoQualityBitrate,
+                  showVideoInfo: !isProductionEnv,
+                  offset: undefined,
+                });
+              },
+              cancelActionHandler: () => {
+                globalModalManager.closeModal(() => {
+                  closeModal(ref, clearLoadingState);
+                });
+              },
+              videoTitle: videoTitle,
+              isLiveStream: performanceInfo.isLiveStream,
             },
           });
           return;

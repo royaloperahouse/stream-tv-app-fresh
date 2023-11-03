@@ -186,8 +186,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     let duration = String(await player.getDuration());
     if (isLiveStream && duration) {
+      console.log(cloneProps.configuration);
       duration = Math.abs(await player.getMaxTimeShift()).toFixed(0);
-      player.timeShift(0);
+      await player.timeShift(await player.getMaxTimeShift());
       if (+duration > 60 * 60 * 24) {
         duration = (60 * 60 * 24 - 1).toString();
       }
@@ -200,10 +201,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       setDuration(initDuration);
     }
     if (cloneProps.configuration.offset && !isLiveStream) {
-      seekTo(Number(cloneProps.configuration.offset));
+      await seekTo(Number(cloneProps.configuration.offset));
     }
     if (Number(cloneProps.configuration.offset) === 0 && isLiveStream) {
-      await player.timeShift(await player.getMaxTimeShift());
+      await player.timeShift(0);
     }
     setPlayerReady(true);
   }, [
@@ -310,10 +311,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
             if (startTime < 10) {
               return 0;
             }
-            console.log({
-              seekingDuration,
-              startTime,
-            });
             return startTime - seekingDuration;
           }
           case ESeekOperations.rewind: {
