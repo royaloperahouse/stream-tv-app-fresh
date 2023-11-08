@@ -123,6 +123,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
           />
           <Button
             text="clear"
+            ref={lastButtonInFirstRowRef}
             onPress={clearLettersFromSearch}
             style={{
               height: cellHeight,
@@ -144,15 +145,6 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <Button
-                ref={
-                  keyboardData.length - 1 < cols
-                    ? index === keyboardData.length - 1
-                      ? lastButtonInFirstRowRef
-                      : undefined
-                    : index + 1 === cols
-                    ? lastButtonInFirstRowRef
-                    : undefined
-                }
                 text={item.text}
                 canMoveDown={index <= cols * (rows - 1)}
                 onPress={addLetterToSearch}
