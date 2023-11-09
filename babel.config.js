@@ -27,6 +27,7 @@ module.exports = {
           '@themes': './src/themes/',
           '@utils': './src/utils/',
           '@navigations': './src/navigations/',
+          '@royaloperahouse/feature-management-internals': './node_modules/@royaloperahouse/feature-management-internals/dist/index.es.js'
         },
       },
     ],
