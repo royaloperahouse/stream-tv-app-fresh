@@ -236,6 +236,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         animated: false,
         index: itemIndex,
       });
+      setTimeout(() => setCurrentPosition([sectionIndex, itemIndex]), 200);
     }
   }, [itemIndex, sectionIndex]);
 
@@ -451,7 +452,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   hasEndlessScroll: sections.length > 2,
                   scrollToRailItem,
                   // TODO make accessible for TVOS
-                  accessible: isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true,
+                  accessible: true, //isTVOS ? isAccessible(railItemIndexInList, sectionItemIndex) : true,
                 });
               }}
             />

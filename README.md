@@ -10,5 +10,6 @@
 ### XCode workaround
 Inside of XCode project in RohTVApp-tvOS tab, inside `Build Phases` line `Run Script` contains script that put MinimumOSVersion inside Info.plist. This script is needed for Hermes framework, please update this script as you update target deployment version.
 
+Sometimes app won't start on real device saying that "Failed code verification for hermes.framework" or "Integrity of the app could not be verified", fix provided [here](https://stackoverflow.com/a/43017549)
 ### Countdown component
 It seems like library `react-native-countdown-component` is abandoned. It uses some deprecated functions, workaround is provided on GitHub [here](https://github.com/talalmajali/react-native-countdown-component/issues/123). Should be applied after each library installation!
