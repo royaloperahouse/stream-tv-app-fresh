@@ -38,6 +38,7 @@ const actionsBlackList = [
 
 const requestBlackList = /symbolicate/;
 
+export let roh_rlog;
 export default Reactotron.configure({
   name: 'ROH App',
   getClientId: getUniqueId, //need for singl reactotron connection after refresh or reload;
@@ -53,7 +54,7 @@ export default Reactotron.configure({
     overlay: false, // just turning off overlay
   })
   .use(reactotron => {
-    global.roh_rlog = ({
+    roh_rlog = ({
       name = 'A Report',
       preview = 'A Report header',
       value,

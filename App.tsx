@@ -21,7 +21,8 @@ if (__DEV__) {
 
 //as Example
 
-global.roh_rlog({
+import { roh_rlog } from 'services/reactotronDebugger/reactotronConfig';
+roh_rlog({
   name: 'Reactotron Configured',
   preview: 'ROH App',
   important: true,
