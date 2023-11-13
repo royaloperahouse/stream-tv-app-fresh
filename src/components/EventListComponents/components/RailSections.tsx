@@ -23,8 +23,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
-import { isTVOS } from "configs/globalConfig";
-import { navMenuManager } from "components/NavMenu";
+import { isTVOS } from 'configs/globalConfig';
+import { navMenuManager } from 'components/NavMenu';
 
 type TRailSectionsProps = {
   containerStyle?: ViewProps['style'];

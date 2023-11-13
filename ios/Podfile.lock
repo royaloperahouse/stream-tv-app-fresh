@@ -453,7 +453,7 @@ PODS:
     - SDWebImageWebPCoder (~> 0.8.4)
   - RNGestureHandler (2.8.0):
     - React-Core
-  - RNReanimated (3.3.0):
+  - RNReanimated (3.5.4):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -479,13 +479,13 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.22.0):
+  - RNScreens (3.27.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - React-RCTImage
   - RNSentry (4.8.0):
     - React-Core
     - Sentry (= 7.29.0)
-  - RNSVG (13.10.0):
+  - RNSVG (13.14.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -733,10 +733,10 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
-  RNReanimated: 30d19c5096eca485fbd3e7d13f5de2588b07302f
-  RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
+  RNReanimated: 89568bd6754413a03e12a0d3eb8a9e443004faa9
+  RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
   RNSentry: db7fd7b66efda28885e4e904a8b5e7349aec61c1
-  RNSVG: 80584470ff1ffc7994923ea135a3e5ad825546b9
+  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   Sentry: 4272663eb0eda312024d795ca3f5a562a8ce5e18
