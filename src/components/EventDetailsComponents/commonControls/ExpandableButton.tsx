@@ -100,7 +100,7 @@ const ExpandableButton = forwardRef<any, Props>(
           canMoveLeft={!freezeButton}
           hasTVPreferredFocus={hasTVPreferredFocus}
           style={styles.button}
-          accessible={true}
+          accessible={accessible}
           styleFocused={styles.buttonActive}
           onBlur={() => {
             if (typeof blurCallback === 'function') {
