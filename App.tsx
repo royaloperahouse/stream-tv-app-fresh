@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-native/tvos-types.d';
 import 'react-native-url-polyfill/auto';
 import { Provider } from 'react-redux';
 import { store } from '@services/store';
