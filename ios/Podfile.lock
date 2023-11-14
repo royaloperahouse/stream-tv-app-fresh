@@ -320,8 +320,6 @@ PODS:
   - React-jsinspector (0.72.6-1)
   - React-logger (0.72.6-1):
     - glog
-  - react-native-flipper (0.125.0):
-    - React-Core
   - react-native-netinfo (9.4.1):
     - React-Core
   - react-native-safe-area-context (4.4.1):
@@ -451,7 +449,8 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNGestureHandler (2.8.0):
+  - RNGestureHandler (2.13.4):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNReanimated (3.5.4):
     - DoubleConversion
@@ -482,9 +481,9 @@ PODS:
   - RNScreens (3.27.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (4.8.0):
+  - RNSentry (5.13.0):
     - React-Core
-    - Sentry (= 7.29.0)
+    - Sentry/HybridSDK (= 8.15.2)
   - RNSVG (13.14.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -493,9 +492,9 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry (7.29.0):
-    - Sentry/Core (= 7.29.0)
-  - Sentry/Core (7.29.0)
+  - Sentry/HybridSDK (8.15.2):
+    - SentryPrivate (= 8.15.2)
+  - SentryPrivate (8.15.2)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -524,7 +523,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
-  - react-native-flipper (from `../node_modules/react-native-flipper`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -569,6 +567,7 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - Sentry
+    - SentryPrivate
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -617,8 +616,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
-  react-native-flipper:
-    :path: "../node_modules/react-native-flipper"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -708,7 +705,6 @@ SPEC CHECKSUMS:
   React-jsiexecutor: e1457a6f60ad70e34f23b46b0ec36b251f14ceb3
   React-jsinspector: d3d529380ded29de8b28d8fcaf08a536a815c8b9
   React-logger: 68992acef8297cac2f0cf3472321112e6955e9f9
-  react-native-flipper: 3d9e214b412b3ce81e0d73bdcdc8097c0b0e8578
   react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   React-NativeModulesApple: 27e8b377e95f25c48ba15c8a12960543db0749af
@@ -732,17 +728,18 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
+  RNGestureHandler: 28d1392c38e539c932d95b29134baf2c01a219ba
   RNReanimated: 89568bd6754413a03e12a0d3eb8a9e443004faa9
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
-  RNSentry: db7fd7b66efda28885e4e904a8b5e7349aec61c1
+  RNSentry: 82667e9889782365bf801645ef4d2a731dcf60df
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: 4272663eb0eda312024d795ca3f5a562a8ce5e18
+  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
+  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: f67f5769ce78049c5fe798bc735f04535c7bc1ac
 
 PODFILE CHECKSUM: 9c366366033a8be1cc0fc94709ac6bed1c433dc4
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.2
