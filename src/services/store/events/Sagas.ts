@@ -406,14 +406,15 @@ function* getEventListLoopWorker(): any {
         logError('something went wrong with PrismicisedRails request', err);
       }
       const countryCode = yield select(countryCodeSelector);
-      const userEmail = yield select(userEmailSelector());
+      const userEmail = yield select(userEmailSelector);
       const featureFlags = yield call(getFeatureFlags, { isProductionEnv });
       const [liveStreamFeatureFlag] =
         featureFlags.results[0].data.body[0].items.filter(
           (featureFlag: any) => {
-            return featureFlag.flag_id === 'livestream-beta-access';
+            return featureFlag.flag_id === 'livestreaming-beta-access';
           },
         );
+
       const filtered = result.filter((prismicDocument) => {
         const digitalEventVideos = prismicDocument.data.vs_videos;
         if (!prismicDocument.data.tv_app_cross_sell_document?.data) {
