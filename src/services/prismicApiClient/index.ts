@@ -212,4 +212,14 @@ export const getPrismicisedRails = (
     isProductionEnv: queryObj.isProductionEnv,
   });
 
+export const getFeatureFlags = (
+  queryObj: TQueryObj,
+): Promise<prismicT.Query<prismicT.PrismicDocument>> =>
+  commonQuery({
+    queryPredicates: [
+      Prismic.predicate.at('document.type', documentTypes.featureFlags),
+    ],
+    isProductionEnv: queryObj.isProductionEnv,
+  });
+
 export default prismicApiClient;
