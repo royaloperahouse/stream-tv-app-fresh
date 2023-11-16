@@ -1,0 +1,138 @@
+diff --git a/node_modules/react-native-gesture-handler/RNGestureHandler.podspec b/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
+index 382d8d6..6b6c047 100644
+--- a/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
++++ b/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
+@@ -15,6 +15,7 @@ Pod::Spec.new do |s|
+   s.author       = { package["author"]["name"] => package["author"]["email"] }
+   s.source       = { :git => "https://github.com/software-mansion/react-native-gesture-handler", :tag => "#{s.version}" }
+   s.source_files = "ios/**/*.{h,m,mm}"
++  s.tvos.exclude_files = "ios/Handlers/*.{h,m,mm}"
+   s.requires_arc = true
+   s.platforms       = { ios: apple_platform, tvos: apple_platform }
+ 
+diff --git a/node_modules/react-native-gesture-handler/ios/RNGestureHandler.m b/node_modules/react-native-gesture-handler/ios/RNGestureHandler.m
+index ac9c7c6..2d7f00d 100644
+--- a/node_modules/react-native-gesture-handler/ios/RNGestureHandler.m
++++ b/node_modules/react-native-gesture-handler/ios/RNGestureHandler.m
+@@ -358,19 +358,20 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
+   while (reactView != nil && reactView.reactTag == nil) {
+     reactView = reactView.superview;
+   }
+-
++#if !TARGET_OS_TV
+   for (UIGestureRecognizer *recognizer in reactView.gestureRecognizers) {
+     if ([recognizer isKindOfClass:[RNDummyGestureRecognizer class]]) {
+       return recognizer.gestureHandler;
+     }
+   }
+-
++#endif
+   return nil;
+ }
+ 
+ - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+     shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+ {
++#if !TARGET_OS_TV
+   RNGestureHandler *handler = [RNGestureHandler findGestureHandlerByRecognizer:otherGestureRecognizer];
+   if ([handler isKindOfClass:[RNNativeViewGestureHandler class]]) {
+     for (NSNumber *handlerTag in handler->_handlersToWaitFor) {
+@@ -379,7 +380,7 @@ static NSHashTable<RNGestureHandler *> *allGestureHandlers;
+       }
+     }
+   }
+-
++#endif
+   return NO;
+ }
+ 
+diff --git a/node_modules/react-native-gesture-handler/ios/RNGestureHandlerManager.mm b/node_modules/react-native-gesture-handler/ios/RNGestureHandlerManager.mm
+index ea85139..eea5765 100644
+--- a/node_modules/react-native-gesture-handler/ios/RNGestureHandlerManager.mm
++++ b/node_modules/react-native-gesture-handler/ios/RNGestureHandlerManager.mm
+@@ -24,6 +24,7 @@
+ #import <React/RCTTouchHandler.h>
+ #endif // RCT_NEW_ARCH_ENABLED
+ 
++#if !TARGET_OS_TV
+ #import "Handlers/RNFlingHandler.h"
+ #import "Handlers/RNForceTouchHandler.h"
+ #import "Handlers/RNHoverHandler.h"
+@@ -34,6 +35,7 @@
+ #import "Handlers/RNPinchHandler.h"
+ #import "Handlers/RNRotationHandler.h"
+ #import "Handlers/RNTapHandler.h"
++#endif
+ 
+ // We use the method below instead of RCTLog because we log out messages after the bridge gets
+ // turned down in some cases. Which normally with RCTLog would cause a crash in DEBUG mode
+@@ -71,6 +73,7 @@ constexpr int NEW_ARCH_NUMBER_OF_ATTACH_RETRIES = 25;
+ 
+ - (void)createGestureHandler:(NSString *)handlerName tag:(NSNumber *)handlerTag config:(NSDictionary *)config
+ {
++#if !TARGET_OS_TV
+   static NSDictionary *map;
+   static dispatch_once_t mapToken;
+   dispatch_once(&mapToken, ^{
+@@ -100,12 +103,14 @@ constexpr int NEW_ARCH_NUMBER_OF_ATTACH_RETRIES = 25;
+ 
+   __weak id<RNGestureHandlerEventEmitter> emitter = self;
+   gestureHandler.emitter = emitter;
++#endif
+ }
+ 
+ - (void)attachGestureHandler:(nonnull NSNumber *)handlerTag
+                toViewWithTag:(nonnull NSNumber *)viewTag
+               withActionType:(RNGestureHandlerActionType)actionType
+ {
++#if !TARGET_OS_TV
+   UIView *view = [_uiManager viewForReactTag:viewTag];
+ 
+ #ifdef RCT_NEW_ARCH_ENABLED
+@@ -159,6 +164,7 @@ constexpr int NEW_ARCH_NUMBER_OF_ATTACH_RETRIES = 25;
+ 
+   // register view if not already there
+   [self registerViewWithGestureRecognizerAttachedIfNeeded:view];
++#endif // TARGET_OS_TV
+ }
+ 
+ - (void)updateGestureHandler:(NSNumber *)handlerTag config:(NSDictionary *)config
+diff --git a/node_modules/react-native-gesture-handler/ios/RNGestureHandlerRegistry.m b/node_modules/react-native-gesture-handler/ios/RNGestureHandlerRegistry.m
+index 7a07e47..36c00d9 100644
+--- a/node_modules/react-native-gesture-handler/ios/RNGestureHandlerRegistry.m
++++ b/node_modules/react-native-gesture-handler/ios/RNGestureHandlerRegistry.m
+@@ -36,28 +36,34 @@
+                       toView:(UIView *)view
+               withActionType:(RNGestureHandlerActionType)actionType
+ {
++#if !TARGET_OS_TV
+   RNGestureHandler *handler = _handlers[handlerTag];
+   RCTAssert(handler != nil, @"Handler for tag %@ does not exists", handlerTag);
+   [handler unbindFromView];
+   handler.actionType = actionType;
+   [handler bindToView:view];
++#endif
+ }
+ 
+ - (void)dropHandlerWithTag:(NSNumber *)handlerTag
+ {
++#if !TARGET_OS_TV
+   RNGestureHandler *handler = _handlers[handlerTag];
+   [handler unbindFromView];
+   [_handlers removeObjectForKey:handlerTag];
++#endif
+ }
+ 
+ - (void)dropAllHandlers
+ {
++#if !TARGET_OS_TV
+   for (NSNumber *tag in _handlers) {
+     RNGestureHandler *handler = _handlers[tag];
+     [handler unbindFromView];
+   }
+ 
+   [_handlers removeAllObjects];
++#endif
+ }
+ 
+ @end
