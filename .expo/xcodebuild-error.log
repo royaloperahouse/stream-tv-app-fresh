@@ -1,0 +1,4 @@
+2023-11-16 11:06:35.917 xcodebuild[77083:11177476] DVTCoreDeviceEnabledState: DVTCoreDeviceEnabledState_Disabled set via user default (DVTEnableCoreDevice=disabled)
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:tvOS Simulator, id:FFF0CBEB-9E7F-412A-A45F-19BBD4453677, OS:16.1, name:Apple TV }
+{ platform:tvOS Simulator, id:FFF0CBEB-9E7F-412A-A45F-19BBD4453677, OS:16.1, name:Apple TV }
