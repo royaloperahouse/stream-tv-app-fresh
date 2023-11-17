@@ -431,6 +431,10 @@ function* getEventListLoopWorker(): any {
             prismicDocument.data.start_time = digitalEventVideo.video.data.start_time;
           }
           if (digitalEventVideo.video.data.video.asset_type === 'live') {
+            if (!liveStreamFeatureFlag) {
+              return false;
+            }
+
             if (!userEmail) {
               return false;
             }
