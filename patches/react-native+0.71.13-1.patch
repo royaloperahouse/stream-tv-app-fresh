@@ -1,0 +1,159 @@
+diff --git a/node_modules/react-native/React-Core.podspec b/node_modules/react-native/React-Core.podspec
+index 6f163bc..8a53445 100644
+--- a/node_modules/react-native/React-Core.podspec
++++ b/node_modules/react-native/React-Core.podspec
+@@ -90,13 +90,15 @@ Pod::Spec.new do |s|
+       exclude_files = exclude_files.append("React/CxxBridge/JSCExecutorFactory.{h,mm}")
+     end
+     ss.exclude_files = exclude_files
+-    ss.ios.exclude_files      = "React/**/RCTTV*.*"
++    ss.ios.exclude_files      = "React/**/RCTTV*.*",
++                                "React/Base/RCTTouchHandlerTV.m"
+     ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
+                                 "React/Views/RCTDatePicker*",
+                                 "React/Views/RCTPicker*",
+                                 "React/Views/RefreshControl/*",
+                                 "React/Views/RCTSlider*",
+-                                "React/Views/RCTSwitch*"
++                                "React/Views/RCTSwitch*",
++                                "React/Base/RCTTouchHandler.m"
+     ss.private_header_files   = "React/Cxx*/*.h"
+   end
+ 
+diff --git a/node_modules/react-native/React/Base/RCTTouchHandlerTV.m b/node_modules/react-native/React/Base/RCTTouchHandlerTV.m
+new file mode 100644
+index 0000000..5383082
+--- /dev/null
++++ b/node_modules/react-native/React/Base/RCTTouchHandlerTV.m
+@@ -0,0 +1,35 @@
++#import <Foundation/Foundation.h>
++
++#import "RCTTouchHandler.h"
++
++#import "RCTAssert.h"
++#import "RCTBridge.h"
++#import "RCTEventDispatcherProtocol.h"
++#import "RCTLog.h"
++#import "RCTSurfaceView.h"
++#import "RCTTouchEvent.h"
++#import "RCTUIManager.h"
++#import "RCTUtils.h"
++#import "UIView+React.h"
++
++@interface RCTTouchHandler () <UIGestureRecognizerDelegate>
++@end
++
++// The touch handler should not be active on tvOS, so tvOS uses this
++// stub implementation that does nothing.
++// Fixes https://github.com/react-native-tvos/react-native-tvos/issues/595
++//
++@implementation RCTTouchHandler
++
++- (instancetype)initWithBridge:(RCTBridge *)bridge
++{
++  return [super initWithTarget:nil action:NULL];
++}
++
++RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
++
++- (void)attachToView:(UIView *)view {}
++- (void)detachFromView:(UIView *)view {}
++- (void)cancel {}
++
++@end
+diff --git a/node_modules/react-native/React/Fabric/RCTSurfacePointerHandlerTV.mm b/node_modules/react-native/React/Fabric/RCTSurfacePointerHandlerTV.mm
+new file mode 100644
+index 0000000..8c59d0f
+--- /dev/null
++++ b/node_modules/react-native/React/Fabric/RCTSurfacePointerHandlerTV.mm
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (c) Meta Platforms, Inc. and affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ */
++
++#import "RCTSurfacePointerHandler.h"
++
++#import <React/RCTIdentifierPool.h>
++#import <React/RCTReactTaggedView.h>
++#import <React/RCTUtils.h>
++#import <React/RCTViewComponentView.h>
++
++#import "RCTConversions.h"
++#import "RCTTouchableComponentViewProtocol.h"
++
++@interface RCTSurfacePointerHandler () <UIGestureRecognizerDelegate>
++@end
++
++// The touch handler should not be active on tvOS, so tvOS uses this
++// stub implementation that does nothing.
++// Fixes https://github.com/react-native-tvos/react-native-tvos/issues/595
++//
++@implementation RCTSurfacePointerHandler
++
++- (instancetype)init
++{
++  return [super initWithTarget:nil action:nil];
++}
++
++RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
++
++- (void)attachToView:(UIView *)view {}
++- (void)detachFromView:(UIView *)view {}
++
++@end
+diff --git a/node_modules/react-native/React/Fabric/RCTSurfaceTouchHandlerTV.mm b/node_modules/react-native/React/Fabric/RCTSurfaceTouchHandlerTV.mm
+new file mode 100644
+index 0000000..25a9bb5
+--- /dev/null
++++ b/node_modules/react-native/React/Fabric/RCTSurfaceTouchHandlerTV.mm
+@@ -0,0 +1,30 @@
++#import "RCTSurfaceTouchHandler.h"
++
++#import <React/RCTIdentifierPool.h>
++#import <React/RCTUtils.h>
++#import <React/RCTViewComponentView.h>
++
++#import "RCTConversions.h"
++#import "RCTSurfacePointerHandler.h"
++#import "RCTTouchableComponentViewProtocol.h"
++
++// The touch handler should not be active on tvOS, so tvOS uses this
++// stub implementation that does nothing.
++// Fixes https://github.com/react-native-tvos/react-native-tvos/issues/595
++//
++@interface RCTSurfaceTouchHandler () <UIGestureRecognizerDelegate>
++@end
++
++@implementation RCTSurfaceTouchHandler
++
++- (instancetype)init
++{
++  return [super initWithTarget:nil action:nil];
++}
++
++RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
++
++- (void)attachToView:(UIView *)view {}
++- (void)detachFromView:(UIView *)view {}
++
++@end
+diff --git a/node_modules/react-native/React/React-RCTFabric.podspec b/node_modules/react-native/React/React-RCTFabric.podspec
+index 999e78d..f6b17d8 100644
+--- a/node_modules/react-native/React/React-RCTFabric.podspec
++++ b/node_modules/react-native/React/React-RCTFabric.podspec
+@@ -32,7 +32,11 @@ Pod::Spec.new do |s|
+   s.source                 = source
+   s.source_files           = "Fabric/**/*.{c,h,m,mm,S,cpp}"
+   s.exclude_files          = "**/tests/*",
+-                             "**/android/*",
++                             "**/android/*"
++  s.tvos.exclude_files     = "Fabric/**/RCTSurfaceTouchHandler.mm",
++                             "Fabric/**/RCTSurfacePointerHandler.mm"
++  s.ios.exclude_files      = "Fabric/**/RCTSurfaceTouchHandlerTV.mm",
++                             "Fabric/**/RCTSurfacePointerHandlerTV.mm"
+   s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
+   s.header_dir             = "React"
+   s.module_name            = "RCTFabric"
