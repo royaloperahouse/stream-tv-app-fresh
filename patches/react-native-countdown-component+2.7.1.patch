@@ -5,7 +5,7 @@ index b546b82..a5bc136 100644
 @@ -39,6 +39,8 @@ class CountDown extends React.Component {
      onFinish: PropTypes.func,
    };
-
+ 
 +  appStateSubscription;
 +
    state = {
@@ -13,16 +13,16 @@ index b546b82..a5bc136 100644
      lastUntil: null,
 @@ -51,12 +53,12 @@ class CountDown extends React.Component {
    }
-
+ 
    componentDidMount() {
 -    AppState.addEventListener('change', this._handleAppStateChange);
 +    this.appStateSubscription = AppState.addEventListener('change', this._handleAppStateChange);
    }
-
+ 
    componentWillUnmount() {
      clearInterval(this.timer);
 -    AppState.removeEventListener('change', this._handleAppStateChange);
 +    this.appStateSubscription.remove()
    }
-
+ 
    componentDidUpdate(prevProps, prevState) {
