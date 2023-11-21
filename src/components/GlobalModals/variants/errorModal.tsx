@@ -27,7 +27,7 @@ const ErrorModal: React.FC<TGlobalModalContentProps> = ({
         <View>
           <TouchableHighlightWrapper
             style={styles.primaryActionButton}
-            hasTVPreferredFocus
+            hasTVPreferredFocus={true}
             canMoveDown={false}
             canMoveLeft={false}
             canMoveRight={false}

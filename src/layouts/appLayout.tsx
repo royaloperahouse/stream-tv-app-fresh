@@ -30,7 +30,7 @@ import formatISO from 'date-fns/formatISO';
 import { globalModalManager } from 'components/GlobalModals';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import ExitApp from 'components/ExitApp';
-import { useNetInfo } from '@react-native-community/netinfo';
+import { addEventListener } from '@react-native-community/netinfo';
 
 type TAppLayoutProps = {};
 const AppLayout: React.FC<TAppLayoutProps> = () => {
@@ -78,11 +78,13 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
       listnerCB.remove();
     };
   }, [dispatch]);
-  const netInfo = useNetInfo();
-  useEffect(() => {
-    if (netInfo.isInternetReachable === false) {
-      setNetworkAvailable(false);
+  addEventListener((state) => {
+    if (state.isInternetReachable === false) {
+      if (networkAvailable) {
+        setNetworkAvailable(false);
+      }
       RNBootSplash.hide().then(() => {
+        globalModalManager.closeModal();
         globalModalManager.openModal({
           contentComponent: ErrorModal,
           contentProps: {
@@ -98,6 +100,8 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
         });
       });
     }
+  });
+  useEffect(() => {
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (
         appState.current.match(/inactive|background/) &&
