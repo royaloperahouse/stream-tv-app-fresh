@@ -8480,6 +8480,11 @@ react-native-gradle-plugin@^0.71.19:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.19.tgz#3379e28341fcd189bc1f4691cefc84c1a4d7d232"
   integrity sha512-1dVk9NwhoyKHCSxcrM6vY6cxmojeATsBobDicX0ZKr7DgUF2cBQRTKsimQFvzH8XhOVXyH8p4HyDSZNIFI8OlQ==
 
+react-native-idle-timer@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-idle-timer/-/react-native-idle-timer-2.2.1.tgz#27d9297587850ddd37a0e6b296ff89bf0e15eef3"
+  integrity sha512-0/nr5TPUX25QB0JVC3q6a3X2jEZ3lFZPrHs4vYAw5vSW4anqtejZh2rawBRn8mk+xGyJ3JaDaf7xRnc8F0Sw9g==
+
 react-native-qrcode-svg@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/react-native-qrcode-svg/-/react-native-qrcode-svg-6.1.2.tgz#a7cb6c10199ab01418a7f7700ce17a6a014f544e"
