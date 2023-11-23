@@ -423,7 +423,7 @@ function* getEventListLoopWorker(): any {
         if (prismicDocument.data.vs_event_card_label === 'Coming soon') {
           return true;
         }
-        return digitalEventVideos.some(digitalEventVideo => {
+        return digitalEventVideos.every(digitalEventVideo => {
           if (!digitalEventVideo?.video?.data?.video) {
             return true;
           }
@@ -431,7 +431,7 @@ function* getEventListLoopWorker(): any {
             prismicDocument.data.start_time = digitalEventVideo.video.data.start_time;
           }
           if (digitalEventVideo.video.data.video.asset_type === 'live') {
-            if (!liveStreamFeatureFlag) {
+            if (!liveStreamFeatureFlag || !liveStreamFeatureFlag.emails) {
               return false;
             }
 
