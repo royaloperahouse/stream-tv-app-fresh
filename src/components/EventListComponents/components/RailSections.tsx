@@ -150,12 +150,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     }
     setTimeout(() => setCurrentPosition([index, itemIndexNumber]), 200);
     if (railStyle && railStyle.height) {
-      sectionsListRef.current.scrollToOffset({
+      sectionsListRef.current?.scrollToOffset({
         animated: true,
-        offset: index * railStyle.height,
+        offset: index * railStyle.height + 5,
       });
     } else {
-      sectionsListRef.current.scrollToIndex({
+      sectionsListRef.current?.scrollToIndex({
         animated: true,
         index,
       });
@@ -166,12 +166,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     if (sectionsListRef.current) {
       scrollToNecessaryRail.current = true;
       if (railStyle && railStyle.height) {
-        sectionsListRef.current.scrollToOffset({
+        sectionsListRef.current?.scrollToOffset({
           animated: false,
-          offset: sectionIndex * railStyle.height,
+          offset: sectionIndex * railStyle.height + 5,
         });
       } else {
-        sectionsListRef.current.scrollToIndex({
+        sectionsListRef.current?.scrollToIndex({
           animated: false,
           index: sectionIndex,
         });
@@ -253,7 +253,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [sections.length],
   );
 
-  const viewableRailItemsChangeHandler = useMemo(
+  const viewableRailItemsChangeHandler = useCallback(
     () =>
       debounce((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
         if (
@@ -268,6 +268,19 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       }, 250),
     [itemIndex],
   );
+
+  useLayoutEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      if (mountedRef && mountedRef.current) {
+        mountedRef.current = false;
+      }
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    initScrollToRail();
+  }, []);
 
   useLayoutEffect(() => {
     let outerBlur: boolean = true;
@@ -331,6 +344,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               initScrollToRail();
               return;
             }
+            console.log('failed ?');
             sectionsListRef.current.scrollToIndex({
               animated: false,
               index: info.index,
@@ -470,7 +484,7 @@ const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
         style={{
           position: 'absolute',
           bottom: 1,
-          height: 10,
+          height: 2,
           width: '100%',
         }}>
         <View

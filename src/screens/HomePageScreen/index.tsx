@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
+    marginBottom: 5,
     height: scaleSize(375), // need to check how it will showed on android
   },
   loadingContainer: {
