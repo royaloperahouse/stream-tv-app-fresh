@@ -101,7 +101,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const [loaded, setLoaded] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
   const [duration, setDuration] = useState(0.0);
-  const subtitleCue = '';
+  const subtitleCue = useRef('');
   const [videoInfo, setVideoInfo] = useState<string>();
 
   const controlRef = useRef<TPlayerControlsRef | null>(null);
@@ -201,6 +201,22 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   // Event listeners section
   const onReady = useCallback(async () => {
+    let subtitles = [...(await player.getAvailableSubtitles())];
+    if (subtitles.filter((sub) => sub.identifier === 'bitmovin-off').length === 0) {
+      if (subtitles.length > 0) {
+        subtitles.push({
+          identifier: 'bitmovin-off',
+          label: 'off',
+          url: '',
+        });
+      } else {
+        subtitles = [];
+      }
+    } else if (subtitles.length === 1) {
+      subtitles = [];
+    }
+
+    controlRef.current?.loadSubtitleList(subtitles);
     if (autoPlay) {
       player.play();
     }
@@ -377,8 +393,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const setSubtitle = useCallback(
-    (trackID: string) =>
-      player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID),
+    (trackID: string) => {
+      player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID);
+      console.log(trackID);
+    },
     [player],
   );
 
@@ -434,6 +452,16 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     );
   };
 
+  const onCueEnter = async (cue) => {
+    if (!controlRef.current) {
+      return;
+    }
+    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+      console.log(cue.text);
+      controlRef.current?.setSubtitleCue(cue.text);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.defaultPlayerStyle}>
       <PlayerView
@@ -446,6 +474,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onTimeShifted={onSeeked}
         onPlay={onPlay}
         onPaused={onPaused}
+        onCueEnter={onCueEnter}
       />
 
       {!playerReady && (
@@ -470,7 +499,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onClose={actionClose}
         setSubtitle={setSubtitle}
         autoPlay={autoPlay}
-        subtitleCue={subtitleCue}
+        subtitleCue={subtitleCue.current}
         calculateTimeForSeeking={calculateTimeForSeeking}
         seekTo={seekTo}
         videoInfo={videoInfo}

@@ -61,6 +61,7 @@ export type TPlayerControlsRef = {
   controlFadeOut?: () => void;
   setSeekQueueFree?: () => void;
   seekUpdatingFinished?: () => void;
+  setSubtitleCue?: (text: string) => void;
 };
 
 const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
@@ -76,7 +77,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       setSubtitle,
       playerLoaded,
       autoPlay,
-      subtitleCue,
       calculateTimeForSeeking,
       seekTo,
       videoInfo,
@@ -84,6 +84,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       guidanceDetails,
       isLiveStream,
     } = props;
+    const [subtitleCueText, setSubtitleCueText] = useState('');
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
     const activeAnimation = useRef<Animated.Value>(
       new Animated.Value(1),
@@ -164,11 +165,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
             centralControlsRef.current.setPlay(play);
           }
         },
+        setSubtitleCue: (text: string) => {
+          setSubtitleCueText(text);
+        },
         loadSubtitleList: (subtitles: TSubtitles) => {
           if (!controlMountedRef.current) {
             return;
           }
-          if (subtitles.length > 1) {
+          if (subtitles.length > 0) {
             setHasSubtitles(true);
           }
           if (typeof subtitlesRef?.current?.setsubtitleList === 'function') {
@@ -628,9 +632,9 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           ref={subtitlesRef}
           setSubtitle={setSubtitle}
         />
-        {subtitleCue !== '' && (
+        {subtitleCueText !== '' && (
           <View style={styles.subtitleCueContainer}>
-            <RohText style={styles.subtitleCueText}>{subtitleCue}</RohText>
+            <RohText style={styles.subtitleCueText}>{subtitleCueText}</RohText>
           </View>
         )}
       </SafeAreaView>
@@ -722,7 +726,7 @@ type TSubtitlesProps = {
 };
 export type TSubtitles = Array<{
   url: string;
-  id: string;
+  identifier: string;
   label: string;
 }>;
 
@@ -868,7 +872,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
             </RohText>
             <FlatList
               data={subtitleList}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.identifier}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style={styles.subtitlesFlatListContainer}
@@ -878,7 +882,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
                     (subtitlesActiveItemRef.current === null && index === 0) ||
                     subtitlesActiveItemRef.current === item.id
                   }
-                  onPress={() => onPressHandler(item.id)}
+                  onPress={() => onPressHandler(item.identifier)}
                   currentIndex={index}
                   itemsLength={subtitleList.length}
                   text={item.label === 'off' ? 'Off' : item.label}
@@ -1127,7 +1131,7 @@ const styles = StyleSheet.create({
     height: scaleSize(631),
   },
   subtitlesFlatListContainer: {
-    flex: 1,
+    flex: 0,
   },
   subtitleText: { color: 'white', fontSize: scaleSize(24) },
   infoText: {
