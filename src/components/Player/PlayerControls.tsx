@@ -876,11 +876,11 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style={styles.subtitlesFlatListContainer}
-              renderItem={({ item, index }) => (
+              renderItem={({ item, index }) => console.log(item) || (
                 <SubtitlesItem
                   hasTVPreferredFocus={
                     (subtitlesActiveItemRef.current === null && index === 0) ||
-                    subtitlesActiveItemRef.current === item.id
+                    subtitlesActiveItemRef.current === item.identifier
                   }
                   onPress={() => onPressHandler(item.identifier)}
                   currentIndex={index}

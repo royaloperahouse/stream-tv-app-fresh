@@ -202,7 +202,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   // Event listeners section
   const onReady = useCallback(async () => {
     let subtitles = [...(await player.getAvailableSubtitles())];
-    if (subtitles.filter((sub) => sub.identifier === 'bitmovin-off').length === 0) {
+    console.log(subtitles);
+    if (subtitles.filter((sub) => sub.identifier === 'bitmovin-off' || sub.identifier === 'off').length === 0) {
       if (subtitles.length > 0) {
         subtitles.push({
           identifier: 'bitmovin-off',
@@ -452,13 +453,21 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     );
   };
 
-  const onCueEnter = async (cue) => {
+  const onCueEnter = (cue) => {
     if (!controlRef.current) {
       return;
     }
     if (typeof controlRef.current?.setSubtitleCue === 'function') {
-      console.log(cue.text);
       controlRef.current?.setSubtitleCue(cue.text);
+    }
+  };
+
+  const onCueExit = (cue) => {
+    if (!controlRef.current) {
+      return;
+    }
+    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+      controlRef.current?.setSubtitleCue('');
     }
   };
 
@@ -475,6 +484,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onPlay={onPlay}
         onPaused={onPaused}
         onCueEnter={onCueEnter}
+        onCueExit={onCueExit}
       />
 
       {!playerReady && (
