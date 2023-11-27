@@ -768,10 +768,14 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     });
   }, [focusToSutitleButton]);
 
-  const onPressHandler = (trackId: string) => {
+  const onPressHandler = (trackId: string, pressed: boolean) => {
+    if (trackId === subtitlesActiveItemRef.current && !pressed) {
+      return;
+    }
+    console.log(trackId, 'track ID 2');
     subtitlesActiveItemRef.current = trackId;
     setSubtitle(trackId);
-    hideSubtitles();
+    if (pressed) hideSubtitles();
   };
 
   useImperativeHandle(
@@ -847,7 +851,17 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
       }
     });
   }
-
+  useEffect(() => {
+    if (!subtitleList.length) {
+      return;
+    }
+    const englishSubs = subtitleList.find(i => i.label === 'English');
+    if (englishSubs) {
+      onPressHandler(englishSubs.identifier, false);
+    } else {
+      onPressHandler(subtitleList[0].identifier, false);
+    }
+  }, [subtitleList, onPressHandler]);
   return (
     <SafeAreaView style={styles.subtitlesContainer}>
       <Animated.View
@@ -876,13 +890,13 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style={styles.subtitlesFlatListContainer}
-              renderItem={({ item, index }) => console.log(item) || (
+              renderItem={({ item, index }) => (
                 <SubtitlesItem
                   hasTVPreferredFocus={
                     (subtitlesActiveItemRef.current === null && index === 0) ||
                     subtitlesActiveItemRef.current === item.identifier
                   }
-                  onPress={() => onPressHandler(item.identifier)}
+                  onPress={() => onPressHandler(item.identifier, true)}
                   currentIndex={index}
                   itemsLength={subtitleList.length}
                   text={item.label === 'off' ? 'Off' : item.label}

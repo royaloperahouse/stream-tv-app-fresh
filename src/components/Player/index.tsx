@@ -202,8 +202,12 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   // Event listeners section
   const onReady = useCallback(async () => {
     let subtitles = [...(await player.getAvailableSubtitles())];
-    console.log(subtitles);
-    if (subtitles.filter((sub) => sub.identifier === 'bitmovin-off' || sub.identifier === 'off').length === 0) {
+
+    if (
+      subtitles.filter(
+        sub => sub.identifier === 'bitmovin-off' || sub.identifier === 'off',
+      ).length === 0
+    ) {
       if (subtitles.length > 0) {
         subtitles.push({
           identifier: 'bitmovin-off',
@@ -396,7 +400,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const setSubtitle = useCallback(
     (trackID: string) => {
       player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID);
-      console.log(trackID);
+      console.log(trackID, 'track Id');
     },
     [player],
   );
