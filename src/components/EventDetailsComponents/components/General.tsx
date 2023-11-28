@@ -349,7 +349,6 @@ const General: React.FC<
 
         if (performanceVideoTimePosition) {
           const fromTime = new Date(0);
-          console.log('first if');
           const intPosition = parseInt(performanceVideoTimePosition);
           let rolledBackPos = intPosition - resumeRollbackTime;
           if (performanceInfo.startDate && !performanceInfo.endDate) {

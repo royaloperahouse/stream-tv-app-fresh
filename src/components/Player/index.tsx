@@ -221,13 +221,20 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       subtitles = [];
     }
 
+    if (subtitles.length) {
+      const englishSubsIndex = subtitles.findIndex(sub => sub.label === 'en');
+      if (englishSubsIndex) {
+        subtitles[englishSubsIndex].isDefault = true;
+      } else {
+        subtitles[0].isDefault = true;
+      }
+    }
     controlRef.current?.loadSubtitleList(subtitles);
     if (autoPlay) {
       player.play();
     }
     let duration = String(await player.getDuration());
     if (isLiveStream && duration) {
-      console.log(cloneProps.configuration);
       duration = Math.abs(await player.getMaxTimeShift()).toFixed(0);
       await player.timeShift(await player.getMaxTimeShift());
       if (+duration > 60 * 60 * 24) {
@@ -400,7 +407,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const setSubtitle = useCallback(
     (trackID: string) => {
       player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID);
-      console.log(trackID, 'track Id');
     },
     [player],
   );

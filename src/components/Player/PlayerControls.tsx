@@ -115,12 +115,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         typeof subtitleButtonRef.current?.getRef === 'function' &&
         subtitleButtonRef.current.getRef()
       ) {
+        console.log('focus');
         subtitleButtonRef.current
           .getRef()
           .current?.setNativeProps({ hasTVPreferredFocus: true });
       }
     }, []);
     const openSubtitleListHandler = () => {
+      console.log('opened subtitles');
       if (typeof subtitlesRef?.current?.showSubtitles === 'function') {
         subtitlesRef.current.showSubtitles();
       }
@@ -728,6 +730,7 @@ export type TSubtitles = Array<{
   url: string;
   identifier: string;
   label: string;
+  isDefault: boolean;
 }>;
 
 type TSubtitlesRef = {
@@ -740,6 +743,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
   const overlayAnimation = useRef(new Animated.Value(0)).current;
   const subtitleContainerAnimation = useRef(new Animated.Value(0)).current;
   const [subtitleList, setSubtitleList] = useState<TSubtitles>([]);
+  const previousSubtitleList = useRef([]);
   const [showList, setShowList] = useState<boolean>(false);
   const subtitlesActiveItemRef = useRef<string | null>(null);
   const subtitlesMountedRef = useRef<boolean>(false);
@@ -747,6 +751,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     if (typeof focusToSutitleButton === 'function') {
       focusToSutitleButton();
     }
+    setShowList(false);
     Animated.timing(subtitleContainerAnimation, {
       toValue: 0,
       duration: 300,
@@ -755,7 +760,6 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
       if (!sutitleAnimationResult.finished) {
         subtitleContainerAnimation.setValue(0);
       }
-      setShowList(false);
       Animated.timing(overlayAnimation, {
         toValue: 0,
         duration: 200,
@@ -772,7 +776,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     if (trackId === subtitlesActiveItemRef.current && !pressed) {
       return;
     }
-    console.log(trackId, 'track ID 2');
+
     subtitlesActiveItemRef.current = trackId;
     setSubtitle(trackId);
     if (pressed) hideSubtitles();
@@ -785,6 +789,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
         if (!subtitlesMountedRef.current) {
           return;
         }
+        console.log('setting subtitle list');
         setSubtitleList(subtitles);
       },
       showSubtitles: () => {
@@ -852,16 +857,19 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     });
   }
   useEffect(() => {
+    if (previousSubtitleList.current[0]?.identifier === subtitleList[0]?.identifier) {
+      return;
+    }
     if (!subtitleList.length) {
       return;
     }
-    const englishSubs = subtitleList.find(i => i.label === 'English');
-    if (englishSubs) {
-      onPressHandler(englishSubs.identifier, false);
-    } else {
-      onPressHandler(subtitleList[0].identifier, false);
+    const defaultSubs = subtitleList.find(i => i.isDefault);
+    if (defaultSubs) {
+      onPressHandler(defaultSubs.identifier, false);
+      previousSubtitleList.current = [subtitleList];
     }
-  }, [subtitleList, onPressHandler]);
+  }, [subtitleList]);
+  console.log(showList);
   return (
     <SafeAreaView style={styles.subtitlesContainer}>
       <Animated.View
