@@ -115,14 +115,12 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
         typeof subtitleButtonRef.current?.getRef === 'function' &&
         subtitleButtonRef.current.getRef()
       ) {
-        console.log('focus');
         subtitleButtonRef.current
           .getRef()
           .current?.setNativeProps({ hasTVPreferredFocus: true });
       }
     }, []);
     const openSubtitleListHandler = () => {
-      console.log('opened subtitles');
       if (typeof subtitlesRef?.current?.showSubtitles === 'function') {
         subtitlesRef.current.showSubtitles();
       }
@@ -865,11 +863,15 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     }
     const defaultSubs = subtitleList.find(i => i.isDefault);
     if (defaultSubs) {
-      onPressHandler(defaultSubs.identifier, false);
+      if (isTVOS) {
+        onPressHandler(defaultSubs.identifier, false);
+      } else {
+        setTimeout(() => onPressHandler(defaultSubs.identifier, false), 1000);
+      }
       previousSubtitleList.current = [subtitleList];
     }
   }, [subtitleList]);
-  console.log(showList);
+
   return (
     <SafeAreaView style={styles.subtitlesContainer}>
       <Animated.View
