@@ -787,7 +787,6 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
         if (!subtitlesMountedRef.current) {
           return;
         }
-        console.log('setting subtitle list');
         setSubtitleList(subtitles);
       },
       showSubtitles: () => {
@@ -861,12 +860,13 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     if (!subtitleList.length) {
       return;
     }
+    console.log(subtitleList);
     const defaultSubs = subtitleList.find(i => i.isDefault);
     if (defaultSubs) {
       if (isTVOS) {
         onPressHandler(defaultSubs.identifier, false);
       } else {
-        setTimeout(() => onPressHandler(defaultSubs.identifier, false), 1000);
+        setTimeout(() => onPressHandler(defaultSubs.identifier, false), 5000);
       }
       previousSubtitleList.current = [subtitleList];
     }

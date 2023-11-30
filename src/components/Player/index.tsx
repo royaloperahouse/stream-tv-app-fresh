@@ -222,8 +222,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
 
     if (subtitles.length) {
-      const englishSubsIndex = subtitles.findIndex(sub => sub.label === 'en');
-      if (englishSubsIndex) {
+      const englishSubsIndex = subtitles.findIndex(sub => sub.label === 'en' || sub.language === 'en');
+      if (englishSubsIndex !== -1) {
         subtitles[englishSubsIndex].isDefault = true;
       } else {
         subtitles[0].isDefault = true;
