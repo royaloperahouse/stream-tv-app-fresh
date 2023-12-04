@@ -6,13 +6,25 @@ import {
   usePlayer,
   VideoPlaybackQualityChangedEvent,
 } from 'bitmovin-player-react-native';
-import { AppState, AppStateStatus, BackHandler, SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
+import {
+  AppState,
+  AppStateStatus,
+  BackHandler,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  ViewProps,
+} from 'react-native';
 import { TBMPlayerErrorObject } from 'services/types/bitmovinPlayer';
-import PlayerControls, { TPlayerControlsRef } from 'components/Player/PlayerControls';
+import PlayerControls, {
+  TPlayerControlsRef,
+} from 'components/Player/PlayerControls';
 import RohText from 'components/RohText';
 import { scaleSize } from 'utils/scaleSize';
 import { Colors } from 'themes/Styleguide';
 import { ESeekOperations } from 'configs/bitMovinPlayerConfig';
+import IdleTimerManager from 'react-native-idle-timer';
+import { isTVOS } from 'configs/globalConfig';
 
 const BITMOVIN_ANALYTICS_KEY = '45a0bac7-b900-4a0f-9d87-41a120744160';
 
@@ -89,7 +101,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const [loaded, setLoaded] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
   const [duration, setDuration] = useState(0.0);
-  const subtitleCue = '';
+  const subtitleCue = useRef('');
   const [videoInfo, setVideoInfo] = useState<string>();
 
   const controlRef = useRef<TPlayerControlsRef | null>(null);
@@ -97,6 +109,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   const appState = useRef(AppState.currentState);
   useEffect(() => {
+    if (!isTVOS) {
+      IdleTimerManager.setIdleTimerDisabled(true);
+    }
     const _handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (appState.current === 'active' && nextAppState === 'background') {
         player.pause();
@@ -108,7 +123,12 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       _handleAppStateChange,
     );
 
-    return unsubscribe.remove;
+    return () => {
+      if (!isTVOS) {
+        IdleTimerManager.setIdleTimerDisabled(false);
+      }
+      unsubscribe.remove();
+    }
   }, [player]);
 
   // useEffect(() => {
@@ -181,12 +201,40 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   // Event listeners section
   const onReady = useCallback(async () => {
+    let subtitles = [...(await player.getAvailableSubtitles())];
+
+    if (
+      subtitles.filter(
+        sub => sub.identifier === 'bitmovin-off' || sub.identifier === 'off',
+      ).length === 0
+    ) {
+      if (subtitles.length > 0) {
+        subtitles.push({
+          identifier: 'bitmovin-off',
+          label: 'off',
+          url: '',
+        });
+      } else {
+        subtitles = [];
+      }
+    } else if (subtitles.length === 1) {
+      subtitles = [];
+    }
+
+    if (subtitles.length) {
+      const englishSubsIndex = subtitles.findIndex(sub => sub.label === 'en' || sub.language === 'en');
+      if (englishSubsIndex !== -1) {
+        subtitles[englishSubsIndex].isDefault = true;
+      } else {
+        subtitles[0].isDefault = true;
+      }
+    }
+    controlRef.current?.loadSubtitleList(subtitles);
     if (autoPlay) {
       player.play();
     }
     let duration = String(await player.getDuration());
     if (isLiveStream && duration) {
-      console.log(cloneProps.configuration);
       duration = Math.abs(await player.getMaxTimeShift()).toFixed(0);
       await player.timeShift(await player.getMaxTimeShift());
       if (+duration > 60 * 60 * 24) {
@@ -229,7 +277,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   const onSeeked = useCallback(async () => {
-    const currentTime = isLiveStream ? Math.abs(await player.getTimeShift()) : await player.getCurrentTime('relative');
+    const currentTime = isLiveStream
+      ? Math.abs(await player.getTimeShift())
+      : await player.getCurrentTime('relative');
     if (isNaN(currentTime)) {
       return;
     }
@@ -270,7 +320,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const onTimeChanged = async () => {
-    const time = isLiveStream ? Math.abs(await player.getTimeShift()) : await player.getCurrentTime();
+    const time = isLiveStream
+      ? Math.abs(await player.getTimeShift())
+      : await player.getCurrentTime();
     const durationFromEvent = await player.getDuration();
     if (isNaN(time) || isNaN(durationFromEvent)) {
       return;
@@ -288,7 +340,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     if (typeof controlRef.current?.setCurrentTime === 'function') {
       controlRef.current.setCurrentTime(time);
-    } else if (isLiveStream && typeof controlRef.current?.setCurrentTime === 'function') {
+    } else if (
+      isLiveStream &&
+      typeof controlRef.current?.setCurrentTime === 'function'
+    ) {
       const timeShift = await player.getTimeShift();
       controlRef.current?.setCurrentTime(Math.abs(timeShift));
     }
@@ -350,8 +405,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const setSubtitle = useCallback(
-    (trackID: string) =>
-      player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID),
+    (trackID: string) => {
+      player.setSubtitleTrack(trackID === 'bitmovin-off' ? undefined : trackID);
+    },
     [player],
   );
 
@@ -407,6 +463,24 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     );
   };
 
+  const onCueEnter = (cue) => {
+    if (!controlRef.current) {
+      return;
+    }
+    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+      controlRef.current?.setSubtitleCue(cue.text);
+    }
+  };
+
+  const onCueExit = (cue) => {
+    if (!controlRef.current) {
+      return;
+    }
+    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+      controlRef.current?.setSubtitleCue('');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.defaultPlayerStyle}>
       <PlayerView
@@ -419,6 +493,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onTimeShifted={onSeeked}
         onPlay={onPlay}
         onPaused={onPaused}
+        onCueEnter={onCueEnter}
+        onCueExit={onCueExit}
       />
 
       {!playerReady && (
@@ -443,7 +519,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onClose={actionClose}
         setSubtitle={setSubtitle}
         autoPlay={autoPlay}
-        subtitleCue={subtitleCue}
+        subtitleCue={subtitleCue.current}
         calculateTimeForSeeking={calculateTimeForSeeking}
         seekTo={seekTo}
         videoInfo={videoInfo}

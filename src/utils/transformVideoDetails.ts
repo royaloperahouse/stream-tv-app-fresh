@@ -24,7 +24,7 @@ export function transformVideoDetails(videoDetails) {
     slugs: videoDetails.slugs,
     data: {
       vs_title: videoDetails.data.video_title,
-      vs_videos: [{ video: videoDetails.data.video }],
+      vs_videos: [{ video: { data: { video: videoDetails.data.video } } }],
       vs_carousel_description: videoDetails.data.short_description,
       vs_short_description: videoDetails.data.short_description,
       vs_description: videoDetails.data.short_description,

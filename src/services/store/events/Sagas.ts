@@ -28,7 +28,7 @@ import { logError } from '@utils/loger';
 import {
   getDigitalEventDetails,
   getVideoDetails,
-  getPrismicisedRails,
+  getPrismicisedRails, getFeatureFlags,
 } from '@services/prismicApiClient';
 import { addItemToPrevSearchList } from '@services/previousSearch';
 import { bigDelay } from '@utils/bigDelay';
@@ -44,7 +44,7 @@ import { isProductionEvironmentSelector } from '../settings/Selectors';
 import {
   countryCodeSelector,
   customerIdSelector,
-  introScreenShowSelector,
+  introScreenShowSelector, userEmailSelector,
 } from '../auth/Selectors';
 import {
   switchOffIntroScreen,
@@ -406,6 +406,15 @@ function* getEventListLoopWorker(): any {
         logError('something went wrong with PrismicisedRails request', err);
       }
       const countryCode = yield select(countryCodeSelector);
+      const userEmail = yield select(userEmailSelector);
+      const featureFlags = yield call(getFeatureFlags, { isProductionEnv });
+      const [liveStreamFeatureFlag] =
+        featureFlags.results[0].data.body[0].items.filter(
+          (featureFlag: any) => {
+            return featureFlag.flag_id === 'livestreaming-beta-access';
+          },
+        );
+
       const filtered = result.filter((prismicDocument) => {
         const digitalEventVideos = prismicDocument.data.vs_videos;
         if (!prismicDocument.data.tv_app_cross_sell_document?.data) {
@@ -414,7 +423,7 @@ function* getEventListLoopWorker(): any {
         if (prismicDocument.data.vs_event_card_label === 'Coming soon') {
           return true;
         }
-        return digitalEventVideos.some(digitalEventVideo => {
+        return digitalEventVideos.every(digitalEventVideo => {
           if (!digitalEventVideo?.video?.data?.video) {
             return true;
           }
@@ -422,6 +431,20 @@ function* getEventListLoopWorker(): any {
             prismicDocument.data.start_time = digitalEventVideo.video.data.start_time;
           }
           if (digitalEventVideo.video.data.video.asset_type === 'live') {
+            if (!liveStreamFeatureFlag || !liveStreamFeatureFlag.emails) {
+              return false;
+            }
+
+            if (!userEmail) {
+              return false;
+            }
+
+            if (
+              userEmail &&
+              !liveStreamFeatureFlag.emails.includes(userEmail)
+            ) {
+              return false;
+            }
             return isVideoAvailableByLocation(
               digitalEventVideo.video.data.video,
               countryCode,

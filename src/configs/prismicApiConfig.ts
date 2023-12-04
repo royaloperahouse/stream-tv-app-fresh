@@ -9,11 +9,13 @@ type TDocumentTypeList = {
   digitalEventDetails: string;
   digitalEventVideo: string;
   prismicisedRails: string;
+  featureFlags: string;
 };
 export const documentTypes: TDocumentTypeList = Object.freeze({
   digitalEventDetails: 'digital_event_details',
   digitalEventVideo: 'digital_event_video',
   prismicisedRails: 'stream_home_page',
+  featureFlags: 'feature_flags',
 });
 
 export const getRefLabelOfPublishing = (isProductionEnv: boolean) =>

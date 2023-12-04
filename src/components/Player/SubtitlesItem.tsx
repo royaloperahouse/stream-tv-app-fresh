@@ -37,6 +37,7 @@ const SubbtitlesItem = forwardRef<any, Props>((props, ref) => {
       onPress(true);
     }
   };
+
   return (
     <TouchableHighlightWrapper
       underlayColor={Colors.subtitlesActiveBackground}

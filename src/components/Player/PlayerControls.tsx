@@ -61,6 +61,7 @@ export type TPlayerControlsRef = {
   controlFadeOut?: () => void;
   setSeekQueueFree?: () => void;
   seekUpdatingFinished?: () => void;
+  setSubtitleCue?: (text: string) => void;
 };
 
 const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
@@ -76,7 +77,6 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       setSubtitle,
       playerLoaded,
       autoPlay,
-      subtitleCue,
       calculateTimeForSeeking,
       seekTo,
       videoInfo,
@@ -84,6 +84,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
       guidanceDetails,
       isLiveStream,
     } = props;
+    const [subtitleCueText, setSubtitleCueText] = useState('');
     const otherRCTVEvents = useRef<Array<(_: any, event: any) => void>>([]);
     const activeAnimation = useRef<Animated.Value>(
       new Animated.Value(1),
@@ -164,11 +165,14 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
             centralControlsRef.current.setPlay(play);
           }
         },
+        setSubtitleCue: (text: string) => {
+          setSubtitleCueText(text);
+        },
         loadSubtitleList: (subtitles: TSubtitles) => {
           if (!controlMountedRef.current) {
             return;
           }
-          if (subtitles.length > 1) {
+          if (subtitles.length > 0) {
             setHasSubtitles(true);
           }
           if (typeof subtitlesRef?.current?.setsubtitleList === 'function') {
@@ -628,9 +632,9 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           ref={subtitlesRef}
           setSubtitle={setSubtitle}
         />
-        {subtitleCue !== '' && (
+        {subtitleCueText !== '' && (
           <View style={styles.subtitleCueContainer}>
-            <RohText style={styles.subtitleCueText}>{subtitleCue}</RohText>
+            <RohText style={styles.subtitleCueText}>{subtitleCueText}</RohText>
           </View>
         )}
       </SafeAreaView>
@@ -722,8 +726,9 @@ type TSubtitlesProps = {
 };
 export type TSubtitles = Array<{
   url: string;
-  id: string;
+  identifier: string;
   label: string;
+  isDefault: boolean;
 }>;
 
 type TSubtitlesRef = {
@@ -736,6 +741,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
   const overlayAnimation = useRef(new Animated.Value(0)).current;
   const subtitleContainerAnimation = useRef(new Animated.Value(0)).current;
   const [subtitleList, setSubtitleList] = useState<TSubtitles>([]);
+  const previousSubtitleList = useRef([]);
   const [showList, setShowList] = useState<boolean>(false);
   const subtitlesActiveItemRef = useRef<string | null>(null);
   const subtitlesMountedRef = useRef<boolean>(false);
@@ -743,6 +749,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     if (typeof focusToSutitleButton === 'function') {
       focusToSutitleButton();
     }
+    setShowList(false);
     Animated.timing(subtitleContainerAnimation, {
       toValue: 0,
       duration: 300,
@@ -751,7 +758,6 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
       if (!sutitleAnimationResult.finished) {
         subtitleContainerAnimation.setValue(0);
       }
-      setShowList(false);
       Animated.timing(overlayAnimation, {
         toValue: 0,
         duration: 200,
@@ -764,10 +770,14 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     });
   }, [focusToSutitleButton]);
 
-  const onPressHandler = (trackId: string) => {
+  const onPressHandler = (trackId: string, pressed: boolean) => {
+    if (trackId === subtitlesActiveItemRef.current && !pressed) {
+      return;
+    }
+
     subtitlesActiveItemRef.current = trackId;
     setSubtitle(trackId);
-    hideSubtitles();
+    if (pressed) hideSubtitles();
   };
 
   useImperativeHandle(
@@ -843,6 +853,24 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
       }
     });
   }
+  useEffect(() => {
+    if (previousSubtitleList.current[0]?.identifier === subtitleList[0]?.identifier) {
+      return;
+    }
+    if (!subtitleList.length) {
+      return;
+    }
+    console.log(subtitleList);
+    const defaultSubs = subtitleList.find(i => i.isDefault);
+    if (defaultSubs) {
+      if (isTVOS) {
+        onPressHandler(defaultSubs.identifier, false);
+      } else {
+        setTimeout(() => onPressHandler(defaultSubs.identifier, false), 5000);
+      }
+      previousSubtitleList.current = [subtitleList];
+    }
+  }, [subtitleList]);
 
   return (
     <SafeAreaView style={styles.subtitlesContainer}>
@@ -868,7 +896,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
             </RohText>
             <FlatList
               data={subtitleList}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.identifier}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style={styles.subtitlesFlatListContainer}
@@ -876,9 +904,9 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
                 <SubtitlesItem
                   hasTVPreferredFocus={
                     (subtitlesActiveItemRef.current === null && index === 0) ||
-                    subtitlesActiveItemRef.current === item.id
+                    subtitlesActiveItemRef.current === item.identifier
                   }
-                  onPress={() => onPressHandler(item.id)}
+                  onPress={() => onPressHandler(item.identifier, true)}
                   currentIndex={index}
                   itemsLength={subtitleList.length}
                   text={item.label === 'off' ? 'Off' : item.label}
@@ -1127,7 +1155,7 @@ const styles = StyleSheet.create({
     height: scaleSize(631),
   },
   subtitlesFlatListContainer: {
-    flex: 1,
+    flex: 0,
   },
   subtitleText: { color: 'white', fontSize: scaleSize(24) },
   infoText: {

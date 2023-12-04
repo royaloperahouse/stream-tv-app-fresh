@@ -95,6 +95,7 @@ const appSlice = createSlice({
         detail?: AuthState['devicePin'];
         status: number;
         title: string;
+        countryCode: string;
       }>,
     ) => {
       const { payload } = action;
@@ -105,6 +106,7 @@ const appSlice = createSlice({
             ? `${payload.status} - ${payload.title}`
             : defaultPinError;
       }
+      state.countryCode = payload.countryCode;
       state.isLoading = false;
       state.isLoaded = true;
     },
