@@ -28,17 +28,17 @@ import {
 import { rootSaga } from '@services/store/rootSaga';
 import { isTVOS } from 'configs/globalConfig';
 
-declare global {
-  var roh_rlog: (obj: {
-    name?: string;
-    preview?: string;
-    value?: any;
-    important?: boolean;
-    image?: string;
-  }) => void;
-}
-
-global.roh_rlog = () => {};
+// declare global {
+//   var roh_rlog: (obj: {
+//     name?: string;
+//     preview?: string;
+//     value?: any;
+//     important?: boolean;
+//     image?: string;
+//   }) => void;
+// }
+//
+// global.roh_rlog = () => {};
 
 /* const Reactotron = __DEV__
   ? require('@services/reactotronDebugger/reactotronConfig').default

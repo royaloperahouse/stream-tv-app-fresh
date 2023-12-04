@@ -11,7 +11,8 @@ import React, {
 import {
   View,
   ViewProps,
-  VirtualizedList,
+  ViewStyle,
+  FlatList,
   NativeSyntheticEvent,
   TargetedEvent,
   TouchableHighlight,
@@ -19,12 +20,11 @@ import {
   ViewToken,
   HWEvent,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
 import debounce from 'lodash.debounce';
-import { isTVOS } from "configs/globalConfig";
-import { navMenuManager } from "components/NavMenu";
+import { isTVOS } from 'configs/globalConfig';
+import { navMenuManager } from 'components/NavMenu';
 
 type TRailSectionsProps = {
   containerStyle?: ViewProps['style'];
@@ -33,7 +33,7 @@ type TRailSectionsProps = {
   sectionItemKeyExtractor?: (data: { [key: string]: any }) => string;
   sectionsInitialNumber?: number;
   sectionItemsInitialNumber?: number;
-  railStyle?: ViewProps['style'];
+  railStyle?: ViewStyle;
   renderHeader?: (data: any) => JSX.Element | null;
   headerContainerStyle?: ViewProps['style'];
   renderItem: (info: { [key: string]: any }) => JSX.Element | null;
@@ -61,7 +61,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     itemIndex = 0,
   } = props;
   const mountedRef = useRef<boolean>(false);
-  const sectionsListRef = useRef<VirtualizedList<any> | null>(null);
+  const sectionsListRef = useRef<FlatList<any> | null>(null);
   const bottomEndlessScrollRef = useRef<TEndlessScrollRef>(null);
   const scrollToTop = useRef<boolean>(false);
   const scrollToBottom = useRef<boolean>(false);
@@ -70,7 +70,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const prevSectionIndex = useRef<number>(-1);
   const [currentPosition, setCurrentPosition] = useState([0, 0]);
   const railItemsListRef = useRef<{
-    [key: string]: VirtualizedList<any> | null;
+    [key: string]: FlatList<any> | null;
   }>({});
   const railsItemsNodesRef = useRef<{
     [key: string]: string;
@@ -135,7 +135,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [],
   );
 
-  const scrollToRail = (index: number, itemIndex: number) => () => {
+  const scrollToRail = (index: number, itemIndexNumber: number) => () => {
     // TODO while not on the first card lock navmenu for a bit
     if (preSectionIndex.current === index && isTVOS) {
       return;
@@ -148,14 +148,14 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     ) {
       return;
     }
-    setTimeout(() => setCurrentPosition([index, itemIndex]), 200);
+    setTimeout(() => setCurrentPosition([index, itemIndexNumber]), 200);
     if (railStyle && railStyle.height) {
-      sectionsListRef.current.scrollToOffset({
+      sectionsListRef.current?.scrollToOffset({
         animated: true,
-        offset: index * railStyle.height,
+        offset: index * railStyle.height + 5,
       });
     } else {
-      sectionsListRef.current.scrollToIndex({
+      sectionsListRef.current?.scrollToIndex({
         animated: true,
         index,
       });
@@ -166,12 +166,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     if (sectionsListRef.current) {
       scrollToNecessaryRail.current = true;
       if (railStyle && railStyle.height) {
-        sectionsListRef.current.scrollToOffset({
+        sectionsListRef.current?.scrollToOffset({
           animated: false,
-          offset: sectionIndex * railStyle.height,
+          offset: sectionIndex * railStyle.height + 5,
         });
       } else {
-        sectionsListRef.current.scrollToIndex({
+        sectionsListRef.current?.scrollToIndex({
           animated: false,
           index: sectionIndex,
         });
@@ -188,47 +188,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       isTVOS && navMenuManager.unlockNavMenu();
     }
   }, [currentPosition]);
-  const isAccessible = (accessibleItemInSectionIndex: number, accessibleSectionForCheckIndex: number) => {
-    if (
-      accessibleSectionForCheckIndex === currentPosition[0] &&
-      accessibleItemInSectionIndex === currentPosition[1]
-    ) {
-      return true;
-    }
-
-    if (
-      currentPosition[0] === sections.length - 1 &&
-      accessibleItemInSectionIndex === 0 &&
-      accessibleSectionForCheckIndex === 0
-    ) {
-      return true;
-    }
-    if (Math.abs(accessibleSectionForCheckIndex - currentPosition[0]) > 1) {
-      return false;
-    }
-    if (
-      Math.abs(accessibleItemInSectionIndex - currentPosition[1]) === 1 &&
-      accessibleSectionForCheckIndex === currentPosition[0]
-    ) {
-      return true;
-    }
-    if (Math.abs(accessibleSectionForCheckIndex - currentPosition[0]) === 1) {
-      return true;
-    }
-
-    if (
-      Math.abs(accessibleItemInSectionIndex - currentPosition[1]) > 1 &&
-      accessibleSectionForCheckIndex === currentPosition[0]
-    ) {
-      return false;
-    }
-
-    if (accessibleItemInSectionIndex === 0) {
-      return true;
-    }
-    return false;
-  };
-
   const initScrollToRailItem = useCallback(() => {
     if (railItemsListRef.current[sectionIndex]) {
       scrollToNecessaryRailItem.current = true;
@@ -294,7 +253,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [sections.length],
   );
 
-  const viewableRailItemsChangeHandler = useMemo(
+  const viewableRailItemsChangeHandler = useCallback(
     () =>
       debounce((info: { viewableItems: ViewToken[]; changed: ViewToken[] }) => {
         if (
@@ -310,8 +269,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     [itemIndex],
   );
 
-  const onFocus = (currentID: string) => {};
-  const onBlur = () => {};
   useLayoutEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -352,18 +309,19 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       }
     };
     TVEventManager.addEventListener(cb);
+    const current = bottomEndlessScrollRef.current;
     return () => {
       TVEventManager.removeEventListener(cb);
       outerBlur = true;
       outerFocus = true;
-      bottomEndlessScrollRef.current?.setAccessible?.(false);
+      current?.setAccessible?.(false);
       scrollToTop.current = false;
       scrollToBottom.current = false;
     };
   }, []);
   return (
     <View style={[containerStyle]}>
-      <VirtualizedList
+      <FlatList
         ref={sectionsListRef}
         data={sections}
         keyExtractor={item => sectionKeyExtractor(item)}
@@ -371,9 +329,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         showsVerticalScrollIndicator={false}
         initialNumToRender={sectionsInitialNumber}
         maxToRenderPerBatch={sectionsInitialNumber}
-        getItemCount={getSectionCount}
         windowSize={sectionsWindowSize}
-        getItem={(data, index) => data[index]}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
           wait.then(() => {
@@ -388,6 +344,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               initScrollToRail();
               return;
             }
+            console.log('failed ?');
             sectionsListRef.current.scrollToIndex({
               animated: false,
               index: info.index,
@@ -400,11 +357,9 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
             <View style={[headerContainerStyle]}>
               {renderHeader(sectionItem)}
             </View>
-            <VirtualizedList
+            <FlatList
               horizontal
-              listKey={sectionItem.sectionIndex?.toString()}
               windowSize={railWindowSize}
-              getItem={(data, index) => data[index]}
               initialNumToRender={sectionItemsInitialNumber}
               maxToRenderPerBatch={sectionItemsInitialNumber}
               data={sectionItem.data}
@@ -432,7 +387,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               }}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
-              getItemCount={getSectionItemCount}
               onViewableItemsChanged={viewableRailItemsChangeHandler}
               renderItem={({
                 index: railItemIndexInList,
@@ -442,7 +396,10 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                   index: railItemIndexInList,
                   item: railItemInList,
                   section: sectionItem,
-                  scrollToRail: scrollToRail(sectionItemIndex, railItemIndexInList),
+                  scrollToRail: scrollToRail(
+                    sectionItemIndex,
+                    railItemIndexInList,
+                  ),
                   isFirstRail: sectionItemIndex === 0,
                   sectionIndex: sectionItemIndex,
                   railItemIndex: railItemIndexInList,
@@ -527,7 +484,7 @@ const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
         style={{
           position: 'absolute',
           bottom: 1,
-          height: 10,
+          height: 2,
           width: '100%',
         }}>
         <View

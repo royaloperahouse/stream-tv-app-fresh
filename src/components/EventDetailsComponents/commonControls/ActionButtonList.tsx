@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
   useState,
 } from 'react';
-import { ViewStyle, StyleSheet, VirtualizedList } from 'react-native';
+import { ViewStyle, StyleSheet, VirtualizedList, FlatList } from 'react-native';
 import ExpandableButton from './ExpandableButton';
 export enum EActionButtonListType {
   common,
@@ -123,7 +123,7 @@ const ActionButtonList = forwardRef<
     }, []);
 
     return (
-      <VirtualizedList
+      <FlatList
         listKey={'eventDetailsActionButtonList'}
         style={[styles.root, style]}
         keyExtractor={item => item.key}
@@ -158,8 +158,6 @@ const ActionButtonList = forwardRef<
             }
           />
         )}
-        getItemCount={(data: Array<TActionButton>) => data?.length || 0}
-        getItem={(data: Array<TActionButton>, index: number) => data[index]}
       />
     );
   },

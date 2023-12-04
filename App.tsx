@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-native/tvos-types.d';
 import 'react-native-url-polyfill/auto';
 import { Provider } from 'react-redux';
 import { store } from '@services/store';
@@ -22,7 +21,8 @@ if (__DEV__) {
 
 //as Example
 
-global.roh_rlog({
+import { roh_rlog } from 'services/reactotronDebugger/reactotronConfig';
+roh_rlog({
   name: 'Reactotron Configured',
   preview: 'ROH App',
   important: true,

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
@@ -153,7 +153,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       }
       FocusManager.switchOffFirstLounch();
       ref?.current?.setDigitalEvent(event, eventGroupTitle);
-      isTVOS && scrollToRailItem(sectionIndex, selectedItemIndex || 0);
+      isTVOS && setTimeout(() => scrollToRailItem(sectionIndex, selectedItemIndex || 0), 100);
       if (setFirstItemFocusable && touchableRef.current?.getRef?.().current) {
         setFirstItemFocusable(
           firstFocusItenKey,
