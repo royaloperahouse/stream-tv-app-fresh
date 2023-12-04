@@ -716,6 +716,7 @@ SPEC CHECKSUMS:
   React-jsinspector: d3d529380ded29de8b28d8fcaf08a536a815c8b9
   React-logger: 68992acef8297cac2f0cf3472321112e6955e9f9
   react-native-flipper: 6e4e344a0104a34a4e189a9ef2b3b5634b516dc8
+  react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   React-NativeModulesApple: 27e8b377e95f25c48ba15c8a12960543db0749af
