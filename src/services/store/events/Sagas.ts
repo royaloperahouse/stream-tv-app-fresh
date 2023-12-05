@@ -407,13 +407,13 @@ function* getEventListLoopWorker(): any {
       }
       const countryCode = yield select(countryCodeSelector);
       const userEmail = yield select(userEmailSelector);
-      const featureFlags = yield call(getFeatureFlags, { isProductionEnv });
-      const [liveStreamFeatureFlag] =
-        featureFlags.results[0].data.body[0].items.filter(
-          (featureFlag: any) => {
-            return featureFlag.flag_id === 'livestreaming-beta-access';
-          },
-        );
+      // const featureFlags = yield call(getFeatureFlags, { isProductionEnv });
+      // const [liveStreamFeatureFlag] =
+      //   featureFlags.results[0].data.body[0].items.filter(
+      //     (featureFlag: any) => {
+      //       return featureFlag.flag_id === 'livestreaming-beta-access';
+      //     },
+      //   );
 
       const filtered = result.filter((prismicDocument) => {
         const digitalEventVideos = prismicDocument.data.vs_videos;
@@ -431,20 +431,20 @@ function* getEventListLoopWorker(): any {
             prismicDocument.data.start_time = digitalEventVideo.video.data.start_time;
           }
           if (digitalEventVideo.video.data.video.asset_type === 'live') {
-            if (!liveStreamFeatureFlag || !liveStreamFeatureFlag.emails) {
-              return false;
-            }
-
-            if (!userEmail) {
-              return false;
-            }
-
-            if (
-              userEmail &&
-              !liveStreamFeatureFlag.emails.includes(userEmail)
-            ) {
-              return false;
-            }
+            // if (!liveStreamFeatureFlag || !liveStreamFeatureFlag.emails) {
+            //   return false;
+            // }
+            //
+            // if (!userEmail) {
+            //   return false;
+            // }
+            //
+            // if (
+            //   userEmail &&
+            //   !liveStreamFeatureFlag.emails.includes(userEmail)
+            // ) {
+            //   return false;
+            // }
             return isVideoAvailableByLocation(
               digitalEventVideo.video.data.video,
               countryCode,
