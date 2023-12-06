@@ -18,7 +18,7 @@ import {
   TouchableHighlight,
   findNodeHandle,
   ViewToken,
-  HWEvent,
+  HWEvent, StyleSheet,
 } from 'react-native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
@@ -63,6 +63,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const mountedRef = useRef<boolean>(false);
   const sectionsListRef = useRef<FlatList<any> | null>(null);
   const bottomEndlessScrollRef = useRef<TEndlessScrollRef>(null);
+  const topEndlessScrollRef = useRef<TEndlessScrollRef>(null);
   const scrollToTop = useRef<boolean>(false);
   const scrollToBottom = useRef<boolean>(false);
   const scrollToNecessaryRail = useRef<boolean>(false);
@@ -321,14 +322,28 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   }, []);
   return (
     <View style={[containerStyle]}>
+      <EndlessScroll
+        fromTop
+        countOfRails={sections.length}
+        accessibleProp={currentPosition[0] === 0}
+        ref={topEndlessScrollRef}
+        onFocusCb={() => {
+
+          if (mountedRef.current) {
+            scrollToBottom.current = true;
+            !isTVOS && navMenuManager.lockNavMenu();
+            sectionsListRef.current?.scrollToOffset?.({
+              offset: (railStyle.height + 35) * sections.length,
+            });
+          }
+        }}
+      />
       <FlatList
         ref={sectionsListRef}
         data={sections}
         keyExtractor={item => sectionKeyExtractor(item)}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        initialNumToRender={sectionsInitialNumber}
-        maxToRenderPerBatch={sectionsInitialNumber}
         windowSize={sectionsWindowSize}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
@@ -344,7 +359,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               initScrollToRail();
               return;
             }
-            console.log('failed ?');
             sectionsListRef.current.scrollToIndex({
               animated: false,
               index: info.index,
@@ -417,6 +431,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         )}
       />
       <EndlessScroll
+        fromTop={false}
         countOfRails={sections.length}
         accessibleProp={currentPosition[0] === sections.length - 1}
         ref={bottomEndlessScrollRef}
@@ -435,6 +450,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
 export default RailSections;
 
 type TEndlessScrollProps = {
+  fromTop: boolean;
   onFocusCb: (e: NativeSyntheticEvent<TargetedEvent>) => void;
   countOfRails: number;
   accessibleProp: boolean;
@@ -446,7 +462,7 @@ type TEndlessScrollRef = {
 };
 
 const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
-  ({ onFocusCb, countOfRails, accessibleProp }, ref) => {
+  ({ fromTop, onFocusCb, countOfRails, accessibleProp }, ref) => {
     const [accessible, setAccessible] = useState<boolean>(false);
     const touchableRef = useRef<TouchableHighlight>(null);
     const isMounted = useRef<boolean>(false);
@@ -472,21 +488,26 @@ const EndlessScroll = forwardRef<TEndlessScrollRef, TEndlessScrollProps>(
         isMounted.current = false;
       };
     }, []);
+
+    const styleObject = StyleSheet.create({
+      endlessScroll: {
+        position: 'absolute',
+        height: 10,
+        width: '100%',
+        ...(fromTop ? { top: 1 } : { bottom: 1 }),
+      },
+    });
+
     return (
       <TouchableHighlight
         ref={touchableRef}
-        accessible={countOfRails > 2 && accessible && accessibleProp}
+        accessible={countOfRails > 2 && accessibleProp}
         nextFocusRight={findNodeHandle(touchableRef.current)}
         nextFocusLeft={findNodeHandle(touchableRef.current)}
         nextFocusUp={findNodeHandle(touchableRef.current)}
         nextFocusDown={findNodeHandle(touchableRef.current)}
         onFocus={onFocusCb}
-        style={{
-          position: 'absolute',
-          bottom: 1,
-          height: 2,
-          width: '100%',
-        }}>
+        style={styleObject.endlessScroll}>
         <View
           style={{
             height: 1,

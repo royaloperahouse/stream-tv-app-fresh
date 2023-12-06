@@ -203,7 +203,6 @@ const HomePageScreen: React.FC<
                 railStyle={styles.railStyle}
                 sections={data}
                 sectionKeyExtractor={item => item.sectionIndex?.toString()}
-                sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
                 sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.itemIndex + 1 : 5}
                 renderHeader={section => (
                   <DigitalEventSectionHeader>
@@ -215,7 +214,6 @@ const HomePageScreen: React.FC<
                   section,
                   index,
                   scrollToRail,
-                  isFirstRail,
                   isLastRail,
                   sectionIndex,
                   setRailItemRefCb,
@@ -245,7 +243,6 @@ const HomePageScreen: React.FC<
                     removeRailItemRefCb={removeRailItemRefCb}
                     selectedItemIndex={index}
                     canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
-                    canMoveUp={!isFirstRail}
                     setFirstItemFocusable={
                       index === 0
                         ? navMenuScreenRedirectRef.current
@@ -287,6 +284,7 @@ const styles = StyleSheet.create({
       Dimensions.get('window').width -
       (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
     paddingRight: 40,
+    paddingTop: 20,
   },
   railHeaderContainerStyle: {},
   railStyle: {

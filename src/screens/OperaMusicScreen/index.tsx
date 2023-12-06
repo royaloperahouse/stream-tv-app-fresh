@@ -147,7 +147,6 @@ const OperaMusicScreen: React.FC<
                 section,
                 index,
                 sectionIndex,
-                isFirstRail,
                 isLastRail,
                 scrollToRail,
                 setRailItemRefCb,
@@ -166,7 +165,6 @@ const OperaMusicScreen: React.FC<
                   }
                   ref={previewRef}
                   onFocus={scrollToRail}
-                  canMoveUp={!isFirstRail}
                   canMoveRight={index !== section.data.length - 1}
                   eventGroupTitle={section.title}
                   sectionIndex={sectionIndex}
@@ -216,6 +214,7 @@ const styles = StyleSheet.create({
       Dimensions.get('window').width -
       (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
     paddingRight: 40,
+    paddingTop: 20,
   },
   railHeaderContainerStyle: {},
   railStyle: {
