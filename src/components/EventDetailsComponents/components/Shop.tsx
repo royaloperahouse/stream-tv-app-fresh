@@ -72,7 +72,7 @@ const Shop: React.FC<
                 <RohText style={styles.description}>{shop.body}</RohText>
                 <RohText style={styles.linkDescription}>Scan the code to buy or visit:</RohText>
                 <RohText style={styles.link}>{shop.imageLink}</RohText>
-                <RohImage source={shop.image.url} style={{width: scaleSize(300), height: scaleSize(300), marginTop: isTVOS ? 25 : 10}}/>
+                <RohImage source={shop.image.url} style={{width: scaleSize(isTVOS ? 300 : 275), height: scaleSize(isTVOS ? 300 : 275), marginTop: isTVOS ? 25 : 10}}/>
               </View>
             </TouchableHighlight>
             <RohImage
@@ -137,13 +137,12 @@ const styles = StyleSheet.create({
   description: {
     color: 'white',
     fontSize: scaleSize(24),
-    marginTop: scaleSize(12),
     overflow: 'hidden',
   },
   linkDescription: {
     color: 'white',
     fontSize: scaleSize(30),
-    marginTop: scaleSize(25),
+    marginTop: scaleSize(20),
     overflow: 'hidden',
   },
   link: {
