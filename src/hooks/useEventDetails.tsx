@@ -214,7 +214,7 @@ const getGeneralInfo = (
     get(event, ['vs_event_details', 'title'], '').replace(/(<([^>]+)>)/gi, '');
 
   const shortDescription: string = (
-    event.vs_description.reduce((acc, description) => {
+    event.vs_description?.reduce((acc, description) => {
       acc += description.text + '\n';
       return acc;
     }, '') || get(event, ['vs_event_details', 'description'], '')

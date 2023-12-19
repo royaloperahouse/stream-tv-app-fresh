@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   link: {
-    fontSize: scaleSize(30),
+    fontSize: scaleSize(24),
     overflow: 'hidden',
     color: Colors.defaultBlue,
   },
