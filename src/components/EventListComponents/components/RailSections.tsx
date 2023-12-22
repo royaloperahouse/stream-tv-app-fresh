@@ -64,6 +64,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
   const sectionsListRef = useRef<FlatList<any> | null>(null);
   const bottomEndlessScrollRef = useRef<TEndlessScrollRef>(null);
   const topEndlessScrollRef = useRef<TEndlessScrollRef>(null);
+  const [topScrollAccessible, setTopScrollAccessible] = useState(false);
   const scrollToTop = useRef<boolean>(false);
   const scrollToBottom = useRef<boolean>(false);
   const scrollToNecessaryRail = useRef<boolean>(false);
@@ -188,6 +189,8 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     if (currentPosition[1] === 0) {
       isTVOS && navMenuManager.unlockNavMenu();
     }
+
+    setTimeout(() => setTopScrollAccessible(true), 500);
   }, [currentPosition]);
   const initScrollToRailItem = useCallback(() => {
     if (railItemsListRef.current[sectionIndex]) {
@@ -325,10 +328,9 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       <EndlessScroll
         fromTop
         countOfRails={sections.length}
-        accessibleProp={currentPosition[0] === 0}
+        accessibleProp={(currentPosition[0] === 0) && topScrollAccessible}
         ref={topEndlessScrollRef}
         onFocusCb={() => {
-
           if (mountedRef.current) {
             scrollToBottom.current = true;
             !isTVOS && navMenuManager.lockNavMenu();

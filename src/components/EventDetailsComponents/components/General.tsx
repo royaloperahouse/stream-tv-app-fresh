@@ -739,11 +739,9 @@ const General: React.FC<
     goDownRef.current?.setAccessibleOff?.();
   }, []);
   const setOffUp = useCallback(() => {
-    console.log('off');
     setShowGoUpOrDownButtons(false);
   }, []);
   const setOnUp = useCallback(() => {
-    console.log('on');
     setShowGoUpOrDownButtons(true);
   }, [])
   const goDownCB = useCallback(
@@ -751,7 +749,6 @@ const General: React.FC<
     [navigation, nextScreenName],
   );
   const goUpCB = useCallback(() => {
-    console.log('opa');
     navigation.replace(prevScreenName);
   }, [navigation, prevScreenName]);
   const actionButtonList = [

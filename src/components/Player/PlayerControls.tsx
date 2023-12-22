@@ -860,7 +860,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
     if (!subtitleList.length) {
       return;
     }
-    console.log(subtitleList);
+
     const defaultSubs = subtitleList.find(i => i.isDefault);
     if (defaultSubs) {
       if (isTVOS) {
