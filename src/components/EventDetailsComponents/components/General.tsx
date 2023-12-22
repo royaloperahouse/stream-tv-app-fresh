@@ -59,6 +59,7 @@ import type {
   TEventDetailsScreensParamContextProps,
 } from '@configs/screensConfig';
 import GoDown, { TGoDownRef } from '../commonControls/GoDown';
+import GoUp from '../commonControls/GoUp';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { globalModalManager } from '@components/GlobalModals';
 import {
@@ -102,6 +103,7 @@ const General: React.FC<
     vs_guidance_details,
     nextSectionTitle,
     nextScreenName,
+    prevScreenName,
     trailerInfo,
     performanceInfo,
     eventId,
@@ -109,7 +111,7 @@ const General: React.FC<
     setPerformanceVideoTimePositionCB,
     videoQualityBitrate,
     videoQualityId,
-    isComingSoon
+    isComingSoon,
   } = params;
   const moveToSettings = useContext(SectionsParamsContext)['moveToSettings'];
   const isFocused = useIsFocused();
@@ -728,16 +730,30 @@ const General: React.FC<
     trailerVideoInFocus.current = null;
   }, []);
 
+  const [showGoUpOrDownButtons, setShowGoUpOrDownButtons] =
+    useState<boolean>(false);
   const setAccessibleOnForGD = useCallback(() => {
     goDownRef.current?.setAccessibleOn?.();
   }, []);
   const setAccessibleOffForGD = useCallback(() => {
     goDownRef.current?.setAccessibleOff?.();
   }, []);
+  const setOffUp = useCallback(() => {
+    console.log('off');
+    setShowGoUpOrDownButtons(false);
+  }, []);
+  const setOnUp = useCallback(() => {
+    console.log('on');
+    setShowGoUpOrDownButtons(true);
+  }, [])
   const goDownCB = useCallback(
     () => navigation.replace(nextScreenName),
     [navigation, nextScreenName],
   );
+  const goUpCB = useCallback(() => {
+    console.log('opa');
+    navigation.replace(prevScreenName);
+  }, [navigation, prevScreenName]);
   const actionButtonList = [
     {
       key: 'WatchNow',
@@ -851,6 +867,12 @@ const General: React.FC<
   return (
     <View style={styles.generalContainer}>
       <View style={styles.contentContainer}>
+        <View style={styles.upContainer}>
+          {(prevScreenName && !isTVOS) ||
+          (prevScreenName && isTVOS && showGoUpOrDownButtons) ? (
+              <GoUp onFocus={goUpCB} />
+          ) : null}
+        </View>
         <View style={styles.descriptionContainer}>
           <OverflowingContainer
             fixedHeight={false}
@@ -894,6 +916,8 @@ const General: React.FC<
               buttonList={actionButtonList}
               goDownOn={setAccessibleOnForGD}
               goDownOff={setAccessibleOffForGD}
+              goUpOff={setOffUp}
+              goUpOn={setOnUp}
               backButtonOn={goBackButtonuManager.setAccessibleGoBackButton}
               backButtonOff={goBackButtonuManager.setUnAccessibleGoBackButton}
             />
@@ -928,13 +952,16 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
   },
+  upContainer: {
+    height: scaleSize(10),
+  },
   contentContainer: {
     width: scaleSize(785),
     height: '100%',
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(isTVOS ? 120 : 230),
+    marginTop: scaleSize(isTVOS ? 80 : 190),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },

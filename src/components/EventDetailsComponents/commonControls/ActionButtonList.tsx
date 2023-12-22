@@ -32,6 +32,8 @@ type ActionButtonListProps = {
   style?: ViewStyle;
   goDownOn: () => void;
   goDownOff: () => void;
+  goUpOn: () => void;
+  goUpOff: () => void;
   backButtonOn: () => void;
   backButtonOff: () => void;
 };
@@ -50,6 +52,8 @@ const ActionButtonList = forwardRef<
       style = {},
       goDownOff,
       goDownOn,
+      goUpOff,
+      goUpOn,
       backButtonOff,
       backButtonOn,
     },
@@ -58,6 +62,7 @@ const ActionButtonList = forwardRef<
     const isMounted = useRef<boolean>(false);
     const [freezeAll, setFreezeAll] = useState(false);
     const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutUpIdRef = useRef<NodeJS.Timeout | null>(null);
     const [indexOfFocusedItem, setIndexOfFocusedItem] = useState<number>(
       buttonList.findIndex(item => item.hasTVPreferredFocus),
     );
@@ -67,10 +72,12 @@ const ActionButtonList = forwardRef<
       if (freeze) {
         backButtonOff();
         goDownOff();
+        goUpOff();
       } else {
         console.log('ololo');
         goDownOn();
         backButtonOn();
+        goUpOn();
       }
       setFreezeAll(freeze);
     };
@@ -100,10 +107,23 @@ const ActionButtonList = forwardRef<
       if (freezeAll && timeoutIdRef.current !== null) {
         clearTimeout(timeoutIdRef.current);
         timeoutIdRef.current = null;
+        if (timeoutUpIdRef.current !== null) {
+          clearTimeout(timeoutUpIdRef.current);
+          timeoutUpIdRef.current = null;
+        }
+        return;
+      }
+      if (indexOfFocusedItem === 0) {
+        timeoutUpIdRef.current = setTimeout(() => {
+          goDownOff();
+          goUpOn();
+          timeoutUpIdRef.current = null;
+        }, 1000);
         return;
       }
       if (indexOfFocusedItem === buttonList.length - 1) {
         timeoutIdRef.current = setTimeout(() => {
+          goUpOff();
           goDownOn();
           timeoutIdRef.current = null;
         }, 200);
@@ -112,8 +132,12 @@ const ActionButtonList = forwardRef<
       if (timeoutIdRef.current !== null) {
         clearTimeout(timeoutIdRef.current);
       }
+      if (timeoutUpIdRef.current !== null) {
+        clearTimeout(timeoutUpIdRef.current);
+      }
       goDownOff();
-    }, [indexOfFocusedItem, buttonList.length, goDownOff, goDownOn, freezeAll]);
+      goUpOff();
+    }, [indexOfFocusedItem, buttonList.length, goDownOff, goDownOn, goUpOff, goUpOn, freezeAll]);
 
     useLayoutEffect(() => {
       isMounted.current = true;

@@ -119,6 +119,7 @@ export type TEventDetailsScreensParamContextProps = {
     snapshotImageUrl: string;
     vs_guidance: string;
     vs_guidance_details: string;
+    prevScreenName?: TEventDetailsScreenReverseNames;
     nextScreenName?: TEventDetailsScreenReverseNames;
     performanceInfo: { eventId: string; videoId: string } | null;
     trailerInfo: { eventId: string; videoId: string } | null;

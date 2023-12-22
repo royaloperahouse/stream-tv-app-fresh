@@ -179,6 +179,9 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
     if (item.key !== 'General') {
       params.prevScreenName = items[index - 1].key;
     }
+    if (item.key === 'General') {
+      params.prevScreenName = items[items.length - 1].key;
+    }
     params.nextScreenName = items[index + 1].key;
     params.nextSectionTitle = items[index + 1].currentSectionTitle;
     sectionsParams[item.key] = params;
