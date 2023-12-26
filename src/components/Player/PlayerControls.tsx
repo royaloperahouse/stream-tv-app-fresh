@@ -21,7 +21,7 @@ import { scaleSize } from '@utils/scaleSize';
 import ISO6391 from 'iso-639-1';
 
 import ControlButton from './ControlButton';
-import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
+import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import RohText from '@components/RohText';
 import SubtitlesItem from './SubtitlesItem';
 import { ESeekOperations } from '@configs/bitMovinPlayerConfig';
@@ -612,22 +612,21 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
               subtitlesButtonNode={subtitleButtonRef.current?.getNode?.()}
             />
             <View style={styles.rightControls}>
-              {hasSubtitles && (
-                <ControlButton
-                  ref={subtitleButtonRef}
-                  icon={PlayerIcons.subtitles}
-                  onPress={openSubtitleListHandler}
-                  getControlPanelVisible={getControlPanelVisible}
-                  canMoveRight={false}
-                  canMoveDown={false}
-                  nextFocusUp={exitButtonRef.current?.getNode?.()}
-                  nextFocusLeft={centralControlsRef.current?.getFwdNode?.()}
-                />
-              )}
+              <ControlButton
+                ref={subtitleButtonRef}
+                icon={PlayerIcons.subtitles}
+                onPress={openSubtitleListHandler}
+                getControlPanelVisible={getControlPanelVisible}
+                canMoveRight={false}
+                canMoveDown={false}
+                nextFocusUp={exitButtonRef.current?.getNode?.()}
+                nextFocusLeft={centralControlsRef.current?.getFwdNode?.()}
+              />
             </View>
           </View>
         </Animated.View>
         <Subtitles
+          title={title}
           focusToSutitleButton={focusToSutitleButton}
           ref={subtitlesRef}
           setSubtitle={setSubtitle}
@@ -721,6 +720,7 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
 //Subtitles component
 
 type TSubtitlesProps = {
+  title: string;
   focusToSutitleButton: () => void;
   setSubtitle: (trackId: string) => void;
 };
@@ -737,7 +737,7 @@ type TSubtitlesRef = {
 };
 
 const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
-  const { focusToSutitleButton, setSubtitle } = props;
+  const { focusToSutitleButton, setSubtitle, title } = props;
   const overlayAnimation = useRef(new Animated.Value(0)).current;
   const subtitleContainerAnimation = useRef(new Animated.Value(0)).current;
   const [subtitleList, setSubtitleList] = useState<TSubtitles>([]);
@@ -791,9 +791,7 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
       },
       showSubtitles: () => {
         if (
-          !subtitlesMountedRef.current ||
-          !Array.isArray(subtitleList) ||
-          !subtitleList.length
+          !subtitlesMountedRef.current
         ) {
           return;
         }
@@ -890,10 +888,30 @@ const Subtitles = forwardRef<TSubtitlesRef, TSubtitlesProps>((props, ref) => {
           },
         ]}>
         {showList && (
-          <View style={styles.subtitlesListContainer}>
-            <RohText style={styles.subtitlesContainerTitleText}>
+          <View style={subtitleList.length ? styles.subtitlesListContainer : styles.subtitlesListConfirmContainer}>
+            <RohText style={subtitleList.length ? styles.subtitlesContainerTitleText : styles.subtitlesContainerMessageTitleText}>
               subtitles
             </RohText>
+            {!subtitleList.length && (
+              <>
+                <RohText style={styles.subtitlesContainerMessageText}>
+                  Subtitles are not available for this video
+                </RohText>
+                <TouchableHighlightWrapper
+                  underlayColor={Colors.subtitlesActiveBackground}
+                  style={styles.subtitleMessageConfirmContainer}
+                  hasTVPreferredFocus={true}
+                  canMoveLeft={false}
+                  canMoveRight={false}
+                  canMoveUp={false}
+                  canMoveDown={false}
+                  onPress={hideSubtitles}>
+                  <RohText style={styles.subtitlesContainerMessageConfirmText}>
+                    OK
+                  </RohText>
+                </TouchableHighlightWrapper>
+              </>
+            )}
             <FlatList
               data={subtitleList}
               keyExtractor={item => item.identifier}
@@ -941,7 +959,6 @@ const CentralControls = forwardRef<TCentralControlsRef, TCentralControlsProps>(
       onPausePress,
       onPlayPress,
       getControlPanelVisible,
-      hasSubtitles,
       exitButtonNode,
       subtitlesButtonNode,
     } = props;
@@ -1013,7 +1030,7 @@ const CentralControls = forwardRef<TCentralControlsRef, TCentralControlsProps>(
           getControlPanelVisible={getControlPanelVisible}
           canMoveDown={false}
           nextFocusLeft={playRef.current?.getNode?.()}
-          canMoveRight={hasSubtitles}
+          canMoveRight={true}
           nextFocusRight={subtitlesButtonNode}
           nextFocusUp={exitButtonNode}
         />
@@ -1128,6 +1145,39 @@ const styles = StyleSheet.create({
     paddingLeft: scaleSize(60),
     paddingVertical: scaleSize(35),
   },
+  subtitlesContainerMessageTitleText: {
+    textTransform: 'uppercase',
+    color: 'white',
+    fontSize: scaleSize(24),
+    lineHeight: scaleSize(28),
+    letterSpacing: scaleSize(1),
+    paddingLeft: scaleSize(20),
+    paddingVertical: scaleSize(35),
+  },
+  subtitlesContainerMessageText: {
+    color: 'white',
+    fontSize: 24,
+    lineHeight: 28,
+    letterSpacing: 1,
+    paddingLeft: 20,
+  },
+  subtitlesContainerMessageConfirmText: {
+    color: 'white',
+    fontSize: 28,
+    lineHeight: 28,
+    letterSpacing: 1,
+  },
+  subtitleMessageConfirmContainer: {
+    marginTop: 80,
+    marginHorizontal: scaleSize(20),
+    paddingHorizontal: scaleSize(20),
+    maxHeight: scaleSize(80),
+    minHeight: scaleSize(80),
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
   subtitlesContainer: {
     flex: 1,
   },
@@ -1153,6 +1203,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundColor,
     width: scaleSize(528),
     height: scaleSize(631),
+  },
+  subtitlesListConfirmContainer: {
+    backgroundColor: Colors.backgroundColor,
+    width: scaleSize(600),
+    height: scaleSize(300),
   },
   subtitlesFlatListContainer: {
     flex: 0,
