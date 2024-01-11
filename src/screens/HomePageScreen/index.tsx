@@ -226,6 +226,7 @@ const HomePageScreen: React.FC<
                     event={item}
                     ref={previewRef}
                     screenNameFrom={route.name}
+                    railName={section.title}
                     hasTVPreferredFocus={
                       (sectionIndex === focusPosition.sectionIndex &&
                         index === focusPosition.itemIndex &&

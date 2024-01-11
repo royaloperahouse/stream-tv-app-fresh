@@ -20,6 +20,7 @@ import {
 import RohImage from '@components/RohImage';
 import { FocusManager } from 'services/focusService/focusManager';
 import { isTVOS } from "configs/globalConfig";
+import { storeEvents, getEvents } from '@utils/storeEvents';
 
 type DigitalEventItemProps = {
   event: TEventContainer;
@@ -50,6 +51,7 @@ type DigitalEventItemProps = {
   nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
   scrollToRailItem?: (sectionIndex: number, itemIndex: number) => void;
   accessible?: boolean;
+  railName: string;
 };
 
 const firstFocusItenKey = 'firstFocusItenKey';
@@ -74,6 +76,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       setFirstItemFocusable,
       scrollToRailItem = () => {},
       accessible,
+      railName,
     },
     ref: any,
   ) => {
@@ -115,6 +118,15 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
     }, []);
 
     const onPressHandler = () => {
+      storeEvents({
+        event_type: 'open_performance',
+        event_data: {
+          screen_name: screenNameFrom,
+          rail_name: railName,
+          index: String(selectedItemIndex),
+          datetime: new Date().toISOString(),
+        },
+      }).then(() => {});
       navMenuManager.lockNavMenu();
       if (event.type === 'digital_event_video') {
         navMenuManager.hideNavMenu(() => {

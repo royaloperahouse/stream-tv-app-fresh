@@ -48,16 +48,16 @@ const ContentLayout: React.FC<TContentLayoutProps> = () => {
           });
         },
         focus: (...rest) => {
-          console.log({
-            name: `focus ${Platform.OS}`,
-            value: rest,
-          });
+          // console.log({
+          //   name: `focus ${Platform.OS}`,
+          //   value: rest,
+          // });
         },
         blur: (...rest) => {
-          console.log({
-            name: `blur ${Platform.OS}`,
-            value: rest,
-          });
+          // console.log({
+          //   name: `blur ${Platform.OS}`,
+          //   value: rest,
+          // });
         },
         beforeRemove: (...rest) => {
           console.log({
@@ -128,16 +128,16 @@ const ContentScreen: React.MemoExoticComponent<
             });
           },
           focus: (...rest) => {
-            console.log({
-              name: `focus ${Platform.OS}`,
-              value: rest,
-            });
+            // console.log({
+            //   name: `focus ${Platform.OS}`,
+            //   value: rest,
+            // });
           },
           blur: (...rest) => {
-            console.log({
-              name: `blur ${Platform.OS}`,
-              value: rest,
-            });
+            // console.log({
+            //   name: `blur ${Platform.OS}`,
+            //   value: rest,
+            // });
           },
           beforeRemove: (...rest) => {
             console.log({
@@ -146,10 +146,10 @@ const ContentScreen: React.MemoExoticComponent<
             });
           },
           state: (...rest) => {
-            console.log({
-              name: `state ${Platform.OS}`,
-              value: rest[0].data,
-            });
+            // console.log({
+            //   name: `state ${Platform.OS}`,
+            //   value: rest[0].data,
+            // });
           },
         }}
         initialRouteName={initialRoute?.navMenuScreenName}
