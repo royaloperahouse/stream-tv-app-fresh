@@ -445,7 +445,7 @@ PODS:
     - React-Core
   - RNBootSplash (4.3.2):
     - React-Core
-  - RNCAsyncStorage (1.19.0):
+  - RNCAsyncStorage (1.21.0):
     - React-Core
   - RNDeviceInfo (10.3.0):
     - React-Core
@@ -737,7 +737,7 @@ SPEC CHECKSUMS:
   ReactCommon: 1dabb8f37c44d8c7370238bd8f504cbad0cfd941
   RNBitmovinPlayer: ed589b4949f06568e941c20e9e85c12a0f95971c
   RNBootSplash: 5f346163977573d6b2aeba1b25df9d2245c0d73c
-  RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNGestureHandler: 28d1392c38e539c932d95b29134baf2c01a219ba

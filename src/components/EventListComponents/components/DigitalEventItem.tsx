@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, TouchableHighlight, findNodeHandle } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
@@ -46,6 +46,7 @@ type DigitalEventItemProps = {
     ref: React.MutableRefObject<TTouchableHighlightWrapperRef | undefined>,
     sectionIdx: number,
   ) => void;
+  topEndlessScrollRef: any;
   setFirstItemFocusable?: TNavMenuScreenRedirectRef['setDefaultRedirectFromNavMenu'];
   removeFirstItemFocusable?: TNavMenuScreenRedirectRef['removeDefaultRedirectFromNavMenu'];
   nextFocusLeftOnFirstItem?: React.RefObject<TouchableHighlight>;
@@ -77,6 +78,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       scrollToRailItem = () => {},
       accessible,
       railName,
+      topEndlessScrollRef,
     },
     ref: any,
   ) => {
@@ -216,6 +218,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}
         canMoveLeft={canMoveLeft}
+        nextFocusUp={(sectionIndex === 0 && topEndlessScrollRef.current) ? topEndlessScrollRef.current.getNode() : undefined}
         style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
           if (isMounted.current) {

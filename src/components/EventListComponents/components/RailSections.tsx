@@ -154,7 +154,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
     if (railStyle && railStyle.height) {
       sectionsListRef.current?.scrollToOffset({
         animated: true,
-        offset: index * railStyle.height + 5,
+        offset: index * railStyle.height,
       });
     } else {
       sectionsListRef.current?.scrollToIndex({
@@ -170,7 +170,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       if (railStyle && railStyle.height) {
         sectionsListRef.current?.scrollToOffset({
           animated: false,
-          offset: sectionIndex * railStyle.height + 5,
+          offset: sectionIndex * railStyle.height,
         });
       } else {
         sectionsListRef.current?.scrollToIndex({
@@ -416,6 +416,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
                     sectionItemIndex,
                     railItemIndexInList,
                   ),
+                  topEndlessScrollRef,
                   isFirstRail: sectionItemIndex === 0,
                   sectionIndex: sectionItemIndex,
                   railItemIndex: railItemIndexInList,

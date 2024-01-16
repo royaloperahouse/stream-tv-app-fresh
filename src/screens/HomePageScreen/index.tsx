@@ -219,6 +219,7 @@ const HomePageScreen: React.FC<
                   setRailItemRefCb,
                   removeRailItemRefCb,
                   hasEndlessScroll,
+                  topEndlessScrollRef,
                   scrollToRailItem,
                   accessible,
                 }) => (
@@ -234,6 +235,7 @@ const HomePageScreen: React.FC<
                       (fromErrorModal && sectionIndex === 0 && index === 0) ||
                       (FocusManager.getFirstLounch() && index === 0 && sectionIndex === 0)
                     }
+                    topEndlessScrollRef={topEndlessScrollRef}
                     canMoveRight={index !== section.data.length - 1}
                     onFocus={scrollToRail}
                     continueWatching={section.title === continueWatchingRailTitle}
