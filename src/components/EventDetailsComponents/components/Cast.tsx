@@ -19,6 +19,7 @@ import type {
 } from '@configs/screensConfig';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { isTVOS } from 'configs/globalConfig';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 const Cast: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['cast']
@@ -47,6 +48,13 @@ const Cast: React.FC<
   }, []);
   useLayoutEffect(() => {
     isMounted.current = true;
+    storeEvents({
+      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_data: {
+        performance_id: params.eventId,
+        section_name: 'Cast',
+      },
+    }).then(() => {});
     return () => {
       isMounted.current = false;
     };

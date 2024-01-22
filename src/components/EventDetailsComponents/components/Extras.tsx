@@ -50,6 +50,7 @@ import { NonSubscribedStatusError, NotRentedItemError, UnableToCheckRentalStatus
 import { navMenuManager } from 'components/NavMenu';
 import { navigate } from 'navigations/navigationContainer';
 import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 const Extras: React.FC<
   TEventDetailsScreensProps<
     NSNavigationScreensNames.EventDetailsStackScreens['extras']
@@ -199,6 +200,13 @@ const Extras: React.FC<
   const pressHandler = useCallback(
     async (ref, clearLoadingState) => {
       try {
+        storeEvents({
+          event_type: AnalyticsEventTypes.OPTION_CLICK,
+          event_data: {
+            performance_id: params.eventId,
+            option_name: 'Extras video',
+          },
+        }).then(() => {});
         if (!isAuthenticated) {
           moveToSettings();
           navMenuManager.unwrapNavMenu();
@@ -349,6 +357,13 @@ const Extras: React.FC<
 
   useEffect(() => {
     isMounted.current = true;
+    storeEvents({
+      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_data: {
+        performance_id: params.eventId,
+        section_name: 'Extras',
+      },
+    }).then(() => {});
     return () => {
       isMounted.current = false;
     };

@@ -1,33 +1,27 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import { View, FlatList, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { digitalEventDetailsSearchSelector } from '@services/store/events/Selectors';
-import {
-  setFullSearchQuery,
-  saveSearchResultQuery,
-} from '@services/store/events/Slices';
+import { digitalEventDetailsSearchSelector, searchQuerySelector } from '@services/store/events/Selectors';
+import { saveSearchResultQuery, setFullSearchQuery } from '@services/store/events/Slices';
 import RohText from './RohText';
-import TouchableHighlightWrapper, {
-  TTouchableHighlightWrapperRef,
-} from './TouchableHighlightWrapper';
+import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from './TouchableHighlightWrapper';
 import FastImage from 'react-native-fast-image';
 import get from 'lodash.get';
 import { scaleSize } from '@utils/scaleSize';
 import { Colors } from '@themes/Styleguide';
 import { getPrevSearchList } from '@services/previousSearch';
 import { useNavigation, useRoute } from '@react-navigation/core';
-import {
-  TContentScreenReverseNames,
-  TEventContainer,
-} from '@services/types/models';
+import { TContentScreenReverseNames, TEventContainer } from '@services/types/models';
 import { navMenuManager } from '@components/NavMenu';
 import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
-import { contentScreenNames } from '@configs/screensConfig';
 import type { TContentScreensProps } from '@configs/screensConfig';
+import { contentScreenNames } from '@configs/screensConfig';
 import { FocusManager } from '@services/focusService/focusManager';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 import Placeholder from '@assets/image-placeholder-landscape.svg';
+import { shallowEqual, useSelector } from 'react-redux';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 type TSearchResultProps = {
   onMountToSearchResultTransition?: TNavMenuScreenRedirectRef['setDefaultRedirectToNavMenu'];
@@ -38,6 +32,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
   onUnMountAllToSearchResultTransition,
 }) => {
   const route = useRoute<TContentScreensProps<'Search'>['route']>();
+  const searchText = useSelector(searchQuerySelector, shallowEqual);
   const resultListRef = useRef<FlatList>(null);
   const digitalEventDetailsLength = useRef<number>(0);
   const selectPrevSearch = useRef<boolean>(false);
@@ -118,6 +113,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           sectionIndex={index}
           hasTVPreferredFocus={index === itemIndex}
           onMountToSearchResultTransition={onMountToSearchResultTransition}
+          searchText={searchText}
         />
       )}
     />
@@ -134,6 +130,7 @@ type TSearchItemComponentProps = {
   canMoveDown: boolean;
   hasTVPreferredFocus: boolean;
   onMountToSearchResultTransition?: TSearchResultProps['onMountToSearchResultTransition'];
+  searchText: string;
 };
 
 export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
@@ -145,6 +142,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   canMoveDown,
   hasTVPreferredFocus,
   onMountToSearchResultTransition,
+  searchText,
 }) => {
   const dispatch = useAppDispatch();
   const navigation =
@@ -153,6 +151,14 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const availableFrom = get(item.data, ['vs_availability_date']);
   const touchableHandler = () => {
+    storeEvents({
+      event_type: AnalyticsEventTypes.OPEN_PERFORMANCE_SEARCH,
+      event_data: {
+        search_query: searchText,
+        index: sectionIndex.toString(),
+        performance_id: item.id,
+      },
+    }).then(() => {});
     if (item.type === 'digital_event_video') {
       navMenuManager.hideNavMenu(() => {
         navigation.navigate(contentScreenNames.eventVideo, {

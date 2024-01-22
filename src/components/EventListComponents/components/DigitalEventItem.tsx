@@ -1,26 +1,24 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableHighlight, findNodeHandle } from 'react-native';
+import { StyleSheet, TouchableHighlight, View } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import { TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
-import TouchableHighlightWrapper, {
-  TTouchableHighlightWrapperRef,
-} from '@components/TouchableHighlightWrapper';
+import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import get from 'lodash.get';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import { contentScreenNames } from '@configs/screensConfig';
-import { navMenuManager } from '@components/NavMenu';
-import { Colors } from '@themes/Styleguide';
-import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import {
+  contentScreenNames,
   TContentScreenReverseNamesOfNavToDetails,
   TContentScreensProps,
 } from '@configs/screensConfig';
+import { navMenuManager } from '@components/NavMenu';
+import { Colors } from '@themes/Styleguide';
+import { TNavMenuScreenRedirectRef } from '@components/NavmenuScreenRedirect';
 import RohImage from '@components/RohImage';
 import { FocusManager } from 'services/focusService/focusManager';
-import { isTVOS } from "configs/globalConfig";
-import { storeEvents, getEvents } from '@utils/storeEvents';
+import { isTVOS } from 'configs/globalConfig';
+import { AnalyticsEventTypes, storeEvents } from '@utils/storeEvents';
 
 type DigitalEventItemProps = {
   event: TEventContainer;
@@ -121,12 +119,11 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
 
     const onPressHandler = () => {
       storeEvents({
-        event_type: 'open_performance',
+        event_type: AnalyticsEventTypes.OPEN_PERFORMANCE_RAILS,
         event_data: {
           screen_name: screenNameFrom,
           rail_name: railName,
           index: String(selectedItemIndex),
-          datetime: new Date().toISOString(),
         },
       }).then(() => {});
       navMenuManager.lockNavMenu();

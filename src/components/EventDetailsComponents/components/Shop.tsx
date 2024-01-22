@@ -15,6 +15,7 @@ import { scaleSize } from 'utils/scaleSize';
 import { Colors } from 'themes/Styleguide';
 import RohImage from 'components/RohImage';
 import FastImage from 'react-native-fast-image';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 const Shop: React.FC<
   TEventDetailsScreensProps<
@@ -50,6 +51,13 @@ const Shop: React.FC<
   }, []);
   useLayoutEffect(() => {
     isMounted.current = true;
+    storeEvents({
+      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_data: {
+        performance_id: params.eventId,
+        section_name: 'Shop',
+      },
+    }).then(() => {});
     return () => {
       isMounted.current = false;
     };

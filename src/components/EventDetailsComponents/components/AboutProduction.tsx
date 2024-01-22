@@ -1,11 +1,5 @@
-import React, {
-  useContext,
-  useCallback,
-  useState,
-  useRef,
-  useLayoutEffect,
-} from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
 import GoDown from '../commonControls/GoDown';
@@ -13,12 +7,13 @@ import GoUp from '@components/EventDetailsComponents/commonControls/GoUp';
 import { Colors } from '@themes/Styleguide';
 import MultiColumnAboutProductionList from '../commonControls/MultiColumnAboutProductionList';
 import type {
-  TEventDetailsScreensProps,
   NSNavigationScreensNames,
   TEventDetailsScreensParamContextProps,
+  TEventDetailsScreensProps,
 } from '@configs/screensConfig';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { isTVOS } from 'configs/globalConfig';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 const AboutProduction: React.FC<
   TEventDetailsScreensProps<
@@ -48,6 +43,13 @@ const AboutProduction: React.FC<
     }
   }, []);
   useLayoutEffect(() => {
+    storeEvents({
+      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_data: {
+        performance_id: params.eventId,
+        section_name: 'About Production',
+      },
+    }).then(() => {});
     isMounted.current = true;
     return () => {
       isMounted.current = false;

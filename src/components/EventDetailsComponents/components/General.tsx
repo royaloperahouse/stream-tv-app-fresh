@@ -82,6 +82,7 @@ import { navMenuManager } from 'components/NavMenu';
 import { navigate } from 'navigations/navigationContainer';
 import { contentScreenNames, rootStackScreensNames } from '@configs/screensConfig';
 import { formatDate } from 'utils/formatDate';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 const General: React.FC<
   TEventDetailsScreensProps<
@@ -318,6 +319,13 @@ const General: React.FC<
       ref?: React.RefObject<TouchableHighlight>,
       clearLoadingState?: () => void,
     ) => {
+      storeEvents({
+        event_type: AnalyticsEventTypes.OPTION_CLICK,
+        event_data: {
+          performance_id: params.eventId,
+          option_name: 'Watch now',
+        },
+      }).then(() => {});
       try {
         if (!isAuthenticated) {
           moveToSettings();
@@ -615,6 +623,13 @@ const General: React.FC<
       clearLoadingState?: () => void,
     ) => {
       try {
+        storeEvents({
+          event_type: AnalyticsEventTypes.OPTION_CLICK,
+          event_data: {
+            performance_id: params.eventId,
+            option_name: 'Watch trailer',
+          },
+        }).then(() => {});
         const manifestInfo = await fetchVideoURL(
           trailerInfo.videoId,
           isProductionEnv,
@@ -679,6 +694,13 @@ const General: React.FC<
     _: React.RefObject<TouchableHighlight>,
     clearLoadingState: () => void,
   ) => {
+    storeEvents({
+      event_type: AnalyticsEventTypes.OPTION_CLICK,
+      event_data: {
+        performance_id: params.eventId,
+        option_name: 'Add to my list',
+      },
+    }).then(() => {});
     if (!isAuthenticated) {
       moveToSettings();
       navMenuManager.unwrapNavMenu();

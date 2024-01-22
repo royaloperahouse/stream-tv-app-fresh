@@ -23,6 +23,7 @@ export const ApiConfig = Object.freeze({
     watchStatus: '/user/tv/watch-status',
     myLsit: '/user/tv/my-list',
     clearMyList: '/user/tv/my-list/clear',
+    analytics: '/information/analytics',
   },
   auth: {
     username: 'tvapp',

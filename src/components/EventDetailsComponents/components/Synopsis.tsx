@@ -19,6 +19,7 @@ import type {
 } from '@configs/screensConfig';
 import { SectionsParamsContext } from '@components/EventDetailsComponents/commonControls/SectionsParamsContext';
 import { isTVOS } from 'configs/globalConfig';
+import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 const Synopsis: React.FC<
   TEventDetailsScreensProps<
@@ -48,6 +49,13 @@ const Synopsis: React.FC<
   }, []);
   useLayoutEffect(() => {
     isMounted.current = true;
+    storeEvents({
+      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_data: {
+        performance_id: params.eventId,
+        section_name: 'Synopsis',
+      },
+    }).then(() => {});
     return () => {
       isMounted.current = false;
     };

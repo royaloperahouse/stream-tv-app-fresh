@@ -122,24 +122,28 @@ export const useEventDetails: TUseEventDetails = ({ eventId }) => {
       }
       case 'Cast': {
         params = {
+          eventId,
           castList,
         };
         break;
       }
       case 'Creatives': {
         params = {
+          eventId,
           creatives,
         };
         break;
       }
       case 'Synopsis': {
         params = {
+          eventId,
           synopsis,
         };
         break;
       }
       case 'Info': {
         params = {
+          eventId,
           aboutProduction,
         };
         break;

@@ -381,3 +381,8 @@ export const getMyListReq = (customerId: number, isProductionEnv: boolean) =>
     params: { customerId },
     baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
   });
+
+export const sendAnalytics = events =>
+  axiosClient.post(ApiConfig.routes.analytics, {
+    data: events,
+  });
