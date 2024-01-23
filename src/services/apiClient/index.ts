@@ -120,9 +120,7 @@ export const getAccessToWatchVideo = async (
     return videoObj;
   }
   checkRentalStateModalCB();
-  if (isProductionEnv) {
-    throw new NonSubscribedStatusError(); //temporary, while  ppv is not working
-  }
+
   const purchasedStreamsResponse = await getPurchasedStreams(
     isProductionEnv,
     customerId,
