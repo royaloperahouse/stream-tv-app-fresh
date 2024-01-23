@@ -153,6 +153,7 @@ const OperaMusicScreen: React.FC<
                 removeRailItemRefCb,
                 hasEndlessScroll,
                 scrollToRailItem,
+                topEndlessScrollRef,
                 accessible,
               }) => (
                 <DigitalEventItem
@@ -180,6 +181,7 @@ const OperaMusicScreen: React.FC<
                       : undefined
                   }
                   scrollToRailItem={scrollToRailItem}
+                  topEndlessScrollRef={topEndlessScrollRef}
                   accessible={
                     sectionIndex === focusPosition.sectionIndex &&
                     index === focusPosition.itemIndex

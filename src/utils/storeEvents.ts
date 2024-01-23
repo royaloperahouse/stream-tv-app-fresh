@@ -47,6 +47,8 @@ export enum AnalyticsEventTypes {
 }
 
 export async function storeEvents(event: IEvent): Promise<void> {
+  return; // TODO remove after lambda deployed
+  // eslint-disable-next-line no-unreachable
   if (__DEV__) {
     return; // ignoring analytics events in DEV environment
   }
@@ -119,12 +121,10 @@ async function sendEvents(events: IEvent[]) {
       data: event.event_data,
     };
   });
-  console.log('Should have sent these events:');
-  console.log(JSON.stringify(transformedEvents, null, 4));
-  console.log('End of events');
-  // const response = await sendAnalytics(transformedEvents);
-  // if (response.status === 200) {
-  //   await clearStorage();
-  // }
+
+  const response = await sendAnalytics(transformedEvents);
+  if (response.status === 200) {
+    await clearStorage();
+  }
   return;
 }

@@ -154,6 +154,7 @@ const BalletDanceScreen: React.FC<
                 removeRailItemRefCb,
                 hasEndlessScroll,
                 scrollToRailItem,
+                topEndlessScrollRef,
                 accessible,
               }) => (
                 <DigitalEventItem
@@ -180,6 +181,7 @@ const BalletDanceScreen: React.FC<
                         ?.setDefaultRedirectFromNavMenu
                       : undefined
                   }
+                  topEndlessScrollRef={topEndlessScrollRef}
                   scrollToRailItem={scrollToRailItem}
                   accessible={
                     sectionIndex === focusPosition.sectionIndex &&
