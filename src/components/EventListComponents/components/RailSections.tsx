@@ -376,8 +376,6 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
             <FlatList
               horizontal
               windowSize={railWindowSize}
-              initialNumToRender={sectionItemsInitialNumber}
-              maxToRenderPerBatch={sectionItemsInitialNumber}
               data={sectionItem.data}
               ref={component => {
                 railItemsListRef.current[sectionItemIndex] = component;
@@ -442,6 +440,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
           if (mountedRef.current) {
             scrollToTop.current = true;
             !isTVOS && navMenuManager.lockNavMenu();
+            scrollToRailItem(0, 0);
             sectionsListRef.current?.scrollToOffset?.({ offset: 0 });
           }
         }}

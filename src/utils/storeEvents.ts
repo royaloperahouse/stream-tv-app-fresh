@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { isTVOS } from 'configs/globalConfig';
 import { sendAnalytics } from 'services/apiClient';
+import axios from 'axios';
 
 interface IEvent {
   event_type: AnalyticsEventTypes;
