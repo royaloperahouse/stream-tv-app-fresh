@@ -269,7 +269,7 @@ const getCastList = (
 } => {
   const castList: Array<TDieseActivityCast> =
     get(event, ['diese_activity', 'cast']) || [];
-  const listOfEvalableCasts = castList.reduce<{ [key: string]: string }>(
+  const listOfEvalableCasts = castList?.reduce<{ [key: string]: string }>(
     (acc, cast) => {
       const role = cast.role_title;
       const name =
@@ -304,7 +304,7 @@ const getCreatives = (
     ['diese_activity', 'creatives'],
     [],
   );
-  const listOfEvalableCreatives = creativesList.reduce<{
+  const listOfEvalableCreatives = creativesList?.reduce<{
     [key: string]: string;
   }>((acc, creative) => {
     const role = creative.role_title;
@@ -336,7 +336,7 @@ const getSynopsis = (
   synopsis: Array<{ key: string; text: string }>;
   isSynopsisAvailable: boolean;
 } => {
-  const synopsis: Array<TVSSynops> = event.vs_synopsis.filter(
+  const synopsis: Array<TVSSynops> = event?.vs_synopsis?.filter(
     synops => synops.text.length,
   ).length
     ? event.vs_synopsis.filter(synops => synops.text.length)
@@ -346,7 +346,7 @@ const getSynopsis = (
           ['vs_event_details', 'productions'],
           [],
         ) || []
-      ).reduce((acc: Array<TVSSynops>, production: any) => {
+      )?.reduce((acc: Array<TVSSynops>, production: any) => {
         if (production.attributes.synopsis) {
           acc.push(
             ...production.attributes.synopsis
@@ -391,7 +391,7 @@ const getAboutProduction = (
     content: any;
   }> = [];
 
-  const language = get(event, 'vs_event_details.productions', []).reduce(
+  const language = get(event, 'vs_event_details.productions', [])?.reduce(
     (acc: string, item: any, index: number) => {
       if (item?.attributes?.language) {
         acc += (index !== 0 ? ', ' : '') + item.attributes.language;
@@ -401,7 +401,7 @@ const getAboutProduction = (
     '',
   );
 
-  const guidance: Array<string> = event.vs_guidance_details.reduce(
+  const guidance: Array<string> = event?.vs_guidance_details?.reduce(
     (acc: Array<string>, item: any) => {
       if (item.text) {
         acc.push(item.text);
@@ -411,7 +411,7 @@ const getAboutProduction = (
     event.vs_guidance ? [event.vs_guidance] : [],
   );
 
-  const genres = event.vs_genres.reduce(
+  const genres = event?.vs_genres?.reduce(
     (acc: string, item: any, index: number) => {
       if (item.tag) {
         acc += (index !== 0 ? ', ' : '') + item.tag;
@@ -421,7 +421,7 @@ const getAboutProduction = (
     '',
   );
 
-  const sponsors = event.vs_sponsors.reduce((acc: Array<any>, item) => {
+  const sponsors = event.vs_sponsors?.reduce((acc: Array<any>, item) => {
     const sponsor: Partial<{
       img: { url: string; width: number; height: number };
       info: { title: string; description: string };
@@ -437,7 +437,7 @@ const getAboutProduction = (
         height: item.sponsor_logo.dimensions.height,
       };
     }
-    const sponsorTitle = item.sponsor_title.reduce(
+    const sponsorTitle = item.sponsor_title?.reduce(
       (title: string, titleItem) => {
         if (titleItem.text) {
           title += titleItem.text;
@@ -447,7 +447,7 @@ const getAboutProduction = (
       '',
     );
 
-    const sponsorIntro = item.sponsor_intro.reduce(
+    const sponsorIntro = item.sponsor_intro?.reduce(
       (intro: string, introItem) => {
         if (introItem.text) {
           intro += introItem.text;
@@ -457,7 +457,7 @@ const getAboutProduction = (
       '',
     );
 
-    const sponsorDesccription = item.sponsor_description.reduce(
+    const sponsorDesccription = item.sponsor_description?.reduce(
       (description: string, descriptionItem) => {
         if (descriptionItem.text) {
           description += descriptionItem.text + '\n';
@@ -487,7 +487,7 @@ const getAboutProduction = (
     });
   }
 
-  if (guidance.length) {
+  if (guidance?.length) {
     aboutProduction.push({
       key: ECellItemKey.guidance,
       type: ECellItemKey.guidance,
@@ -503,7 +503,7 @@ const getAboutProduction = (
     });
   }
 
-  if (sponsors.length) {
+  if (sponsors?.length) {
     aboutProduction.push(
       ...sponsors.map((sponsor, index) => ({
         key: ECellItemKey.sponsor + index,

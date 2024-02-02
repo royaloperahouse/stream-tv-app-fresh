@@ -252,6 +252,11 @@ const General: React.FC<
       startDate,
       endDate,
       isLiveStream,
+      isPPV = false,
+      availabilityWindow = 0,
+      isAvailabilityWindowActivated = false,
+      feeId = 0,
+      orderNo = 0,
     }) => {
       goBackButtonuManager.hideGoBackButton();
       if (isTVOS) {
@@ -277,6 +282,11 @@ const General: React.FC<
           isLiveStream,
           startDate,
           endDate,
+          isPPV,
+          availabilityWindow,
+          isAvailabilityWindowActivated,
+          feeId,
+          orderNo,
         },
       });
     },
@@ -373,6 +383,11 @@ const General: React.FC<
                 openPlayer({
                   url: manifestInfo.data.data.attributes.hlsManifestUrl,
                   isLiveStream: performanceInfo.isLiveStream,
+                  isAvailabilityWindowActivated: videoFromPrismic.isAvailabilityWindowActivated,
+                  availabilityWindow: videoFromPrismic.availabilityWindow,
+                  isPPV: videoFromPrismic.isPPV,
+                  feeId: videoFromPrismic.feeId,
+                  orderNo: videoFromPrismic.orderNo,
                   startDate: performanceInfo.startDate,
                   endDate: performanceInfo.endDate,
                   poster:
@@ -409,6 +424,11 @@ const General: React.FC<
                 openPlayer({
                   url: manifestInfo.data.data.attributes.hlsManifestUrl,
                   isLiveStream: performanceInfo.isLiveStream,
+                  isAvailabilityWindowActivated: videoFromPrismic.isAvailabilityWindowActivated,
+                  availabilityWindow: videoFromPrismic.availabilityWindow,
+                  isPPV: videoFromPrismic.isPPV,
+                  feeId: videoFromPrismic.feeId,
+                  orderNo: videoFromPrismic.orderNo,
                   offset: performanceInfo.isLiveStream ? undefined : '0.0',
                   startDate: performanceInfo.startDate,
                   endDate: performanceInfo.endDate,
@@ -533,6 +553,11 @@ const General: React.FC<
         openPlayer({
           url: manifestInfo.data.data.attributes.hlsManifestUrl,
           isLiveStream: performanceInfo.isLiveStream,
+          isAvailabilityWindowActivated: videoFromPrismic.isAvailabilityWindowActivated,
+          availabilityWindow: videoFromPrismic.availabilityWindow,
+          isPPV: videoFromPrismic.isPPV,
+          feeId: videoFromPrismic.feeId,
+          orderNo: videoFromPrismic.orderNo,
           startDate: performanceInfo.startDate,
           endDate: performanceInfo.endDate,
           poster:

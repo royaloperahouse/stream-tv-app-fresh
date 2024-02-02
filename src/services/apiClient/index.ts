@@ -12,6 +12,9 @@ import {
   NotRentedItemError,
   NonSubscribedStatusError,
 } from '@utils/customErrors';
+import isAfter from 'date-fns/isAfter';
+import { useAppSelector } from 'hooks/redux';
+import { customerIdSelector } from 'services/store/auth/Selectors';
 export const axiosClient: AxiosInstance = axios.create({
   baseURL: ApiConfig.host,
   timeout: 20 * 1000,
@@ -105,12 +108,42 @@ export const getEventsByFeeIds = (feeIds: string, isProductionEnv: boolean) =>
     baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
   });
 
+export const activateAvailabilityWindow = (
+  feeId,
+  orderNo,
+  availabilityWindow,
+  customerId,
+  isProductionEnv,
+) => {
+  return axiosClient.post(
+    ApiConfig.routes.activateAvailabilityWindow,
+    {
+      feeId: feeId.toString(),
+      orderNo,
+      duration: availabilityWindow,
+    },
+    {
+      baseURL: isProductionEnv ? ApiConfig.host : ApiConfig.stagingEnv,
+      headers: { ['x-customer-id']: customerId || '' },
+    },
+  );
+};
+
 export const getAccessToWatchVideo = async (
   videoObj: { videoId: string; eventId: string; title?: string },
   isProductionEnv: boolean,
   customerId: number | null,
   checkRentalStateModalCB: () => void,
-): Promise<{ videoId: string; eventId: string; title?: string }> => {
+): Promise<{
+  videoId: string;
+  eventId: string;
+  title?: string;
+  feeId?: number;
+  orderNo?: number;
+  isAvailabilityWindowActivated?: boolean;
+  availabilityWindow?: number;
+  isPPV?: boolean;
+}> => {
   const subscriptionResponse = await getSubscribeInfo(isProductionEnv);
   if (
     subscriptionResponse.status >= 200 &&
@@ -132,13 +165,21 @@ export const getAccessToWatchVideo = async (
     purchasedStreamsResponse.data.data.attributes.streams.length
   ) {
     const ids: Array<string> =
-      purchasedStreamsResponse.data.data.attributes.streams.map(
-        (stream: {
-          stream_id: string;
-          stream_desc: string;
-          purchase_dt: string;
-        }) => stream.stream_id,
-      );
+      purchasedStreamsResponse.data.data.attributes.streams
+        .map(
+          (stream: {
+            stream_id: string;
+            stream_desc: string;
+            purchase_dt: string;
+            transaction_status: string;
+          }) => {
+            if (stream.transaction_status === 'success') {
+              return stream.stream_id;
+            }
+          },
+        )
+        .filter(item => item);
+
     if (ids.length) {
       const eventsForPPVPromiseSettledResponse: Array<
         PromiseSettledResult<AxiosResponse<any>>
@@ -162,13 +203,28 @@ export const getAccessToWatchVideo = async (
         },
         { data: [], included: [] },
       );
+      const ppvEvent = eventsForPPVData.included.find(
+        (item: any) =>
+          item.type === 'videoInfo' && item.id === videoObj.videoId,
+      );
+      const purchase =
+        purchasedStreamsResponse.data.data.attributes.streams.find(
+          item => (item.stream_id = ppvEvent.attributes.fee.Id),
+        );
       if (
-        eventsForPPVData.included.some(
-          (item: any) =>
-            item.type === 'videoInfo' && item.id === videoObj.videoId,
-        )
+        ppvEvent && purchase
       ) {
-        return videoObj;
+        if (isAfter(new Date(), new Date(purchase.availability_window_end))) {
+          throw new NotRentedItemError();
+        }
+        return {
+          ...videoObj,
+          feeId: purchase.stream_id,
+          orderNo: purchase.order_no,
+          isAvailabilityWindowActivated: !!purchase.availability_window_end,
+          availabilityWindow: ppvEvent.attributes.ppvAvailabilityWindow,
+          isPPV: true,
+        };
       }
       throw new NotRentedItemError();
     } else {

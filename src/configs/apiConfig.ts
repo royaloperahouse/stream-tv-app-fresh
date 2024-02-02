@@ -24,6 +24,7 @@ export const ApiConfig = Object.freeze({
     myLsit: '/user/tv/my-list',
     clearMyList: '/user/tv/my-list/clear',
     analytics: '/information/analytics',
+    activateAvailabilityWindow: '/checkout/purchasedStreams/activateAvailabilityWindow',
   },
   auth: {
     username: 'tvapp',
