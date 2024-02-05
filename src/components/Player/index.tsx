@@ -25,6 +25,10 @@ import { Colors } from 'themes/Styleguide';
 import { ESeekOperations } from 'configs/bitMovinPlayerConfig';
 import IdleTimerManager from 'react-native-idle-timer';
 import { isTVOS } from 'configs/globalConfig';
+import { activateAvailabilityWindow } from 'services/apiClient';
+import { useAppSelector } from 'hooks/redux';
+import { customerIdSelector } from 'services/store/auth/Selectors';
+import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 
 const BITMOVIN_ANALYTICS_KEY = '45a0bac7-b900-4a0f-9d87-41a120744160';
 
@@ -34,6 +38,9 @@ export type TPlayerProps = {
   onEvent?: (event: any) => void;
   onError?: (event: any) => void;
   isLiveStream?: boolean;
+  isPPV?: boolean;
+  isAvailabilityWindowActivated?: boolean;
+  availabilityWindow: number;
   title: string;
   videoQualityBitrate: number;
   subtitle?: string;
@@ -98,6 +105,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     },
   });
 
+  const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
+  const customerId = useAppSelector(customerIdSelector);
+
   const [loaded, setLoaded] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
   const [duration, setDuration] = useState(0.0);
@@ -154,6 +164,11 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     showVideoInfo,
     startDate,
     endDate,
+    isPPV,
+    availabilityWindow,
+    isAvailabilityWindowActivated,
+    feeId,
+    orderNo,
   } = cloneProps;
 
   // Action section
@@ -253,6 +268,16 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
     if (Number(cloneProps.configuration.offset) === 0 && isLiveStream) {
       await player.timeShift(0);
+    }
+    if (isPPV && !isAvailabilityWindowActivated) {
+      await activateAvailabilityWindow(
+        feeId,
+        orderNo,
+        availabilityWindow,
+        customerId,
+        isProductionEnv,
+      );
+      cloneProps.isAvailabilityWindowActivated = true;
     }
     setPlayerReady(true);
   }, [
