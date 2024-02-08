@@ -697,13 +697,19 @@ const ProgressBar = forwardRef<TProgressBarRef, TProgressBarProps>(
           <View
             style={[
               styles.progressBarActive,
-              { width: isLiveStream ? (100 - (currentTime / duration) * 100) + '%' : (currentTime / duration) * 100 + '%' },
+              {
+                width: isLiveStream ? (100 - (currentTime / duration) * 100) + '%' : (currentTime / duration) * 100 + '%',
+                maxWidth: '100%',
+              },
             ]}
           />
           <View
             style={[
               styles.progressBarInactive,
-              { width: isLiveStream ? ((currentTime / duration) * 100 + '%') : 100 - (currentTime / duration) * 100 + '%' },
+              {
+                width: isLiveStream ? ((currentTime / duration) * 100 + '%') : 100 - (currentTime / duration) * 100 + '%',
+                maxWidth: '100%',
+              },
             ]}
           />
         </View>
