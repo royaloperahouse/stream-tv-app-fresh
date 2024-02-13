@@ -29,6 +29,7 @@ import {
   playerBitratesFilter,
 } from '@configs/bitMovinPlayerConfig';
 import { customerIdSelector } from 'services/store/auth/Selectors';
+import isAfter from 'date-fns/isAfter';
 
 type TUseEventDetails = (obj: { eventId: string }) => {
   extrasLoading: boolean;
@@ -687,6 +688,35 @@ const useGetExtras = (
                 dieseVideoId: filteredResult.trailer[0].data.video.video_key,
               }
             : null;
+          let isLiveStream = false;
+          if (filteredResult.performance.length) {
+            const liveStreamDuration =
+              filteredResult.performance[0].data.livestream_duration;
+
+            const startDate = filteredResult.performance[0].data.start_time
+              ? new Date(filteredResult.performance[0].data.start_time)
+              : null;
+
+            let endDate = filteredResult.performance[0].data.end_time
+              ? new Date(filteredResult.performance[0].data.end_time)
+              : null;
+
+            if (!endDate && startDate) {
+              endDate = new Date(
+                startDate.getTime() + liveStreamDuration * 60000,
+              );
+            }
+            const isLiveAsset =
+              filteredResult.performance[0].data.video.asset_type === 'live';
+            if (
+              isLiveAsset &&
+              (startDate || endDate) &&
+              isAfter(endDate, new Date())
+            ) {
+              isLiveStream = true;
+            }
+          }
+
           performanceInfo.current = filteredResult.performance.length
             ? {
                 eventId,
@@ -694,13 +724,17 @@ const useGetExtras = (
                 dieseId: filteredResult.performance[0].data.video.video_key,
                 startDate: filteredResult.performance[0].data.start_time,
                 endDate: filteredResult.performance[0].data.end_time,
-                isLiveStream: filteredResult.performance[0].data.video.asset_type === 'live',
+                isLiveStream,
                 title:
                   filteredResult.performance[0].data?.video_title[0]?.text ||
                   '',
               }
             : null;
-          if (performanceInfo.current && customerId && !performanceInfo.current?.startDate) {
+          if (
+            performanceInfo.current &&
+            customerId &&
+            !performanceInfo.current?.startDate
+          ) {
             const videoPositionInfo = await getBitMovinSavedPosition(
               customerId,
               performanceInfo.current.dieseId,

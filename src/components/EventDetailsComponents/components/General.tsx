@@ -133,6 +133,7 @@ const General: React.FC<
         )
       : 0
     : 0;
+  // console.log('performance\n', JSON.stringify(performanceInfo, null, 4));
   const showCountDownTimer = performanceInfo
     ? performanceInfo.startDate &&
       isFocused &&
