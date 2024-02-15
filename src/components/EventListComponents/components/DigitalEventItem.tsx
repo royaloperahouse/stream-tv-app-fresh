@@ -215,7 +215,11 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         canMoveDown={canMoveDown}
         canMoveRight={canMoveRight}
         canMoveLeft={canMoveLeft}
-        nextFocusUp={(sectionIndex === 0 && topEndlessScrollRef?.current) ? topEndlessScrollRef.current.getNode() : undefined}
+        nextFocusUp={
+          sectionIndex === 0 && topEndlessScrollRef?.current && isTVOS
+            ? topEndlessScrollRef.current.getNode()
+            : undefined
+        }
         style={[lastItem ? styles.containerForListItem : styles.container]}
         onBlur={() => {
           if (isMounted.current) {

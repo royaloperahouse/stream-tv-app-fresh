@@ -156,6 +156,7 @@ const BalletDanceScreen: React.FC<
                 scrollToRailItem,
                 topEndlessScrollRef,
                 accessible,
+                isFirstRail,
               }) => (
                 <DigitalEventItem
                   screenNameFrom={route.name}
@@ -175,6 +176,7 @@ const BalletDanceScreen: React.FC<
                   setRailItemRefCb={setRailItemRefCb}
                   removeRailItemRefCb={removeRailItemRefCb}
                   canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
+                  canMoveUp={isTVOS ? true : !isFirstRail}
                   setFirstItemFocusable={
                     index === 0
                       ? navMenuScreenRedirectRef.current

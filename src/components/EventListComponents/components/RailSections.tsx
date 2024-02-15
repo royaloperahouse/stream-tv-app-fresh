@@ -328,7 +328,9 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
       <EndlessScroll
         fromTop
         countOfRails={sections.length}
-        accessibleProp={(currentPosition[0] === 0) && topScrollAccessible}
+        accessibleProp={
+          currentPosition[0] === 0 && topScrollAccessible && isTVOS
+        }
         ref={topEndlessScrollRef}
         onFocusCb={() => {
           if (mountedRef.current) {
@@ -346,6 +348,8 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         keyExtractor={item => sectionKeyExtractor(item)}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        initialNumToRender={isTVOS ? sections.length : sectionsInitialNumber}
+        maxToRenderPerBatch={isTVOS ? sections.length : sectionsInitialNumber}
         windowSize={sectionsWindowSize}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
@@ -377,6 +381,12 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
               horizontal
               windowSize={railWindowSize}
               data={sectionItem.data}
+              initialNumToRender={
+                isTVOS ? sectionItem.data.length : sectionItemsInitialNumber
+              }
+              maxToRenderPerBatch={
+                isTVOS ? sections.length : sectionItemsInitialNumber
+              }
               ref={component => {
                 railItemsListRef.current[sectionItemIndex] = component;
               }}
