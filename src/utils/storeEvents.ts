@@ -48,8 +48,6 @@ export enum AnalyticsEventTypes {
 }
 
 export async function storeEvents(event: IEvent): Promise<void> {
-  return; // TODO remove after lambda deployed
-  // eslint-disable-next-line no-unreachable
   if (__DEV__) {
     return; // ignoring analytics events in DEV environment
   }
