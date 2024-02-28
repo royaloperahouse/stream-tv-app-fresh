@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { isTVOS } from 'configs/globalConfig';
 import { sendAnalytics } from 'services/apiClient';
-import axios from 'axios';
+import { getBrand } from 'react-native-device-info';
 
 interface IEvent {
   event_type: AnalyticsEventTypes;
@@ -12,6 +12,7 @@ interface IEvent {
     | IOptionClickedEventData
     | IOpenPerformanceFromSearchEventData
     | IScrolledEventData;
+  device_type?: string;
 }
 
 interface IOpenPerformanceFromRailsEventData {
@@ -43,8 +44,14 @@ interface IStoredEvents {
 export enum AnalyticsEventTypes {
   OPEN_PERFORMANCE_RAILS = 'open_performance_rails',
   OPEN_PERFORMANCE_SEARCH = 'open_performance_search',
-  SECTION_SCROLL = 'section_scroll',
-  OPTION_CLICK = 'option_click',
+  SECTION_VIEWED = 'section_viewed',
+  OPTION_CLICKED = 'option_clicked',
+}
+
+enum Brands {
+  APPLE = 'Apple',
+  AMAZON = 'Amazon',
+  GOOGLE = 'google',
 }
 
 export async function storeEvents(event: IEvent): Promise<void> {
@@ -52,13 +59,25 @@ export async function storeEvents(event: IEvent): Promise<void> {
     return; // ignoring analytics events in DEV environment
   }
 
+  switch (getBrand()) {
+    case Brands.APPLE:
+      event.device_type = 'AppleTV';
+      break;
+    case Brands.AMAZON:
+      event.device_type = 'FireTV';
+      break;
+    case Brands.GOOGLE:
+      event.device_type = 'ChromeCast';
+      break;
+    default:
+      event.device_type = 'unknown';
+      break;
+  }
+
   if (!isTVOS) {
     const previousData = await AsyncStorage.getItem('events');
     if (!previousData) {
-      await AsyncStorage.setItem(
-        'events',
-        JSON.stringify({ events: [event] }),
-      );
+      await AsyncStorage.setItem('events', JSON.stringify({ events: [event] }));
       return;
     }
 

@@ -321,7 +321,7 @@ const General: React.FC<
       clearLoadingState?: () => void,
     ) => {
       storeEvents({
-        event_type: AnalyticsEventTypes.OPTION_CLICK,
+        event_type: AnalyticsEventTypes.OPTION_CLICKED,
         event_data: {
           performance_id: params.eventId,
           option_name: 'Watch now',
@@ -625,7 +625,7 @@ const General: React.FC<
     ) => {
       try {
         storeEvents({
-          event_type: AnalyticsEventTypes.OPTION_CLICK,
+          event_type: AnalyticsEventTypes.OPTION_CLICKED,
           event_data: {
             performance_id: params.eventId,
             option_name: 'Watch trailer',
@@ -696,7 +696,7 @@ const General: React.FC<
     clearLoadingState: () => void,
   ) => {
     storeEvents({
-      event_type: AnalyticsEventTypes.OPTION_CLICK,
+      event_type: AnalyticsEventTypes.OPTION_CLICKED,
       event_data: {
         performance_id: params.eventId,
         option_name: 'Add to my list',
