@@ -12,29 +12,32 @@ interface IEvent {
     | IOptionClickedEventData
     | IOpenPerformanceFromSearchEventData
     | IScrolledEventData;
-  device_type?: string;
 }
 
 interface IOpenPerformanceFromRailsEventData {
   screen_name: string;
   rail_name: string;
   index: string;
+  device_type?: string;
 }
 
 interface IOpenPerformanceFromSearchEventData {
   performance_id: string;
   index: string;
   search_query: string;
+  device_type?: string;
 }
 
 interface IOptionClickedEventData {
   performance_id: string;
   option_name: string;
+  device_type?: string;
 }
 
 interface IScrolledEventData {
   performance_id: string;
   section_name: string;
+  device_type?: string;
 }
 
 interface IStoredEvents {
@@ -55,22 +58,22 @@ enum Brands {
 }
 
 export async function storeEvents(event: IEvent): Promise<void> {
-  if (__DEV__) {
-    return; // ignoring analytics events in DEV environment
-  }
+  // if (__DEV__) {
+  //   return; // ignoring analytics events in DEV environment
+  // }
 
   switch (getBrand()) {
     case Brands.APPLE:
-      event.device_type = 'AppleTV';
+      event.event_data.device_type = 'AppleTV';
       break;
     case Brands.AMAZON:
-      event.device_type = 'FireTV';
+      event.event_data.device_type = 'FireTV';
       break;
     case Brands.GOOGLE:
-      event.device_type = 'ChromeCast';
+      event.event_data.device_type = 'ChromeCast';
       break;
     default:
-      event.device_type = 'unknown';
+      event.event_data.device_type = 'unknown';
       break;
   }
 
@@ -141,6 +144,7 @@ async function sendEvents(events: IEvent[]) {
   });
 
   const response = await sendAnalytics(transformedEvents);
+  console.log(response);
   if (response.status === 200) {
     await clearStorage();
   }
