@@ -201,7 +201,7 @@ const Extras: React.FC<
     async (ref, clearLoadingState) => {
       try {
         storeEvents({
-          event_type: AnalyticsEventTypes.OPTION_CLICK,
+          event_type: AnalyticsEventTypes.OPTION_CLICKED,
           event_data: {
             performance_id: params.eventId,
             option_name: 'Extras video',
@@ -358,7 +358,7 @@ const Extras: React.FC<
   useEffect(() => {
     isMounted.current = true;
     storeEvents({
-      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_type: AnalyticsEventTypes.SECTION_VIEWED,
       event_data: {
         performance_id: params.eventId,
         section_name: 'Extras',

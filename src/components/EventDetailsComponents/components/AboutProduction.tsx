@@ -44,7 +44,7 @@ const AboutProduction: React.FC<
   }, []);
   useLayoutEffect(() => {
     storeEvents({
-      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_type: AnalyticsEventTypes.SECTION_VIEWED,
       event_data: {
         performance_id: params.eventId,
         section_name: 'About Production',

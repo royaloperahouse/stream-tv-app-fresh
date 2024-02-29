@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
 import { View, StyleSheet } from 'react-native';
 import CountDownComponent from 'react-native-countdown-component';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
+import IdleTimerManager from 'react-native-idle-timer';
 type TCountDownProps = {
   publishingDate: Date;
   finishCB?: () => void;
@@ -14,6 +15,12 @@ const CountDown: React.FC<TCountDownProps> = ({
   publishingDate,
   finishCB = () => {},
 }) => {
+  useEffect(() => {
+    IdleTimerManager.setIdleTimerDisabled(true);
+    return () => {
+      IdleTimerManager.setIdleTimerDisabled(false);
+    };
+  });
   return (
     <View style={styles.countDownBlockContainer}>
       <View>

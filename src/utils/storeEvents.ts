@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { isTVOS } from 'configs/globalConfig';
 import { sendAnalytics } from 'services/apiClient';
-import axios from 'axios';
+import { getBrand } from 'react-native-device-info';
 
 interface IEvent {
   event_type: AnalyticsEventTypes;
@@ -18,22 +18,26 @@ interface IOpenPerformanceFromRailsEventData {
   screen_name: string;
   rail_name: string;
   index: string;
+  device_type?: string;
 }
 
 interface IOpenPerformanceFromSearchEventData {
   performance_id: string;
   index: string;
   search_query: string;
+  device_type?: string;
 }
 
 interface IOptionClickedEventData {
   performance_id: string;
   option_name: string;
+  device_type?: string;
 }
 
 interface IScrolledEventData {
   performance_id: string;
   section_name: string;
+  device_type?: string;
 }
 
 interface IStoredEvents {
@@ -43,24 +47,40 @@ interface IStoredEvents {
 export enum AnalyticsEventTypes {
   OPEN_PERFORMANCE_RAILS = 'open_performance_rails',
   OPEN_PERFORMANCE_SEARCH = 'open_performance_search',
-  SECTION_SCROLL = 'section_scroll',
-  OPTION_CLICK = 'option_click',
+  SECTION_VIEWED = 'section_viewed',
+  OPTION_CLICKED = 'option_clicked',
+}
+
+enum Brands {
+  APPLE = 'Apple',
+  AMAZON = 'Amazon',
+  GOOGLE = 'google',
 }
 
 export async function storeEvents(event: IEvent): Promise<void> {
-  return; // TODO remove after lambda deployed
-  // eslint-disable-next-line no-unreachable
-  if (__DEV__) {
-    return; // ignoring analytics events in DEV environment
+  // if (__DEV__) {
+  //   return; // ignoring analytics events in DEV environment
+  // }
+
+  switch (getBrand()) {
+    case Brands.APPLE:
+      event.event_data.device_type = 'AppleTV';
+      break;
+    case Brands.AMAZON:
+      event.event_data.device_type = 'FireTV';
+      break;
+    case Brands.GOOGLE:
+      event.event_data.device_type = 'ChromeCast';
+      break;
+    default:
+      event.event_data.device_type = 'unknown';
+      break;
   }
 
   if (!isTVOS) {
     const previousData = await AsyncStorage.getItem('events');
     if (!previousData) {
-      await AsyncStorage.setItem(
-        'events',
-        JSON.stringify({ events: [event] }),
-      );
+      await AsyncStorage.setItem('events', JSON.stringify({ events: [event] }));
       return;
     }
 
@@ -124,6 +144,7 @@ async function sendEvents(events: IEvent[]) {
   });
 
   const response = await sendAnalytics(transformedEvents);
+  console.log(response);
   if (response.status === 200) {
     await clearStorage();
   }

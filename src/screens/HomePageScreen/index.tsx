@@ -204,6 +204,7 @@ const HomePageScreen: React.FC<
                 sections={data}
                 sectionKeyExtractor={item => item.sectionIndex?.toString()}
                 sectionItemsInitialNumber={focusPosition.itemIndex > 4 ? focusPosition.itemIndex + 1 : 5}
+                sectionsInitialNumber={focusPosition.sectionIndex > 1 ? focusPosition.sectionIndex + 1 : 2}
                 renderHeader={section => (
                   <DigitalEventSectionHeader>
                     {section.title}
@@ -222,6 +223,7 @@ const HomePageScreen: React.FC<
                   topEndlessScrollRef,
                   scrollToRailItem,
                   accessible,
+                  isFirstRail,
                 }) => (
                   <DigitalEventItem
                     event={item}
@@ -246,6 +248,7 @@ const HomePageScreen: React.FC<
                     removeRailItemRefCb={removeRailItemRefCb}
                     selectedItemIndex={index}
                     canMoveDown={isTVOS ? isLastRail : (isLastRail && hasEndlessScroll) || !isLastRail}
+                    canMoveUp={isTVOS ? true : !isFirstRail}
                     setFirstItemFocusable={
                       index === 0
                         ? navMenuScreenRedirectRef.current

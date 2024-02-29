@@ -49,7 +49,7 @@ const Cast: React.FC<
   useLayoutEffect(() => {
     isMounted.current = true;
     storeEvents({
-      event_type: AnalyticsEventTypes.SECTION_SCROLL,
+      event_type: AnalyticsEventTypes.SECTION_VIEWED,
       event_data: {
         performance_id: params.eventId,
         section_name: 'Cast',

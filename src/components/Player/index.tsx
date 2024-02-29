@@ -109,6 +109,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const customerId = useAppSelector(customerIdSelector);
 
   const [loaded, setLoaded] = useState(false);
+  const [isLiveStream, setIsLiveStream] = useState(cloneProps.isLiveStream);
   const [playerReady, setPlayerReady] = useState(false);
   const [duration, setDuration] = useState(0.0);
   const subtitleCue = useRef('');
@@ -160,7 +161,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     seekingTimePoint = 10.0,
     guidance,
     guidanceDetails,
-    isLiveStream,
     showVideoInfo,
     startDate,
     endDate,
@@ -216,6 +216,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   // Event listeners section
   const onReady = useCallback(async () => {
+    setIsLiveStream(await player.isLive());
     let subtitles = [...(await player.getAvailableSubtitles())];
 
     if (
