@@ -71,13 +71,21 @@ const ActionButtonList = forwardRef<
     const freezeAllControlBtn = (freeze: boolean) => {
       if (freeze) {
         backButtonOff();
-        goDownOff();
-        goUpOff();
+        if (typeof goDownOff === 'function') {
+          goDownOff();
+        }
+        if (typeof goUpOff === 'function') {
+          goUpOff();
+        }
       } else {
         console.log('ololo');
-        goDownOn();
+        if (typeof goDownOn === 'function') {
+          goDownOn();
+        }
+        if (typeof goUpOn === 'function') {
+          goUpOn();
+        }
         backButtonOn();
-        goUpOn();
       }
       setFreezeAll(freeze);
     };
@@ -115,16 +123,24 @@ const ActionButtonList = forwardRef<
       }
       if (indexOfFocusedItem === 0) {
         timeoutUpIdRef.current = setTimeout(() => {
-          goDownOff();
-          goUpOn();
+          if (typeof goDownOff === 'function') {
+            goDownOff();
+          }
+          if (typeof goUpOn === 'function') {
+            goUpOn();
+          }
           timeoutUpIdRef.current = null;
         }, 1000);
         return;
       }
       if (indexOfFocusedItem === buttonList.length - 1) {
         timeoutIdRef.current = setTimeout(() => {
-          goUpOff();
-          goDownOn();
+          if (typeof goUpOff === 'function') {
+            goUpOff();
+          }
+          if (typeof goDownOn === 'function') {
+            goDownOn();
+          }
           timeoutIdRef.current = null;
         }, 200);
         return;
@@ -135,8 +151,12 @@ const ActionButtonList = forwardRef<
       if (timeoutUpIdRef.current !== null) {
         clearTimeout(timeoutUpIdRef.current);
       }
-      goDownOff();
-      goUpOff();
+      if (typeof goDownOff === 'function') {
+        goDownOff();
+      }
+      if (typeof goUpOff === 'function') {
+        goUpOff();
+      }
     }, [indexOfFocusedItem, buttonList.length, goDownOff, goDownOn, goUpOff, goUpOn, freezeAll]);
 
     useLayoutEffect(() => {

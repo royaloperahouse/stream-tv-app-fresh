@@ -162,10 +162,10 @@ export const getAccessToWatchVideo = async (
     purchasedStreamsResponse.status >= 200 &&
     purchasedStreamsResponse.status < 400 &&
     Array.isArray(purchasedStreamsResponse?.data?.data?.attributes?.streams) &&
-    purchasedStreamsResponse.data.data.attributes.streams.length
+    purchasedStreamsResponse?.data?.data?.attributes?.streams.length
   ) {
     const ids: Array<string> =
-      purchasedStreamsResponse.data.data.attributes.streams
+      purchasedStreamsResponse?.data?.data?.attributes?.streams
         .map(
           (stream: {
             stream_id: string;
@@ -203,13 +203,12 @@ export const getAccessToWatchVideo = async (
         },
         { data: [], included: [] },
       );
-      const ppvEvent = eventsForPPVData.included.find(
-        (item: any) =>
-          item.type === 'videoInfo' && item.id === videoObj.videoId,
-      );
+      const ppvEvent = eventsForPPVData.data.find((item) => (
+        item.id === videoObj.eventId
+      ));
       const purchase =
-        purchasedStreamsResponse.data.data.attributes.streams.find(
-          item => (item.stream_id = ppvEvent.attributes.fee.Id),
+        purchasedStreamsResponse?.data?.data?.attributes.streams.find(
+          item => (item.stream_id == ppvEvent?.attributes?.mainVideoFeeId),
         );
       if (
         ppvEvent && purchase
@@ -222,7 +221,7 @@ export const getAccessToWatchVideo = async (
           feeId: purchase.stream_id,
           orderNo: purchase.order_no,
           isAvailabilityWindowActivated: !!purchase.availability_window_end,
-          availabilityWindow: ppvEvent.attributes.ppvAvailabilityWindow,
+          availabilityWindow: ppvEvent?.attributes?.ppvAvailabilityWindow,
           isPPV: true,
         };
       }
@@ -240,7 +239,7 @@ export const getAccessToWatchVideo = async (
         throw new UnableToCheckRentalStatusError();
       }
       const feesIds: Array<string> =
-        allAvalibleEventsForPPVResponse.data.data.attributes.fees.reduce(
+        allAvalibleEventsForPPVResponse?.data?.data?.attributes?.fees.reduce(
           (acc: Array<string>, item: any) => {
             if (item.Id !== null && item.Id !== undefined) {
               acc.push(item.Id.toString());
