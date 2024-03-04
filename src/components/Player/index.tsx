@@ -165,6 +165,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     startDate,
     endDate,
     isPPV,
+    isMainVideo,
     availabilityWindow,
     isAvailabilityWindowActivated,
     feeId,
@@ -270,7 +271,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     if (Number(cloneProps.configuration.offset) === 0 && isLiveStream) {
       await player.timeShift(0);
     }
-    if (isPPV && !isAvailabilityWindowActivated) {
+    if (isPPV && !isAvailabilityWindowActivated && isMainVideo) {
       await activateAvailabilityWindow(
         feeId,
         orderNo,

@@ -143,6 +143,7 @@ export const getAccessToWatchVideo = async (
   isAvailabilityWindowActivated?: boolean;
   availabilityWindow?: number;
   isPPV?: boolean;
+  isMainVideo?: boolean;
 }> => {
   const subscriptionResponse = await getSubscribeInfo(isProductionEnv);
   if (
@@ -203,26 +204,33 @@ export const getAccessToWatchVideo = async (
         },
         { data: [], included: [] },
       );
-      const ppvEvent = eventsForPPVData.data.find((item) => (
-        item.id === videoObj.eventId
-      ));
-      const purchase =
-        purchasedStreamsResponse?.data?.data?.attributes.streams.find(
-          item => (item.stream_id == ppvEvent?.attributes?.mainVideoFeeId),
-        );
-      if (
-        ppvEvent && purchase
-      ) {
-        if (isAfter(new Date(), new Date(purchase.availability_window_end))) {
-          throw new NotRentedItemError();
-        }
+      const ppvEvent = eventsForPPVData.data.find(
+        item => item.id === videoObj.eventId,
+      );
+      const ppvVideo = eventsForPPVData.included.find(
+        (item: any) =>
+          item.type === 'videoInfo' && item.id === videoObj.videoId,
+      );
+
+      const purchase = purchasedStreamsResponse?.data?.data?.attributes.streams
+        .filter(item => item.stream_id == ppvEvent?.attributes?.mainVideoFeeId)
+        .filter(
+          item =>
+            !item.availability_window_start ||
+            isAfter(new Date(item.availability_window_end), new Date()),
+        )[0];
+      if (!purchase) {
+        throw new NotRentedItemError();
+      }
+      if (ppvEvent && purchase) {
         return {
           ...videoObj,
           feeId: purchase.stream_id,
           orderNo: purchase.order_no,
           isAvailabilityWindowActivated: !!purchase.availability_window_end,
-          availabilityWindow: ppvEvent?.attributes?.ppvAvailabilityWindow,
+          availabilityWindow: ppvVideo?.attributes?.ppvAvailabilityWindow,
           isPPV: true,
+          isMainEvent: !!ppvVideo,
         };
       }
       throw new NotRentedItemError();
