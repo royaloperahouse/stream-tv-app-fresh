@@ -36,9 +36,13 @@ type TUseEventDetails = (obj: { eventId: string }) => {
   sectionsCollection: Array<TEventDetailsSectionItem>;
   sectionsParams: Partial<TEventDetailsScreensParamContextProps>;
 };
-
+let eventTemp = {};
 export const useEventDetails: TUseEventDetails = ({ eventId }) => {
-  const { event } = useAppSelector(getEventById(eventId)); //ZEZjyBQAAMFmsoNu
+  let { event } = useAppSelector(getEventById(eventId)); //ZEZjyBQAAMFmsoNu
+  if (Object.entries(event).length > 0) {
+    eventTemp = event;
+  }
+  event = eventTemp;
   const sectionsParams: Partial<TEventDetailsScreensParamContextProps> = {};
   const isProduction = useAppSelector(isProductionEvironmentSelector);
   const {

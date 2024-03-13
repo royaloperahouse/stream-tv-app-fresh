@@ -22,6 +22,7 @@ import {
   DummyPlayerScreenName,
 } from '@components/Player/DummyPlayerScreen';
 import { isTVOS } from 'configs/globalConfig';
+import { navMenuManager } from 'components/NavMenu';
 
 const Stack = createNativeStackNavigator<TEventDetailsScreensParamList>();
 
@@ -67,6 +68,7 @@ const EventDetailsScreen: React.FC<
       </View>
     );
   }
+  navMenuManager.hideNavMenu();
   return (
     <View style={styles.rootContainer}>
       <GoBack />

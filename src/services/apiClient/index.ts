@@ -244,7 +244,7 @@ export const getAccessToWatchVideo = async (
           allAvalibleEventsForPPVResponse.data?.data?.attributes?.fees,
         )
       ) {
-        throw new UnableToCheckRentalStatusError();
+        throw new NotRentedItemError();
       }
       const feesIds: Array<string> =
         allAvalibleEventsForPPVResponse?.data?.data?.attributes?.fees.reduce(
@@ -257,7 +257,7 @@ export const getAccessToWatchVideo = async (
           [],
         );
       if (!feesIds.length) {
-        throw new NonSubscribedStatusError();
+        throw new NotRentedItemError();
       }
       const availablePPVEventsWithPrismicRelationPromiseSettledResponse: Array<
         PromiseSettledResult<AxiosResponse<any>>
@@ -284,18 +284,10 @@ export const getAccessToWatchVideo = async (
           },
           { data: [], included: [] },
         );
-      if (
-        availablePPVEventsWithPrismicRelation.data
-          .filter(item => item.type === 'digitalEvent')
-          .some(item => item.id === videoObj.videoId)
-      ) {
-        throw new NotRentedItemError();
-      } else {
-        throw new NonSubscribedStatusError();
-      }
+      throw new NotRentedItemError();
     }
   }
-  throw new UnableToCheckRentalStatusError();
+  throw new NotRentedItemError();
 };
 
 export function eventsOnFeePromiseFill(

@@ -142,8 +142,8 @@ android {
         applicationId "com.rohtvapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 139
-        versionName "3.2.17"
+        versionCode 140
+        versionName "3.2.18"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
