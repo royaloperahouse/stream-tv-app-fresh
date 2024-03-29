@@ -27,6 +27,7 @@
 		8EB0675C7911D083DFA92B5D /* libPods-RohTVApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 172A47A1D32DDB95937C75A1 /* libPods-RohTVApp.a */; };
 		9205E18D14E545B38E719BA3 /* GothamSSm-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */; };
 		969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */; };
+		9F22A7B32BB6BCC700557FE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */; };
 		CE3737922881A998008E568E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE3737912881A998008E568E /* BootSplash.storyboard */; };
 		CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E83377084EE5485B91739F28 /* GothamSSm-Black.otf */; };
 		CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */; };
@@ -94,6 +95,7 @@
 		5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-XLightItalic.otf"; path = "../src/assets/fonts/GothamSSm-XLightItalic.otf"; sourceTree = "<group>"; };
 		78A1E73FF78ECE09427E95B9 /* Pods-RohTVApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Medium.otf"; path = "../src/assets/fonts/GothamSSm-Medium.otf"; sourceTree = "<group>"; };
+		9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9F4544F42AFD34CC00458F62 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		AC21FB9A20A80DB2C9F4DB56 /* Pods-RohTVApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.debug.xcconfig"; sourceTree = "<group>"; };
 		AC473F715C9646E4BA2A6407 /* GothamSSm-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Light.otf"; path = "../src/assets/fonts/GothamSSm-Light.otf"; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 		13B07FAE1A68108700A75B9A /* RohTVApp */ = {
 			isa = PBXGroup;
 			children = (
+				9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */,
 				CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */,
 				CE2113C2291D3F6000268569 /* RohTVApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -453,6 +456,7 @@
 				CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */,
 				CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */,
 				CE51C10B292CE5DD00821DE0 /* Media.xcassets in Resources */,
+				9F22A7B32BB6BCC700557FE0 /* PrivacyInfo.xcprivacy in Resources */,
 				CE3737962885C05A008E568E /* GothamSSm-Bold.otf in Resources */,
 				CE3737972885C05A008E568E /* GothamSSm-BoldItalic.otf in Resources */,
 				CE3737982885C05A008E568E /* GothamSSm-Book.otf in Resources */,
