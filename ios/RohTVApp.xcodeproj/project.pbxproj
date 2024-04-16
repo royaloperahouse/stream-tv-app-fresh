@@ -27,7 +27,7 @@
 		8EB0675C7911D083DFA92B5D /* libPods-RohTVApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 172A47A1D32DDB95937C75A1 /* libPods-RohTVApp.a */; };
 		9205E18D14E545B38E719BA3 /* GothamSSm-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */; };
 		969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */; };
-		9F22A7B32BB6BCC700557FE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */; };
+		9F22A7B42BCE7A2100557FE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */; };
 		CE3737922881A998008E568E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE3737912881A998008E568E /* BootSplash.storyboard */; };
 		CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E83377084EE5485B91739F28 /* GothamSSm-Black.otf */; };
 		CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */; };
@@ -335,8 +335,8 @@
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
 				2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */,
-				8915E6E43E7EE3634E953828 /* [CP] Embed Pods Frameworks */,
 				44C406AB2967F4DB2FCDCAFB /* [CP] Copy Pods Resources */,
+				8915E6E43E7EE3634E953828 /* [CP] Embed Pods Frameworks */,
 				9F719BCF2A5821CB00E4700C /* ShellScript */,
 			);
 			buildRules = (
@@ -453,10 +453,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F22A7B42BCE7A2100557FE0 /* PrivacyInfo.xcprivacy in Resources */,
 				CE3737942885C05A008E568E /* GothamSSm-Black.otf in Resources */,
 				CE3737952885C05A008E568E /* GothamSSm-BlackItalic.otf in Resources */,
 				CE51C10B292CE5DD00821DE0 /* Media.xcassets in Resources */,
-				9F22A7B32BB6BCC700557FE0 /* PrivacyInfo.xcprivacy in Resources */,
 				CE3737962885C05A008E568E /* GothamSSm-Bold.otf in Resources */,
 				CE3737972885C05A008E568E /* GothamSSm-BoldItalic.otf in Resources */,
 				CE3737982885C05A008E568E /* GothamSSm-Book.otf in Resources */,
@@ -986,7 +986,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 143;
+				CURRENT_PROJECT_VERSION = 144;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1000,7 +1000,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.20;
+				MARKETING_VERSION = 3.2.21;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1033,7 +1033,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 143;
+				CURRENT_PROJECT_VERSION = 144;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1046,7 +1046,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.20;
+				MARKETING_VERSION = 3.2.21;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
