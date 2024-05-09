@@ -554,7 +554,7 @@
 		};
 		44C406AB2967F4DB2FCDCAFB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -564,7 +564,7 @@
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
