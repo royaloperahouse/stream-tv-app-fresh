@@ -920,7 +920,7 @@ const General: React.FC<
         <View style={styles.upContainer}>
           {(prevScreenName && !isTVOS) ||
           (prevScreenName && isTVOS && showGoUpOrDownButtons) ? (
-              <GoUp onFocus={goUpCB} />
+            <GoUp onFocus={goUpCB} />
           ) : null}
         </View>
         <View style={styles.descriptionContainer}>

@@ -4648,10 +4648,10 @@ big-integer@1.6.x:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bitmovin-player-react-native@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/bitmovin-player-react-native/-/bitmovin-player-react-native-0.8.0.tgz#c8a87e6bf198e3e3c9715a223a6cd006ae403001"
-  integrity sha512-guLpZ/Yn7acueetXlOpux6d3Y/oTX3YRX5F8WwpMGJmO1btNvtsy4SVD8MxlB/cS3XKYBw0TxGsXq34rHkubTg==
+bitmovin-player-react-native@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/bitmovin-player-react-native/-/bitmovin-player-react-native-0.23.0.tgz#0de673d5bf3b48b2025ef142ce6a0607a5007754"
+  integrity sha512-vd5GrUd18c9X6pTesfhIl9cTcadXoxKGS0y0GAIpjjh8tkWmQ7+IyAShrzETxP6yHzSUAGPVjL3AOSK7+jjKcw==
   dependencies:
     lodash.omit "4.5.0"
 

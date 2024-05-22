@@ -15,6 +15,7 @@ import {
   SafeAreaView,
   BackHandler,
   HWEvent,
+  Dimensions,
 } from 'react-native';
 import { Colors, PlayerIcons } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
@@ -632,7 +633,7 @@ const PlayerControls = forwardRef<TPlayerControlsRef, TPlayerControlsProps>(
           setSubtitle={setSubtitle}
         />
         {subtitleCueText !== '' && (
-          <View style={styles.subtitleCueContainer}>
+          <View style={controlPanelVisibleRef.current ? styles.subtitleCueContainerControlsOn : styles.subtitleCueContainer}>
             <RohText style={styles.subtitleCueText}>{subtitleCueText}</RohText>
           </View>
         )}
@@ -1053,9 +1054,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    top: scaleSize(60),
+    top: scaleSize(isTVOS ? 0 : 60),
     left: scaleSize(200),
-    bottom: scaleSize(64),
+    bottom: scaleSize(isTVOS ? 0 : 64),
     right: scaleSize(200),
   },
   topContainer: {
@@ -1189,11 +1190,13 @@ const styles = StyleSheet.create({
   },
   subtitlesShadowOverlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: -60,
+    left: -80,
     right: 0,
     bottom: 0,
     backgroundColor: 'black',
+    minWidth: Dimensions.get('window').width,
+    minHeight: Dimensions.get('window').height,
   },
   subtitlesContentContainer: {
     position: 'absolute',
@@ -1253,6 +1256,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     bottom: scaleSize(100),
+    right: 0,
+    left: 0,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  subtitleCueContainerControlsOn: {
+    position: 'absolute',
+    top: 0,
+    bottom: scaleSize(200),
     right: 0,
     left: 0,
     justifyContent: 'flex-end',

@@ -103,7 +103,6 @@
 		B8AA7E0BE330E5E3BA44C69F /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C0B00252AAD0484A815B6B38 /* GothamSSm-Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Book.otf"; path = "../src/assets/fonts/GothamSSm-Book.otf"; sourceTree = "<group>"; };
 		C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BlackItalic.otf"; path = "../src/assets/fonts/GothamSSm-BlackItalic.otf"; sourceTree = "<group>"; };
-		CE2113C2291D3F6000268569 /* RohTVApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RohTVApp.entitlements; path = RohTVApp/RohTVApp.entitlements; sourceTree = "<group>"; };
 		CE3737912881A998008E568E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = RohTVApp/BootSplash.storyboard; sourceTree = "<group>"; };
 		CE51C109292CE5DD00821DE0 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -178,7 +177,6 @@
 			children = (
 				9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */,
 				CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */,
-				CE2113C2291D3F6000268569 /* RohTVApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				CE3737912881A998008E568E /* BootSplash.storyboard */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -986,7 +984,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 144;
+				CURRENT_PROJECT_VERSION = 145;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1000,7 +998,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.21;
+				MARKETING_VERSION = 3.2.22;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1014,7 +1012,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.2;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 			};
 			name = Debug;
 		};
@@ -1030,10 +1028,11 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 144;
+				CURRENT_PROJECT_VERSION = 145;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7PPCBG953G;
 				ENABLE_BITCODE = NO;
@@ -1046,7 +1045,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.21;
+				MARKETING_VERSION = 3.2.22;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1059,7 +1058,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "RohTVApp-tvOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.2;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 			};
 			name = Release;
 		};

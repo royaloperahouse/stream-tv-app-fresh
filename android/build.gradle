@@ -5,14 +5,15 @@ import org.apache.tools.ant.taskdefs.condition.Os
 buildscript {
     ext {
         buildToolsVersion = "31.0.0"
-        minSdkVersion = 23 // <- AndroidX splashscreen has basic support for 21 (only the background color), so 23 is best
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        minSdkVersion = 24 // <- minSdkVersion must be >= 24
+        compileSdkVersion = 34
+        targetSdkVersion = 34
         googlePlayServicesIidVersion = "17.0.0"
         firebaseIidVersion = "19.0.1"
         supportLibVersion = "1.0.2"
         mediaCompatVersion = "1.0.1"
         supportV4Version = "1.0.0"
+        kotlinVersion = "1.9.0"
 
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64

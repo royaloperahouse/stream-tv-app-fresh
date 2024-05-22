@@ -139,7 +139,7 @@ function* loginLoopWorker(): any {
         throw Error();
       }
     } catch (err: any) {
-      logError('something went wrong', err);
+      logError('something went wrong', JSON.stringify(err, null, 4));
       yield put(
         checkDeviceError({ status: 500, title: 'something went wrong' }),
       );

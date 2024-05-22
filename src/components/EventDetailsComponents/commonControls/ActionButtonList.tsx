@@ -83,7 +83,7 @@ const ActionButtonList = forwardRef<
           goDownOn();
         }
         if (typeof goUpOn === 'function') {
-          goUpOn();
+          setTimeout(() => goUpOn(), 200);
         }
         backButtonOn();
       }

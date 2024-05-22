@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  CdnProvider,
   PlayerView,
   SourceType,
   usePlayer,
+  UserInterfaceType,
   VideoPlaybackQualityChangedEvent,
 } from 'bitmovin-player-react-native';
 import {
@@ -86,22 +86,24 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   const { analytics, configuration } = cloneProps;
   const player = usePlayer({
     styleConfig: {
-      isUiEnabled: false,
+      isUiEnabled: isTVOS,
+    },
+    playbackConfig: {
+      isBackgroundPlaybackEnabled: true,
     },
     analyticsConfig: {
-      key: BITMOVIN_ANALYTICS_KEY,
-      videoId: analytics.videoId || '',
-      customUserId: analytics.userId || '',
-      title: analytics.title || '',
-      cdnProvider: CdnProvider.BITMOVIN,
-      experimentName: analytics.experiment,
-      customData1: analytics.buildInfoForBitmovin || '',
-      customData2: analytics.userId || '',
-      customData3: analytics.customData3 || '',
-      customData4: analytics.customData4 || '',
-      customData5: analytics.customData5 || '',
-      customData6: analytics.customData6 || '',
-      customData7: analytics.customData7 || '',
+      licenseKey: BITMOVIN_ANALYTICS_KEY,
+      defaultMetadata: {
+        customUserId: analytics.userId || '',
+        experimentName: analytics.experiment,
+        customData1: analytics.buildInfoForBitmovin || '',
+        customData2: analytics.userId || '',
+        customData3: analytics.customData3 || '',
+        customData4: analytics.customData4 || '',
+        customData5: analytics.customData5 || '',
+        customData6: analytics.customData6 || '',
+        customData7: analytics.customData7 || '',
+      },
     },
   });
 
@@ -494,16 +496,16 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     if (!controlRef.current) {
       return;
     }
-    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+    if (typeof controlRef.current?.setSubtitleCue === 'function' && !isTVOS) {
       controlRef.current?.setSubtitleCue(cue.text);
     }
   };
 
-  const onCueExit = (cue) => {
+  const onCueExit = () => {
     if (!controlRef.current) {
       return;
     }
-    if (typeof controlRef.current?.setSubtitleCue === 'function') {
+    if (typeof controlRef.current?.setSubtitleCue === 'function' && !isTVOS) {
       controlRef.current?.setSubtitleCue('');
     }
   };
@@ -532,26 +534,28 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
       {/*{continueShowingGuidance && renderGuidanceText(false)}*/}
 
-      <PlayerControls
-        ref={controlRef}
-        title={title}
-        guidance={guidance}
-        guidanceDetails={guidanceDetails}
-        subtitle={subtitle}
-        duration={duration}
-        playerLoaded={playerReady}
-        onPlayPress={actionPlay}
-        onPausePress={actionPause}
-        onRestartPress={actionRestart}
-        onClose={actionClose}
-        setSubtitle={setSubtitle}
-        autoPlay={autoPlay}
-        subtitleCue={subtitleCue.current}
-        calculateTimeForSeeking={calculateTimeForSeeking}
-        seekTo={seekTo}
-        videoInfo={videoInfo}
-        isLiveStream={isLiveStream}
-      />
+      {!isTVOS && (
+        <PlayerControls
+          ref={controlRef}
+          title={title}
+          guidance={guidance}
+          guidanceDetails={guidanceDetails}
+          subtitle={subtitle}
+          duration={duration}
+          playerLoaded={playerReady}
+          onPlayPress={actionPlay}
+          onPausePress={actionPause}
+          onRestartPress={actionRestart}
+          onClose={actionClose}
+          setSubtitle={setSubtitle}
+          autoPlay={autoPlay}
+          subtitleCue={subtitleCue.current}
+          calculateTimeForSeeking={calculateTimeForSeeking}
+          seekTo={seekTo}
+          videoInfo={videoInfo}
+          isLiveStream={isLiveStream}
+        />
+      )}
     </SafeAreaView>
   );
 };
