@@ -902,6 +902,7 @@ const General: React.FC<
   useFocusEffect(
     useCallback(() => {
       if (isTVOS) {
+        setOffUp();
         setTimeout(() => {
           watchNowButtonRef.current?.focusOnFirstAvalibleButton?.();
         }, 500);
