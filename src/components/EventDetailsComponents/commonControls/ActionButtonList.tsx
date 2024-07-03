@@ -78,7 +78,6 @@ const ActionButtonList = forwardRef<
           goUpOff();
         }
       } else {
-        console.log('ololo');
         if (typeof goDownOn === 'function') {
           goDownOn();
         }
@@ -127,7 +126,6 @@ const ActionButtonList = forwardRef<
             goDownOff();
           }
           if (typeof goUpOn === 'function') {
-            console.log('go up on 2');
             goUpOn();
           }
           timeoutUpIdRef.current = null;

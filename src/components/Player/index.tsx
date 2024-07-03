@@ -219,7 +219,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   // Event listeners section
   const onReady = useCallback(async () => {
-    setIsLiveStream(await player.isLive());
+    if (!isTVOS) {
+      setIsLiveStream(await player.isLive());
+    }
     let subtitles = [...(await player.getAvailableSubtitles())];
 
     if (
@@ -267,7 +269,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     }
 
     const initDuration = parseFloat(duration);
-    if (!isNaN(initDuration)) {
+    if (!isNaN(initDuration) && !isTVOS) {
       setDuration(initDuration);
     }
     if (cloneProps.configuration.offset && !isLiveStream) {
@@ -309,6 +311,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   const onSeeked = useCallback(async () => {
+    if (isTVOS) {
+      return;
+    }
     const currentTime = isLiveStream
       ? Math.abs(await player.getTimeShift())
       : await player.getCurrentTime('relative');
@@ -340,6 +345,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   const onVideoPlaybackQualityChanged = useCallback(
     (event: VideoPlaybackQualityChangedEvent) => {
+      if (isTVOS) {
+        return;
+      }
       if (event.newVideoQuality && showVideoInfo) {
         const { id, label, codec, bitrate, frameRate, width, height } =
           event.newVideoQuality;
@@ -352,6 +360,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   );
 
   const onTimeChanged = async () => {
+    if (isTVOS) {
+      return;
+    }
     const time = isLiveStream
       ? Math.abs(await player.getTimeShift())
       : await player.getCurrentTime();
