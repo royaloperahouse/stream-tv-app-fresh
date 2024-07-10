@@ -3238,6 +3238,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-9.4.1.tgz#7b880758adca65fe47ee866cf7b00416b9dcc192"
   integrity sha512-dAbY5mfw+6Kas/GJ6QX9AZyY+K+eq9ad4Su6utoph/nxyH3whp5cMSgRNgE2VhGQVRZ/OG0qq3IaD3+wzoqJXw==
 
+"@react-native-community/slider@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-4.5.2.tgz#c3835788dbc1bd83d3778b83ca15533c805db149"
+  integrity sha512-DbFyCyI7rwl0FkBkp0lzEVp+5mNfS5qU/nM2sK2aSguWhj0Odkt1aKHP2iW/ljruOhgS/O4dEixXlne4OdZJDQ==
+
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.72.0.tgz#c82a76a1d86ec0c3907be76f7faf97a32bbed05d"
@@ -4648,10 +4653,10 @@ big-integer@1.6.x:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
-bitmovin-player-react-native@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/bitmovin-player-react-native/-/bitmovin-player-react-native-0.23.0.tgz#0de673d5bf3b48b2025ef142ce6a0607a5007754"
-  integrity sha512-vd5GrUd18c9X6pTesfhIl9cTcadXoxKGS0y0GAIpjjh8tkWmQ7+IyAShrzETxP6yHzSUAGPVjL3AOSK7+jjKcw==
+bitmovin-player-react-native@^0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/bitmovin-player-react-native/-/bitmovin-player-react-native-0.27.1.tgz#e5c80b48cd38f95c40624c82125543430bb39627"
+  integrity sha512-j+5mh+/cqpoNZUJs4OAkYvYRDI8s02Wh7nRTL/sXmbRi5gSWAl+WJQnSCvzBwFTduVix4b2z07s8AtAR2YF4qg==
   dependencies:
     lodash.omit "4.5.0"
 
