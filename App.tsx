@@ -6,6 +6,8 @@ import AppLayout from '@layouts/appLayout';
 import { FlagsProvider } from 'flagged';
 import * as Sentry from '@sentry/react-native';
 import { SentryDSN } from '@configs/globalConfig';
+import { enableScreens } from 'react-native-screens';
+
 Sentry.init({
   dsn: SentryDSN,
 });
@@ -31,6 +33,7 @@ roh_rlog({
 type TAppProps = {};
 
 const App: React.FC<TAppProps> = () => {
+  enableScreens();
   return (
     <Provider store={store}>
       <FlagsProvider

@@ -68,7 +68,6 @@ const HomePageScreen: React.FC<
       // Handle any native errors that might occur while setting the audio's category.
       console.log("Failed to set app's audio category to `playback`:\n", error);
     });
-    console.log('set');
   }, []);
   const dispatch = useAppDispatch();
 

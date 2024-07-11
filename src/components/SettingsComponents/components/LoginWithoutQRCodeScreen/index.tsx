@@ -33,7 +33,7 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
       <View style={styles.innerContainer}>
         <RohText style={styles.header}>to set-up your Royal Opera House Stream TV app</RohText>
         <View style={styles.websiteContainer}>
-          <RohText style={styles.regular}>1. Go to www.roh.org.uk/pin on a computer, tablet or mobile</RohText>
+          <RohText style={styles.regular}>1. Go to www.rbo.org.uk/pin on a computer, tablet or mobile</RohText>
           <RohText style={styles.regular}>2. Enter the code below:</RohText>
         </View>
         <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>

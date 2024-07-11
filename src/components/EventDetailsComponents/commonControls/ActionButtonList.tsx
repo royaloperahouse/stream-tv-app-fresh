@@ -78,12 +78,11 @@ const ActionButtonList = forwardRef<
           goUpOff();
         }
       } else {
-        console.log('ololo');
         if (typeof goDownOn === 'function') {
           goDownOn();
         }
         if (typeof goUpOn === 'function') {
-          setTimeout(() => goUpOn(), 200);
+          setTimeout(() => goUpOn(), 2000);
         }
         backButtonOn();
       }
