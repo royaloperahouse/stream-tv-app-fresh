@@ -27,6 +27,7 @@ import { useAppSelector } from 'hooks/redux';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 import { activateAvailabilityWindow } from 'services/apiClient';
+import axios from 'axios';
 
 const BITMOVIN_ANALYTICS_KEY = '45a0bac7-b900-4a0f-9d87-41a120744160';
 
@@ -82,6 +83,7 @@ interface State {
   subtitleCue: string;
   subtitlesList: any[];
   selectedSubtitles: string;
+  isLiveStream: boolean;
 }
 
 const BitMovinPlayer: React.FC<TPlayerProps> = props => {
@@ -92,7 +94,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     guidance,
     guidanceDetails,
     autoPlay,
-    isLiveStream,
+    isLiveStream = false,
     availabilityWindow,
     feeId,
     orderNo,
@@ -109,6 +111,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     subtitleCue: '',
     ready: false,
     selectedSubtitles: '',
+    isLiveStream,
   });
   const player = usePlayer({
     styleConfig: {
@@ -201,12 +204,28 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   function skipBackward() {
-    player.seek(state.currentTime - 10);
+    if (state.isLiveStream) {
+      if (-(state.currentTime - 10) > state.duration) {
+        return;
+      }
+      player.timeShift(state.currentTime - 10);
+    } else {
+      player.seek(state.currentTime - 10);
+    }
     setState({ ...state, currentTime: state.currentTime - 10 });
   }
 
   function skipForward() {
-    player.seek(state.currentTime + 10);
+    if (state.isLiveStream) {
+      if (state.currentTime + 10 >= 0) {
+        player.timeShift(0);
+        setState({ ...state, currentTime: 0 });
+        return;
+      }
+      player.timeShift(state.currentTime + 10);
+    } else {
+      player.seek(state.currentTime + 10);
+    }
     setState({ ...state, currentTime: state.currentTime + 10 });
   }
 
@@ -220,8 +239,15 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   async function onReady() {
-    const duration = await player.getDuration();
-    const currentTime = await player.getCurrentTime();
+    const isLiveStreamFromPlayer = await player.isLive();
+    let duration = await player.getDuration();
+    if (isLiveStreamFromPlayer) {
+      duration = -(await player.getMaxTimeShift());
+    }
+    let currentTime = await player.getCurrentTime();
+    if (isLiveStreamFromPlayer) {
+      currentTime = await player.getTimeShift();
+    }
 
     const subtitlesAvailable = await player.getAvailableSubtitles();
     const filteredSubtitles = subtitlesAvailable.filter(
@@ -243,10 +269,22 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       });
 
       await setSubtitles(filteredSubtitles[0].identifier);
-      setState(s => ({ ...s, subtitlesList: subtitlesFormatted }));
+      setState(s => ({
+        ...s,
+        subtitlesList: subtitlesFormatted,
+        isLiveStream: true,
+      }));
     }
 
-    if (configuration.offset) {
+    if (isLiveStreamFromPlayer) {
+      if (configuration.offset) {
+        await player.timeShift(0);
+      } else {
+        await player.timeShift(-duration);
+      }
+    }
+
+    if (configuration.offset && !isLiveStreamFromPlayer) {
       await seekTo(Number(configuration.offset));
     }
     if (autoPlay) {
@@ -268,8 +306,13 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
   }
 
   async function onTimeChanged() {
-    const currentTime = await player.getCurrentTime();
-    setState(s => ({ ...s, currentTime }));
+    let currentTime = await player.getCurrentTime();
+    let duration = state.duration;
+    if (state.isLiveStream) {
+      currentTime = await player.getTimeShift();
+      duration = -(await player.getMaxTimeShift());
+    }
+    setState(s => ({ ...s, currentTime, duration }));
   }
 
   function onCueEnter(event) {
@@ -317,6 +360,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
           selectedSubtitles={state.selectedSubtitles}
           actionClose={actionClose}
           setSubtitles={setSubtitles}
+          isLiveStream={state.isLiveStream}
         />
       </View>
     </TVFocusGuideView>

@@ -1,7 +1,7 @@
 import { getUniqueId } from 'react-native-device-info';
 
 const upgradeEnv = 'https://roh-upgrade.global.ssl.fastly.net/api';
-const stagingEnv = 'https://stage.rbo.org.uk/api';
+const stagingEnv = 'https://roh-stagev2.global.ssl.fastly.net/api';
 
 export const ApiConfig = Object.freeze({
   host: 'https://www.rbo.org.uk/api',

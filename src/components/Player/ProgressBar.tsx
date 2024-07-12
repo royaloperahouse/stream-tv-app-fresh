@@ -15,13 +15,13 @@ export const ProgressBar: React.FC<Props> = ({
   duration,
   onSlideCapture,
   onFocus,
-  exitButtonRef,
+  isLiveStream,
 }) => {
   const [slidingPosition, setSlidingPosition] = useState<null | number>(null);
   const sliderValueRef = useRef(0);
   const [sliderStep, setSliderStep] = useState(1);
-  const position = getMinutesFromSeconds(currentTime);
-  const fullDuration = getMinutesFromSeconds(duration);
+  const position = getMinutesFromSeconds(currentTime, isLiveStream);
+  const fullDuration = getMinutesFromSeconds(duration, false);
   useEffect(() => {
     setSlidingPosition(null);
     setSliderStep(1);
@@ -30,10 +30,17 @@ export const ProgressBar: React.FC<Props> = ({
   return (
     <View style={styles.wrapper} focusable={false}>
       <Slider
-        value={slidingPosition ? slidingPosition : currentTime}
+        value={
+          isLiveStream
+            ? duration + currentTime
+            : slidingPosition
+            ? slidingPosition
+            : currentTime
+        }
         minimumValue={0}
         maximumValue={duration}
         step={sliderStep}
+        disabled={isLiveStream}
         onValueChange={handleOnSlide}
         minimumTrackTintColor={Colors.defaultTextColor}
         maximumTrackTintColor={'#FFFFFF'}
@@ -41,20 +48,29 @@ export const ProgressBar: React.FC<Props> = ({
       />
       <View style={styles.timeWrapper} focusable={false}>
         <Text style={styles.timeLeft}>
-          {slidingPosition ? getMinutesFromSeconds(slidingPosition) : position}
+          {slidingPosition
+            ? getMinutesFromSeconds(slidingPosition, isLiveStream)
+            : position}
         </Text>
         <Text style={styles.timeRight}>{fullDuration}</Text>
       </View>
     </View>
   );
 
-  function getMinutesFromSeconds(time: number) {
-    const minutes = time >= 60 ? Math.floor(time / 60) : 0;
-    const seconds = Math.floor(time - minutes * 60);
-
-    return `${minutes >= 10 ? minutes : '0' + minutes}:${
-      seconds >= 10 ? seconds : '0' + seconds
-    }`;
+  function getMinutesFromSeconds(time: number, isLiveStream: boolean) {
+    if (isLiveStream) {
+      time = -time;
+    }
+    const hours = time >= 3600 ? Math.floor(time / 3600) : 0;
+    const minutes =
+      time >= 60 ? Math.floor((time - hours * 3600) / 60) : 0;
+    const seconds = Math.floor(time - minutes * 60 - hours * 3600);
+    let resultString = isLiveStream ? '-' : '';
+    resultString +=
+      `${hours >= 1 ? `0${hours}:` : ''}` +
+      `${minutes >= 10 ? minutes : '0' + minutes}:` +
+      `${seconds >= 10 ? seconds : '0' + seconds}`;
+    return resultString;
   }
 
   function handleOnSlide(time: number) {

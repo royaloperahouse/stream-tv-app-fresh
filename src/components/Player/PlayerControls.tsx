@@ -13,7 +13,9 @@ import debounce from 'lodash.debounce';
 
 import { Colors, PlayerIcons } from '@themes/Styleguide';
 import { ProgressBar } from 'components/Player/ProgressBar';
-import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from 'components/TouchableHighlightWrapper';
+import TouchableHighlightWrapper, {
+  TTouchableHighlightWrapperRef,
+} from 'components/TouchableHighlightWrapper';
 import { scaleSize } from 'utils/scaleSize';
 import RohText from 'components/RohText';
 import SubtitlesSelect from 'assets/svg/player/SubtitlesSelect.svg';
@@ -33,6 +35,7 @@ interface Props {
   subtitlesList: any[];
   selectedSubtitles: string | undefined;
   actionClose: () => void;
+  isLiveStream: boolean;
 }
 
 export const PlayerControls: React.FC<Props> = ({
@@ -50,6 +53,7 @@ export const PlayerControls: React.FC<Props> = ({
   selectedSubtitles,
   setSubtitles,
   actionClose,
+  isLiveStream,
 }) => {
   const activeAnimation = useRef<Animated.Value>(new Animated.Value(1)).current;
   const [isControlsVisible, setIsControlsVisible] = useState(true);
@@ -117,6 +121,12 @@ export const PlayerControls: React.FC<Props> = ({
     setIsSubtitlesListVisible(s => !s);
   };
 
+  const onPressHandler = handler => {
+    showControlsAnimation();
+    handler();
+    hideControlsAnimation();
+  };
+
   return (
     <>
       {isSubtitlesListVisible && (
@@ -163,6 +173,7 @@ export const PlayerControls: React.FC<Props> = ({
           currentTime={currentTime}
           duration={duration}
           onSlideCapture={seekTo}
+          isLiveStream={isLiveStream}
         />
         <View style={styles.controlsWrapper}>
           {showSkip && (
@@ -171,7 +182,11 @@ export const PlayerControls: React.FC<Props> = ({
               canMoveDown={false}
               style={styles.touchable}
               underlayColor={Colors.defaultBlue}
-              onPress={isControlsVisible ? skipBackwards : () => {}}>
+              onPress={
+                isControlsVisible
+                  ? () => onPressHandler(skipBackwards)
+                  : () => {}
+              }>
               <Image source={PlayerIcons.seekBackward} style={styles.icon} />
             </TouchableHighlightWrapper>
           )}
@@ -198,7 +213,11 @@ export const PlayerControls: React.FC<Props> = ({
               canMoveDown={false}
               style={styles.touchable}
               underlayColor={Colors.defaultBlue}
-              onPress={isControlsVisible ? skipForwards : () => {}}>
+              onPress={
+                isControlsVisible
+                  ? () => onPressHandler(skipForwards)
+                  : () => {}
+              }>
               <Image source={PlayerIcons.seekForward} style={styles.icon} />
             </TouchableHighlightWrapper>
           )}
