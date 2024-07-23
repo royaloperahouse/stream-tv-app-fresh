@@ -93,7 +93,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     title,
     guidance,
     guidanceDetails,
-    autoPlay,
+    autoPlay = true,
     isLiveStream = false,
     availabilityWindow,
     feeId,
@@ -210,6 +210,10 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       }
       player.timeShift(state.currentTime - 10);
     } else {
+      if (state.currentTime - 10 < 0) {
+        player.seek(0);
+        return;
+      }
       player.seek(state.currentTime - 10);
     }
     setState({ ...state, currentTime: state.currentTime - 10 });
@@ -240,11 +244,14 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   async function onReady() {
     const isLiveStreamFromPlayer = await player.isLive();
+    console.log(isLiveStreamFromPlayer, 'isLive');
     let duration = await player.getDuration();
+    console.log(duration);
     if (isLiveStreamFromPlayer) {
       duration = -(await player.getMaxTimeShift());
     }
     let currentTime = await player.getCurrentTime();
+    console.log(currentTime);
     if (isLiveStreamFromPlayer) {
       currentTime = await player.getTimeShift();
     }
@@ -272,7 +279,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       setState(s => ({
         ...s,
         subtitlesList: subtitlesFormatted,
-        isLiveStream: true,
       }));
     }
 
@@ -302,7 +308,13 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       );
       props.isAvailabilityWindowActivated = true;
     }
-    setState(s => ({ ...s, currentTime, duration, ready: true }));
+    setState(s => ({
+      ...s,
+      currentTime,
+      duration,
+      ready: true,
+      isLiveStream: isLiveStreamFromPlayer,
+    }));
   }
 
   async function onTimeChanged() {
