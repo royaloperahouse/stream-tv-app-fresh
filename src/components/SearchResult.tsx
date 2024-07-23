@@ -33,6 +33,8 @@ const SearchResult: React.FC<TSearchResultProps> = ({
 }) => {
   const route = useRoute<TContentScreensProps<'Search'>['route']>();
   const searchText = useSelector(searchQuerySelector, shallowEqual);
+  const previousSearchText = useRef(searchText);
+  const isSearchTextChanged = searchText !== previousSearchText.current;
   const resultListRef = useRef<FlatList>(null);
   const digitalEventDetailsLength = useRef<number>(0);
   const selectPrevSearch = useRef<boolean>(false);
@@ -49,6 +51,9 @@ const SearchResult: React.FC<TSearchResultProps> = ({
       route.params?.eventId &&
       resultListRef.current
     ) {
+      if (isSearchTextChanged) {
+        return;
+      }
       resultListRef.current.scrollToIndex({
         animated: true,
         index: selectedIndex === -1 ? 0 : selectedIndex,
@@ -111,7 +116,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           canMoveDown={index !== digitalEventDetails.length - 1}
           screenNameFrom={route.name}
           sectionIndex={index}
-          hasTVPreferredFocus={index === itemIndex}
+          hasTVPreferredFocus={!isSearchTextChanged && index === itemIndex}
           onMountToSearchResultTransition={onMountToSearchResultTransition}
           searchText={searchText}
         />
