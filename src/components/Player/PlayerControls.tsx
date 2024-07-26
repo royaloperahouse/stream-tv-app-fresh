@@ -8,6 +8,7 @@ import {
   useTVEventHandler,
   FlatList,
   BackHandler,
+  TVFocusGuideView,
 } from 'react-native';
 import debounce from 'lodash.debounce';
 
@@ -256,6 +257,18 @@ const SubtitlesList = ({
   isSubtitlesListVisible,
   focusToSubtitleButton,
 }) => {
+  const listRef = useRef<FlatList>();
+  useEffect(() => {
+    if (isSubtitlesListVisible) {
+      listRef.current?.scrollToOffset({
+        animated: true,
+        offset:
+          subtitlesList.findIndex(
+            item => item.identifier === selectedSubtitles,
+          ) * 80,
+      });
+    }
+  }, [isSubtitlesListVisible, selectedSubtitles, subtitlesList]);
   useEffect(() => {
     const handleBackButtonClick = () => {
       if (isSubtitlesListVisible) {
@@ -281,49 +294,60 @@ const SubtitlesList = ({
   };
 
   return (
-    <Animated.View style={styles.subtitleListWrapper}>
-      <View style={styles.subtitlesContainer}>
-        {!subtitlesList.length ? (
-          <>
-            <RohText style={styles.subtitlesContainerMessageText}>
-              Subtitles are not available for this video
-            </RohText>
-            <TouchableHighlightWrapper
-              underlayColor={Colors.subtitlesActiveBackground}
-              style={styles.subtitleMessageConfirmContainer}
-              hasTVPreferredFocus={true}
-              canMoveLeft={false}
-              canMoveRight={false}
-              canMoveUp={false}
-              canMoveDown={false}
-              onPress={showSubtitlesList}>
-              <RohText style={styles.subtitlesContainerMessageConfirmText}>
-                OK
+    <TVFocusGuideView
+      trapFocusUp={true}
+      trapFocusRight={true}
+      trapFocusLeft={true}
+      trapFocusDown={true}>
+      <Animated.View style={styles.subtitleListWrapper}>
+        <View style={styles.subtitlesContainer}>
+          {!subtitlesList.length ? (
+            <>
+              <RohText style={styles.subtitlesContainerMessageText}>
+                Subtitles are not available for this video
               </RohText>
-            </TouchableHighlightWrapper>
-          </>
-        ) : (
-          <>
-            <FlatList
-              data={subtitlesList}
-              keyExtractor={item => item.identifier}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              style={styles.subtitlesFlatListContainer}
-              renderItem={({ item, index }) => (
-                <SubtitlesItem
-                  onPress={() => onPressHandler(item)}
-                  index={index}
-                  listLength={subtitlesList.length}
-                  subtitleTrack={item}
-                  isSelected={item.identifier === selectedSubtitles}
-                />
-              )}
-            />
-          </>
-        )}
-      </View>
-    </Animated.View>
+              <TouchableHighlightWrapper
+                underlayColor={Colors.subtitlesActiveBackground}
+                style={styles.subtitleMessageConfirmContainer}
+                hasTVPreferredFocus={true}
+                canMoveLeft={false}
+                canMoveRight={false}
+                canMoveUp={false}
+                canMoveDown={false}
+                onPress={() => {
+                  showSubtitlesList();
+                  focusToSubtitleButton();
+                }}>
+                <RohText style={styles.subtitlesContainerMessageConfirmText}>
+                  OK
+                </RohText>
+              </TouchableHighlightWrapper>
+            </>
+          ) : (
+            <>
+              <FlatList
+                ref={listRef}
+                data={subtitlesList}
+                keyExtractor={item => item.identifier}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                style={styles.subtitlesFlatListContainer}
+                onScrollToIndexFailed={() => {}}
+                renderItem={({ item, index }) => (
+                  <SubtitlesItem
+                    onPress={() => onPressHandler(item)}
+                    index={index}
+                    listLength={subtitlesList.length}
+                    subtitleTrack={item}
+                    isSelected={item.identifier === selectedSubtitles}
+                  />
+                )}
+              />
+            </>
+          )}
+        </View>
+      </Animated.View>
+    </TVFocusGuideView>
   );
 };
 
@@ -337,7 +361,11 @@ const SubtitlesItem = ({
   return (
     <TouchableHighlightWrapper
       underlayColor={Colors.subtitlesActiveBackground}
-      style={styles.subtitleItemContainer}
+      style={
+        index === listLength - 1
+          ? styles.subtitleItemContainerLast
+          : styles.subtitleItemContainer
+      }
       canMoveLeft={false}
       canMoveRight={false}
       canMoveDown={index !== listLength - 1}
@@ -387,7 +415,7 @@ const styles = StyleSheet.create({
     letterSpacing: scaleSize(1),
   },
   subtitleMessageConfirmContainer: {
-    marginTop: scaleSize(80),
+    marginTop: scaleSize(40),
     marginBottom: scaleSize(20),
     marginHorizontal: scaleSize(20),
     paddingHorizontal: scaleSize(20),
@@ -434,6 +462,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: scaleSize(20),
     height: scaleSize(80),
     paddingLeft: scaleSize(40),
+  },
+  subtitleItemContainerLast: {
+    marginHorizontal: scaleSize(20),
+    paddingHorizontal: scaleSize(20),
+    height: scaleSize(80),
+    paddingLeft: scaleSize(40),
+    marginBottom: scaleSize(60),
   },
   text: {
     color: 'white',

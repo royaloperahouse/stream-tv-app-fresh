@@ -144,7 +144,6 @@ async function sendEvents(events: IEvent[]) {
   });
 
   const response = await sendAnalytics(transformedEvents);
-  console.log(response);
   if (response.status === 200) {
     await clearStorage();
   }

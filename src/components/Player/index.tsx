@@ -1,19 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { PlayerView, SourceType, SubtitleFormat, usePlayer } from 'bitmovin-player-react-native';
 import {
-  PlayerView,
-  SourceType,
-  usePlayer,
-} from 'bitmovin-player-react-native';
-import {
+  Animated,
   AppState,
   AppStateStatus,
   BackHandler,
   Dimensions,
   StyleSheet,
+  TVFocusGuideView,
   View,
   ViewProps,
-  TVFocusGuideView,
-  Animated,
 } from 'react-native';
 import ISO6391 from 'iso-639-1';
 import { TBMPlayerErrorObject } from 'services/types/bitmovinPlayer';
@@ -27,7 +23,6 @@ import { useAppSelector } from 'hooks/redux';
 import { customerIdSelector } from 'services/store/auth/Selectors';
 import { isProductionEvironmentSelector } from 'services/store/settings/Selectors';
 import { activateAvailabilityWindow } from 'services/apiClient';
-import axios from 'axios';
 
 const BITMOVIN_ANALYTICS_KEY = '45a0bac7-b900-4a0f-9d87-41a120744160';
 
@@ -244,24 +239,24 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
 
   async function onReady() {
     const isLiveStreamFromPlayer = await player.isLive();
-    console.log(isLiveStreamFromPlayer, 'isLive');
     let duration = await player.getDuration();
-    console.log(duration);
     if (isLiveStreamFromPlayer) {
       duration = -(await player.getMaxTimeShift());
     }
     let currentTime = await player.getCurrentTime();
-    console.log(currentTime);
     if (isLiveStreamFromPlayer) {
       currentTime = await player.getTimeShift();
     }
 
     const subtitlesAvailable = await player.getAvailableSubtitles();
     const filteredSubtitles = subtitlesAvailable.filter(
-      item => item.identifier !== 'bitmovin-off' || item.identifier !== 'off',
+      item =>
+        (item.identifier !== 'bitmovin-off' || item.identifier !== 'off') &&
+        !!item.language,
     );
-    if (subtitlesAvailable.length) {
-      const subtitlesFormatted = subtitlesAvailable.map(subtitleTrack => {
+
+    if (filteredSubtitles.length) {
+      const subtitlesFormatted = filteredSubtitles.map(subtitleTrack => {
         if (!subtitleTrack.label) {
           subtitleTrack.label = '';
         }

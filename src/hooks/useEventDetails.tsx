@@ -698,11 +698,15 @@ const useGetExtras = (
               filteredResult.performance[0].data.livestream_duration;
 
             const startDate = filteredResult.performance[0].data.start_time
-              ? new Date(filteredResult.performance[0].data.start_time)
+              ? new Date(
+                  filteredResult.performance[0].data.start_time.split('+')[0],
+                )
               : null;
 
             let endDate = filteredResult.performance[0].data.end_time
-              ? new Date(filteredResult.performance[0].data.end_time)
+              ? new Date(
+                  filteredResult.performance[0].data.end_time.split('+')[0],
+                )
               : null;
 
             if (!endDate && startDate) {

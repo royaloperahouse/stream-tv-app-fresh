@@ -42,9 +42,9 @@ export const ProgressBar: React.FC<Props> = ({
         step={sliderStep}
         disabled={isLiveStream}
         onValueChange={handleOnSlide}
-        minimumTrackTintColor={Colors.defaultTextColor}
+        minimumTrackTintColor={Colors.streamPrimary}
         maximumTrackTintColor={'#FFFFFF'}
-        thumbTintColor={Colors.defaultTextColor}
+        thumbTintColor={Colors.streamPrimary}
       />
       <View style={styles.timeWrapper} focusable={false}>
         <Text style={styles.timeLeft}>
