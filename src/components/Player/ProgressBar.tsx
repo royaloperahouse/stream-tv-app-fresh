@@ -52,7 +52,11 @@ export const ProgressBar: React.FC<Props> = ({
             ? getMinutesFromSeconds(slidingPosition, isLiveStream)
             : position}
         </Text>
-        <Text style={styles.timeRight}>{fullDuration}</Text>
+        {isLiveStream ? (
+          <Text style={styles.liveStreamBadge}>LIVE</Text>
+        ) : (
+          <Text style={styles.timeRight}>{fullDuration}</Text>
+        )}
       </View>
     </View>
   );
@@ -62,8 +66,7 @@ export const ProgressBar: React.FC<Props> = ({
       time = -time;
     }
     const hours = time >= 3600 ? Math.floor(time / 3600) : 0;
-    const minutes =
-      time >= 60 ? Math.floor((time - hours * 3600) / 60) : 0;
+    const minutes = time >= 60 ? Math.floor((time - hours * 3600) / 60) : 0;
     const seconds = Math.floor(time - minutes * 60 - hours * 3600);
     let resultString = isLiveStream ? '-' : '';
     resultString +=
@@ -103,6 +106,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF',
     paddingLeft: 10,
+  },
+  liveStreamBadge: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    backgroundColor: '#FF0000',
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    marginRight: 10,
   },
   timeRight: {
     flex: 1,
