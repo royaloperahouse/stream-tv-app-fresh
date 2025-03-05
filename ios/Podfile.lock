@@ -1,12 +1,12 @@
 PODS:
-  - BitmovinAnalyticsCollector/BitmovinPlayer (3.6.2):
+  - BitmovinAnalyticsCollector/BitmovinPlayer (3.12.0):
     - BitmovinAnalyticsCollector/Core
     - BitmovinPlayerCore (~> 3.48)
-  - BitmovinAnalyticsCollector/Core (3.6.2)
-  - BitmovinPlayer (3.62.0):
+  - BitmovinAnalyticsCollector/Core (3.12.0)
+  - BitmovinPlayer (3.66.1):
     - BitmovinAnalyticsCollector/BitmovinPlayer (~> 3.0)
-    - BitmovinPlayerCore (= 3.62.0)
-  - BitmovinPlayerCore (3.62.0)
+    - BitmovinPlayerCore (= 3.66.1)
+  - BitmovinPlayerCore (3.66.1)
   - boost (1.76.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.72.6-1)
@@ -19,23 +19,23 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.72.6-1)
   - fmt (7.1.3)
   - glog (0.3.5)
-  - GoogleAds-IMA-iOS-SDK (3.19.1)
-  - GoogleAds-IMA-tvOS-SDK (4.9.2)
+  - GoogleAds-IMA-iOS-SDK (3.23.0)
+  - GoogleAds-IMA-tvOS-SDK (4.13.0)
   - hermes-engine (0.72.6-1):
     - hermes-engine/Pre-built (= 0.72.6-1)
   - hermes-engine/Pre-built (0.72.6-1)
   - libevent (2.1.12.1)
-  - libwebp (1.3.2):
-    - libwebp/demux (= 1.3.2)
-    - libwebp/mux (= 1.3.2)
-    - libwebp/sharpyuv (= 1.3.2)
-    - libwebp/webp (= 1.3.2)
-  - libwebp/demux (1.3.2):
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
     - libwebp/webp
-  - libwebp/mux (1.3.2):
+  - libwebp/mux (1.5.0):
     - libwebp/demux
-  - libwebp/sharpyuv (1.3.2)
-  - libwebp/webp (1.3.2):
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
     - libwebp/sharpyuv
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -333,6 +333,9 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-slider (4.5.2):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - React-NativeModulesApple (0.72.6-1):
     - hermes-engine
     - React-callinvoker
@@ -437,10 +440,10 @@ PODS:
     - React-jsi (= 0.72.6-1)
     - React-logger (= 0.72.6-1)
     - React-perflogger (= 0.72.6-1)
-  - RNBitmovinPlayer (0.23.0):
-    - BitmovinPlayer (= 3.62.0)
-    - GoogleAds-IMA-iOS-SDK (= 3.19.1)
-    - GoogleAds-IMA-tvOS-SDK (= 4.9.2)
+  - RNBitmovinPlayer (0.27.1):
+    - BitmovinPlayer (= 3.66.1)
+    - GoogleAds-IMA-iOS-SDK (= 3.23.0)
+    - GoogleAds-IMA-tvOS-SDK (= 4.13.0)
     - React-Core
   - RNBootSplash (4.3.2):
     - React-Core
@@ -486,7 +489,7 @@ PODS:
     - React-Core
   - RNSentry (5.13.0):
     - React-Core
-    - Sentry/HybridSDK (= 8.21.0)
+    - Sentry/HybridSDK (= 8.15.2)
   - RNSVG (13.14.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -495,9 +498,9 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry/HybridSDK (8.21.0):
-    - SentryPrivate (= 8.21.0)
-  - SentryPrivate (8.21.0)
+  - Sentry/HybridSDK (8.15.2):
+    - SentryPrivate (= 8.15.2)
+  - SentryPrivate (8.15.2)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -530,6 +533,7 @@ DEPENDENCIES:
   - react-native-idle-timer (from `../node_modules/react-native-idle-timer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -560,12 +564,12 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/bitmovin/cocoapod-specs.git:
-    - BitmovinAnalyticsCollector
     - BitmovinPlayer
     - BitmovinPlayerCore
   https://github.com/react-native-tvos/react-native-tvos-podspecs.git:
     - libevent
   trunk:
+    - BitmovinAnalyticsCollector
     - GoogleAds-IMA-iOS-SDK
     - GoogleAds-IMA-tvOS-SDK
     - libwebp
@@ -629,6 +633,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -685,20 +691,20 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  BitmovinAnalyticsCollector: 78308c1c02ee0390554c377204fcbab923369296
-  BitmovinPlayer: 3b392570a8021ea40bdbd6bb1cd4f92f53baa34c
-  BitmovinPlayerCore: 24499606c16170cf5e19e45175a0220ba9a8da5b
+  BitmovinAnalyticsCollector: a5192c8cbbbd400ff627d9ab73d35f6e3a06b65c
+  BitmovinPlayer: 0d5990c196eff314b7081c49ed481e9d465d7281
+  BitmovinPlayerCore: f6f8b8655bece7c8e9daccc49cc55642212d9c2f
   boost: 0ed1b9a58a27b2f7885dc9f279bc3b341f44512b
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
   FBLazyVector: 58c22987e2cd1eebb2e3bc9f7756d87b14c32d3c
   FBReactNativeSpec: 1e59b7675304d2b0fd3e9c208cb88b97143ff314
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: a2ded9bf28f0cb2fce90ad21eb419299a500ff6c
-  GoogleAds-IMA-iOS-SDK: 18adbec04a2e79ce828a992d37a4580deadbe525
-  GoogleAds-IMA-tvOS-SDK: 7e72fb938c246fb9718a3468d3c7fa7c722b2ea1
+  GoogleAds-IMA-iOS-SDK: ee2a68ed7a1a17c7bb81bdb1b81590b35a3fc8f3
+  GoogleAds-IMA-tvOS-SDK: 9f79f4adcccd2393a93b00f62f566a69175f3978
   hermes-engine: d059bb1faf95faf499a6b02570c23aa13d4dc87b
   libevent: a6d75fcd7be07cbc5070300ea8dbc8d55dfab88e
-  libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   RCT-Folly: 136e9161a833a162fe3e8b647098759aae227036
   RCTRequired: e039a13eb7e10e6f677cc157120d2fb6b72a0f62
   RCTTypeSafety: 2e99324407b6d5f9d17eaa6655e9e6512fe018c2
@@ -718,6 +724,7 @@ SPEC CHECKSUMS:
   react-native-idle-timer: f1920a59fe776340d004ff9de13c4a6eedcc8807
   react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
+  react-native-slider: 593253eb5fbc6ea519290e812bd477fc6abafd5a
   React-NativeModulesApple: 27e8b377e95f25c48ba15c8a12960543db0749af
   React-perflogger: 328b6eaa9e8fd545a30015966e15a5921fedcdd8
   React-RCTActionSheet: 233c71d4b8731777d36d165cdfb3ee92c07cb2d0
@@ -734,7 +741,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: acd6b708338a975a9bb4c594eac0f018f5c15fa3
   React-utils: c1cf85c0cd58c11dfb95104a78c608e95d03eb9e
   ReactCommon: 1dabb8f37c44d8c7370238bd8f504cbad0cfd941
-  RNBitmovinPlayer: d29f702a36a63c9965067bebdd8cda2cee491bc7
+  RNBitmovinPlayer: 57b3b5672e59031080ce43928f3c1f2275eaec00
   RNBootSplash: 5f346163977573d6b2aeba1b25df9d2245c0d73c
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
@@ -742,15 +749,15 @@ SPEC CHECKSUMS:
   RNGestureHandler: 28d1392c38e539c932d95b29134baf2c01a219ba
   RNReanimated: 89568bd6754413a03e12a0d3eb8a9e443004faa9
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
-  RNSentry: 0a154d4733f6d5ca6527b045ae1fe50b020615b8
+  RNSentry: 82667e9889782365bf801645ef4d2a731dcf60df
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: ebc12276bd17613a114ab359074096b6b3725203
-  SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
+  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
+  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: f67f5769ce78049c5fe798bc735f04535c7bc1ac
 
 PODFILE CHECKSUM: 9c366366033a8be1cc0fc94709ac6bed1c433dc4
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2

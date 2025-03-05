@@ -11,7 +11,7 @@ const WithLogo: React.FC<PropsWithChildren<TWithLogoProps>> = ({
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Logo width={scaleSize(219)} height={scaleSize(60)} />
+        <Logo width={scaleSize(284)} height={scaleSize(55)} />
       </View>
       <View style={styles.mainContentContainer}>{children}</View>
     </View>
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
   logoContainer: {
     position: 'absolute',
     top: scaleSize(48),
-    left: scaleSize(60),
-    width: scaleSize(219),
-    height: scaleSize(60),
+    left: scaleSize(40),
+    width: scaleSize(284),
+    height: scaleSize(55),
   },
   mainContentContainer: {
     flex: 1,
