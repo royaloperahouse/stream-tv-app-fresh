@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* RohTVAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RohTVAppTests.m */; };
+		02D0304B83703D888CEE385A /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74EC84B8BFAD6706B308205C /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */; };
 		0CBFBD786C6742859F0BEC46 /* GothamSSm-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E83377084EE5485B91739F28 /* GothamSSm-Black.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -16,15 +17,14 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* RohTVAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RohTVAppTests.m */; };
+		2DE3BF485CEBEBD68F51B970 /* libPods-RohTVApp-RohTVAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8A390058C8FECD21D6481EA /* libPods-RohTVApp-RohTVAppTests.a */; };
 		307E5F4F5D52471BBCE6D1BB /* GothamSSm-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3CFD4F855A7F43BBB5AB08B8 /* GothamSSm-LightItalic.otf */; };
 		3473083CD0D04FD899C65221 /* GothamSSm-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 35CD0C5D58474245A2BE904E /* GothamSSm-Bold.otf */; };
-		40F5A1B3A202770EC97A6AD6 /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02A71A50CF12D165ECBA8C7B /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */; };
-		49BA2CA1B779DACBB8B6255E /* libPods-RohTVApp-RohTVAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12A1321A709CC9891572D260 /* libPods-RohTVApp-RohTVAppTests.a */; };
+		47D08E6ADBD3A5CC49CE4C97 /* libPods-RohTVApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA603DF409F9DFEA4865965 /* libPods-RohTVApp-tvOS.a */; };
 		67AD471C20B043AEABD325C2 /* GothamSSm-BookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DCAE814AFC974243A17983F9 /* GothamSSm-BookItalic.otf */; };
 		842C639ABD554C33A3A4473D /* GothamSSm-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = C0B00252AAD0484A815B6B38 /* GothamSSm-Book.otf */; };
 		89DE40FC0B384D969CFE9824 /* GothamSSm-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */; };
 		89EAFBA5F46940A9BDA2B4F8 /* GothamSSm-XLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */; };
-		8EB0675C7911D083DFA92B5D /* libPods-RohTVApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 172A47A1D32DDB95937C75A1 /* libPods-RohTVApp.a */; };
 		9205E18D14E545B38E719BA3 /* GothamSSm-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */; };
 		969F6371DC2F421B9D2464D7 /* GothamSSm-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */; };
 		9F22A7B42BCE7A2100557FE0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */; };
@@ -47,9 +47,9 @@
 		CEA69F2E290827BD00D25D41 /* BitmovinPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = CEA69F2D290827BD00D25D41 /* BitmovinPlayer */; };
 		CEA69F44291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
 		CEA69F45291A696000D25D41 /* RCTExitApp.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA69F43291A696000D25D41 /* RCTExitApp.m */; };
+		DC63F0C9619720D11054873C /* libPods-RohTVApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1A11AA8991034FF3E05454A /* libPods-RohTVApp.a */; };
 		F03E0AA5C6DB4F05868D7E76 /* GothamSSm-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AC473F715C9646E4BA2A6407 /* GothamSSm-Light.otf */; };
 		F68EA08DE9AB4FBE8BBB8545 /* GothamSSm-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */; };
-		FDD834EB6F4404F80EA7824E /* libPods-RohTVApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B503140589FD2CCE4B04F56 /* libPods-RohTVApp-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,34 +75,33 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RohTVAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RohTVAppTests.m; sourceTree = "<group>"; };
 		0152C957E29B4C078287CF38 /* GothamSSm-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-MediumItalic.otf"; path = "../src/assets/fonts/GothamSSm-MediumItalic.otf"; sourceTree = "<group>"; };
-		02A71A50CF12D165ECBA8C7B /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		12A1321A709CC9891572D260 /* libPods-RohTVApp-RohTVAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-RohTVAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Royal Opera House Stream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Royal Opera House Stream.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RohTVApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = RohTVApp/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RohTVApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RohTVApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RohTVApp/main.m; sourceTree = "<group>"; };
-		172A47A1D32DDB95937C75A1 /* libPods-RohTVApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* Royal Opera House Stream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Royal Opera House Stream.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* RohTVApp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RohTVApp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3437B69B184A3BE4D06E96C1 /* Pods-RohTVApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.release.xcconfig"; sourceTree = "<group>"; };
 		35CD0C5D58474245A2BE904E /* GothamSSm-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Bold.otf"; path = "../src/assets/fonts/GothamSSm-Bold.otf"; sourceTree = "<group>"; };
-		3B503140589FD2CCE4B04F56 /* libPods-RohTVApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CFD4F855A7F43BBB5AB08B8 /* GothamSSm-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-LightItalic.otf"; path = "../src/assets/fonts/GothamSSm-LightItalic.otf"; sourceTree = "<group>"; };
+		3FA603DF409F9DFEA4865965 /* libPods-RohTVApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40DFA67C98A446F1AC0B11DC /* GothamSSm-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BoldItalic.otf"; path = "../src/assets/fonts/GothamSSm-BoldItalic.otf"; sourceTree = "<group>"; };
-		51085B5AD51239AB3B93D6EE /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5B53E2432983461F82F5EBB5 /* GothamSSm-XLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-XLightItalic.otf"; path = "../src/assets/fonts/GothamSSm-XLightItalic.otf"; sourceTree = "<group>"; };
-		78A1E73FF78ECE09427E95B9 /* Pods-RohTVApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		734B956B8257DC46A203FD5D /* Pods-RohTVApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		74EC84B8BFAD6706B308205C /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CDBF2D80233437C9A2666F9 /* GothamSSm-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Medium.otf"; path = "../src/assets/fonts/GothamSSm-Medium.otf"; sourceTree = "<group>"; };
+		8D26154F87ABF00CF42811F8 /* Pods-RohTVApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.debug.xcconfig"; sourceTree = "<group>"; };
 		9F22A7B22BB6BCC700557FE0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9F4544F42AFD34CC00458F62 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
-		AC21FB9A20A80DB2C9F4DB56 /* Pods-RohTVApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A05E9048C0A6CCE829D82680 /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		AC3136FBCFBB3E823026E1CF /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC473F715C9646E4BA2A6407 /* GothamSSm-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Light.otf"; path = "../src/assets/fonts/GothamSSm-Light.otf"; sourceTree = "<group>"; };
-		AF6EC5AA9E5723401A8A0FEB /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		B8AA7E0BE330E5E3BA44C69F /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		ACB9A174AFA3527969E46FD7 /* Pods-RohTVApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		C0B00252AAD0484A815B6B38 /* GothamSSm-Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Book.otf"; path = "../src/assets/fonts/GothamSSm-Book.otf"; sourceTree = "<group>"; };
 		C2E6EEEA7FC84658A3EB3AF0 /* GothamSSm-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-BlackItalic.otf"; path = "../src/assets/fonts/GothamSSm-BlackItalic.otf"; sourceTree = "<group>"; };
+		C8A390058C8FECD21D6481EA /* libPods-RohTVApp-RohTVAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp-RohTVAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD7E00ED09DC93C262A6DCDA /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		CE3737912881A998008E568E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = RohTVApp/BootSplash.storyboard; sourceTree = "<group>"; };
 		CE51C109292CE5DD00821DE0 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		CE51C10C292E48EA00821DE0 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -114,8 +113,9 @@
 		E83377084EE5485B91739F28 /* GothamSSm-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GothamSSm-Black.otf"; path = "../src/assets/fonts/GothamSSm-Black.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		EFB70500B11F833CA8A71A8B /* Pods-RohTVApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		FD577390D3D6AC526788D734 /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		F1A11AA8991034FF3E05454A /* libPods-RohTVApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RohTVApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F55E805BE4CBA19F22ECDEF2 /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; path = "Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FF7D5CE4214FB5C23EE1BD9F /* Pods-RohTVApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RohTVApp.release.xcconfig"; path = "Target Support Files/Pods-RohTVApp/Pods-RohTVApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49BA2CA1B779DACBB8B6255E /* libPods-RohTVApp-RohTVAppTests.a in Frameworks */,
+				2DE3BF485CEBEBD68F51B970 /* libPods-RohTVApp-RohTVAppTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEA69F2E290827BD00D25D41 /* BitmovinPlayer in Frameworks */,
-				8EB0675C7911D083DFA92B5D /* libPods-RohTVApp.a in Frameworks */,
+				DC63F0C9619720D11054873C /* libPods-RohTVApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,7 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDD834EB6F4404F80EA7824E /* libPods-RohTVApp-tvOS.a in Frameworks */,
+				47D08E6ADBD3A5CC49CE4C97 /* libPods-RohTVApp-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,7 +148,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40F5A1B3A202770EC97A6AD6 /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a in Frameworks */,
+				02D0304B83703D888CEE385A /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,10 +215,10 @@
 				9F4544F42AFD34CC00458F62 /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				172A47A1D32DDB95937C75A1 /* libPods-RohTVApp.a */,
-				12A1321A709CC9891572D260 /* libPods-RohTVApp-RohTVAppTests.a */,
-				3B503140589FD2CCE4B04F56 /* libPods-RohTVApp-tvOS.a */,
-				02A71A50CF12D165ECBA8C7B /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */,
+				F1A11AA8991034FF3E05454A /* libPods-RohTVApp.a */,
+				C8A390058C8FECD21D6481EA /* libPods-RohTVApp-RohTVAppTests.a */,
+				3FA603DF409F9DFEA4865965 /* libPods-RohTVApp-tvOS.a */,
+				74EC84B8BFAD6706B308205C /* libPods-RohTVApp-tvOS-RohTVApp-tvOSTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -262,14 +262,14 @@
 		9B1644CBAE2FABCCC6E29A69 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				AC21FB9A20A80DB2C9F4DB56 /* Pods-RohTVApp.debug.xcconfig */,
-				3437B69B184A3BE4D06E96C1 /* Pods-RohTVApp.release.xcconfig */,
-				B8AA7E0BE330E5E3BA44C69F /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */,
-				FD577390D3D6AC526788D734 /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */,
-				EFB70500B11F833CA8A71A8B /* Pods-RohTVApp-tvOS.debug.xcconfig */,
-				78A1E73FF78ECE09427E95B9 /* Pods-RohTVApp-tvOS.release.xcconfig */,
-				51085B5AD51239AB3B93D6EE /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */,
-				AF6EC5AA9E5723401A8A0FEB /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */,
+				8D26154F87ABF00CF42811F8 /* Pods-RohTVApp.debug.xcconfig */,
+				FF7D5CE4214FB5C23EE1BD9F /* Pods-RohTVApp.release.xcconfig */,
+				F55E805BE4CBA19F22ECDEF2 /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */,
+				AC3136FBCFBB3E823026E1CF /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */,
+				734B956B8257DC46A203FD5D /* Pods-RohTVApp-tvOS.debug.xcconfig */,
+				ACB9A174AFA3527969E46FD7 /* Pods-RohTVApp-tvOS.release.xcconfig */,
+				A05E9048C0A6CCE829D82680 /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */,
+				CD7E00ED09DC93C262A6DCDA /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -281,12 +281,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RohTVAppTests" */;
 			buildPhases = (
-				4D4087EC72B76C6BBADB939F /* [CP] Check Pods Manifest.lock */,
+				0379E38165EBFC95E357829F /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				0EBFFBFDD99B357F9483F810 /* [CP] Embed Pods Frameworks */,
-				7E77EBD8061C6ECAD46E02EB /* [CP] Copy Pods Resources */,
+				B70A9E938B2E6FF33AB39A8A /* [CP] Embed Pods Frameworks */,
+				18F905E45CED907D9BA61A48 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -302,14 +302,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RohTVApp" */;
 			buildPhases = (
-				E4B214BCD26A216DB9526934 /* [CP] Check Pods Manifest.lock */,
+				9D1081218FD69CE5A57630A0 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				C531234B8886E03A3D2F5952 /* [CP] Embed Pods Frameworks */,
-				589B9426EBE95C651789AF27 /* [CP] Copy Pods Resources */,
+				0635BC9B72BBE4FE934912F2 /* [CP] Embed Pods Frameworks */,
+				0173B564292EF2696EE4B8CE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -327,15 +327,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RohTVApp-tvOS" */;
 			buildPhases = (
-				16130929BAE3F7D32ABE714F /* [CP] Check Pods Manifest.lock */,
+				2E972AEB063FA5D62722955D /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
 				2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */,
-				44C406AB2967F4DB2FCDCAFB /* [CP] Copy Pods Resources */,
-				8915E6E43E7EE3634E953828 /* [CP] Embed Pods Frameworks */,
 				9F719BCF2A5821CB00E4700C /* ShellScript */,
+				A517D3B19EC10D4BDBD7D79C /* [CP] Embed Pods Frameworks */,
+				D1F5B4E13F7A052F340F81EB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -350,12 +350,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RohTVApp-tvOSTests" */;
 			buildPhases = (
-				CA0AA9A46F69F11A984BF446 /* [CP] Check Pods Manifest.lock */,
+				B1095170607C7E4B5E48B262 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
-				CF08357EEB043029778A47D4 /* [CP] Embed Pods Frameworks */,
-				E878C6D9EFC2D102F97FBEB0 /* [CP] Copy Pods Resources */,
+				8F4510C9DE1109EBA0951C6C /* [CP] Embed Pods Frameworks */,
+				7C0E9B67DE58BA833FA2B536 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -495,79 +495,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		0EBFFBFDD99B357F9483F810 /* [CP] Embed Pods Frameworks */ = {
+		0173B564292EF2696EE4B8CE /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		16130929BAE3F7D32ABE714F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RohTVApp-tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/.xcode.env",
-			);
-			name = "Bundle React Native Code And Images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
-		};
-		44C406AB2967F4DB2FCDCAFB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4D4087EC72B76C6BBADB939F /* [CP] Check Pods Manifest.lock */ = {
+		0379E38165EBFC95E357829F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -589,75 +534,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		589B9426EBE95C651789AF27 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7E77EBD8061C6ECAD46E02EB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8915E6E43E7EE3634E953828 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9F719BCF2A5821CB00E4700C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nset -e\n\n## Delete entry if it already exists\n/usr/libexec/PlistBuddy -c \"Delete :MinimumOSVersion\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework/Info.plist\" || true\n\n/usr/libexec/PlistBuddy -c \"Add :MinimumOSVersion string 12.4\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework/Info.plist\"\n";
-		};
-		C531234B8886E03A3D2F5952 /* [CP] Embed Pods Frameworks */ = {
+		0635BC9B72BBE4FE934912F2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -674,7 +551,40 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp/Pods-RohTVApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CA0AA9A46F69F11A984BF446 /* [CP] Check Pods Manifest.lock */ = {
+		18F905E45CED907D9BA61A48 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native Code And Images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		2E972AEB063FA5D62722955D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -689,14 +599,31 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-RohTVApp-tvOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CF08357EEB043029778A47D4 /* [CP] Embed Pods Frameworks */ = {
+		7C0E9B67DE58BA833FA2B536 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8F4510C9DE1109EBA0951C6C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -713,7 +640,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E4B214BCD26A216DB9526934 /* [CP] Check Pods Manifest.lock */ = {
+		9D1081218FD69CE5A57630A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -735,21 +662,94 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E878C6D9EFC2D102F97FBEB0 /* [CP] Copy Pods Resources */ = {
+		9F719BCF2A5821CB00E4700C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Copy Pods Resources";
+			inputPaths = (
+			);
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-resources.sh\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nset -e\n\n## Delete entry if it already exists\n/usr/libexec/PlistBuddy -c \"Delete :MinimumOSVersion\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework/Info.plist\" || true\n\n/usr/libexec/PlistBuddy -c \"Add :MinimumOSVersion string 12.4\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework/Info.plist\"\n";
+		};
+		A517D3B19EC10D4BDBD7D79C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B1095170607C7E4B5E48B262 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RohTVApp-tvOS-RohTVApp-tvOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B70A9E938B2E6FF33AB39A8A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-RohTVAppTests/Pods-RohTVApp-RohTVAppTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D1F5B4E13F7A052F340F81EB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RohTVApp-tvOS/Pods-RohTVApp-tvOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -847,7 +847,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B8AA7E0BE330E5E3BA44C69F /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */;
+			baseConfigurationReference = F55E805BE4CBA19F22ECDEF2 /* Pods-RohTVApp-RohTVAppTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -876,7 +876,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FD577390D3D6AC526788D734 /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */;
+			baseConfigurationReference = AC3136FBCFBB3E823026E1CF /* Pods-RohTVApp-RohTVAppTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -902,7 +902,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC21FB9A20A80DB2C9F4DB56 /* Pods-RohTVApp.debug.xcconfig */;
+			baseConfigurationReference = 8D26154F87ABF00CF42811F8 /* Pods-RohTVApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -940,7 +940,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3437B69B184A3BE4D06E96C1 /* Pods-RohTVApp.release.xcconfig */;
+			baseConfigurationReference = FF7D5CE4214FB5C23EE1BD9F /* Pods-RohTVApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -972,7 +972,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EFB70500B11F833CA8A71A8B /* Pods-RohTVApp-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 734B956B8257DC46A203FD5D /* Pods-RohTVApp-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -991,7 +991,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "RohTVApp-tvOS/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Ballet and Opera Stream";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1018,7 +1018,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 78A1E73FF78ECE09427E95B9 /* Pods-RohTVApp-tvOS.release.xcconfig */;
+			baseConfigurationReference = ACB9A174AFA3527969E46FD7 /* Pods-RohTVApp-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -1038,7 +1038,7 @@
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "RohTVApp-tvOS/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Royal Opera House Stream";
+				INFOPLIST_KEY_CFBundleDisplayName = "Royal Ballet and Opera Stream";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1064,7 +1064,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 51085B5AD51239AB3B93D6EE /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = A05E9048C0A6CCE829D82680 /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1096,7 +1096,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AF6EC5AA9E5723401A8A0FEB /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = CD7E00ED09DC93C262A6DCDA /* Pods-RohTVApp-tvOS-RohTVApp-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1191,7 +1191,10 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = appletvos;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -1258,7 +1261,10 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = appletvos;
 				TVOS_DEPLOYMENT_TARGET = 13.0;

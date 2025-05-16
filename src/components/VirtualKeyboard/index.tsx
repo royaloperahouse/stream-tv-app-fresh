@@ -215,7 +215,7 @@ const dStyle = StyleSheet.create({
   container: {
     width: scaleSize(486),
     height: scaleSize(80),
-    backgroundColor: Colors.searchDisplayBackgroundColor,
+    backgroundColor: Colors.displayBackgroundColor,
   },
   textDefault: {
     width: '100%',
@@ -231,5 +231,8 @@ const dStyle = StyleSheet.create({
   },
   textButton: {
     paddingTop: 7,
+  },
+  buttonStyleFocused: {
+    color: '#1A1A1A',
   },
 });

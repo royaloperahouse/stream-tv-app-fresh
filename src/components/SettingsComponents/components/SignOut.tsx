@@ -4,7 +4,7 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { isProductionEvironmentSelector } from '@services/store/settings/Selectors';
@@ -30,6 +30,7 @@ export type TSignOutProps = {
 };
 
 const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
+  const [focused, setFocused] = useState(false);
   const dispatch = useAppDispatch();
   const isProduction = useAppSelector(isProductionEvironmentSelector);
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
@@ -63,7 +64,7 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
       <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
-          <RohText style={styles.titleText}>SIGN OUT OF THIS DEVICE</RohText>
+          <RohText style={styles.titleText}>Sign out of this device</RohText>
         </View>
         <View style={styles.descriptionContainer}>
           <RohText style={styles.descriptionText}>
@@ -85,10 +86,12 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
               canMoveUp={false}
               canMoveDown={false}
               onPress={signOutActionHandler}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               style={styles.actionButtonDefault}
               styleFocused={styles.actionButtonFocus}>
               <View style={styles.actionButtonContentContainer}>
-                <RohText style={styles.actionButtonText}>
+                <RohText style={focused ? styles.actionButtonTextFocused : styles.actionButtonText}>
                   I want to sign out
                 </RohText>
               </View>
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
     letterSpacing: scaleSize(1),
-    color: Colors.tVMidGrey,
+    color: Colors.midGrey,
   },
   descriptionContainer: {
     marginBottom: scaleSize(60),
@@ -136,9 +139,8 @@ const styles = StyleSheet.create({
   commonQuestionText: {
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
-    color: Colors.defaultTextColor,
+    color: Colors.midGrey,
     letterSpacing: scaleSize(1),
-    textTransform: 'uppercase',
   },
   actionButtonContainer: {
     minWidth: scaleSize(358),
@@ -161,12 +163,17 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(30),
     color: Colors.defaultTextColor,
   },
+  actionButtonTextFocused: {
+    fontSize: scaleSize(24),
+    lineHeight: scaleSize(30),
+    color: Colors.focusedTextColor,
+  },
   actionButtonDefault: {
     borderWidth: scaleSize(2),
     borderColor: Colors.defaultTextColor,
   },
   actionButtonFocus: {
-    borderColor: Colors.streamPrimary,
-    backgroundColor: Colors.streamPrimary,
+    borderColor: Colors.defaultTextColor,
+    backgroundColor: Colors.defaultTextColor,
   },
 });

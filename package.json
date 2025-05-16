@@ -24,7 +24,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.12",
     "@reduxjs/toolkit": "^1.8.3",
-    "@sentry/react-native": "^5.13.0",
+    "@sentry/react-native": "^5.19.3",
     "axios": "^0.27.2",
     "base-64": "^1.0.0",
     "bitmovin-player-react-native": "^0.27.1",

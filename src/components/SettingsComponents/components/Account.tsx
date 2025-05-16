@@ -13,7 +13,7 @@ const Account: React.FC<TAccountProps> = () => {
   return (
     <View style={styles.root}>
       <View style={styles.titleContainer}>
-        <RohText style={styles.titleText}>ACCOUNT NAME</RohText>
+        <RohText style={styles.titleText}>Account email address</RohText>
       </View>
       <View style={styles.userEmailContainer}>
         <RohText style={styles.userEmailText}>{userEmail}</RohText>
@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
     letterSpacing: scaleSize(1),
-    color: Colors.tVMidGrey,
+    color: Colors.midGrey,
   },
   userEmailContainer: {
     minHeight: scaleSize(80),
     minWidth: scaleSize(486),
-    backgroundColor: Colors.tvMidGreyWith50Alpha,
+    backgroundColor: Colors.displayBackgroundColor,
     justifyContent: 'center',
     paddingLeft: scaleSize(24),
   },

@@ -4,7 +4,7 @@ import TouchableHighlightWrapper, {
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, TouchableHighlight } from 'react-native';
 
 type TSettingsNavMenuItemProps = {
@@ -32,8 +32,10 @@ const SettingsNavMenuItem: React.FC<TSettingsNavMenuItemProps> = props => {
     isFirst,
     onMount,
   } = props;
+  const [focused, setFocused] = useState(false);
   const touchableRef = useRef<TTouchableHighlightWrapperRef>();
   const focusHandler = () => {
+    setFocused(true);
     if (typeof onFocus === 'function') {
       onFocus(touchableRef);
     }
@@ -51,6 +53,7 @@ const SettingsNavMenuItem: React.FC<TSettingsNavMenuItemProps> = props => {
     <TouchableHighlightWrapper
       ref={touchableRef}
       onFocus={focusHandler}
+      onBlur={() => setFocused(false)}
       canMoveUp={canMoveUp}
       canMoveDown={canMoveDown}
       hasTVPreferredFocus={hasTVPreferredFocus}
@@ -59,7 +62,7 @@ const SettingsNavMenuItem: React.FC<TSettingsNavMenuItemProps> = props => {
       styleFocused={styles.menuButtonActiveWithFocus}>
       <View style={styles.root}>
         <RohText
-          style={[styles.buttonTitle, isActive ? {} : styles.inActiveTitle]}>
+          style={[styles.buttonTitle, focused ? styles.focusedTextColor : styles.blurredTextColor]}>
           {title}
         </RohText>
       </View>
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
     paddingVertical: scaleSize(25),
   },
   menuButtonActiveWithFocus: {
-    backgroundColor: Colors.streamPrimary,
+    backgroundColor: Colors.defaultBlue,
     paddingLeft: scaleSize(20),
   },
   menuButtonActiveWithoutFocus: {
@@ -92,7 +95,10 @@ const styles = StyleSheet.create({
     letterSpacing: scaleSize(1),
     color: Colors.defaultTextColor,
   },
-  inActiveTitle: {
-    opacity: 0.7,
+  focusedTextColor: {
+    color: Colors.focusedTextColor,
+  },
+  blurredTextColor: {
+    color: Colors.defaultTextColor,
   },
 });

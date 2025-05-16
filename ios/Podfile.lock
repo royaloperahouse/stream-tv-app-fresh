@@ -1,8 +1,8 @@
 PODS:
-  - BitmovinAnalyticsCollector/BitmovinPlayer (3.12.0):
+  - BitmovinAnalyticsCollector/BitmovinPlayer (3.12.1):
     - BitmovinAnalyticsCollector/Core
     - BitmovinPlayerCore (~> 3.48)
-  - BitmovinAnalyticsCollector/Core (3.12.0)
+  - BitmovinAnalyticsCollector/Core (3.12.1)
   - BitmovinPlayer (3.66.1):
     - BitmovinAnalyticsCollector/BitmovinPlayer (~> 3.0)
     - BitmovinPlayerCore (= 3.66.1)
@@ -487,9 +487,12 @@ PODS:
   - RNScreens (3.27.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (5.13.0):
+  - RNSentry (5.36.0):
+    - hermes-engine
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - Sentry/HybridSDK (= 8.15.2)
+    - React-hermes
+    - Sentry/HybridSDK (= 8.41.0)
   - RNSVG (13.14.0):
     - React-Core
   - SDWebImage (5.11.1):
@@ -498,9 +501,7 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry/HybridSDK (8.15.2):
-    - SentryPrivate (= 8.15.2)
-  - SentryPrivate (8.15.2)
+  - Sentry/HybridSDK (8.41.0)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -576,7 +577,6 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - Sentry
-    - SentryPrivate
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -691,10 +691,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  BitmovinAnalyticsCollector: a5192c8cbbbd400ff627d9ab73d35f6e3a06b65c
+  BitmovinAnalyticsCollector: 3518b6a3634ba3719f422e60c39b222922058ca0
   BitmovinPlayer: 0d5990c196eff314b7081c49ed481e9d465d7281
   BitmovinPlayerCore: f6f8b8655bece7c8e9daccc49cc55642212d9c2f
-  boost: 0ed1b9a58a27b2f7885dc9f279bc3b341f44512b
+  boost: 43f331345fd5d44b60bf621e7e579ae7b8fda687
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
   FBLazyVector: 58c22987e2cd1eebb2e3bc9f7756d87b14c32d3c
   FBReactNativeSpec: 1e59b7675304d2b0fd3e9c208cb88b97143ff314
@@ -749,12 +749,11 @@ SPEC CHECKSUMS:
   RNGestureHandler: 28d1392c38e539c932d95b29134baf2c01a219ba
   RNReanimated: 89568bd6754413a03e12a0d3eb8a9e443004faa9
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
-  RNSentry: 82667e9889782365bf801645ef4d2a731dcf60df
+  RNSentry: f655b42e3d102f66a475a6588b92fa6d2fc359f1
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
-  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
+  Sentry: 54d0fe6c0df448497c8ed4cce66ccf7027e1823e
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: f67f5769ce78049c5fe798bc735f04535c7bc1ac
 

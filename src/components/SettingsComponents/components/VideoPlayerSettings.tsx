@@ -77,7 +77,7 @@ const VideoPlayerSettings: React.FC<TVideoPlayerSettingsProps> = ({
       <NavMenuScreenRedirect ref={navMenuScreenRedirectRef} />
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
-          <RohText style={styles.titleText}>VIDEO QUALITY SETTINGS</RohText>
+          <RohText style={styles.titleText}>Video quality settings</RohText>
         </View>
         <View style={styles.actionButtonsContainer}>
           <View style={styles.actionButtonContainer}>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
     letterSpacing: scaleSize(1),
-    color: Colors.tVMidGrey,
+    color: Colors.midGrey,
   },
   descriptionContainer: {
     marginBottom: scaleSize(60),
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.defaultTextColor,
   },
   actionButtonFocus: {
-    borderColor: Colors.streamPrimary,
-    backgroundColor: Colors.streamPrimary,
+    borderColor: Colors.defaultTextColor,
+    backgroundColor: Colors.defaultTextColor,
   },
 });

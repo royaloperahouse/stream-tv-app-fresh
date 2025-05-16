@@ -62,14 +62,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flex: 2,
     marginBottom: scaleSize(60),
-    marginLeft: scaleSize(75)
+    marginLeft: scaleSize(75),
   },
   websiteContainer: {
     marginTop: scaleSize(0),
     alignItems: 'flex-start',
   },
   header: {
-    color: 'white',
+    color: Colors.midGrey,
     textTransform: 'uppercase',
     fontSize: scaleSize(52),
     textAlign: 'left',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
   },
   regular: {
-    color: 'white',
+    color: Colors.defaultTextColor,
     fontSize: scaleSize(28),
     marginBottom: scaleSize(40),
   },
@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
   },
   address: {
-    color: 'white',
+    color: Colors.defaultTextColor,
     textTransform: 'uppercase',
     fontSize: scaleSize(38),
   },
   pin: {
-    color: 'white',
+    color: Colors.defaultTextColor,
     textTransform: 'uppercase',
     fontSize: scaleSize(90),
     alignItems: 'flex-start',

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -41,6 +41,7 @@ const Button = forwardRef<any, TButtonProps>(
     },
     ref,
   ) => {
+    const [focused, setFocused] = useState(false);
     const onClick = () => {
       onPress(text);
     };
@@ -52,10 +53,17 @@ const Button = forwardRef<any, TButtonProps>(
         styleFocused={styleFocused}
         {...restProps}
         hasTVPreferredFocus={hasTVPreferredFocus}
-        onPress={onClick}>
+        onPress={onClick}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}>
         <View style={styles.viewContainer}>
           {text !== undefined && text !== '' && (
-            <RohText style={[styles.textStyle, textStyle]}>
+            <RohText
+              style={[
+                styles.textStyle,
+                textStyle,
+                focused ? styles.textColorFocused : styles.textColorBlurred,
+              ]}>
               {text.toUpperCase()}
             </RohText>
           )}
@@ -74,11 +82,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textStyle: {
-    color: Colors.defaultTextColor,
     marginBottom: scaleSize(10),
     fontSize: scaleSize(38),
     lineHeight: scaleSize(44),
     letterSpacing: scaleSize(1),
+  },
+  textColorFocused: {
+    color: Colors.focusedTextColor,
+  },
+  textColorBlurred: {
+    color: Colors.defaultTextColor,
   },
 });
 

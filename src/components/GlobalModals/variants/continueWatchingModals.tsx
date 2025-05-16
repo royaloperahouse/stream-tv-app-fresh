@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, BackHandler } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
@@ -14,6 +14,8 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
   fromTime,
   isLiveStream,
 }) => {
+  const [primaryFocused, setPrimaryFocused] = useState(false);
+  const [secondaryFocused, setSecondaryFocused] = useState(false);
   const resumeButtonTitle = `Resume from ${fromTime}`;
   useLayoutEffect(() => {
     const handleBackButtonClick = () => {
@@ -42,6 +44,8 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
         <View>
           <TouchableHighlightWrapper
             style={styles.primaryActionButton}
+            onFocus={() => setPrimaryFocused(true)}
+            onBlur={() => setPrimaryFocused(false)}
             hasTVPreferredFocus
             canMoveLeft={false}
             canMoveRight={false}
@@ -49,20 +53,34 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
             styleFocused={styles.primaryActionButtonFocus}
             onPress={primaryActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
-              <RohText style={styles.primaryActionButtonText}>
+              <RohText
+                style={[
+                  styles.primaryActionButtonText,
+                  primaryFocused
+                    ? styles.focusedTextColor
+                    : styles.blurredTextColor,
+                ]}>
                 {isLiveStream ? 'Watch Live' : resumeButtonTitle}
               </RohText>
             </View>
           </TouchableHighlightWrapper>
           <TouchableHighlightWrapper
             style={styles.secondaryActionButton}
+            onFocus={() => setSecondaryFocused(true)}
+            onBlur={() => setSecondaryFocused(false)}
             canMoveDown={false}
             canMoveLeft={false}
             canMoveRight={false}
             styleFocused={styles.secondaryActionButtonFocus}
             onPress={secondaryActionHandler}>
             <View style={styles.primaryActionButtonContainer}>
-              <RohText style={styles.primaryActionButtonText}>
+              <RohText
+                style={[
+                  styles.primaryActionButtonText,
+                  secondaryFocused
+                    ? styles.focusedTextColor
+                    : styles.blurredTextColor,
+                ]}>
                 Start from the beginning
               </RohText>
             </View>
@@ -91,8 +109,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(54),
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
-    color: Colors.tVMidGrey,
-    textTransform: 'uppercase',
+    color: Colors.midGrey,
   },
   subHeader: {
     marginBottom: scaleSize(40),
@@ -110,8 +127,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.defaultTextColor,
   },
   primaryActionButtonFocus: {
-    borderColor: Colors.streamPrimary,
-    backgroundColor: Colors.streamPrimary,
+    borderColor: Colors.defaultTextColor,
+    backgroundColor: Colors.defaultTextColor,
   },
   primaryActionButtonContainer: {
     flex: 1,
@@ -123,6 +140,12 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(30),
     color: Colors.defaultTextColor,
   },
+  focusedTextColor: {
+    color: Colors.focusedTextColor,
+  },
+  blurredTextColor: {
+    color: Colors.defaultTextColor,
+  },
   secondaryActionButton: {
     width: scaleSize(358),
     height: scaleSize(80),
@@ -130,8 +153,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.defaultTextColor,
   },
   secondaryActionButtonFocus: {
-    borderColor: Colors.streamPrimary,
-    backgroundColor: Colors.streamPrimary,
+    borderColor: Colors.defaultTextColor,
+    backgroundColor: Colors.defaultTextColor,
   },
   secondaryActionButtonContainer: {
     flex: 1,

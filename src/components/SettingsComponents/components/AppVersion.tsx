@@ -11,7 +11,7 @@ const AppVersion: React.FC<TAppVersionProps> = () => {
   return (
     <View style={styles.root}>
       <View style={styles.titleContainer}>
-        <RohText style={styles.titleText}>APP VERSION</RohText>
+        <RohText style={styles.titleText}>App version</RohText>
       </View>
       <View style={styles.appVersionContainer}>
         <RohText style={styles.appVersionText}>{getVersion()}</RohText>
@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
     letterSpacing: scaleSize(1),
-    color: Colors.tVMidGrey,
+    color: Colors.midGrey,
   },
   appVersionContainer: {
     minHeight: scaleSize(80),
     minWidth: scaleSize(486),
-    backgroundColor: Colors.tvMidGreyWith50Alpha,
+    backgroundColor: Colors.displayBackgroundColor,
     justifyContent: 'center',
     paddingLeft: scaleSize(24),
   },

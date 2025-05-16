@@ -46,6 +46,7 @@ const ExpandableButton = forwardRef<any, Props>(
     },
     ref: any,
   ) => {
+    const [focused, setFocused] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [freezeButton, setFreezeButton] = useState<boolean>(false);
     const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
@@ -103,25 +104,37 @@ const ExpandableButton = forwardRef<any, Props>(
           accessible={accessible}
           styleFocused={styles.buttonActive}
           onBlur={() => {
+            setFocused(false);
             if (typeof blurCallback === 'function') {
               blurCallback();
             }
           }}
           onFocus={() => {
+            setFocused(true);
             if (typeof focusCallback === 'function') {
               focusCallback(pressingHandler);
             }
           }}
           onPress={pressingHandler}>
           <View style={styles.wrapper}>
+            {/* TODO two icons should be here focused/blurred */}
             {Icon && <Icon width={scaleSize(40)} height={scaleSize(40)} />}
             {
-              <RohText style={styles.text} numberOfLines={1}>
+              <RohText
+                style={[
+                  styles.text,
+                  focused ? styles.textColorFocused : styles.textColorBlurred,
+                ]}
+                numberOfLines={1}>
                 {text}
               </RohText>
             }
             <View style={styles.spinnerContainer}>
-              <LoadingSpinner showSpinner={loading} size={40} />
+              <LoadingSpinner
+                showSpinner={loading}
+                size={40}
+                inverted={focused}
+              />
             </View>
           </View>
         </TouchableHighlightWrapper>
@@ -153,10 +166,15 @@ const styles = StyleSheet.create({
   buttonActive: {
     paddingLeft: scaleSize(30),
     opacity: 1,
-    backgroundColor: Colors.streamPrimary,
+    backgroundColor: Colors.defaultBlue,
+  },
+  textColorFocused: {
+    color: Colors.focusedTextColor,
+  },
+  textColorBlurred: {
+    color: Colors.defaultTextColor,
   },
   text: {
-    color: 'white',
     fontSize: scaleSize(24),
     marginLeft: scaleSize(14),
   },

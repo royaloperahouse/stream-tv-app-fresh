@@ -30,10 +30,6 @@ const WithBackground: React.FC<PropsWithChildren<TWithBackgroundProps>> = ({
   }
   return (
     <View style={styles.containerBackground}>
-      <TopGradient />
-      <View style={[{ position: 'absolute', bottom: 0, right: 0 }]}>
-        <BottomGradient />
-      </View>
       <View style={StyleSheet.absoluteFill}>{children}</View>
     </View>
   );

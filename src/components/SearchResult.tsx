@@ -106,7 +106,7 @@ const SearchResult: React.FC<TSearchResultProps> = ({
           });
         });
       }}
-      ListHeaderComponent={<ResultHraderComponent headerText="results" />}
+      ListHeaderComponent={<ResultHraderComponent headerText="Results" />}
       initialNumToRender={5}
       renderItem={({ item, index }) => (
         <SearchItemComponent
@@ -299,7 +299,7 @@ const ResultHraderComponent: React.FC<TResultHeaderComponentProps> = ({
       styles.headerContainer,
       isPrevSearch && styles.headerContainerPrevSearch,
     ]}>
-    <RohText style={styles.headerText}>{headerText.toUpperCase()}</RohText>
+    <RohText style={styles.headerText}>{headerText}</RohText>
   </View>
 );
 
@@ -346,7 +346,7 @@ const PreviousSearchList: React.FC<TPreviousSearchListProps> = ({
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       ListHeaderComponent={
-        <ResultHraderComponent headerText="previous searches" isPrevSearch />
+        <ResultHraderComponent headerText="Previous Searches" isPrevSearch />
       }
       renderItem={({ item, index }) => (
         <PreviousSearchListItemComponent
@@ -380,6 +380,7 @@ const PreviousSearchListItemComponent: React.FC<
   onMountToSearchResultTransition,
   prevSearchWasSelectedCB,
 }) => {
+  const [focused, setFocused] = useState(false);
   const dispatch = useAppDispatch();
   const btnRef = useRef<TTouchableHighlightWrapperRef>(null);
   const onPressHandler = () => {
@@ -409,6 +410,7 @@ const PreviousSearchListItemComponent: React.FC<
           canMoveDown={canMoveDown}
           canMoveRight={false}
           onFocus={() => {
+            setFocused(true);
             if (
               typeof onMountToSearchResultTransition === 'function' &&
               typeof btnRef.current?.getRef === 'function'
@@ -419,9 +421,10 @@ const PreviousSearchListItemComponent: React.FC<
               );
             }
           }}
+          onBlur={() => setFocused(false)}
           style={styles.searchesResultItemWrapperContainer}
           styleFocused={styles.searchesResultItemWrapperActive}>
-          <RohText style={styles.searchesResultItemText} numberOfLines={1}>
+          <RohText style={[styles.searchesResultItemText, focused ? styles.textColorFocused : styles.textColorBlurred]} numberOfLines={1}>
             {text.toUpperCase()}
           </RohText>
         </TouchableHighlightWrapper>
@@ -475,6 +478,12 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(28),
     color: Colors.defaultTextColor,
   },
+  textColorFocused: {
+    color: Colors.focusedTextColor,
+  },
+  textColorBlurred: {
+    color: Colors.defaultTextColor,
+  },
   headerContainer: {
     width: '100%',
     height: scaleSize(315),
@@ -510,6 +519,5 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(26),
     lineHeight: scaleSize(30),
     letterSpacing: scaleSize(1),
-    color: Colors.defaultTextColor,
   },
 });

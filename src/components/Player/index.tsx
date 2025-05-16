@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { PlayerView, SourceType, SubtitleFormat, usePlayer } from 'bitmovin-player-react-native';
+import {
+  PlayerView,
+  SourceType,
+  SubtitleFormat,
+  usePlayer,
+} from 'bitmovin-player-react-native';
 import {
   Animated,
   AppState,
@@ -351,25 +356,27 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         title={title}
         showGuidance={!state.ready}
       />
-      <View style={styles.controlOverlay} focusable={false}>
-        <PlayerControls
-          onPlay={handlePlayPause}
-          onPause={handlePlayPause}
-          playing={state.play}
-          skipBackwards={skipBackward}
-          skipForwards={skipForward}
-          showSkip={true}
-          duration={state.duration}
-          currentTime={state.currentTime}
-          seekTo={seekTo}
-          subtitleCue={state.subtitleCue}
-          subtitlesList={state.subtitlesList}
-          selectedSubtitles={state.selectedSubtitles}
-          actionClose={actionClose}
-          setSubtitles={setSubtitles}
-          isLiveStream={state.isLiveStream}
-        />
-      </View>
+      {!isTVOS && (
+        <View style={styles.controlOverlay} focusable={false}>
+          <PlayerControls
+            onPlay={handlePlayPause}
+            onPause={handlePlayPause}
+            playing={state.play}
+            skipBackwards={skipBackward}
+            skipForwards={skipForward}
+            showSkip={true}
+            duration={state.duration}
+            currentTime={state.currentTime}
+            seekTo={seekTo}
+            subtitleCue={state.subtitleCue}
+            subtitlesList={state.subtitlesList}
+            selectedSubtitles={state.selectedSubtitles}
+            actionClose={actionClose}
+            setSubtitles={setSubtitles}
+            isLiveStream={state.isLiveStream}
+          />
+        </View>
+      )}
     </TVFocusGuideView>
   );
 };

@@ -32,7 +32,7 @@ const SearchScreen: React.FC<
         <NavMenuScreenRedirect ref={keyboardToResultTransitionRef} />
         <View style={styles.virtualKeyboardMainContent}>
           <View style={styles.screenTitleContainer}>
-            <RohText style={styles.screenTitleText}>SEARCH</RohText>
+            <RohText style={styles.screenTitleText}>Search</RohText>
           </View>
           <View style={styles.searchTextDisplayContainer}>
             <DisplayForVirtualKeyboard ref={vkRef} />

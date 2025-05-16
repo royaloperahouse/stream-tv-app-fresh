@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(54),
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
-    color: Colors.defaultTextColor,
+    color: Colors.midGrey,
     textTransform: 'uppercase',
   },
   subHeader: {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   primaryActionButton: {
     width: scaleSize(358),
     height: scaleSize(80),
-    backgroundColor: Colors.streamPrimary,
+    backgroundColor: Colors.defaultTextColor,
   },
   primaryActionButtonContainer: {
     flex: 1,
@@ -79,6 +79,6 @@ const styles = StyleSheet.create({
   primaryActionButtonText: {
     fontSize: scaleSize(24),
     lineHeight: scaleSize(30),
-    color: Colors.defaultTextColor,
+    color: Colors.focusedTextColor,
   },
 });

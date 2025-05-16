@@ -19,6 +19,7 @@ interface LoginSpinnerProps {
 const LoadingSpinner: React.FC<LoginSpinnerProps> = ({
   showSpinner,
   size = 60,
+  inverted = false,
 }) => {
   const rotation = useSharedValue(0);
   const animatedStyles = useAnimatedStyle(() => {
@@ -61,16 +62,26 @@ const LoadingSpinner: React.FC<LoginSpinnerProps> = ({
 
   return (
     <Animated.View
-      style={[styles.spinner, dynamicStyles.innerStyle, animatedStyles]}
+      style={[
+        inverted ? styles.spinnerInverted : styles.spinner,
+        dynamicStyles.innerStyle,
+        animatedStyles,
+      ]}
     />
   );
 };
 const styles = StyleSheet.create({
   spinner: {
-    borderTopColor: 'rgba(69,97,218,0.35)',
-    borderRightColor: 'rgba(69,97,218,0.35)',
-    borderBottomColor: 'rgba(69,97,218,0.35)',
-    borderLeftColor: 'rgba(255,255,255,0.84)',
+    borderTopColor: 'rgb(241,241,241)',
+    borderRightColor: 'rgb(155,155,155)',
+    borderBottomColor: 'rgb(155,155,155)',
+    borderLeftColor: 'rgb(155,155,155)',
+  },
+  spinnerInverted: {
+    borderTopColor: 'rgb(0,0,0)',
+    borderRightColor: 'rgb(155,155,155)',
+    borderBottomColor: 'rgb(155,155,155)',
+    borderLeftColor: 'rgb(155,155,155)',
   },
 });
 export default LoadingSpinner;
