@@ -70,14 +70,12 @@ const styles = StyleSheet.create({
   },
   header: {
     color: Colors.midGrey,
-    textTransform: 'uppercase',
     fontSize: scaleSize(52),
     textAlign: 'left',
     marginBottom: scaleSize(30),
   },
   blue: {
     color: Colors.defaultBlue,
-    textTransform: 'uppercase',
     fontSize: scaleSize(26),
   },
   regular: {
@@ -91,12 +89,10 @@ const styles = StyleSheet.create({
   },
   address: {
     color: Colors.defaultTextColor,
-    textTransform: 'uppercase',
     fontSize: scaleSize(38),
   },
   pin: {
     color: Colors.defaultTextColor,
-    textTransform: 'uppercase',
     fontSize: scaleSize(90),
     alignItems: 'flex-start',
     paddingRight: scaleSize(100),

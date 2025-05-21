@@ -56,6 +56,7 @@ export const PlayerControls: React.FC<Props> = ({
   actionClose,
   isLiveStream,
 }) => {
+  const [focusedItem, setFocusedItem] = useState('');
   const activeAnimation = useRef<Animated.Value>(new Animated.Value(1)).current;
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isSubtitlesListVisible, setIsSubtitlesListVisible] = useState(false);
@@ -152,7 +153,11 @@ export const PlayerControls: React.FC<Props> = ({
       <Animated.View
         style={[styles.exitButtonWrapper, { opacity: activeAnimation }]}>
         <TouchableHighlightWrapper
-          onFocus={handleControlsFocus}
+          onFocus={() => {
+            setFocusedItem('exit');
+            handleControlsFocus();
+          }}
+          onBlur={() => setFocusedItem('')}
           canMoveLeft={false}
           canMoveUp={false}
           canMoveRight={false}
@@ -161,8 +166,22 @@ export const PlayerControls: React.FC<Props> = ({
           underlayColor={Colors.defaultBlue}
           onPress={isControlsVisible ? actionClose : () => {}}>
           <View style={styles.buttonWrapper}>
-            <Image source={PlayerIcons.close} style={styles.icon} />
-            <RohText style={styles.buttonText}>Exit</RohText>
+            <Image
+              source={PlayerIcons.close}
+              style={[
+                styles.icon,
+                focusedItem === 'exit' ? styles.iconFocused : {},
+              ]}
+            />
+            <RohText
+              style={[
+                styles.buttonText,
+                focusedItem === 'exit'
+                  ? styles.focusedButtonText
+                  : styles.blurredButtonText,
+              ]}>
+              Exit
+            </RohText>
           </View>
         </TouchableHighlightWrapper>
       </Animated.View>
@@ -179,7 +198,13 @@ export const PlayerControls: React.FC<Props> = ({
         <View style={styles.controlsWrapper}>
           {showSkip && (
             <TouchableHighlightWrapper
-              onFocus={handleControlsFocus}
+              onFocus={() => {
+                setFocusedItem('seekBackward');
+                handleControlsFocus();
+              }}
+              onBlur={() => {
+                setFocusedItem('');
+              }}
               canMoveDown={false}
               style={styles.touchable}
               underlayColor={Colors.defaultBlue}
@@ -188,49 +213,93 @@ export const PlayerControls: React.FC<Props> = ({
                   ? () => onPressHandler(skipBackwards)
                   : () => {}
               }>
-              <Image source={PlayerIcons.seekBackward} style={styles.icon} />
+              <Image
+                source={PlayerIcons.seekBackward}
+                style={[
+                  styles.icon,
+                  focusedItem === 'seekBackward' ? styles.iconFocused : {},
+                ]}
+              />
             </TouchableHighlightWrapper>
           )}
 
           <TouchableHighlightWrapper
             ref={playPauseRef}
-            onFocus={handleControlsFocus}
+            onFocus={() => {
+              setFocusedItem('playPause');
+              handleControlsFocus();
+            }}
+            onBlur={() => {
+              setFocusedItem('');
+            }}
             hasTVPreferredFocus={true}
             canMoveDown={false}
             style={styles.touchable}
-            underlayColor={Colors.defaultBlue}
+            underlayColor={Colors.defaultTextColor}
             onPress={
               isControlsVisible ? (playing ? onPause : onPlay) : () => {}
             }>
             {playing ? (
-              <Image source={PlayerIcons.pause} style={styles.icon} />
+              <Image
+                source={PlayerIcons.pause}
+                style={[
+                  styles.icon,
+                  focusedItem === 'playPause' ? styles.iconFocused : {},
+                ]}
+              />
             ) : (
-              <Image source={PlayerIcons.play} style={styles.icon} />
+              <Image
+                source={PlayerIcons.play}
+                style={[
+                  styles.icon,
+                  focusedItem === 'playPause' ? styles.iconFocused : {},
+                ]}
+              />
             )}
           </TouchableHighlightWrapper>
           {showSkip && (
             <TouchableHighlightWrapper
-              onFocus={handleControlsFocus}
+              onFocus={() => {
+                setFocusedItem('seekForward');
+                handleControlsFocus();
+              }}
+              onBlur={() => setFocusedItem('')}
               canMoveDown={false}
               style={styles.touchable}
-              underlayColor={Colors.defaultBlue}
+              underlayColor={Colors.defaultTextColor}
               onPress={
                 isControlsVisible
                   ? () => onPressHandler(skipForwards)
                   : () => {}
               }>
-              <Image source={PlayerIcons.seekForward} style={styles.icon} />
+              <Image
+                source={PlayerIcons.seekForward}
+                style={[
+                  styles.icon,
+                  focusedItem === 'seekForward' ? styles.iconFocused : {},
+                ]}
+              />
             </TouchableHighlightWrapper>
           )}
           <TouchableHighlightWrapper
             ref={subtitleButtonRef}
-            onFocus={handleControlsFocus}
+            onFocus={() => {
+              setFocusedItem('subtitles');
+              handleControlsFocus();
+            }}
+            onBlur={() => setFocusedItem('')}
             canMoveRight={false}
             canMoveDown={false}
             style={styles.subtitleListTouchable}
-            underlayColor={Colors.defaultBlue}
+            underlayColor={Colors.defaultTextColor}
             onPress={isControlsVisible ? showSubtitlesList : () => {}}>
-            <Image source={PlayerIcons.subtitles} style={styles.icon} />
+            <Image
+              source={PlayerIcons.subtitles}
+              style={[
+                styles.icon,
+                focusedItem === 'subtitles' ? styles.iconFocused : {},
+              ]}
+            />
           </TouchableHighlightWrapper>
         </View>
       </Animated.View>
@@ -307,7 +376,7 @@ const SubtitlesList = ({
                 Subtitles are not available for this video
               </RohText>
               <TouchableHighlightWrapper
-                underlayColor={Colors.subtitlesActiveBackground}
+                underlayColor={Colors.defaultTextColor}
                 style={styles.subtitleMessageConfirmContainer}
                 hasTVPreferredFocus={true}
                 canMoveLeft={false}
@@ -358,14 +427,17 @@ const SubtitlesItem = ({
   index,
   listLength,
 }) => {
+  const [focused, setFocused] = useState(false);
   return (
     <TouchableHighlightWrapper
-      underlayColor={Colors.subtitlesActiveBackground}
+      underlayColor={Colors.defaultTextColor}
       style={
         index === listLength - 1
           ? styles.subtitleItemContainerLast
           : styles.subtitleItemContainer
       }
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       canMoveLeft={false}
       canMoveRight={false}
       canMoveDown={index !== listLength - 1}
@@ -374,11 +446,27 @@ const SubtitlesItem = ({
       onPress={onPress}>
       <View style={styles.subtitleItemWrapper}>
         {isSelected ? (
-          <SubtitlesSelect width={scaleSize(40)} height={scaleSize(40)} />
+          <SubtitlesSelect
+            width={scaleSize(40)}
+            height={scaleSize(40)}
+            style={
+              focused ? styles.focusedButtonText : styles.blurredButtonText
+            }
+          />
         ) : (
-          <SubtitlesNotSelect width={scaleSize(40)} height={scaleSize(40)} />
+          <SubtitlesNotSelect
+            width={scaleSize(40)}
+            height={scaleSize(40)}
+            style={
+              focused ? styles.focusedButtonText : styles.blurredButtonText
+            }
+          />
         )}
-        <RohText style={isSelected ? styles.text : styles.textInActive}>
+        <RohText
+          style={[
+            isSelected ? styles.text : styles.textInActive,
+            focused ? styles.focusedButtonText : styles.blurredButtonText,
+          ]}>
           {subtitleTrack.text}
         </RohText>
       </View>
@@ -391,8 +479,10 @@ const styles = StyleSheet.create({
     width: scaleSize(40),
     height: scaleSize(40),
   },
+  iconFocused: {
+    tintColor: '#000000',
+  },
   subtitlesContainerMessageTitleText: {
-    textTransform: 'uppercase',
     color: 'white',
     fontSize: scaleSize(24),
     lineHeight: scaleSize(28),
@@ -409,7 +499,7 @@ const styles = StyleSheet.create({
     paddingTop: scaleSize(20),
   },
   subtitlesContainerMessageConfirmText: {
-    color: 'white',
+    color: Colors.focusedTextColor,
     fontSize: scaleSize(28),
     lineHeight: scaleSize(28),
     letterSpacing: scaleSize(1),
@@ -471,13 +561,11 @@ const styles = StyleSheet.create({
     marginBottom: scaleSize(60),
   },
   text: {
-    color: 'white',
     marginLeft: scaleSize(20),
     fontSize: scaleSize(24),
     lineHeight: scaleSize(30),
   },
   textInActive: {
-    color: 'white',
     marginLeft: scaleSize(20),
     fontSize: scaleSize(24),
     lineHeight: scaleSize(30),
@@ -523,9 +611,14 @@ const styles = StyleSheet.create({
     height: scaleSize(72),
   },
   buttonText: {
-    color: 'white',
     fontSize: scaleSize(24),
     marginLeft: scaleSize(14),
+  },
+  focusedButtonText: {
+    color: Colors.focusedTextColor,
+  },
+  blurredButtonText: {
+    color: Colors.defaultTextColor,
   },
   buttonWrapper: {
     flexDirection: 'row',

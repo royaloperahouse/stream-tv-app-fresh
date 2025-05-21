@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   },
   generalContainer: {
     height: '100%',
-    paddingRight: scaleSize(200),
     flex: 1,
   },
   navigationToDownContainer: {
@@ -126,10 +125,10 @@ const styles = StyleSheet.create({
     height: scaleSize(10),
   },
   title: {
+    paddingTop: scaleSize(72),
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
   },
   titleContainer: {
     flex: 1,

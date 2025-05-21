@@ -363,11 +363,11 @@ const EventVideoScreen: React.FC<
               fixedHeight={false}
               contentMaxVisibleHeight={scaleSize(460)}>
               <RohText style={styles.title}>
-                {videoDetails.video_title[0].text.toUpperCase() || ''}
+                {videoDetails.video_title[0].text|| ''}
               </RohText>
               {videoDetails.extra_video_type ? (
                 <RohText style={styles.tags}>
-                  {videoDetails.extra_video_type.toUpperCase()}
+                  {videoDetails.extra_video_type}
                 </RohText>
               ) : null}
               {videoDetails.short_description.length ? (
@@ -450,19 +450,16 @@ const styles = StyleSheet.create({
   pageTitle: {
     color: 'white',
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   title: {
     color: 'white',
     fontSize: scaleSize(48),
     marginTop: scaleSize(24),
     marginBottom: scaleSize(24),
-    textTransform: 'uppercase',
   },
   ellipsis: {
     color: 'white',
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   description: {
     color: Colors.defaultTextColor,
@@ -479,7 +476,6 @@ const styles = StyleSheet.create({
   info: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(20),
-    textTransform: 'uppercase',
     marginTop: scaleSize(24),
   },
   buttonsContainer: {

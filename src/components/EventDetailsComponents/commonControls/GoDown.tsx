@@ -73,7 +73,7 @@ const GoDown = forwardRef<TGoDownRef, Props>(
         style={{ height: scaleSize(50) }}>
         <View style={styles.container}>
           <Down width={scaleSize(50)} height={scaleSize(50)} />
-          <RohText style={styles.text}>{text.toUpperCase()}</RohText>
+          <RohText style={styles.text}>{text}</RohText>
         </View>
       </TouchableHighlightWrapper>
     );

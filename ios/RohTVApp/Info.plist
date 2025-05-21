@@ -51,20 +51,16 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>GothamSSm-Black.otf</string>
-		<string>GothamSSm-BlackItalic.otf</string>
-		<string>GothamSSm-Bold.otf</string>
-		<string>GothamSSm-BoldItalic.otf</string>
-		<string>GothamSSm-Book.otf</string>
-		<string>GothamSSm-BookItalic.otf</string>
-		<string>GothamSSm-Light.otf</string>
-		<string>GothamSSm-LightItalic.otf</string>
-		<string>GothamSSm-Medium.otf</string>
-		<string>GothamSSm-MediumItalic.otf</string>
-		<string>GothamSSm-XLightItalic.otf</string>
+		<string>GreyLL-Bold.otf</string>
+		<string>GreyLL-Book.otf</string>
+		<string>GreyLL-BookItalic.otf</string>
+		<string>GreyLL-Italic.otf</string>
+		<string>GreyLL-Medium.otf</string>
+		<string>GreyLL-MediumItalic.otf</string>
+		<string>GreyLL-Regular.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

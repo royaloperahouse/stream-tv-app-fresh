@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
   },
   menuButtonActiveWithFocus: {
     backgroundColor: Colors.defaultBlue,
-    paddingLeft: scaleSize(20),
+    paddingLeft: scaleSize(25),
   },
   menuButtonActiveWithoutFocus: {
     //backgroundColor: Colors.tVMidGrey,
-    paddingLeft: scaleSize(20),
+    paddingLeft: scaleSize(25),
   },
   menuButtonInActive: {
     paddingLeft: scaleSize(25),

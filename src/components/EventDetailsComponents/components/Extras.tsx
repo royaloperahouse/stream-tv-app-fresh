@@ -517,9 +517,9 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: scaleSize(105),
+    marginBottom: scaleSize(72),
     color: Colors.defaultTextColor,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
     letterSpacing: scaleSize(1),
     lineHeight: scaleSize(84),
   },
@@ -528,6 +528,8 @@ const styles = StyleSheet.create({
   },
   leftSideContainer: {
     width: scaleSize(645),
+    height: Dimensions.get('window').height,
+    justifyContent: 'center',
   },
   extrasGalleryItemContainer: {
     height: scaleSize(440),

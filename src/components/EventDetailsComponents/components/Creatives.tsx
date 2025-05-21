@@ -98,7 +98,6 @@ const Creatives: React.FC<
 const styles = StyleSheet.create({
   generalContainer: {
     height: Dimensions.get('window').height,
-    paddingRight: scaleSize(200),
   },
   wrapper: {
     flexDirection: 'row',
@@ -120,10 +119,10 @@ const styles = StyleSheet.create({
     height: scaleSize(10),
   },
   title: {
+    paddingTop: scaleSize(72),
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
   },
   creativesContainer: {
     width: scaleSize(945),

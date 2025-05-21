@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(30),
     color: Colors.defaultTextColor,
     letterSpacing: scaleSize(1),
-    textTransform: 'uppercase',
   },
   actionButtonContainer: {
     minWidth: scaleSize(358),

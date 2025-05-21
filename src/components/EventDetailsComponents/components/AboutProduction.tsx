@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     height: 2,
   },
   wrapper: {
+    paddingTop: scaleSize(100),
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -115,15 +116,18 @@ const styles = StyleSheet.create({
     height: scaleSize(10),
   },
   title: {
-    flex: 1,
+    paddingRight: scaleSize(100),
     color: Colors.defaultTextColor,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
     letterSpacing: scaleSize(1),
     lineHeight: scaleSize(84),
+    overflow: 'visible',
+    width: Dimensions.get('window').width / 2 - scaleSize(185),
   },
   aboutTheProductionContainer: {
     height: scaleSize(770),
+    flex: 1,
+    justifyContent: 'center',
     width: scaleSize(740),
   },
 });

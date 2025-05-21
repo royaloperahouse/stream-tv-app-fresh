@@ -425,7 +425,7 @@ const PreviousSearchListItemComponent: React.FC<
           style={styles.searchesResultItemWrapperContainer}
           styleFocused={styles.searchesResultItemWrapperActive}>
           <RohText style={[styles.searchesResultItemText, focused ? styles.textColorFocused : styles.textColorBlurred]} numberOfLines={1}>
-            {text.toUpperCase()}
+            {text}
           </RohText>
         </TouchableHighlightWrapper>
       </View>

@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
     color: Colors.midGrey,
-    textTransform: 'uppercase',
   },
   subHeader: {
     marginBottom: scaleSize(140),

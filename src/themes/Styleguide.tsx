@@ -26,10 +26,10 @@ export const Images = Object.freeze({
 });
 
 export const Fonts = Object.freeze({
-  default: 'GothamSSm-Medium',
-  bold: 'GothamSSm-Bold',
-  italic: 'GothamSSm-MediumItalic',
-  boldItalic: 'GothamSSm-BoldItalic',
+  default: 'GreyLL-Medium',
+  bold: 'GreyLL-Bold',
+  italic: 'GreyLL-MediumItalic',
+  boldItalic: 'GreyLL-BoldItalic',
 });
 
 export const Icons = Object.freeze({

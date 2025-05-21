@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
   generalContainer: {
     height: Dimensions.get('window').height,
     flex: 1,
-    paddingRight: scaleSize(200),
   },
   navigationToDownContainer: {
     width: '100%',
@@ -122,10 +121,10 @@ const styles = StyleSheet.create({
     height: scaleSize(10),
   },
   title: {
+    paddingTop: scaleSize(72),
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
   },
   synopsis: {
     color: Colors.defaultTextColor,

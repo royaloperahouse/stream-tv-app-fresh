@@ -241,11 +241,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: scaleSize(20),
+    fontSize: scaleSize(26),
     color: Colors.midGrey,
-    textTransform: 'uppercase',
     lineHeight: scaleSize(24),
     letterSpacing: scaleSize(2),
+    marginBottom: scaleSize(5),
   },
   content: {
     color: Colors.defaultTextColor,
@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
   },
   towColumnsList: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   columnContainer: {
     flex: 1,

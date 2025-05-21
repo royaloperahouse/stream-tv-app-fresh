@@ -100,12 +100,10 @@ const styles = StyleSheet.create({
   },
   header: {
     color: 'white',
-    textTransform: 'uppercase',
     fontSize: scaleSize(54),
   },
   blue: {
     color: Colors.defaultBlue,
-    textTransform: 'uppercase',
     fontSize: scaleSize(26),
   },
   regular: {
@@ -118,12 +116,10 @@ const styles = StyleSheet.create({
   },
   address: {
     color: 'white',
-    textTransform: 'uppercase',
     fontSize: scaleSize(38),
   },
   pin: {
     color: 'white',
-    textTransform: 'uppercase',
     fontSize: scaleSize(120),
   },
 });

@@ -45,11 +45,18 @@ const VideoPlayerSettingsItem = forwardRef<any, Props>((props, ref) => {
       canMoveUp={currentIndex !== 0}
       onPress={onPressHandler}>
       <View style={styles.wrapper}>
-        {/* TODO: two more icons here focused/unfocused */}
         {isActive ? (
-          <VideoQualitySelect width={scaleSize(40)} height={scaleSize(40)} />
+          <VideoQualitySelect
+            width={scaleSize(40)}
+            height={scaleSize(40)}
+            style={focused ? styles.textColorFocused : styles.textColorBlurred}
+          />
         ) : (
-          <VideoQualityNotSelect width={scaleSize(40)} height={scaleSize(40)} />
+          <VideoQualityNotSelect
+            width={scaleSize(40)}
+            height={scaleSize(40)}
+            style={focused ? styles.textColorFocused : styles.textColorBlurred}
+          />
         )}
         <RohText
           style={[

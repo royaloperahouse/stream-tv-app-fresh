@@ -930,7 +930,7 @@ const General: React.FC<
             contentMaxVisibleHeight={scaleSize(1000)}>
             <View style={styles.titleContainer}>
               <RohText style={styles.title} numberOfLines={isTVOS ? 4 : 3}>
-                {title?.toUpperCase() || ''}
+                {title || ''}
               </RohText>
             </View>
             <RohText style={styles.description} numberOfLines={vs_guidance ? 6 : 8}>{shortDescription}</RohText>
@@ -944,13 +944,13 @@ const General: React.FC<
             ) : null}
             {isAfter(availableFromReactNative, new Date()) ? (
               <RohText style={styles.description}>
-                {`AVAILABLE FROM ${formattedDate.toUpperCase()}`}
+                {`Available from ${formattedDate}`}
               </RohText>
             ) : null}
             {!availableFrom && !isComingSoon && !!duration ? (
               <RohText style={styles.description}>{duration}</RohText>
             ) : null}
-            {isComingSoon ? <RohText style={styles.description}>COMING SOON</RohText> : null}
+            {isComingSoon ? <RohText style={styles.description}>Coming Soon</RohText> : null}
           </OverflowingContainer>
           {showCountDownTimer ? (
             <CountDown
@@ -1028,18 +1028,15 @@ const styles = StyleSheet.create({
   pageTitle: {
     color: 'white',
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   title: {
     color: 'white',
     fontSize: scaleSize(48),
     marginBottom: scaleSize(24),
-    textTransform: 'uppercase',
   },
   ellipsis: {
     color: 'white',
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   description: {
     color: 'white',
@@ -1050,7 +1047,6 @@ const styles = StyleSheet.create({
   info: {
     color: 'white',
     fontSize: scaleSize(20),
-    textTransform: 'uppercase',
     marginTop: scaleSize(24),
   },
   buttonsContainer: {

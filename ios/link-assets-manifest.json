@@ -1,0 +1,33 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/GreyLL-Bold.otf",
+      "sha1": "3347419344a9811e639bdce4cbfdc3e2204b2e54"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-Book.otf",
+      "sha1": "062248d56f9b42cbcd1436279e09ac11fa779b52"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-BookItalic.otf",
+      "sha1": "72d88b08ed4ce60f2c428af44f4fba087d07a500"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-Italic.otf",
+      "sha1": "26890ddaf7e96c16ae283a92796a19eca7fa1b84"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-Medium.otf",
+      "sha1": "5cb0a8fe9a51127cdd24e2c9ef24cd619099f418"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-MediumItalic.otf",
+      "sha1": "ccb2e16743a8aa0984abe0e9d8baacb3a6e27e22"
+    },
+    {
+      "path": "src/assets/fonts/GreyLL-Regular.otf",
+      "sha1": "2c729d6db7b0be05c8e1f8ea7e2181380dbe89c6"
+    }
+  ]
+}

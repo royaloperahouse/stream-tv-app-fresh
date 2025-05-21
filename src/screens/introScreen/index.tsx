@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   welcome: {
     marginTop: scaleSize(126),
     color: 'white',
-    textTransform: 'uppercase',
     fontSize: scaleSize(38),
   },
   descriptionContainer: {
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
   },
   description: {
     color: 'white',
-    textTransform: 'uppercase',
     fontSize: scaleSize(72),
   },
   button: {

@@ -68,5 +68,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+    <array>
+    	<string>GreyLL-Bold.otf</string>
+    	<string>GreyLL-Book.otf</string>
+    	<string>GreyLL-BookItalic.otf</string>
+    	<string>GreyLL-Italic.otf</string>
+    	<string>GreyLL-Medium.otf</string>
+    	<string>GreyLL-MediumItalic.otf</string>
+    	<string>GreyLL-Regular.otf</string>
+    </array>
 </dict>
 </plist>

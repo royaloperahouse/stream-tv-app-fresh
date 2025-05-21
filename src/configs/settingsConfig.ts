@@ -19,7 +19,7 @@ import type {
   TShowTrayEventsProps,
   TLoginScreenProps,
 } from '@components/SettingsComponents';
-export const settingsTitle = 'SETTINGS';
+export const settingsTitle = 'Settings';
 
 export type TSettingsSection = {
   key: string;
@@ -45,27 +45,27 @@ export const getSettingsSectionsConfig: (isAuthenticated: boolean) => {
   } = {
     account: {
       key: 'account',
-      navMenuItemTitle: 'ACCOUNT',
+      navMenuItemTitle: 'Account',
       ContentComponent: Account,
     },
     [isAuthenticated ? 'signOut' : 'pinPage']: {
       key: isAuthenticated ? 'signOut' : 'pinPage',
-      navMenuItemTitle: isAuthenticated ? 'SIGN OUT' : 'TV APP SET-UP',
+      navMenuItemTitle: isAuthenticated ? 'Sign out' : 'TV app set-up',
       ContentComponent: isAuthenticated ? SignOut : LoginWithoutQRCode,
     },
     appVersion: {
       key: 'appVersion',
-      navMenuItemTitle: 'APP VERSION',
+      navMenuItemTitle: 'App version',
       ContentComponent: AppVersion,
     },
     subscription: {
       key: 'subscription',
-      navMenuItemTitle: 'SUBSCRIPTION',
+      navMenuItemTitle: 'Subscription',
       ContentComponent: Subscription,
     },
     videoPlayerSettings: {
       key: 'videoPlayerSettings',
-      navMenuItemTitle: 'VIDEO PLAYER SETTINGS',
+      navMenuItemTitle: 'Video Player Settings',
       ContentComponent: VideoPlayerSettings,
     },
   };
@@ -75,13 +75,13 @@ export const getSettingsSectionsConfig: (isAuthenticated: boolean) => {
   if (store.getState().auth.userEmail.includes('roh.org.uk')) {
     settingsSections.switchingBetweenEnv = {
       key: 'switchingBetweenEnv',
-      navMenuItemTitle: 'ENVIRONMENT SWITCHING',
+      navMenuItemTitle: 'Environment Switching',
       ContentComponent: SwitchingBetweenEnvironments,
     };
 
     settingsSections.showTrayEvents = {
       key: 'showTrayEvents',
-      navMenuItemTitle: 'SHOWING TRAYS',
+      navMenuItemTitle: 'Showing Trays',
       ContentComponent: ShowTrayEvents,
     };
   }

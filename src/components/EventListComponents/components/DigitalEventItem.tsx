@@ -263,7 +263,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: scaleSize(22),
     marginLeft: scaleSize(10),
-    textTransform: 'uppercase',
   },
   imageContainer: {
     alignItems: 'center',

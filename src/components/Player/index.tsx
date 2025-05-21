@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   PlayerView,
   SourceType,
-  SubtitleFormat,
   usePlayer,
 } from 'bitmovin-player-react-native';
 import {
@@ -354,7 +353,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         guidanceDetails={guidanceDetails}
         guidance={guidance}
         title={title}
-        showGuidance={!state.ready}
+        showGuidance={true}
       />
       {!isTVOS && (
         <View style={styles.controlOverlay} focusable={false}>
@@ -400,22 +399,26 @@ const Guidance = ({
     <Animated.View
       style={[styles.overlayContainer, { opacity: guidanceAnimation }]}>
       {guidance ? (
-        <View style={styles.guidanceContainer}>
-          <RohText
-            style={styles.guidanceTitle}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            guidance
-          </RohText>
-          <RohText
-            style={styles.guidanceSubTitle}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {guidance}
-          </RohText>
-          {guidanceDetails ? (
-            <RohText style={styles.guidanceSubTitle}>{guidanceDetails}</RohText>
-          ) : null}
+        <View style={styles.guidanceWrapper}>
+          <View style={styles.guidanceContainer}>
+            <RohText
+              style={styles.guidanceTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              GUIDANCE
+            </RohText>
+            <RohText
+              style={styles.guidanceSubTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {guidance}
+            </RohText>
+            {guidanceDetails ? (
+              <RohText style={styles.guidanceSubTitle}>
+                {guidanceDetails.trim()}
+              </RohText>
+            ) : null}
+          </View>
         </View>
       ) : null}
       <View style={styles.titleContainer}>
@@ -453,29 +456,32 @@ const styles = StyleSheet.create({
     bottom: scaleSize(64),
     right: scaleSize(200),
   },
-  guidanceContainer: {
+  guidanceWrapper: {
     position: 'absolute',
-    backgroundColor: 'black',
-    opacity: 0.7,
-    top: scaleSize(130),
-    left: 90,
+    top: scaleSize(50),
+    width: '100%',
+    alignItems: 'center',
+  },
+  guidanceContainer: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   guidanceTitle: {
     fontSize: scaleSize(26),
-    textTransform: 'uppercase',
+    lineHeight: scaleSize(30),
     color: Colors.defaultTextColor,
+    marginBottom: scaleSize(15),
   },
   guidanceSubTitle: {
     fontSize: scaleSize(26),
+    lineHeight: scaleSize(34),
     color: Colors.defaultTextColor,
   },
   titleContainer: {
     width: '100%',
-    paddingLeft: 100,
+    alignItems: 'center',
   },
   title: {
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
     color: Colors.defaultTextColor,
   },
   defaultPlayerStyle: {

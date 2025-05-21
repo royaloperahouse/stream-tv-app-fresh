@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
     color: Colors.defaultTextColor,
     fontSize: scaleSize(48),
     marginBottom: scaleSize(24),
-    textTransform: 'uppercase',
   },
   contentContainer: {
     flex: 1,

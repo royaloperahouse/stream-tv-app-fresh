@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
-    textTransform: 'uppercase',
   },
   titleContainer: {
     flex: 1,
@@ -161,7 +160,6 @@ const styles = StyleSheet.create({
   info: {
     color: 'white',
     fontSize: scaleSize(20),
-    textTransform: 'uppercase',
     marginTop: scaleSize(24),
   },
   descriptionContainer: {

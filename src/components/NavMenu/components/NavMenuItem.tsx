@@ -135,7 +135,7 @@ const NavMenuItem: React.FC<TNavMenuItemProps> = ({
         </Animated.View>
         <Animated.View style={[styles.titleContainer, textStyle]}>
           <RohText style={[styles.titleText, dynemicStyles.titleText]}>
-            {navMenuTitle.toUpperCase()}
+            {navMenuTitle}
           </RohText>
         </Animated.View>
       </View>

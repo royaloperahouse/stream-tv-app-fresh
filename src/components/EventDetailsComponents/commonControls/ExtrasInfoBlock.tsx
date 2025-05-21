@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(48),
-    textTransform: 'uppercase',
     letterSpacing: scaleSize(1),
     lineHeight: scaleSize(56),
   },
@@ -98,7 +97,6 @@ const styles = StyleSheet.create({
     marginTop: scaleSize(24),
     color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
     lineHeight: scaleSize(28),
     letterSpacing: scaleSize(2),
   },

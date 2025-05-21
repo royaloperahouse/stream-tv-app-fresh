@@ -521,7 +521,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               nextFocusRight={
                 findNodeHandle(exitOfAppButtonRef.current) || undefined
               }>
-              <RohText style={styles.exitOfAppText}>Exit ROH Stream</RohText>
+              <RohText style={styles.exitOfAppText}>Exit RBO Stream</RohText>
             </ExitButton>
           </Animated.View>
         </Animated.View>
@@ -547,7 +547,6 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(28),
     letterSpacing: scaleSize(1),
     color: Colors.defaultTextColor,
-    textTransform: 'uppercase',
   },
   exitButtonRedirection: {
     flexDirection: 'row',

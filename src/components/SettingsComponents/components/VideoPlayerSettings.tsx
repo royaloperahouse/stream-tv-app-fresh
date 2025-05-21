@@ -88,7 +88,7 @@ const VideoPlayerSettings: React.FC<TVideoPlayerSettingsProps> = ({
               renderItem={({ item, index }) => (
                 <VideoPlayerSettingsItem
                   ref={index === 0 ? buttonRef : undefined}
-                  text={item.title.toUpperCase()}
+                  text={item.title}
                   currentIndex={index}
                   itemsLength={Object.values(playerBitratesFilter).length}
                   isActive={selectedId === item.key}
@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(30),
     color: Colors.defaultTextColor,
     letterSpacing: scaleSize(1),
-    textTransform: 'uppercase',
   },
   actionButtonContainer: {
     minWidth: scaleSize(358),

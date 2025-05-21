@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   threeDotsText: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(40),
-    textTransform: 'uppercase',
     //lineHeight: scaleSize(8),
     letterSpacing: scaleSize(2),
   },

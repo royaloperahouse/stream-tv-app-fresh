@@ -162,7 +162,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
           {/* <RohText style={styles.ellipsis}>{event.captionText}</RohText> */}
           {extraVideoType ? (
             <RohText style={styles.description}>
-              {extraVideoType.toUpperCase()}
+              {extraVideoType}
             </RohText>
           ) : null}
           <RohText style={styles.description}>{shortDescription}</RohText>
@@ -173,7 +173,7 @@ const Preview = forwardRef<TPreviewRef, TPreviewProps>((props, ref) => {
                 setCloseCountDown(true);
               }}
             /> : isAfter(availableFromReactNative, new Date()) || isComingSoon ? (
-            <RohText style={styles.availableFrom}>{`${isComingSoon ? 'COMING SOON' : 'AVAILABLE FROM ' + formattedDate.toUpperCase()}`}</RohText>
+            <RohText style={styles.availableFrom}>{`${isComingSoon ? 'Coming soon' : 'Available from ' + formattedDate}`}</RohText>
           ) : (
             <RohText style={styles.description}>{duration}</RohText>
           )}
@@ -208,19 +208,16 @@ const styles = StyleSheet.create({
   pageTitle: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   title: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(48),
     marginTop: scaleSize(24),
     marginBottom: scaleSize(24),
-    textTransform: 'uppercase',
   },
   ellipsis: {
     color: Colors.defaultTextColor,
     fontSize: scaleSize(22),
-    textTransform: 'uppercase',
   },
   description: {
     color: Colors.defaultTextColor,

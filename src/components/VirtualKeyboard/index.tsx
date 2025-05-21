@@ -102,7 +102,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
         <View style={styles.supportButtonsContainer}>
           <Button
             ref={spaceButtonRef}
-            text="space"
+            text="Space"
             onPress={addSpaceToSearch}
             style={{
               height: cellHeight,
@@ -112,7 +112,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
             textStyle={[dStyle.text, dStyle.textButton]}
           />
           <Button
-            text="delete"
+            text="Delete"
             onPress={removeLetterFromSearch}
             style={{
               height: cellHeight,
@@ -122,7 +122,7 @@ const VirtualKeyboard = forwardRef<any, TVirtualKeyboardProps>(
             textStyle={[dStyle.text, dStyle.textButton]}
           />
           <Button
-            text="clear"
+            text="Clear"
             ref={lastButtonInFirstRowRef}
             onPress={clearLettersFromSearch}
             style={{

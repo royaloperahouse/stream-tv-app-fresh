@@ -117,8 +117,15 @@ const ExpandableButton = forwardRef<any, Props>(
           }}
           onPress={pressingHandler}>
           <View style={styles.wrapper}>
-            {/* TODO two icons should be here focused/blurred */}
-            {Icon && <Icon width={scaleSize(40)} height={scaleSize(40)} />}
+            {Icon && (
+              <Icon
+                width={scaleSize(40)}
+                height={scaleSize(40)}
+                style={
+                  focused ? styles.textColorFocused : styles.textColorBlurred
+                }
+              />
+            )}
             {
               <RohText
                 style={[

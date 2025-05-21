@@ -64,7 +64,7 @@ const Button = forwardRef<any, TButtonProps>(
                 textStyle,
                 focused ? styles.textColorFocused : styles.textColorBlurred,
               ]}>
-              {text.toUpperCase()}
+              {text}
             </RohText>
           )}
           {Icon && <Icon width={iconWidth} height={iconHeight} />}

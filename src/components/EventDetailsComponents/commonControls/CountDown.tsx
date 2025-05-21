@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(20),
     letterSpacing: scaleSize(2),
     color: Colors.defaultTextColor,
-    textTransform: 'uppercase',
   },
   countDownContainer: {
     paddingRight: scaleSize(45),
