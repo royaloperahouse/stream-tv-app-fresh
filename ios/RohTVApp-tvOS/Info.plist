@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.3.1</string>
+	<string>3.3.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>160</string>
+	<string>161</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -68,15 +68,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-    <array>
-    	<string>GreyLL-Bold.otf</string>
-    	<string>GreyLL-Book.otf</string>
-    	<string>GreyLL-BookItalic.otf</string>
-    	<string>GreyLL-Italic.otf</string>
-    	<string>GreyLL-Medium.otf</string>
-    	<string>GreyLL-MediumItalic.otf</string>
-    	<string>GreyLL-Regular.otf</string>
-    </array>
 </dict>
 </plist>
