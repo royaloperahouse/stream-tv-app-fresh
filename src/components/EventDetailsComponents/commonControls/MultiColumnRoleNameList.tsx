@@ -117,13 +117,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   role: {
-    fontSize: scaleSize(20),
-    color: Colors.midGrey,
+    fontSize: scaleSize(30),
+    color: Colors.lightGrey,
     textTransform: 'uppercase',
+    marginBottom: scaleSize(8),
   },
   name: {
     color: Colors.defaultTextColor,
-    fontSize: scaleSize(20),
+    fontSize: scaleSize(30),
   },
   elementContainer: {
     paddingBottom: scaleSize(32),
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   },
   towColumnsList: {
     flexDirection: 'row',
-    marginTop: scaleSize(200),
+    marginTop: scaleSize(100),
   },
   columnContainer: {
     flex: 1,

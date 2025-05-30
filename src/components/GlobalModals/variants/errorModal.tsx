@@ -49,11 +49,14 @@ export default ErrorModal;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    paddingLeft: scaleSize(200),
     justifyContent: 'center',
+    alignItems: 'center',
   },
   contentContainer: {
     width: scaleSize(1187),
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     marginBottom: scaleSize(40),
@@ -62,7 +65,9 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(54),
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
-    color: Colors.midGrey,
+    color: Colors.defaultTextColor,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   subHeader: {
     marginBottom: scaleSize(40),
@@ -71,6 +76,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(28),
     lineHeight: scaleSize(40),
     color: Colors.defaultTextColor,
+    textAlign: 'center',
   },
   primaryActionButton: {
     width: scaleSize(358),

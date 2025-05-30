@@ -98,7 +98,7 @@ const MultiColumnAboutProductionList: React.FC<
                   {item.content.info.title}
                 </RohText>
                 <RohText style={styles.content}>
-                  {item.content.info.description}
+                  {item.content.info.description.trim()}
                 </RohText>
               </View>
             )}
@@ -111,7 +111,7 @@ const MultiColumnAboutProductionList: React.FC<
             <RohText style={styles.title}>
               {ECellItemKey[item.type].toUpperCase()}
             </RohText>
-            <RohText style={styles.content}>{item.content}</RohText>
+            <RohText style={styles.content}>{item.content.trim()}</RohText>
           </View>
         );
     }
@@ -242,14 +242,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: scaleSize(26),
-    color: Colors.midGrey,
+    color: Colors.lightGrey,
     lineHeight: scaleSize(24),
     letterSpacing: scaleSize(2),
-    marginBottom: scaleSize(5),
+    marginBottom: scaleSize(8),
+    textTransform: 'uppercase',
   },
   content: {
     color: Colors.defaultTextColor,
-    fontSize: scaleSize(24),
+    fontSize: scaleSize(26),
     lineHeight: scaleSize(32),
   },
   elementContainer: {

@@ -67,7 +67,7 @@ const MultiColumnSynopsisList: React.FC<
               <OverflowingContainer
                 fixedHeight
                 key={index}
-                contentMaxVisibleHeight={columnHeight}
+                contentMaxVisibleHeight={'columnHeight'}
                 contentMaxVisibleWidth={columnWidth}>
                 {column.items.map(synops => (
                   <View style={styles.elementContainer} key={synops.key}>
@@ -80,7 +80,6 @@ const MultiColumnSynopsisList: React.FC<
                 key={index}
                 style={[
                   {
-                    height: columnHeight,
                     width: columnWidth,
                   },
                 ]}>
@@ -97,7 +96,7 @@ const MultiColumnSynopsisList: React.FC<
     );
   }
   return (
-    <View style={[{ height: columnHeight, width: columnWidth }]}>
+    <View style={[{ height: '100%', width: columnWidth }]}>
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
   },
   elementContainer: {
     paddingBottom: scaleSize(32),
-    paddingTop: '10%',
+    paddingTop: scaleSize(14),
     width: scaleSize(740),
   },
   elementContainerAbsolute: {

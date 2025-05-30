@@ -522,6 +522,7 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(72),
     letterSpacing: scaleSize(1),
     lineHeight: scaleSize(84),
+    fontWeight: 'bold',
   },
   extrasGalleryContainer: {
     flex: 1,
@@ -550,7 +551,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: scaleSize(160),
+    bottom: scaleSize(375),
     left: 0,
   },
 });

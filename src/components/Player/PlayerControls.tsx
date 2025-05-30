@@ -75,7 +75,9 @@ export const PlayerControls: React.FC<Props> = ({
   useTVEventHandler(event => {
     if (event && (event.eventType === 'down' || event.eventType === 'up')) {
       showControlsAnimation();
-      hideControlsAnimation();
+      if (playing) {
+        hideControlsAnimation();
+      }
     }
   });
   const showControlsAnimation = useCallback(() => {
@@ -126,7 +128,9 @@ export const PlayerControls: React.FC<Props> = ({
   const onPressHandler = handler => {
     showControlsAnimation();
     handler();
-    hideControlsAnimation();
+    if (playing) {
+      hideControlsAnimation();
+    }
   };
 
   return (
@@ -599,9 +603,11 @@ const styles = StyleSheet.create({
   },
   subtitleCue: {
     padding: 5,
-    backgroundColor: '#000000',
+    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   subtitleCueText: {
+    fontSize: scaleSize(32),
+    lineHeight: scaleSize(40),
     color: '#FFFFFF',
   },
   touchable: {

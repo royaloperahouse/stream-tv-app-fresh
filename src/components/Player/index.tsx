@@ -112,6 +112,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     selectedSubtitles: '',
     isLiveStream,
   });
+  const [showGuidance, setShowGuidance] = useState(true);
   const player = usePlayer({
     styleConfig: {
       isUiEnabled: isTVOS,
@@ -241,6 +242,18 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     await player.seek(time);
   }
 
+  function onPlay() {
+    if (showGuidance) {
+      setShowGuidance(false);
+    }
+  }
+
+  function onPause() {
+    if (!showGuidance) {
+      setShowGuidance(true);
+    }
+  }
+
   async function onReady() {
     const isLiveStreamFromPlayer = await player.isLive();
     let duration = await player.getDuration();
@@ -343,6 +356,8 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       trapFocusDown={true}>
       <PlayerView
         style={styles.video}
+        onPlay={onPlay}
+        onPaused={onPause}
         player={player}
         onReady={onReady}
         onTimeChanged={onTimeChanged}
@@ -353,7 +368,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         guidanceDetails={guidanceDetails}
         guidance={guidance}
         title={title}
-        showGuidance={true}
+        showGuidance={showGuidance}
       />
       {!isTVOS && (
         <View style={styles.controlOverlay} focusable={false}>
@@ -387,11 +402,20 @@ const Guidance = ({
   showGuidance,
   showTitle = true,
 }) => {
+  const prevValue = useRef();
   const guidanceAnimation = useRef(new Animated.Value(1)).current;
-  if (!showGuidance) {
+  if (!showGuidance && prevValue.current !== showGuidance) {
+    prevValue.current = showGuidance;
     Animated.timing(guidanceAnimation, {
       toValue: 0,
       duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  } else if (prevValue.current !== showGuidance) {
+    prevValue.current = showGuidance;
+    Animated.timing(guidanceAnimation, {
+      toValue: 1,
+      duration: 500,
       useNativeDriver: false,
     }).start();
   }

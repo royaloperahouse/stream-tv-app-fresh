@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
+    fontWeight: 'bold',
   },
   synopsis: {
     color: Colors.defaultTextColor,
@@ -132,6 +133,8 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(38),
   },
   synopsisContainer: {
+    width: '55%',
+    justifyContent: 'center',
     //width: scaleSize(740),
   },
   titleContainer: {

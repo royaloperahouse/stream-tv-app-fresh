@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   ceil: {
     width: scaleSize(40),
-    height: scaleSize(3),
+    height: scaleSize(6),
     backgroundColor: Colors.defaultTextColor,
     marginHorizontal: scaleSize(10),
   },

@@ -36,7 +36,7 @@ const СontinueWatchingModal: React.FC<TGlobalModalContentProps> = ({
     <View style={styles.root}>
       <View style={styles.contentContainer}>
         <View style={styles.header}>
-          <RohText style={styles.headerText}>Continue watching?</RohText>
+          <RohText style={styles.headerText}>Continue watching</RohText>
         </View>
         <View style={styles.subHeader}>
           <RohText style={styles.subHeaderText}>{videoTitle}</RohText>
@@ -109,7 +109,8 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(54),
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
-    color: Colors.midGrey,
+    color: Colors.defaultTextColor,
+    fontWeight: 'bold',
   },
   subHeader: {
     marginBottom: scaleSize(40),
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
   subHeaderText: {
     fontSize: scaleSize(28),
     lineHeight: scaleSize(30),
+    fontWeight: 'bold',
     color: Colors.defaultTextColor,
   },
   primaryActionButton: {

@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     lineHeight: scaleSize(84),
     overflow: 'visible',
     width: Dimensions.get('window').width / 2 - scaleSize(185),
+    fontWeight: 'bold',
   },
   aboutTheProductionContainer: {
     height: scaleSize(770),

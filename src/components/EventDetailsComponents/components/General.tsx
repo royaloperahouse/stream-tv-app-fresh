@@ -1012,7 +1012,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 1,
-    marginTop: scaleSize(isTVOS ? 80 : 190),
+    marginTop: scaleSize(isTVOS ? 0 : 180),
     marginRight: scaleSize(130),
     width: scaleSize(615),
   },
@@ -1033,6 +1033,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: scaleSize(48),
     marginBottom: scaleSize(24),
+    fontWeight: 500,
   },
   ellipsis: {
     color: 'white',
@@ -1040,13 +1041,13 @@ const styles = StyleSheet.create({
   },
   description: {
     color: 'white',
-    fontSize: scaleSize(22),
+    fontSize: scaleSize(26),
     marginTop: scaleSize(12),
     overflow: 'hidden',
   },
   info: {
     color: 'white',
-    fontSize: scaleSize(20),
+    fontSize: scaleSize(26),
     marginTop: scaleSize(24),
   },
   buttonsContainer: {

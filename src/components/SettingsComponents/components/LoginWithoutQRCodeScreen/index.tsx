@@ -31,18 +31,25 @@ const LoginWithoutQRCode: React.FC<TLoginScreenProps> = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <RohText style={styles.header}>to set-up your Royal Opera House Stream TV app</RohText>
+        <RohText style={styles.header}>
+          To set-up your Royal Ballet and Opera Stream TV app
+        </RohText>
         <View style={styles.websiteContainer}>
-          <RohText style={styles.regular}>1. Go to www.rbo.org.uk/pin on a computer, tablet or mobile</RohText>
+          <RohText style={styles.regular}>
+            1. Go to www.rbo.org.uk/pin on a computer, tablet or mobile
+          </RohText>
           <RohText style={styles.regular}>2. Enter the code below:</RohText>
         </View>
         <RohText style={styles.pin}>{devicePin || 'Pin not found'}</RohText>
         {/* TODO find a way to remove blink of Pin not found after log out */}
         <View style={styles.websiteContainer}>
           <RohText style={styles.regular}>3. Click 'Activate TV'</RohText>
-          <View style={{flex: 1, flexDirection: 'row', maxWidth: '90%'}}>
+          <View style={{ flex: 1, flexDirection: 'row', maxWidth: '90%' }}>
             <RohText style={styles.regular}>4. </RohText>
-            <RohText style={styles.regular}>Your TV app should now show our library of ballets and operas for you to enjoy</RohText>
+            <RohText style={styles.regular}>
+              Your TV app should now show our library of ballets and operas for
+              you to enjoy
+            </RohText>
           </View>
           <RohText style={styles.regular}>{deviceAuthenticatedError}</RohText>
         </View>
@@ -69,10 +76,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   header: {
-    color: Colors.midGrey,
-    fontSize: scaleSize(52),
+    color: Colors.defaultTextColor,
+    fontSize: scaleSize(42),
     textAlign: 'left',
-    marginBottom: scaleSize(30),
+    marginBottom: scaleSize(50),
+    fontWeight: 'normal',
   },
   blue: {
     color: Colors.defaultBlue,
@@ -98,6 +106,9 @@ const styles = StyleSheet.create({
     paddingRight: scaleSize(100),
     marginBottom: scaleSize(40),
     marginLeft: scaleSize(30),
+    textTransform: 'uppercase',
+    letterSpacing: scaleSize(7),
+    fontWeight: 'bold',
   },
 });
 

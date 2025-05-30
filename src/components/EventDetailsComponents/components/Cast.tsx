@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
+    fontWeight: 'bold',
   },
   titleContainer: {
     flex: 1,

@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     width: '100%',
     color: Colors.title,
     fontSize: scaleSize(72),
+    fontWeight: 'bold',
   },
   creativesContainer: {
     width: scaleSize(945),

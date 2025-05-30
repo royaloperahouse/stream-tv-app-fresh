@@ -8,6 +8,7 @@ export const Colors = Object.freeze({
   focusedTextColor: '#1A1A1A',
   displayBackgroundColor: '#424243',
   midGrey: '#919191',
+  lightGrey: '#929292',
   tVMidGrey: '#6887B6',
   tvMidGreyWith50Alpha: '#364b6b',
   title: '#FFFFFF',
@@ -26,7 +27,7 @@ export const Images = Object.freeze({
 });
 
 export const Fonts = Object.freeze({
-  default: 'GreyLL-Medium',
+  default: 'GreyLL-Regular',
   bold: 'GreyLL-Bold',
   italic: 'GreyLL-MediumItalic',
   boldItalic: 'GreyLL-BoldItalic',

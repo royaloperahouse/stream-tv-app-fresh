@@ -11,7 +11,7 @@ export class NotRentedItemError extends Error {
   constructor(message?: string) {
     super(
       message ||
-        'Please go to the Royal Opera House website to find out how to access this item',
+        'Please go to the Royal Ballet and Opera website to find out how to access this item',
     );
   }
 }
