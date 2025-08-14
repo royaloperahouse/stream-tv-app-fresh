@@ -94,6 +94,7 @@ export const PlayerControls: React.FC<Props> = ({
 
   const hideControlsAnimation = useRef(
     debounce(() => {
+      console.log('aboba');
       Animated.timing(activeAnimation, {
         toValue: 0,
         useNativeDriver: true,
@@ -107,6 +108,9 @@ export const PlayerControls: React.FC<Props> = ({
   ).current;
 
   useEffect(() => {
+    if (!playing) {
+      hideControlsAnimation.cancel();
+    }
     if (playing) {
       hideControlsAnimation();
       return;
@@ -168,7 +172,7 @@ export const PlayerControls: React.FC<Props> = ({
           nextFocusDown={playPauseRef?.current?.getNode?.()}
           style={styles.exitButtonTouchable}
           underlayColor={Colors.defaultBlue}
-          onPress={isControlsVisible ? actionClose : () => {}}>
+          onPress={isControlsVisible ? actionClose : handleControlsFocus}>
           <View style={styles.buttonWrapper}>
             <Image
               source={PlayerIcons.close}
@@ -215,7 +219,7 @@ export const PlayerControls: React.FC<Props> = ({
               onPress={
                 isControlsVisible
                   ? () => onPressHandler(skipBackwards)
-                  : () => {}
+                  : handleControlsFocus
               }>
               <Image
                 source={PlayerIcons.seekBackward}
@@ -240,9 +244,7 @@ export const PlayerControls: React.FC<Props> = ({
             canMoveDown={false}
             style={styles.touchable}
             underlayColor={Colors.defaultTextColor}
-            onPress={
-              isControlsVisible ? (playing ? onPause : onPlay) : () => {}
-            }>
+            onPress={playing ? onPause : onPlay}>
             {playing ? (
               <Image
                 source={PlayerIcons.pause}
@@ -274,7 +276,7 @@ export const PlayerControls: React.FC<Props> = ({
               onPress={
                 isControlsVisible
                   ? () => onPressHandler(skipForwards)
-                  : () => {}
+                  : handleControlsFocus
               }>
               <Image
                 source={PlayerIcons.seekForward}
@@ -296,7 +298,9 @@ export const PlayerControls: React.FC<Props> = ({
             canMoveDown={false}
             style={styles.subtitleListTouchable}
             underlayColor={Colors.defaultTextColor}
-            onPress={isControlsVisible ? showSubtitlesList : () => {}}>
+            onPress={
+              isControlsVisible ? showSubtitlesList : handleControlsFocus
+            }>
             <Image
               source={PlayerIcons.subtitles}
               style={[
@@ -603,7 +607,7 @@ const styles = StyleSheet.create({
   },
   subtitleCue: {
     padding: 5,
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   subtitleCueText: {
     fontSize: scaleSize(32),

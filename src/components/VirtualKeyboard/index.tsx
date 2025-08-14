@@ -205,7 +205,7 @@ export const DisplayForVirtualKeyboard = forwardRef<
   return (
     <View style={[dStyle.container, containerStyle]}>
       <RohText style={[dStyle.text, textStyle, dStyle.textDefault]}>
-        {searchText.toUpperCase()}
+        {searchText}
       </RohText>
     </View>
   );

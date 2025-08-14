@@ -69,7 +69,7 @@ const SignOut: React.FC<TSignOutProps> = ({ listItemGetRef }) => {
         <View style={styles.descriptionContainer}>
           <RohText style={styles.descriptionText}>
             Choosing to sign out of this device will stop this device being
-            paired with your ROH account. To access content on this device
+            paired with your RBO account. To access content on this device
             again, you will need to pair.
           </RohText>
         </View>

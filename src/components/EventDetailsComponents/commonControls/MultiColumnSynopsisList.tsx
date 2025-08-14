@@ -120,7 +120,7 @@ const MultiColumnSynopsisList: React.FC<
                 scrollingArrowPaginationRef.current.setCurrentIndex(index);
               }
             }}>
-            <View>
+            <View style={{ flex: 1, justifyContent: 'center'}}>
               {item.needToWrap ? (
                 <OverflowingContainer
                   fixedHeight
@@ -137,7 +137,7 @@ const MultiColumnSynopsisList: React.FC<
                 <View
                   style={[
                     {
-                      height: columnHeight,
+                      flex: 0,
                       width: columnWidth,
                     },
                   ]}>
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+    marginBottom: scaleSize(-100),
   },
   columnContainer: {
     flex: 1,

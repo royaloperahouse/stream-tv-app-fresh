@@ -50,9 +50,7 @@ const ExtrasInfoBlock = forwardRef<TExtrasInfoBlockRef, Props>((props, ref) => {
   }, []);
   return (
     <View style={styles.root}>
-      <OverflowingContainer
-        contentMaxVisibleHeight={scaleSize(490)}
-        fixedHeight>
+      <OverflowingContainer contentMaxVisibleHeight={scaleSize(490)}>
         {Boolean(info.title) && (
           <RohText style={styles.title}>{info.title}</RohText>
         )}
@@ -79,7 +77,7 @@ const ExtrasInfoBlock = forwardRef<TExtrasInfoBlockRef, Props>((props, ref) => {
 
 const styles = StyleSheet.create({
   root: {
-    marginTop: scaleSize(146),
+    marginTop: scaleSize(380),
     marginRight: scaleSize(15),
   },
   title: {

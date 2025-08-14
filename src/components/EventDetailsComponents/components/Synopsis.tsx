@@ -78,7 +78,7 @@ const Synopsis: React.FC<
               id={prevScreenName}
               data={synopsis}
               columnWidth={scaleSize(740)}
-              columnHeight={Dimensions.get('window').height - 100}
+              columnHeight={Dimensions.get('window').height}
               onReady={onContentReady}
             />
           </View>

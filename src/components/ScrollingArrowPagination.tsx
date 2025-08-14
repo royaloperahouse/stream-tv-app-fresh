@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     right: -1 * scaleSize(130),
   },
   arrowsText: {
-    color: Colors.tVMidGrey,
+    color: Colors.defaultTextColor,
     fontSize: scaleSize(68),
   },
 });

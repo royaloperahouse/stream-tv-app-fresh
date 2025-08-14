@@ -18,6 +18,7 @@ import RohText from '@components/RohText';
 import FastImage from 'react-native-fast-image';
 import Watch from '@assets/svg/eventDetails/Watch.svg';
 import AddToMyList from '@assets/svg/eventDetails/AddToMyList.svg';
+import RemoveFromMyList from '@assets/svg/eventDetails/RemoveFromMyList.svg';
 import Trailer from '@assets/svg/eventDetails/Trailer.svg';
 import ActionButtonList, {
   TActionButtonListRef,
@@ -820,8 +821,11 @@ const General: React.FC<
       key: 'AddToMyList',
       text: (existInMyList ? 'Remove from' : 'Add to') + ' my list',
       onPress: addOrRemoveItemIdFromMyListHandler,
-      Icon: AddToMyList,
-      hasTVPreferredFocus: !performanceInfo || showCountDownTimer || isAfter(availableFromReactNative, new Date()),
+      Icon: existInMyList ? RemoveFromMyList : AddToMyList,
+      hasTVPreferredFocus:
+        !performanceInfo ||
+        showCountDownTimer ||
+        isAfter(availableFromReactNative, new Date()),
       showLoader: true,
     },
     {

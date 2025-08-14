@@ -410,6 +410,15 @@ const Extras: React.FC<
           <View style={styles.leftSideContainer}>
             <RohText style={styles.title}>Extras</RohText>
             <ExtrasInfoBlock ref={extrasInfoBlockRef} />
+            {videosInfo.length > 1 && (
+              <View style={styles.paginationContainer}>
+                <ScrollingPagination
+                  ref={scrollingPaginationRef}
+                  countOfItems={videosInfo.length}
+                  alignHorizontal="flex-start"
+                />
+              </View>
+            )}
           </View>
           <View style={styles.extrasGalleryContainer}>
             <ScrollView
@@ -477,15 +486,6 @@ const Extras: React.FC<
           <GoDown text={nextSectionTitle || ''} onFocus={goDownCB} />
         ) : null}
       </View>
-      {videosInfo.length > 1 && (
-        <View style={styles.paginationContainer}>
-          <ScrollingPagination
-            ref={scrollingPaginationRef}
-            countOfItems={videosInfo.length}
-            alignHorizontal="flex-start"
-          />
-        </View>
-      )}
     </View>
   );
 };
@@ -516,7 +516,8 @@ const styles = StyleSheet.create({
     height: scaleSize(10),
   },
   title: {
-    marginTop: scaleSize(105),
+    position: 'absolute',
+    top: scaleSize(205),
     marginBottom: scaleSize(72),
     color: Colors.defaultTextColor,
     fontSize: scaleSize(72),
@@ -531,6 +532,7 @@ const styles = StyleSheet.create({
     width: scaleSize(645),
     height: Dimensions.get('window').height,
     justifyContent: 'center',
+    paddingBottom: scaleSize(300),
   },
   extrasGalleryItemContainer: {
     height: scaleSize(440),
@@ -548,11 +550,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: scaleSize(375),
-    left: 0,
+    marginTop: scaleSize(50),
   },
 });
 
