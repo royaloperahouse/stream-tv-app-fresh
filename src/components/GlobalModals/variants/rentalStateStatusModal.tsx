@@ -1,15 +1,14 @@
 import React, { useLayoutEffect } from 'react';
-import { View, StyleSheet, BackHandler } from 'react-native';
+import { View, StyleSheet, BackHandler, Dimensions } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
 import { Colors } from '@themes/Styleguide';
 import { TGlobalModalContentProps } from '@services/types/globalModal';
-import LoadingSpinner from '@components/LoadingSpinner';
 
 const RentalStateStatusModal: React.FC<TGlobalModalContentProps> = ({
   title = '',
 }) => {
-  const headerText = `Checking subscription status of ${title}`;
+  const headerText = `Checking subscription stream status of \n${title}`;
   useLayoutEffect(() => {
     const handleBackButtonClick = () => {
       return true;
@@ -24,13 +23,8 @@ const RentalStateStatusModal: React.FC<TGlobalModalContentProps> = ({
   }, []);
   return (
     <View style={styles.root}>
-      <View style={styles.contentContainer}>
-        <View style={styles.header}>
-          <RohText style={styles.headerText}>{headerText}</RohText>
-        </View>
-        <View style={styles.subHeader}>
-          <LoadingSpinner showSpinner size={158} />
-        </View>
+      <View style={styles.header}>
+        <RohText style={styles.headerText}>{headerText}</RohText>
       </View>
     </View>
   );
@@ -40,11 +34,9 @@ export default RentalStateStatusModal;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    paddingLeft: scaleSize(200),
+    alignItems: 'center',
     justifyContent: 'center',
-  },
-  contentContainer: {
-    width: scaleSize(1187),
+    width: Dimensions.get('window').width,
   },
   header: {
     marginBottom: scaleSize(40),
@@ -54,30 +46,8 @@ const styles = StyleSheet.create({
     fontSize: scaleSize(54),
     lineHeight: scaleSize(67),
     letterSpacing: scaleSize(1),
-    color: Colors.midGrey,
-  },
-  subHeader: {
-    marginBottom: scaleSize(140),
-    alignItems: 'center',
-  },
-  subHeaderText: {
-    fontSize: scaleSize(28),
-    lineHeight: scaleSize(30),
+    fontWeight: 'bold',
     color: Colors.defaultTextColor,
-  },
-  primaryActionButton: {
-    width: scaleSize(358),
-    height: scaleSize(80),
-    backgroundColor: Colors.defaultTextColor,
-  },
-  primaryActionButtonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  primaryActionButtonText: {
-    fontSize: scaleSize(24),
-    lineHeight: scaleSize(30),
-    color: Colors.focusedTextColor,
+    textAlign: 'center',
   },
 });
