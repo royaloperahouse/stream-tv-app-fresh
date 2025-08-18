@@ -94,7 +94,6 @@ export const PlayerControls: React.FC<Props> = ({
 
   const hideControlsAnimation = useRef(
     debounce(() => {
-      console.log('aboba');
       Animated.timing(activeAnimation, {
         toValue: 0,
         useNativeDriver: true,
