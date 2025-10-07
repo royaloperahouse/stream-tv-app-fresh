@@ -69,3 +69,5 @@ buck-out/
 
 # testing
 /coverage
+
+expo-env.d.ts

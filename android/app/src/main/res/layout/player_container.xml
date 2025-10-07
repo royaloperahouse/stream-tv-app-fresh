@@ -12,7 +12,6 @@
             android:layout_weight="1">
         <com.bitmovin.player.PlayerView
                 android:id="@+id/bitmovinPlayerView"
-                app:shutter_background_color="@android:color/transparent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/bootsplash_background">
