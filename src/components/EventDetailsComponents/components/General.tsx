@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { scaleSize } from '@utils/scaleSize';
 import RohText from '@components/RohText';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import Watch from '@assets/svg/eventDetails/Watch.svg';
 import AddToMyList from '@assets/svg/eventDetails/AddToMyList.svg';
 import RemoveFromMyList from '@assets/svg/eventDetails/RemoveFromMyList.svg';

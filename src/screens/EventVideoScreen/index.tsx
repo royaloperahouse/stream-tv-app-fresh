@@ -26,7 +26,7 @@ import ActionButtonList, {
   TActionButtonListRef,
 } from 'components/EventDetailsComponents/commonControls/ActionButtonList';
 import RohImage from 'components/RohImage';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import { Colors } from 'themes/Styleguide';
 import { getVideoDetails } from 'services/prismicApiClient';
 import * as Prismic from '@prismicio/client';

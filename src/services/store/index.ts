@@ -70,9 +70,6 @@ if (__DEV__) {
   const Reactotron =
     require('@services/reactotronDebugger/reactotronConfig').default;
   Reactotron.clear();
-  const createFlipperMiddleware = isTVOS
-    ? undefined
-    : require('redux-flipper').default;
   const sagaMonitor = Reactotron.createSagaMonitor();
   console.log('sagaMonitor created');
   sagaMiddleware = createSagaMiddleware({ sagaMonitor });
@@ -80,9 +77,7 @@ if (__DEV__) {
   store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
-        createFlipperMiddleware ? [createFlipperMiddleware()] : [],
-      ),
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }),
     devTools: __DEV__,
     enhancers: [applyMiddleware(sagaMiddleware), Reactotron.createEnhancer()],
   });

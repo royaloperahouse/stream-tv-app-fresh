@@ -14,7 +14,7 @@ import MultiColumnRoleNameList from 'components/EventDetailsComponents/commonCon
 import { scaleSize } from 'utils/scaleSize';
 import { Colors } from 'themes/Styleguide';
 import RohImage from 'components/RohImage';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import { AnalyticsEventTypes, storeEvents } from 'utils/storeEvents';
 
 const Shop: React.FC<

@@ -1,4 +1,10 @@
 {
   "name": "RohTVApp",
-  "displayName": "RohTVApp"
+  "displayName": "RohTVApp",
+  "plugins": [
+    "bitmovin-player-react-native",
+    {
+      "playerLicenseKey": "1cb2ef33-6d56-4632-8d8b-1fdbf64b3511"
+    }
+  ]
 }

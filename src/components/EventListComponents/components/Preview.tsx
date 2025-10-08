@@ -10,7 +10,7 @@ import { scaleSize } from '@utils/scaleSize';
 import { TEvent, TEventContainer } from '@services/types/models';
 import RohText from '@components/RohText';
 import get from 'lodash.get';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import { Colors } from '@themes/Styleguide';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import RohImage from 'components/RohImage';

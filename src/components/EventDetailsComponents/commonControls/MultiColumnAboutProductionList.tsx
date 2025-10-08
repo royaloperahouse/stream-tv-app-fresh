@@ -15,7 +15,7 @@ import TouchableHighlightWrapper, {
 import ScrollingPagination, {
   TScrolingPaginationRef,
 } from '@components/ScrollingPagination';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import { OverflowingContainer } from '@components/OverflowingContainer';
 import { ScrollView } from 'react-native-gesture-handler';
 import RohImage from 'components/RohImage';

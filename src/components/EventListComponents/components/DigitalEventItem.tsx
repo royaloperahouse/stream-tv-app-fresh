@@ -6,7 +6,7 @@ import RohText from '@components/RohText';
 import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import get from 'lodash.get';
 import { useNavigation } from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import {
   contentScreenNames,
   TContentScreenReverseNamesOfNavToDetails,

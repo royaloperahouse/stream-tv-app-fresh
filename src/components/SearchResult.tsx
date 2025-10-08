@@ -5,7 +5,7 @@ import { digitalEventDetailsSearchSelector, searchQuerySelector } from '@service
 import { saveSearchResultQuery, setFullSearchQuery } from '@services/store/events/Slices';
 import RohText from './RohText';
 import TouchableHighlightWrapper, { TTouchableHighlightWrapperRef } from './TouchableHighlightWrapper';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import get from 'lodash.get';
 import { scaleSize } from '@utils/scaleSize';
 import { Colors } from '@themes/Styleguide';

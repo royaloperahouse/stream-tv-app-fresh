@@ -11,7 +11,7 @@ import TouchableHighlightWrapper, {
   TTouchableHighlightWrapperRef,
 } from '@components/TouchableHighlightWrapper';
 import { Colors } from '@themes/Styleguide';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import LoadingSpinner from '@components/LoadingSpinner';
 import RohImage from 'components/RohImage';
 import { isTVOS } from 'configs/globalConfig';

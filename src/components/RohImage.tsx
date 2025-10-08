@@ -1,5 +1,5 @@
 import React, { FC, useLayoutEffect, useRef, useState } from 'react';
-import FastImage, { ResizeMode } from 'react-native-fast-image';
+import FastImage, { ResizeMode } from '@d11/react-native-fast-image';
 import PlaceholderLandscape from '../assets/image-placeholder-landscape.svg';
 import PlaceholderPortrait from '../assets/image-placeholder-portrait.svg';
 import { StyleSheet, View } from 'react-native';
