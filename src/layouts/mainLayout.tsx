@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, Dimensions, TVEventControl } from 'react-native';
 import WithLogo from '@components/WithLogo';
 import WithBackground from '@components/WithBackground';
-import RNBootSplash from 'react-native-bootsplash';
+// import RNBootSplash from 'react-native-bootsplash';
 import NavigationContainer from '@navigations/navigationContainer';
 import ContentLayout from '@layouts/contentLayout';
 import RohText from '@components/RohText';
@@ -11,6 +11,11 @@ import { scaleSize } from '@utils/scaleSize';
 import { NavMenuNodesRefsProvider } from '@components/NavMenu/components/ContextProvider';
 import GlobalModal from '@components/GlobalModals';
 import { FocusManager } from 'services/focusService/focusManager';
+
+const RNBootSplash = {
+  hide: async (_options?: any | undefined) => undefined,
+  getVisibilityStatus: async () => 'visible',
+};
 
 type TMainLayoutProps = {};
 

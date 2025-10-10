@@ -22,7 +22,7 @@ import {
   getEventListLoopStart,
   getEventListLoopStop,
 } from '@services/store/events/Slices';
-import RNBootSplash from 'react-native-bootsplash';
+// import RNBootSplash from 'react-native-bootsplash';
 import { getSubscribeInfo, verifyDevice } from '@services/apiClient';
 import { TVEventManager } from '@services/tvRCEventListener';
 import { isTVOS } from 'configs/globalConfig';
@@ -31,6 +31,11 @@ import { globalModalManager } from 'components/GlobalModals';
 import { ErrorModal } from 'components/GlobalModals/variants';
 import ExitApp from 'components/ExitApp';
 import { addEventListener } from '@react-native-community/netinfo';
+
+const RNBootSplash = {
+  hide: async (_options?: any | undefined) => undefined,
+  getVisibilityStatus: async () => 'visible',
+};
 
 type TAppLayoutProps = {};
 const AppLayout: React.FC<TAppLayoutProps> = () => {
@@ -78,7 +83,7 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
       listnerCB.remove();
     };
   }, [dispatch]);
-  addEventListener((state) => {
+  addEventListener(state => {
     if (state.isInternetReachable === false) {
       if (networkAvailable) {
         setNetworkAvailable(false);
@@ -95,7 +100,8 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
             },
             fromInternetConnection: true,
             title: 'Connection error',
-            subtitle: 'There is no internet connection.\nPress the button below to exit the application and check your internet connectivity.',
+            subtitle:
+              'There is no internet connection.\nPress the button below to exit the application and check your internet connectivity.',
           },
         });
       });
@@ -135,7 +141,8 @@ const AppLayout: React.FC<TAppLayoutProps> = () => {
     verifyDevice(isProductionEnv)
       .then(response => {
         if (response?.data?.data?.attributes?.customerId) {
-          response.data.data.attributes.countryCode = response.headers['x-country-code'];
+          response.data.data.attributes.countryCode =
+            response.headers['x-country-code'];
           dispatch(checkDeviceSuccess(response.data));
           return true;
         } else if (response?.data?.errors?.length) {
