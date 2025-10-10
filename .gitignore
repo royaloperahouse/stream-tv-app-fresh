@@ -70,4 +70,9 @@ buck-out/
 # testing
 /coverage
 
+# expo
+.expo/
+dist/
+ios/
+android/
 expo-env.d.ts
