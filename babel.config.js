@@ -1,36 +1,17 @@
-module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
-  plugins: [
-    [
-      'module-resolver',
-      {
-        root: ['./src'],
-        extensions: [
-          '.ios.js',
-          '.android.js',
-          '.js',
-          '.ts',
-          '.tsx',
-          '.json',
-          '.ios.tsx',
-          '.android.tsx',
-        ],
-        alias: {
-          tests: ['./tests/'],
-          '@components': './src/components',
-          '@configs': './src/configs',
-          '@screens': './src/screens',
-          '@services': './src/services',
-          '@layouts': './src/layouts',
-          '@assets': './src/assets',
-          '@hooks': './src/hooks',
-          '@themes': './src/themes/',
-          '@utils': './src/utils/',
-          '@navigations': './src/navigations/',
-        },
-      },
-    ],
-    'react-native-reanimated/plugin',
-    ['module:react-native-dotenv']
-  ],
+/** @type {import('@babel/core').TransformOptions['plugins']} */
+const plugins = [
+  /** NOTE: This must be last in the plugins @see https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation/#babel-plugin */
+  "react-native-worklets/plugin",
+]
+
+/** @type {import('@babel/core').TransformOptions} */
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ["babel-preset-expo"],
+    env: {
+      production: {},
+    },
+    plugins,
+  };
 };

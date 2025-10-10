@@ -1,83 +1,12 @@
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "commonjs",
-    "lib": [
-      "es2017",
-      "ES2020",
-      "ES2020.Promise"
-    ],
-    "allowJs": true,
-    "jsx": "react-native",
-    "sourceMap": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
     "strict": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
-    "types": [
-      "react-native",
-      "jest"
-    ],
-    "typeRoots": [
-      "node_modules/@types",
-      "@types",
-      "./src/services/types"
-    ],
     "paths": {
-      "*": [
-        "src/*"
-      ],
-      "tests": [
-        "tests/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "@configs/*": [
-        "./src/configs/*"
-      ],
-      "@screens/*": [
-        "./src/screens/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
-      "@layouts/*": [
-        "./src/layouts/*"
-      ],
-      "@assets/*": [
-        "./src/assets/*"
-      ],
-      "@hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@themes/*": [
-        "./src/themes/*"
-      ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
-      "@navigations/*": [
-        "./src/navigations/*"
-      ]
+      "*": ["./src/*"],
+      "tests": ["./tests/*"],
+      "@*": ["./src/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js",
-    "jest.config.js"
-  ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "declarations-libs.d.ts",
-    "declarations-modules.d.ts"
-  ],
-  "extends": "expo/tsconfig.base"
+  "include": ["**/*.ts", "**/*.tsx"]
 }

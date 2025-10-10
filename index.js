@@ -23,4 +23,4 @@ if (typeof global.atob !== 'function') {
   global.atob = decode;
 }
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent("main", () => App);

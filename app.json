@@ -1,4 +1,50 @@
 {
-  "name": "RohTVApp",
-  "displayName": "RohTVApp"
+  "expo": {
+    "plugins": [
+      [
+        "@react-native-tvos/config-tv",
+        {
+          "isTV": true
+        }
+      ],
+      [
+        "bitmovin-player-react-native",
+        {
+          "playerLicenseKey": "YOUR_BITMOVIN_PLAYER_LICENSE_KEY",
+          "features": {
+            "airPlay": true,
+            "backgroundPlayback": true,
+            "googleCastSDK": {
+              "android": "21.3.0",
+              "ios": "4.8.1.2"
+            },
+            "offline": true,
+            "pictureInPicture": true
+          }
+        }
+      ]
+    ],
+    "android": {
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "package": "com.RohTVApp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.RohTVApp"
+    },
+    "newArchEnabled": true,
+    "name": "RohTVApp",
+    "slug": "RohTVApp"
+  }
 }
