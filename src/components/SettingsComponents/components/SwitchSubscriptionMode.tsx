@@ -13,6 +13,7 @@ import {
   NavMenuScreenRedirect,
   TNavMenuScreenRedirectRef,
 } from '@components/NavmenuScreenRedirect';
+import { useDispatch } from 'react-redux';
 
 export type TSwitchSubscriptionMode = {
   listItemGetRef?: () => React.RefObject<TouchableHighlight>;
@@ -21,7 +22,7 @@ export type TSwitchSubscriptionMode = {
 const SwitchSubscriptionMode: React.FC<TSwitchSubscriptionMode> = ({
   listItemGetRef,
 }) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const navMenuScreenRedirectRef = useRef<TNavMenuScreenRedirectRef>(null);
   const buttonRef = useRef<TTouchableHighlightWrapperRef>(null);
   const fullSubscription: boolean = useAppSelector(subscribedModeSelector);

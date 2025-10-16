@@ -165,6 +165,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         IdleTimerManager.setIdleTimerDisabled(false);
       }
       unsubscribe.remove();
+      player.destroy();
     };
   }, [configuration.url, player, title]);
 
@@ -175,6 +176,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       }
       player.destroy();
     }
+    player.destroy();
   }, [player, onClose]);
 
   useEffect(() => {
@@ -183,12 +185,9 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
       return true;
     };
 
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
+      backHandler.remove();
     };
   }, [actionClose]);
 
@@ -347,6 +346,11 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     setState(s => ({ ...s, subtitleCue: '' }));
   }
 
+  const onEvent = useCallback((event: Event) => {
+    console.log(`EVENT [${event.name}]`, event);
+  }, []);
+
+
   return (
     <TVFocusGuideView
       style={styles.overlayOuter}
@@ -363,6 +367,7 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onTimeChanged={onTimeChanged}
         onCueEnter={onCueEnter}
         onCueExit={onCueExit}
+        onEvent={onEvent}
       />
       <Guidance
         guidanceDetails={guidanceDetails}

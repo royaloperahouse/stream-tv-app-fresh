@@ -6,10 +6,9 @@ export abstract class TVEventManager {
   private static subscriptions: Array<(event: HWEvent) => void> = [];
   static init(): boolean {
     if (!TVEventManager.isInit()) {
-      TVEventManager.tvEventHandler = new TVEventHandler();
-      TVEventManager.tvEventHandler.enable<any>(
-        undefined,
-        (_, event: HWEvent) => {
+      TVEventManager.tvEventHandler = TVEventHandler;
+      TVEventManager.tvEventHandler.addListener<any>(
+        (event: HWEvent) => {
           for (let i = 0; i < TVEventManager.subscriptions.length; i++) {
             TVEventManager.subscriptions[i](event);
           }

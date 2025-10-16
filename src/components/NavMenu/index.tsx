@@ -374,9 +374,9 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       }
       return true;
     };
-    BackHandler.addEventListener('hardwareBackPress', backButtonCallback);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backButtonCallback);
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', backButtonCallback);
+      backHandler.remove();
     };
   }, [navMenuConfig, exitOfApp, canExit, navMenuWidth, navMenuIsLocked]);
 

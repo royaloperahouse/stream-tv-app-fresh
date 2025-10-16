@@ -354,12 +354,9 @@ const SubtitlesList = ({
       }
       return false;
     };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
+      backHandler.remove();
     };
   }, [focusToSubtitleButton, isSubtitlesListVisible, showSubtitlesList]);
 

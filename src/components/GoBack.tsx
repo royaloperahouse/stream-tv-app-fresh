@@ -126,12 +126,9 @@ const GoBack: React.FC<TGoBackProps> = () => {
         }
         return true;
       };
-      BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
       return () => {
-        BackHandler.removeEventListener(
-          'hardwareBackPress',
-          handleBackButtonClick,
-        );
+        backHandler.remove();
       };
     }, [navigation, route.params, show, accessible]),
   );

@@ -10,10 +10,9 @@
       [
         "bitmovin-player-react-native",
         {
-          "playerLicenseKey": "YOUR_BITMOVIN_PLAYER_LICENSE_KEY",
+          "playerLicenseKey": "1cb2ef33-6d56-4632-8d8b-1fdbf64b3511",
           "features": {
             "airPlay": true,
-            "backgroundPlayback": true,
             "googleCastSDK": {
               "android": "21.3.0",
               "ios": "4.8.1.2"

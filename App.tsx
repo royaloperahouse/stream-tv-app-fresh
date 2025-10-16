@@ -8,6 +8,14 @@ import * as Sentry from '@sentry/react-native';
 import { SentryDSN } from '@configs/globalConfig';
 import { enableScreens } from 'react-native-screens';
 
+import {
+  configureReanimatedLogger,
+} from 'react-native-reanimated';
+
+configureReanimatedLogger({
+  strict: false,
+});
+
 Sentry.init({
   dsn: SentryDSN,
 });

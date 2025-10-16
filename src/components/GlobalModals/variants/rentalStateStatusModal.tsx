@@ -13,12 +13,9 @@ const RentalStateStatusModal: React.FC<TGlobalModalContentProps> = ({
     const handleBackButtonClick = () => {
       return true;
     };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
+      backHandler.remove();
     };
   }, []);
   return (

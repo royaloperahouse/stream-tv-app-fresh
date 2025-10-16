@@ -22,12 +22,9 @@ const NotSubscribedModal: React.FC<TNonSubscribedModeAlertProps> = ({
         setRelaunchFlag(false);
       }
     }, 500);
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
+      backHandler.remove();
     };
   }, [relaunchFlag]);
   return (

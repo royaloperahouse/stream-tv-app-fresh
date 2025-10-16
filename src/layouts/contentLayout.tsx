@@ -161,9 +161,9 @@ const ContentScreen: React.MemoExoticComponent<
           drawerHideStatusBarOnOpen: true,
           swipeEnabled: false,
           drawerStyle: {
-            backgroundColor: 'transperent',
+            backgroundColor: 'rgba(0, 0, 0, 0)',
             borderWidth: 0,
-            borderRightColor: 'transperent',
+            borderRightColor: 'rgba(0, 0, 0, 0)',
             width: 'auto',
             maxWidth: 'auto',
             borderRightWidth: 0,
