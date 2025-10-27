@@ -254,6 +254,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
       contentProps: {
         confirmActionHandler: () => {
           globalModalManager.closeModal(() => {
+            console.log(ExitApp);
             ExitApp.exit();
           });
         },
@@ -307,7 +308,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         navMenuWidth.value !== widthWithFocus &&
         state.routeNames[state.index] !== id
       ) {
-        navigation.navigate(state.routeNames[state.index]);
+        navigation.navigateDeprecated(state.routeNames[state.index]);
         currenItemInFocus.current = state.routeNames[state.index];
         navMenuWidth.value = widthWithFocus;
         buttonsRefs?.current[
@@ -322,14 +323,14 @@ const NavMenu: React.FC<TNavMenuProps> = ({
         !navMenuIsLocked &&
         navMenuWidth.value === widthWithFocus
       ) {
-        navigation.navigate(id);
+        navigation.navigateDeprecated(id);
         navMenuWidth.value = widthWithFocus;
         currenItemInFocus.current = id;
       }
 
       if (FocusManager.getFirstLounch()) {
-        navigation.navigate('Search');
-        navigation.navigate('Home');
+        navigation.navigateDeprecated('Search');
+        navigation.navigateDeprecated('Home');
         navMenuWidth.value = widthWithOutFocus;
         currenItemInFocus.current = 'Home';
         return;
@@ -509,7 +510,7 @@ const NavMenu: React.FC<TNavMenuProps> = ({
               }}
               onFocus={() => {
                 exitButtonActive.value = true;
-                navigation.navigate(exitButtonRouteName);
+                navigation.navigateDeprecated(exitButtonRouteName);
               }}
               nextFocusUp={lastItemInScrollView.current}
               nextFocusDown={

@@ -90,7 +90,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
     >();
   const onFocusHandler = useCallback(() => {
     if (route.params?.screenNameFrom) {
-      navigation.navigate(route.params.screenNameFrom, {
+      navigation.navigateDeprecated(route.params.screenNameFrom, {
         eventId: route.params.eventId,
         sectionIndex: route.params.sectionIndex,
         selectedItemIndex: route.params.selectedItemIndex,
@@ -114,7 +114,7 @@ const GoBack: React.FC<TGoBackProps> = () => {
           return false;
         }
         if (route.params?.screenNameFrom) {
-          navigation.navigate(route.params.screenNameFrom, {
+          navigation.navigateDeprecated(route.params.screenNameFrom, {
             eventId: route.params.eventId,
             sectionIndex: route.params.sectionIndex,
             selectedItemIndex: route.params.selectedItemIndex,

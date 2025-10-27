@@ -77,7 +77,7 @@ const Creatives: React.FC<
           <View style={styles.creativesContainer}>
             <MultiColumnRoleNameList
               id={prevScreenName}
-              data={creatives}
+              data={[...creatives]}
               columnHeight={scaleSize(770)}
               columnWidth={scaleSize(387)}
               onReady={onContentReady}

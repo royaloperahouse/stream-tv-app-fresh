@@ -18,7 +18,7 @@ import {
   TouchableHighlight,
   findNodeHandle,
   ViewToken,
-  HWEvent, StyleSheet,
+  HWEvent, StyleSheet, TVFocusGuideView,
 } from 'react-native';
 import { TTouchableHighlightWrapperRef } from '@components/TouchableHighlightWrapper';
 import { TVEventManager } from '@services/tvRCEventListener';
@@ -351,6 +351,7 @@ const RailSections: React.FC<TRailSectionsProps> = props => {
         initialNumToRender={isTVOS ? sections.length : sectionsInitialNumber}
         maxToRenderPerBatch={isTVOS ? sections.length : sectionsInitialNumber}
         windowSize={sectionsWindowSize}
+        numColumns={1}
         onScrollToIndexFailed={info => {
           const wait = new Promise(resolve => setTimeout(resolve, 500));
           wait.then(() => {

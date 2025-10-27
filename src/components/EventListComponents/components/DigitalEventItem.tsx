@@ -129,7 +129,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
       navMenuManager.lockNavMenu();
       if (event.type === 'digital_event_video') {
         navMenuManager.hideNavMenu(() => {
-          navigation.navigate(contentScreenNames.eventVideo, {
+          navigation.navigateDeprecated(contentScreenNames.eventVideo, {
             videoId: event.id,
             eventId: event.id,
             screenNameFrom,
@@ -142,7 +142,7 @@ const DigitalEventItem = forwardRef<any, DigitalEventItemProps>(
         return;
       }
       navMenuManager.hideNavMenu(() => {
-        navigation.navigate(contentScreenNames.eventDetails, {
+        navigation.navigateDeprecated(contentScreenNames.eventDetails, {
           eventId: event.id,
           screenNameFrom,
           sectionIndex,

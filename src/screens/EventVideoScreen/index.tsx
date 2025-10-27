@@ -220,7 +220,7 @@ const EventVideoScreen: React.FC<
       clearLoadingState?: () => void,
     ) => {
       const moveToSettings = () => {
-        navigation.navigate(contentScreenNames.settings, { pinPage: true });
+        navigation.navigateDeprecated(contentScreenNames.settings, { pinPage: true });
       };
       try {
         if (!isAuthenticated) {

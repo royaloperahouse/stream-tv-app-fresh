@@ -166,7 +166,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
     }).then(() => {});
     if (item.type === 'digital_event_video') {
       navMenuManager.hideNavMenu(() => {
-        navigation.navigate(contentScreenNames.eventVideo, {
+        navigation.navigateDeprecated(contentScreenNames.eventVideo, {
           videoId: item.id,
           eventId: item.id,
           screenNameFrom,
@@ -177,7 +177,7 @@ export const SearchItemComponent: React.FC<TSearchItemComponentProps> = ({
       return;
     }
     navMenuManager.hideNavMenu(() => {
-      navigation.navigate(contentScreenNames.eventDetails, {
+      navigation.navigateDeprecated(contentScreenNames.eventDetails, {
         eventId: item.id,
         screenNameFrom,
         sectionIndex,

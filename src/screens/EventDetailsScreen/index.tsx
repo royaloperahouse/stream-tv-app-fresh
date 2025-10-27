@@ -43,7 +43,7 @@ const EventDetailsScreen: React.FC<
   const dispatch = useAppDispatch();
   const eventDetailsScreenMounted = useRef<boolean>(false);
   const moveToSettings = () => {
-    navigation.navigate(contentScreenNames.settings, { pinPage: true });
+    navigation.navigateDeprecated(contentScreenNames.settings, { pinPage: true });
   };
   useEffect(() => {
     dispatch(getEventListLoopStop());

@@ -1,13 +1,14 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Colors } from '@themes/Styleguide';
 import { useSplitingOnColumns } from '@hooks/useSplitingOnColumns';
 import TouchableHighlightWrapper from '@components/TouchableHighlightWrapper';
 import ScrollingPagination, {
   TScrolingPaginationRef,
 } from '@components/ScrollingPagination';
+import { useFocusEffect } from '@react-navigation/core';
 
 type TMultiColumnRoleNameListProps = {
   data: Array<{ role: string; name: string }>;
@@ -20,6 +21,7 @@ const noopCB = () => {};
 const MultiColumnRoleNameList: React.FC<
   TMultiColumnRoleNameListProps
 > = props => {
+  const [hasFocus, setHasFocus] = useState(false);
   const { data, columnHeight, columnWidth, onReady = noopCB, id } = props;
   const { onLayoutHandler, splitedItems, splited } = useSplitingOnColumns({
     columnHeight,
@@ -27,9 +29,16 @@ const MultiColumnRoleNameList: React.FC<
   });
   const scrpllingPaginationRef = useRef<TScrolingPaginationRef>(null);
   const callOnce = useRef<boolean>(false);
+  useFocusEffect(() => {
+    setTimeout(() => setHasFocus(true), 400);
+    return () => {
+      setHasFocus(false)
+    }
+  });
+
   if (!splited) {
     return (
-      <TouchableHighlightWrapper hasTVPreferredFocus>
+      <TouchableHighlightWrapper hasTVPreferredFocus={hasFocus}>
         <View style={{ width: columnWidth }}>
           {data.map(item => (
             <View
@@ -48,7 +57,7 @@ const MultiColumnRoleNameList: React.FC<
     return (
       <TouchableHighlightWrapper
         canMoveRight={false}
-        hasTVPreferredFocus
+        hasTVPreferredFocus={hasFocus}
         onFocus={onReady}>
         <View style={[styles.towColumnsList, { height: columnHeight }]}>
           {splitedItems.map((column, index) => (
@@ -77,7 +86,7 @@ const MultiColumnRoleNameList: React.FC<
             key={index}
             style={[styles.column, { height: columnHeight }]}
             canMoveRight={index !== items.length - 1}
-            hasTVPreferredFocus={index === 0}
+            hasTVPreferredFocus={index === 0 && hasFocus}
             onFocus={() => {
               if (!callOnce.current) {
                 callOnce.current = true;

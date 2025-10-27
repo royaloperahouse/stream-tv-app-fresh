@@ -76,7 +76,7 @@ const Cast: React.FC<
             <View style={styles.castsContainer}>
               <MultiColumnRoleNameList
                 id={prevScreenName}
-                data={castList}
+                data={[...castList]}
                 columnHeight={scaleSize(770)}
                 columnWidth={scaleSize(387)}
                 onReady={onContentReady}

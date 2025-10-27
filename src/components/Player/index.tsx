@@ -117,23 +117,23 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     styleConfig: {
       isUiEnabled: isTVOS,
     },
-    playbackConfig: {
-      isBackgroundPlaybackEnabled: true,
+    remoteControlConfig: {
+      isCastEnabled: false,
     },
-    analyticsConfig: {
-      licenseKey: BITMOVIN_ANALYTICS_KEY,
-      defaultMetadata: {
-        customUserId: analytics?.userId || '',
-        experimentName: analytics?.experiment,
-        customData1: analytics?.buildInfoForBitmovin || '',
-        customData2: analytics?.userId || '',
-        customData3: analytics?.customData3 || '',
-        customData4: analytics?.customData4 || '',
-        customData5: analytics?.customData5 || '',
-        customData6: analytics?.customData6 || '',
-        customData7: analytics?.customData7 || '',
-      },
-    },
+    // analyticsConfig: {
+    //   licenseKey: BITMOVIN_ANALYTICS_KEY,
+    //   defaultMetadata: {
+    //     customUserId: analytics?.userId || '',
+    //     experimentName: analytics?.experiment,
+    //     customData1: analytics?.buildInfoForBitmovin || '',
+    //     customData2: analytics?.userId || '',
+    //     customData3: analytics?.customData3 || '',
+    //     customData4: analytics?.customData4 || '',
+    //     customData5: analytics?.customData5 || '',
+    //     customData6: analytics?.customData6 || '',
+    //     customData7: analytics?.customData7 || '',
+    //   },
+    // },
   });
 
   const isProductionEnv = useAppSelector(isProductionEvironmentSelector);
@@ -346,11 +346,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
     setState(s => ({ ...s, subtitleCue: '' }));
   }
 
-  const onEvent = useCallback((event: Event) => {
-    console.log(`EVENT [${event.name}]`, event);
-  }, []);
-
-
   return (
     <TVFocusGuideView
       style={styles.overlayOuter}
@@ -367,7 +362,6 @@ const BitMovinPlayer: React.FC<TPlayerProps> = props => {
         onTimeChanged={onTimeChanged}
         onCueEnter={onCueEnter}
         onCueExit={onCueExit}
-        onEvent={onEvent}
       />
       <Guidance
         guidanceDetails={guidanceDetails}
@@ -468,13 +462,9 @@ const styles = StyleSheet.create({
   },
   overlayOuter: {
     flex: 1,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'black',
-    zIndex: 100,
   },
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -542,9 +532,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ebebeb',
   },
   video: {
-    height: Dimensions.get('window').width * (9 / 16),
-    width: Dimensions.get('window').width,
-    backgroundColor: 'black',
+    flex: 1,
+    // flex: 1,
+    // height: Dimensions.get('window').width * (9 / 16),
+    // width: Dimensions.get('window').width,
   },
   fullscreenVideo: {
     height: Dimensions.get('window').height,

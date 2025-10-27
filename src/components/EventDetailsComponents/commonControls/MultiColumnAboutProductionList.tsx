@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import RohText from '@components/RohText';
 import { scaleSize } from '@utils/scaleSize';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Colors } from '@themes/Styleguide';
 import { useSplitingOnColumnsForSynopsis } from '@hooks/useSplitingOnColumnsForSynopsis';
 import TouchableHighlightWrapper, {
@@ -20,6 +20,7 @@ import { OverflowingContainer } from '@components/OverflowingContainer';
 import { ScrollView } from 'react-native-gesture-handler';
 import RohImage from 'components/RohImage';
 import { isTVOS } from 'configs/globalConfig';
+import { useFocusEffect } from '@react-navigation/core';
 
 export enum ECellItemKey {
   'guidance' = 'guidance',
@@ -42,6 +43,7 @@ const noopCB = () => {};
 const MultiColumnAboutProductionList: React.FC<
   TMultiColumnAboutProductionListProps
 > = props => {
+  const [hasFocus, setHasFocus] = useState(false);
   const { data, columnHeight, columnWidth, onReady = noopCB } = props;
   const { onLayoutHandler, splitedItems, splited } =
     useSplitingOnColumnsForSynopsis({
@@ -67,6 +69,12 @@ const MultiColumnAboutProductionList: React.FC<
       height: scaleSize(calculatedHeight),
     };
   };
+  useFocusEffect(() => {
+    setTimeout(() => setHasFocus(true), 400);
+    return () => {
+      setHasFocus(false)
+    }
+  });
   const contentItemsFabric = (item: {
     key: string;
     type: ECellItemKey;
@@ -122,7 +130,7 @@ const MultiColumnAboutProductionList: React.FC<
   if (!splited) {
     return (
       <TouchableHighlightWrapper
-        hasTVPreferredFocus
+        hasTVPreferredFocus={hasFocus}
         underlayColor="trasparent"
         canMoveDown={false}
         canMoveLeft={false}
@@ -147,7 +155,8 @@ const MultiColumnAboutProductionList: React.FC<
         canMoveRight={false}
         ref={focusedComponentRef}
         onFocus={onReady}
-        hasTVPreferredFocus>
+        hasTVPreferredFocus={hasFocus}
+      >
         <View style={[styles.towColumnsList, { height: columnHeight }]}>
           {splitedItems.map((column, index) =>
             column.needToWrap ? (
@@ -189,7 +198,7 @@ const MultiColumnAboutProductionList: React.FC<
             ref={index === 0 ? focusedComponentRef : undefined}
             style={[styles.column, { height: columnHeight }]}
             canMoveRight={index !== items.length - 1}
-            hasTVPreferredFocus={index === 0}
+            hasTVPreferredFocus={index === 0 && hasFocus}
             onFocus={() => {
               if (!callOnce.current) {
                 callOnce.current = true;
