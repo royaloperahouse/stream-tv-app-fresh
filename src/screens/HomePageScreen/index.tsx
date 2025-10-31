@@ -295,7 +295,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
   },
   navMenuContainerSeporator: {},
   railContainerStyle: {
@@ -305,13 +304,13 @@ const styles = StyleSheet.create({
       Dimensions.get('window').width -
       (widthWithOutFocus + marginRightWithOutFocus + marginLeftStop),
     paddingRight: 40,
-    paddingTop: 20,
+    paddingTop: 0,
   },
   railHeaderContainerStyle: {},
   railStyle: {
     paddingTop: scaleSize(30),
     marginBottom: 5,
-    height: scaleSize(375), // need to check how it will showed on android
+    height: scaleSize(350), // need to check how it will showed on android
   },
   loadingContainer: {
     flex: 1,
